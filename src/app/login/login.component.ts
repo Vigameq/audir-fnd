@@ -21,7 +21,7 @@ export class LoginComponent {
       (response: any) => {
         if (response) {
           localStorage.setItem('login_success', 'success');
-          this.router.navigate(['/dashboard']); // Navigate to the dashboard page
+          this.router.navigate(['/auditPlan']); // Navigate to the dashboard page
         } else {
           this.errorMessage = 'Invalid login credentials';
         }

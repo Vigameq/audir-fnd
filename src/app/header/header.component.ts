@@ -6,7 +6,7 @@ import { Component, ElementRef, Input, Renderer2, ViewChild } from '@angular/cor
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-  @Input() displayHeaderName: string = 'Dashboard'; // Receive data from the app component
+  @Input() displayHeaderName: string = 'Audit Plan'; // Receive data from the app component
   @ViewChild('dropdown') dropdown: ElementRef | undefined;
   profileDropdownOptions = ['Gowtham Gadipudi', 'Edit Profile', 'logout'];
   selectedOption: string = this.profileDropdownOptions[0]; // The value of the selected option
