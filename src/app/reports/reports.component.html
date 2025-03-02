@@ -10,9 +10,52 @@
             </button>
         </div>
         <div class="dropdown-section">
-
+            <div class="standard-dropdown-section" (click)="onStandardDropdownClick()" #standardDropdown>
+                <select class="standard-dropdown-select" (change)="onStandardOptionChange($event)"
+                    [(ngModel)]="standardSelectedOption">
+                    <option value="" disabled selected>Select Standards</option>
+                    <option *ngFor="let standardOption of standardDropdownOptions" [value]="standardOption">
+                        {{ standardOption }}
+                    </option>
+                </select>
+                <div class="dropdown-arrow">
+                    <app-dropdown-arrow-icons [isOpen]="isStandardDropdownOpen"></app-dropdown-arrow-icons>
+                </div>
+            </div>
+            <div class="functions-dropdown-section" (click)="onFunctionsDropdownClick()" #functionsDropdown>
+                <select class="functions-dropdown-select" (change)="onFunctionsOptionChange($event)"
+                    [(ngModel)]="functionsSelectedOption">
+                    <option value="" disabled selected>Select Functions</option>
+                    <option *ngFor="let option of functionsDropdownOptions" [value]="option">{{ option }}</option>
+                </select>
+                <div class="dropdown-arrow">
+                    <app-dropdown-arrow-icons [isOpen]="isFunctionsDropdownOpen"></app-dropdown-arrow-icons>
+                </div>
+            </div>
         </div>
-
     </div>
-
+    <div class="reports-container-section">
+        <div class="report-container" *ngFor="let report of reportsData">
+            <div class="name-type-section">
+                <div class="audit-name-section">
+                    <span class="report-name">{{report.name}}</span>
+                </div>
+                <div class="type-section">
+                    <span class="standard-type">{{report.standardType}}</span>
+                    <span class="vertical-bar">|</span>
+                    <span class="function-type">{{report.functionType}}</span>
+                </div>
+            </div>
+            <div class="city-and-download-section">
+                <div class="city-country-section">
+                    <span class="city-name">{{report.city}}</span>
+                    <span class="vertical-bar">|</span>
+                    <span class="country-name">{{report.country}}</span>
+                </div>
+                <div class="download-button">
+                    <button>Download</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
