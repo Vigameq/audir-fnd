@@ -195,7 +195,7 @@
         }
     }
 
-    @media (min-width: 768px) {
+    @media (max-width: 768px) {
         .reports-container-section {
             grid-template-columns: repeat(2, 1fr);
         }
@@ -248,19 +248,19 @@
     }
 
 
-    @media (min-width: 1200px) {
+    @media (min-width: 1300px) {
         .reports-container-section {
             grid-template-columns: repeat(4, 1fr);
         }
     }
 
-    @media (min-width: 1600px) {
+    @media (min-width: 1745px) {
         .reports-container-section {
             grid-template-columns: repeat(5, 1fr);
         }
     }
 
-    @media (min-width: 1920px) {
+    @media (min-width: 2000px) {
         .reports-container-section {
             grid-template-columns: repeat(6, 1fr);
         }
