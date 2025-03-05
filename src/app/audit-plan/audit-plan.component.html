@@ -1,112 +1,83 @@
 <div class="container">
-    <div class="row">
-        <div class="col-9">
-            <div class="row phy-off-vir">
-                <div class="col-3 physical">
-                    <span>Physical</span>
-                </div>
-                <div class="col-3 offline">
-                    <span>Offline</span>
-                </div>
-                <div class="col-3 virtual">
-                    <span>Virtual</span>
-                </div>
-                <div class="col-3 import">
-                    <span>Import</span>
-                </div>
-            </div>
-            <div class="row form-container">
-                <div class="row">
-                    <div class="col-12">
-                        <p>Link Audit</p>
-                        <select class="dropdown-select">
-                            <option>Sample Audit - 1</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <p>Audit Title</p>
-                        <select class="dropdown-select">
-                            <option>Q1-ISMS</option>
-                        </select>
-                    </div>
-                    <div class="col-6">
-                        <p>Functions</p>
-                        <select class="dropdown-select">
-                            <option>Q1-ISMS-IT</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <p>Template</p>
-                        <select class="dropdown-select">
-                            <option>Select template..</option>
-                        </select>
-                    </div>
-                    <div class="col-6">
-                        <p>Functions Template</p>
-                        <select class="dropdown-select">
-                            <option>Select template..</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <p>Start Date & Time</p>
-                        <div class="start-end-date"></div>
-                    </div>
-                    <div class="col-6">
-                        <p>End Date & Time</p>
-                        <div class="start-end-date"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <p>Auditors</p>
-                        <select class="dropdown-select">
-                            <option>Rooby Crooks</option>
-                        </select>
-                    </div>
-                    <div class="col-6">
-                        <p>Auditees</p>
-                        <select class="dropdown-select">
-                            <option>Marwan Thies</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <p>City</p>
-                        <select class="dropdown-select">
-                            <option>Bengaluru</option>
-                        </select>
-                    </div>
-                    <div class="col-6">
-                        <p>Country</p>
-                        <select class="dropdown-select">
-                            <option>India</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 te">
-                        <p>Audit Scope</p>
-                        <textarea class="audit-scope"></textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 btn-div">
-                        <button class="clear">Clear</button>
-                        <button class="create">Create</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="col-3">
-            Calendar section In-progress 
-        </div>
+    <div class="top-bar">
+      <div class="toggle-group">
+        <button class="toggle-button active">✔ Physical</button>
+        <button class="toggle-button">Offline</button>
+        <button class="toggle-button">Virtual</button>
+      </div>
+      <button class="import-button">+ Import</button>
     </div>
-</div>
+  
+    <div class="main-content">
+      <div class="form-container">
+        <h3>Link Audit</h3>
+        <div class="form">
+          <div class="form-group">
+            <label>Audit Title</label>
+            <input type="text" value="Q1 - ISMS">
+          </div>
+          <div class="form-group">
+            <label>Functions</label>
+            <input type="text" value="Q1 - ISMS - IT">
+          </div>
+          <div class="form-group">
+            <label>Template</label>
+            <select><option>Select Template..</option></select>
+          </div>
+          <div class="form-group">
+            <label>Function Template</label>
+            <select><option>Select Template..</option></select>
+          </div>
+          <div class="form-group">
+            <label>Start Date & Time</label>
+            <input type="text" value="Jun 10, 2024 9:41 AM">
+          </div>
+          <div class="form-group">
+            <label>End Date & Time</label>
+            <input type="text" value="Jun 10, 2024 9:41 AM">
+          </div>
+          <div class="form-group">
+            <label>Auditors</label>
+            <select><option>Robby Crooks</option></select>
+          </div>
+          <div class="form-group">
+            <label>Auditees</label>
+            <select><option>Marwan Theis</option></select>
+          </div>
+          <div class="form-group">
+            <label>City</label>
+            <select><option>Bengaluru</option></select>
+          </div>
+          <div class="form-group">
+            <label>Country</label>
+            <select><option>India</option></select>
+          </div>
+          <div class="form-group" style="min-width: 100% !important;">
+            <label>Audit Scope</label>
+            <textarea></textarea>
+          </div>
+          <div class="button-group ">
+            <button class="clear-button">Clear</button>
+            <button class="create-button">Create</button>
+          </div>
+        </div>
+      </div>
+  
+      <div class="right-section">
+        <div class="calendar">
+          <h3>June 2024</h3>
+        </div>
+        <div class="audit-info">
+          <h3>Audit Information</h3>
+          <div class="audit-item">
+            <div class="audit-date">06 May</div>
+            <div class="audit-details">
+              <strong>Q1-ISMS</strong>
+              <p>Chandrahas and more</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

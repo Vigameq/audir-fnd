@@ -1,85 +1,172 @@
+
 .container {
-    margin-left: 0;
-    height: 120%;
-    .phy-off-vir {
-        margin-left: 20px;
-
-        .physical {
-            border: 1px solid #79747E;
-            border-bottom-left-radius: 20px;
-            border-top-left-radius: 20px;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .offline {
-            border: 1px solid #79747E;
-            border-left: 0;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .virtual {
-            border: 1px solid #79747E;
-            border-left: 0;
-            border-bottom-right-radius: 20px;
-            border-top-right-radius: 20px;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .import {
-            border: 1px solid;
-            width: 150px;
-            margin-left: 40px;
-            border-radius: 7px;
-            padding: 10px;
-            text-align: center;
-            background: #000;
-            color: #ffff;
-        }
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    width: 66%;
+  }
+  
+  .toggle-group {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    overflow: hidden;
+    width: 80%;
+  }
+  
+  .toggle-button {
+    flex: 1;
+    padding: 10px 20px;
+    border: none;
+    background: white;
+    cursor: pointer;
+    transition: background 0.3s;
+    border-right: 1px solid #cccccc;
+  }
+  
+  .toggle-button.active {
+    background: #f5f3f3;
+  }
+  
+  .import-button {
+    background: #1a1d26;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .main-content {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  
+  .form-container {
+    flex: 2;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .form-group {
+    flex: 1 1 calc(50% - 10px);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  input, select, textarea {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .button-group {
+    // display: flex;
+    // justify-content: space-between;
+    margin-top: 20px;
+    text-align: right;
+    min-width: 100%;
+  }
+  
+  .clear-button {
+    background: #ffffff;
+    padding: 10px;
+    width: 150px;
+    font-size: 13px;
+    border: 1px solid;
+    border-radius: 6px;
+  }
+  
+  .create-button {
+    background: #000000;
+    padding: 10px;
+    width: 150px;
+    font-size: 13px;
+    border: 1px solid;
+    border-radius: 6px;
+    color: #ffff;
+    margin-left: 20px;
+  }
+  
+  .right-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .calendar {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .audit-info {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .audit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .audit-date {
+    font-weight: bold;
+  }
+  
+  .audit-details {
+    flex: 1;
+    padding: 0 10px;
+  }
+  
+  .edit-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 1024px) {
+    .main-content {
+      flex-direction: column;
     }
-    .form-container{
-        margin: 25px 5px 0 25px;
-        border: 1px solid grey;
-        height: 100%;
-        border-radius: 15px;
-        width: 96%;
-        padding: 15px;
-        .dropdown-select{
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-        }
-        .audit-scope{
-            width: 100%;
-            height: 100px;
-        }
-        .start-end-date{
-            border: 1px solid;
-            height: 45px;
-            border-radius: 6px;
-        }
-        .btn-div{
-            text-align: end;
-            .clear{
-                border: 1px solid;
-                border-radius: 6px;
-                background: #fff;
-                width: 150px;
-                height: 45px;
-                margin-left: 30px;
-            }
-            .create{
-                border: 1px solid;
-                border-radius: 6px;
-                background: #fff;
-                width: 150px;
-                height: 45px;
-                margin-left: 30px;
-                background: #000;
-                color: #fff;
-            }
-        }
+  
+    .form-group {
+      flex: 1 1 100%;
     }
-}
+  }
+  
+  @media (max-width: 768px) {
+    .top-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .import-button {
+      width: 100%;
+    }
+  }
+  
