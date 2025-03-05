@@ -7,12 +7,12 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class SidebarComponent {
 
-  header: string = '';  // The data to send to app component
-  @Output() headerName = new EventEmitter<string>(); // Event emitter to send data
+  header: string = '';
+  @Output() headerName = new EventEmitter<string>();
 
   sendDataToAppComponent(header:string) {
     this.header= header;
-    this.headerName.emit(this.header); // Emit the data when the button is clicked
+    this.headerName.emit(this.header);
   }
 
   navItems = [

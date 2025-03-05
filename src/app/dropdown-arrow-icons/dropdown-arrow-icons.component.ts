@@ -6,6 +6,6 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./dropdown-arrow-icons.component.scss']
 })
 export class DropdownArrowIconsComponent {
-  @Input() isOpen: boolean = false; // Property to receive boolean value when dropdown is clicked 
+  @Input() isOpen: boolean = false;
 
 }

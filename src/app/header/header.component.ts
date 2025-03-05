@@ -6,18 +6,17 @@ import { Component, ElementRef, Input, Renderer2, ViewChild } from '@angular/cor
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-  @Input() displayHeaderName: string = 'Dashboard'; // Receive data from the app component
+  @Input() displayHeaderName: string = 'Dashboard';
   @ViewChild('dropdown') dropdown: ElementRef | undefined;
   profileDropdownOptions = ['Gowtham Gadipudi', 'Edit Profile', 'logout'];
-  selectedOption: string = this.profileDropdownOptions[0]; // The value of the selected option
+  selectedOption: string = this.profileDropdownOptions[0];
   isOpen: boolean = false;
 
   constructor(private renderer: Renderer2) {}
 
-  // Method to handle dropdown selection change
   onOptionChange(event: Event) {
-    const target = event.target as HTMLSelectElement; // Typecast to HTMLSelectElement
-    this.selectedOption = target.value; // Get the value of the selected option
+    const target = event.target as HTMLSelectElement;
+    this.selectedOption = target.value;
     console.log("Selected Option: ", this.selectedOption);
   }
 
@@ -26,11 +25,9 @@ export class HeaderComponent {
   }
 
   ngAfterViewInit() {
-    // Add a global click event listener
     this.renderer.listen('document', 'click', (event: Event) => {
-      // Check if the clicked element is outside the dropdown
       if (this.dropdown && !this.dropdown.nativeElement.contains(event.target)) {
-        this.isOpen = false; // Close the dropdown if clicked outside
+        this.isOpen = false;
       }
     });
   }

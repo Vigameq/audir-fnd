@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = '/audire/api/userLogin'; // API endpoint
+  private apiUrl = '/audire/api/userLogin';
   constructor(private http: HttpClient) { }
 
   login(email: string, password: string): Observable<any> {

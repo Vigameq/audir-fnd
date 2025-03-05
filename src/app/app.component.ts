@@ -8,14 +8,14 @@ import { AuthService } from './auth.service';
 })
 export class AppComponent {
   title = 'audir-fnd';
-  receivedHeaderName: string = 'Dashboard';  // Variable to store received data from sidebar component
+  receivedHeaderName: string = 'Dashboard';
 
   constructor(private authService: AuthService) { }
   isAuthenticated(): boolean {
     return (this.authService.isAuthenticated() === 'success');
   }
   getHeaderName(data: string) {
-    this.receivedHeaderName = data;  // Update receivedHeaderName with data from sidebar component
+    this.receivedHeaderName = data;
   }
 
 }

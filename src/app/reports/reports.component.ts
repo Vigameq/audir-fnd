@@ -10,9 +10,9 @@ export class ReportsComponent {
   isFunctionsDropdownOpen: boolean = false;
   isStandardDropdownOpen: boolean = false;
   standardDropdownOptions = ['options1', 'option2', 'option3'];
-  standardSelectedOption: string = ''; // The value of the standard selected option
+  standardSelectedOption: string = ''; 
   functionsDropdownOptions = ['options2', 'option2', 'option3'];
-  functionsSelectedOption: string = ''; // The value of the function selected option
+  functionsSelectedOption: string = '';
   reportsData = [
     { name: 'Item 1', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india' },
     { name: 'Item 2', standardType: 'This2', functionType: 'function2', city: 'hyderabad', country: 'india' },
@@ -35,27 +35,24 @@ export class ReportsComponent {
 
   onSearch() {
     console.log('Search query:', this.searchQuery);
-    // You can add logic to filter items or perform search functionality here
   }
 
   clearSearch() {
-    this.searchQuery = ''; // Clear the search input
+    this.searchQuery = '';
   }
 
-  // Method to handle dropdown selection change
   onStandardOptionChange(event: Event) {
-    const target = event.target as HTMLSelectElement; // Typecast to HTMLSelectElement
+    const target = event.target as HTMLSelectElement;
     console.log("Selected Option: ", this.standardSelectedOption, target);
-    this.standardSelectedOption = target.value; // Get the value of the selected option
+    this.standardSelectedOption = target.value;
   }
 
   onStandardDropdownClick(): void {
     this.isStandardDropdownOpen = !this.isStandardDropdownOpen;
   }
-  // Method to handle dropdown selection change
   onFunctionsOptionChange(event: Event) {
-    const target = event.target as HTMLSelectElement; // Typecast to HTMLSelectElement
-    this.functionsSelectedOption = target.value; // Get the value of the selected option
+    const target = event.target as HTMLSelectElement;
+    this.functionsSelectedOption = target.value;
     console.log("Selected Option: ", this.functionsSelectedOption);
   }
 
@@ -63,14 +60,12 @@ export class ReportsComponent {
     this.isFunctionsDropdownOpen = !this.isFunctionsDropdownOpen;
   }
   ngAfterViewInit() {
-    // Add a global click event listener
     this.renderer.listen('document', 'click', (event: Event) => {
-      // Check if the clicked element is outside the dropdown
       if (this.standardDropdown && !this.standardDropdown.nativeElement.contains(event.target)) {
-        this.isStandardDropdownOpen = false; // Close the dropdown if clicked outside
+        this.isStandardDropdownOpen = false;
       }
       if (this.functionsDropdown && !this.functionsDropdown.nativeElement.contains(event.target)) {
-        this.isFunctionsDropdownOpen = false; // Close the dropdown if clicked outside
+        this.isFunctionsDropdownOpen = false;
       }
 
     });

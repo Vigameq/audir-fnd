@@ -12,7 +12,7 @@ import { ReportsComponent } from './reports/reports.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { LoginComponent } from './login/login.component';
 import { HeaderComponent } from './header/header.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DropdownArrowIconsComponent } from './dropdown-arrow-icons/dropdown-arrow-icons.component';
 
@@ -35,6 +35,7 @@ import { DropdownArrowIconsComponent } from './dropdown-arrow-icons/dropdown-arr
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule
   ],
   providers: [],
