@@ -1,0 +1,176 @@
+.title {
+  display: inline;
+  float: right;
+  margin: 15px 20px;
+}
+
+.font-container3 {
+  font-size: 48px;
+}
+
+.login-div {
+  padding-top: 40px;
+  padding-left: 15px;
+  font-family: 'Apple SD Gothic Neo', sans-serif;
+}
+
+.login-image {
+  position: absolute;
+  height: 76%;
+  width: 60%;
+  top: 100px;
+  left: 50px;
+  transform: scaleX(-1);
+  padding: 0;
+}
+
+.login-text {
+  font-size: 48px;
+  font-weight: 700;
+  color: #545454;
+  line-height: 57px;
+  text-align: center;
+}
+
+.welcome-message {
+  margin: 16px 0;
+
+  p {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 26.4px;
+    margin: 0;
+    padding: 0 0 4px;
+  }
+}
+
+.header {
+  line-height: 57px;
+  text-align: end;
+  padding: 10px 42px 0 0;
+}
+
+.vetical-bar {
+  position: absolute;
+  height: 68%;
+  top: 100px;
+  left: -10px;
+  z-index: 1;
+  width: 60px;
+  padding: 0;
+}
+
+.rounded-button {
+  width: 100%;
+  background-color: #000000;
+  /* Set the black background */
+  color: #FFFFFF;
+  /* Text color */
+  padding: 10px 20px;
+  /* Padding to make the button larger */
+  border: none;
+  /* Remove the default border */
+  border-radius: 15px;
+  /* Make the corners rounded */
+  font-size: 22px;
+  /* Set the font size */
+  cursor: pointer;
+  /* Change cursor to pointer when hovered */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Optional: Add a subtle shadow */
+  transition: background-color 0.3s ease;
+  /* Smooth background transition */
+}
+
+.rounded-button:hover {
+  background-color: gold;
+  /* Change the background color on hover */
+  color: #000000;
+}
+
+input[type="text"] {
+  width: 100%;
+  /* Set the width to fill its container */
+  padding: 10px 20px;
+  /* Add padding inside the input */
+  border-radius: 15px;
+  /* Rounded corners */
+  border: 1px solid #EEEEEE;
+  /* Border color and style */
+  outline: none;
+  /* Remove default outline */
+  font-size: 22px;
+  /* Font size */
+  color: black;
+  /* Text color */
+  background-color: #EEEEEE;
+  /* Background color */
+  box-sizing: border-box;
+  /* Include padding in the total width and height */
+}
+
+input[type="text"]:focus {
+  border-color: #5A9;
+  /* Change border color on focus */
+  box-shadow: 0 0 5px rgba(0, 128, 0, 0.5);
+  /* Add shadow on focus */
+}
+
+input[type="password"] {
+  width: 100%;
+  /* Set the width to fill its container */
+  padding: 10px 20px;
+  /* Add padding inside the input */
+  border-radius: 15px;
+  /* Rounded corners */
+  border: 1px solid #EEEEEE;
+  /* Border color and style */
+  outline: none;
+  /* Remove default outline */
+  font-size: 22px;
+  /* Font size */
+  color: black;
+  /* Text color */
+  background-color: #EEEEEE;
+  /* Background color */
+  box-sizing: border-box;
+  /* Include padding in the total width and height */
+}
+
+input[type="password"]:focus {
+  border-color: #5A9;
+  /* Change border color on focus */
+  box-shadow: 0 0 5px rgba(0, 128, 0, 0.5);
+  /* Add shadow on focus */
+}
+
+@media (min-width: 1200px) {
+
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 992px) {
+
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .container,
+  .container-md,
+  .container-sm {
+    max-width: 100%;
+  }
+}

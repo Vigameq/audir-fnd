@@ -1,0 +1,269 @@
+.reports {
+    max-width: 100%;
+    margin: 16px 40px 0 44px;
+
+    .search-dropdown-section {
+        width: 100%;
+        height: 127px;
+        display: flex;
+        background-color: #1D2431;
+        border-radius: 15px;
+        border: 1px #000000;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .reports-search-bar {
+            position: relative;
+            height: 44px;
+            max-width: 327px;
+            margin: 20px;
+            font-size: 16px;
+            font-family: 'Apple SD Gothic Neo', sans-serif;
+
+
+            .reports-search-input {
+                max-width: 327px;
+                padding: 10px 30px 10px 18px;
+                /* Space for the close button */
+                font-size: 16px;
+                color: #000000;
+                border: 1px solid #D9D9D9;
+                border-radius: 24px;
+                outline: none;
+            }
+
+            .reports-search-input::placeholder {
+                color: #515151;
+                /* Set the desired color for the placeholder */
+            }
+
+
+            .reports-search-input:focus {
+                border-color: #FFEA00;
+                /* Green border on focus */
+            }
+
+            .clear-btn {
+                position: absolute;
+                right: 10px;
+                /* Adjust based on your padding */
+                top: 50%;
+                transform: translateY(-50%);
+                background: transparent;
+                border: none;
+                font-size: 12px;
+                cursor: pointer;
+                color: #1D2431;
+            }
+
+            .clear-btn:hover {
+                color: #FFEA00;
+            }
+
+        }
+
+        .dropdown-section {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin: 0 10px;
+
+            .standard-dropdown-section,
+            .functions-dropdown-section {
+                margin: 20px 10px 20px 10px;
+
+                .standard-dropdown-select,
+                .functions-dropdown-select {
+                    width: 240px;
+                    height: 44px;
+                    background-color: #FAFAFA;
+                    font-family: 'Apple SD Gothic Neo', sans-serif;
+                    border: 1px solid #dbdbdb;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    padding: 6px;
+                    padding-right: 30px;
+                    /* Space for the arrow */
+                    appearance: none;
+                    cursor: pointer;
+                }
+
+                .dropdown-arrow {
+                    position: absolute;
+                    top: 48%;
+                    transform: translateY(-50%);
+                    pointer-events: none;
+                }
+            }
+
+            .standard-dropdown-section {
+                .dropdown-arrow {
+                    right: 280px;
+                }
+
+            }
+
+            .functions-dropdown-section {
+                .dropdown-arrow {
+                    right: 20px;
+                }
+            }
+        }
+
+    }
+
+    .reports-container-section {
+        margin: 40px 0 30px 0;
+        max-width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        /* Default: 3 columns */
+        gap: 30px;
+        /* Space between items */
+
+        .report-container {
+            border: 1px solid #1D2431;
+            height: 118px;
+            padding: 10px 14px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+            font-family: 'Apple SD Gothic Neo', sans-serif;
+
+            .vertical-bar {
+                padding: 0 4px;
+            }
+
+            .name-type-section {
+                width: 170px;
+                align-items: center;
+
+                .audit-name-section {
+                    height: 24px;
+                    font-size: 20px;
+                    font-weight: 700;
+                    color: #515151;
+                    line-height: 24px;
+                }
+
+                .type-section {
+                    height: 24px;
+                    font-size: 12px;
+                    font-weight: 400;
+                    color: #515151;
+                    line-height: 15px;
+                    padding-top: 4px;
+                }
+            }
+
+            .city-and-download-section {
+                display: flex;
+                justify-content: space-between;
+                flex-direction: row;
+                text-align: center;
+                align-items: center;
+
+                .city-country-section {
+                    color: #515151;
+                    font-size: 10px;
+                    font-weight: 400;
+                    line-height: 12px;
+                }
+
+                .download-button button {
+                    width: 90px;
+                    height: 24px;
+                    background-color: #1D2431;
+                    border-radius: 20px;
+                    border: 1px solid #1D2431;
+                    color: #FFFFFF;
+                    line-height: 12px;
+                    font-size: 10px;
+                    text-align: center;
+                }
+            }
+        }
+    }
+
+
+    @media (max-width: 480px) {
+        .reports-container-section {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .reports-container-section {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 960px) and (max-width: 1280px) {
+
+        .standard-dropdown-select,
+        .functions-dropdown-select {
+            width: 200px !important;
+        }
+
+        .standard-dropdown-section .dropdown-arrow {
+            right: 240px !important;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 960px) {
+
+        .standard-dropdown-select,
+        .functions-dropdown-select {
+            width: 160px !important;
+        }
+
+        .standard-dropdown-section .dropdown-arrow {
+            right: 200px !important;
+        }
+    }
+
+    @media (min-width: 640px) and (max-width: 768px) {
+
+        .standard-dropdown-select,
+        .functions-dropdown-select {
+            width: 140px !important;
+        }
+
+        .reports-search-input {
+            width: 160px !important;
+        }
+
+        .standard-dropdown-section .dropdown-arrow {
+            right: 180px !important;
+        }
+    }
+
+    @media (min-width: 1080px) {
+        .reports-container-section {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+
+    @media (min-width: 1300px) {
+        .reports-container-section {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    @media (min-width: 1745px) {
+        .reports-container-section {
+            grid-template-columns: repeat(5, 1fr);
+        }
+    }
+
+    @media (min-width: 2000px) {
+        .reports-container-section {
+            grid-template-columns: repeat(6, 1fr);
+        }
+    }
+
+}
