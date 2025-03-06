@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { IgxCalendarComponent, IgxDialogComponent, IgxCalendarView, IViewDateChangeEventArgs } from 'igniteui-angular';
 
 @Component({
   selector: 'app-audit-plan',
@@ -7,6 +8,9 @@ import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
   styleUrls: ['./audit-plan.component.scss']
 })
 export class AuditPlanComponent {
+  @ViewChild('calendar', { static: true }) public calendar?: IgxCalendarComponent;
+  @ViewChild('alert', { static: true }) public dialog?: IgxDialogComponent;
+  public loggerHeader = `Interact with the calendar to see the events logged here in sequence:`;
 
   auditPlanForm: FormGroup = new FormGroup({
     linkAudit: new FormControl(''),
@@ -71,5 +75,22 @@ export class AuditPlanComponent {
 
   toggleDropdown() {
     this.isAuditorDropdownOpen = !this.isAuditorDropdownOpen;
+  }
+
+  public onSelection(dates: Date | Date[]) {
+    const logger: HTMLElement = document.querySelector('.logger')!;
+    dates = dates as Date[];
+    logger.innerHTML = `<span> => 'onSelectionChanged': ${dates.length} dates selected.<br>${logger.innerHTML}`;
+  }
+
+  public viewDateChanged(event: IViewDateChangeEventArgs) {
+    const logger: HTMLElement = document.querySelector('.logger')!;
+    const eventArgs = `event.previousValue: ${this.parseDate(event.previousValue)} | event.currentValue: ${this.parseDate(event.currentValue)}`;
+    logger.innerHTML = `<span> => 'viewDateChanged': ${eventArgs}</span><br>${logger.innerHTML}`;
+  }
+
+  private parseDate(date: Date) {
+    const monthFormatter = new Intl.DateTimeFormat('en', { month: 'long' });
+    return `${monthFormatter.format(date)} ${date.getFullYear()}`;
   }
 }

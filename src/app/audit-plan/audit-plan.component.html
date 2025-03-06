@@ -1,4 +1,4 @@
-<div class="container audit-plan-container">
+<div class="audit-plan-container">
     <div class="main-content">
         <div class="top-bar">
             <div class="toggle-group">
@@ -150,7 +150,12 @@
             </form>
         </div>
     </div>
-    <div class="calendar-section">
-        <p>calender section</p>
+    <div class="calendar-and-plans-section">
+        <div class="calendar-section">
+            <article class="calendar-wrapper">
+                <igx-calendar #calendar selection="multi" (selected)="onSelection($event)"
+                    (viewDateChanged)="viewDateChanged($event)"></igx-calendar>
+            </article>
+        </div>
     </div>
 </div>
