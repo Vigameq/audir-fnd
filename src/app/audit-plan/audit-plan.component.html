@@ -18,29 +18,31 @@
                         <select id="linkAudit" class="dropdown-select" formControlName="linkAudit" name="linkAudit"
                             required>
                             <option value="" disabled selected>Select Audit</option>
-                            <option *ngFor="let linkAuditOption of availableOptions" [value]="linkAuditOption">
-                                {{ linkAuditOption }}</option>
+                            <option *ngFor="let audit of parent_audits" [value]="audit.title">
+                                {{audit.title}}</option>
                         </select>
                     </div>
                 </div>
                 <div class="audit-title-and-functions-row">
                     <div class="audit-title">
                         <label for="audit-title" class="form-label">Audit Title</label>
-                        <select id="audit-title" class="dropdown-select" formControlName="auditTitle" name="auditTitle"
+                        <input id="audit-title" class="audit-title-function-input" formControlName="auditTitle"  name="auditTitle" />
+                        <!-- <select id="audit-title" class="dropdown-select" formControlName="auditTitle" name="auditTitle"
                             required>
                             <option value="" disabled selected>Select Audit Title</option>
                             <option *ngFor="let auditTitleOption of availableOptions" [value]="auditTitleOption">
                                 {{ auditTitleOption }}</option>
-                        </select>
+                        </select> -->
                     </div>
                     <div class="functions">
                         <label for="function" class="form-label">Functions</label>
-                        <select id="function" class="dropdown-select" formControlName="functions" name="functions"
+                        <input id="function" class="audit-title-function-input" formControlName="functions"  name="functions" />
+                        <!-- <select id="function" class="dropdown-select" formControlName="functions" name="functions"
                             required>
                             <option value="" disabled selected>Select Audit Title</option>
                             <option *ngFor="let functionOption of availableOptions" [value]="functionOption">
                                 {{ functionOption }}</option>
-                        </select>
+                        </select> -->
                     </div>
                 </div>
                 <div class="templates-row">
@@ -49,8 +51,8 @@
                         <select id="templates" class="dropdown-select" formControlName="templateValue"
                             name="templateValue" required>
                             <option value="" disabled selected>Select template..</option>
-                            <option *ngFor="let templateOption of availableOptions" [value]="templateOption">
-                                {{ templateOption }}</option>
+                            <option *ngFor="let template of templates" [value]="template.name">
+                                {{ template.name }}</option>
                         </select>
                     </div>
                     <div class="function-template">
@@ -58,9 +60,9 @@
                         <select id="function-templates" class="dropdown-select" formControlName="functionTemplateValue"
                             name="functionTemplateValue" required>
                             <option value="" disabled selected>Select template..</option>
-                            <option *ngFor="let FunctionTemplateOption of availableOptions"
-                                [value]="FunctionTemplateOption">
-                                {{ FunctionTemplateOption }}</option>
+                            <option *ngFor="let template of templates"
+                                [value]="template.name">
+                                {{ template.name }}</option>
                         </select>
                     </div>
                 </div>
@@ -79,7 +81,14 @@
                 <div class="auditees-auditors-row">
                     <div class="auditors">
                         <label for="auditorDropdown" class="auditor-label">Auditors</label>
-                        <div class="auditorDropdown">
+                        <select id="function-templates" class="dropdown-select" formControlName="auditorValue"
+                            name="auditorValue" required>
+                            <option value="" disabled selected>Select Auditors..</option>
+                            <option *ngFor="let auditor of auditors"
+                                [value]="auditor.Name">
+                                {{ auditor.Name }}</option>
+                        </select>
+                        <!-- <div class="auditorDropdown">
                             <button class="auditor-dropdown-button" type="button" id="auditor-select-dropdown"
                                 (click)="toggleDropdown()">
                                 Select auditors
@@ -94,11 +103,18 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="auditees">
                         <label for="auditeeDropdown" class="auditee-label">Auditees</label>
-                        <div class="auditeeDropdown">
+                        <select id="function-templates" class="dropdown-select" formControlName="auditeesValue"
+                            name="auditeesValue" required>
+                            <option value="" disabled selected>Select Auditees..</option>
+                            <option *ngFor="let auditee of auditees"
+                                [value]="auditee.Name">
+                                {{ auditee.Name }}</option>
+                        </select>
+                        <!-- <div class="auditeeDropdown">
                             <button class="auditee-dropdown-button" type="button" id="auditee-select-dropdown">
                                 Select auditees
                             </button>
@@ -110,7 +126,7 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="city-country-row">
@@ -119,7 +135,7 @@
                         <select id="city-name" class="dropdown-select" formControlName="cityName" name="cityName"
                             required>
                             <option value="" disabled selected>Select City</option>
-                            <option *ngFor="let cityOption of availableOptions" [value]="cityOption">
+                            <option *ngFor="let cityOption of cities" [value]="cityOption">
                                 {{ cityOption}}</option>
                         </select>
                     </div>
@@ -128,8 +144,8 @@
                         <select id="country-name" class="dropdown-select" formControlName="countryName"
                             name="countryName" required>
                             <option value="" disabled selected>Select Country</option>
-                            <option *ngFor="let countryOption of availableOptions" [value]="countryOption">
-                                {{ countryOption }}
+                            <option value="India">
+                                India
                             </option>
                         </select>
                     </div>
@@ -153,7 +169,7 @@
     <div class="calendar-and-plans-section">
         <div class="calendar-section">
             <article class="calendar-wrapper">
-                <igx-calendar #calendar selection="multi" (selected)="onSelection($event)"
+                <igx-calendar #calendar selection="single" (selected)="onSelection($event)"
                     (viewDateChanged)="viewDateChanged($event)"></igx-calendar>
             </article>
         </div>

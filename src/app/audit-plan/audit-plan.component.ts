@@ -1,6 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { IgxCalendarComponent, IgxDialogComponent, IgxCalendarView, IViewDateChangeEventArgs } from 'igniteui-angular';
+import { AudirService } from '../services/audir-services';
+import { Audit } from '../model/audit.model';
 
 @Component({
   selector: 'app-audit-plan',
@@ -28,11 +30,17 @@ export class AuditPlanComponent {
   });
   isAuditorDropdownOpen = false;
   availableOptions = ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 2', 'Option 3', 'Option 4'];
-  availableOptions1 = ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 2', 'Option 3', 'Option 4'];
+  cities = ["Agartala","Aizawl","Amaravati","Bengaluru","Bhopal","Bhubaneswar","Chandigarh","Chandigarh","Chennai","Dehradun","Dispur","Gandhinagar","Gangtok","Hyderabad","Imphal","Itanagar","Jaipur","Kohima","Kolkata","Lucknow","Mumbai","Panaji","Patna","Raipur","Ranchi","Shillong","Shimla","Thiruvananthapuram"];
 
   selectedOptions: string[] = [];
+  parent_audits: any[] = [];
+  templates: any[]=[];
+  auditees: any[]=[];
+  auditors: any[]=[];
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder,
+    private audirService:AudirService
+  ) { }
 
   ngOnInit(): void {
 
@@ -53,7 +61,19 @@ export class AuditPlanComponent {
       }
 
     );
+    this.getPlanItems();
+  }
 
+  getPlanItems(){   
+    const email = localStorage.getItem('user')?.toString() || '';
+    this.audirService.getPlanItems(email).subscribe((items:any)=>{
+      if(items){
+        this.parent_audits = items.parent_audits;
+        this.templates = items.templates;
+        this.auditees = items.users.auditees;
+        this.auditors = items.users.auditors;
+      }
+    })
   }
 
   onAuditorSelectionChange(event: Event) {
@@ -70,7 +90,31 @@ export class AuditPlanComponent {
 
 
   onSubmit() {
-
+    // console.log(this.auditPlanForm);
+    if (this.auditPlanForm) {
+      const plan: Audit = {
+        link_audit: this.auditPlanForm.value?.linkAudit,
+        audit_title: this.auditPlanForm.value?.auditTitle,
+        functions: this.auditPlanForm.value?.functions,
+        template: this.auditPlanForm.value?.templateValue,
+        function_template: this.auditPlanForm.value?.functionTemplateValue,
+        start_date: this.auditPlanForm.value?.startDateTime,
+        end_date: this.auditPlanForm.value?.endDateTime,
+        auditors: [this.auditPlanForm.value?.auditorValue],
+        auditees: [this.auditPlanForm.value?.auditeesValue],
+        city: this.auditPlanForm.value?.cityName,
+        country: this.auditPlanForm.value?.countryName,
+        audit_scope: this.auditPlanForm.value?.auditScopeValue,
+        audit_type: "ISO 270015",
+        eMail: localStorage.getItem('user')?.toString() || ''
+      }
+      this.audirService.createAuditPlan(plan).subscribe(response => {
+        if (response) {
+          this.auditPlanForm.reset();
+          console.log(response);
+        }
+      })
+    }
   }
 
   toggleDropdown() {
