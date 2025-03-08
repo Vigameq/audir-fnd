@@ -1,0 +1,53 @@
+.plan-success-dialog {
+    font-family: 'Apple SD Gothic Neo', sans-serif;
+
+    .mat-dialog-content {
+        min-height: 827px;
+        overflow: hidden;
+
+        .content {
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            height: 827px;
+
+            .plan-id {
+                font-size: 48px;
+                font-weight: 700;
+                line-height: 100%;
+                color: #575757;
+            }
+
+            .success-message {
+                font-weight: 400;
+                font-size: 30px;
+                line-height: 100%;
+                color: #575757;
+            }
+
+            .like-icon {
+                width: 158px;
+                height: 158px;
+            }
+
+            .done-button {
+                button {
+                    width: 178px;
+                    font-size: 20px;
+                    font-weight: 500;
+                    background-color: #1D2431;
+                    border-radius: 10px;
+                    border: 1px solid #000000;
+                    color: #FFFFFF;
+                    line-height: 100%;
+                    height: 53px;
+                    text-align: center;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}

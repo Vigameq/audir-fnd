@@ -21,7 +21,8 @@ export class LoginComponent {
       (response: any) => {
         if (response) {
           localStorage.setItem('login_success', 'success');
-          this.router.navigate(['/dashboard']);
+          localStorage.setItem('user', response.eMail);
+          this.router.navigate(['/auditPlan']);
         } else {
           this.errorMessage = 'Invalid login credentials';
         }

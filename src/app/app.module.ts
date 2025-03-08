@@ -17,6 +17,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { DropdownArrowIconsComponent } from './dropdown-arrow-icons/dropdown-arrow-icons.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IgxCalendarModule, IgxIconModule } from 'igniteui-angular';
+import { AuditPlanSuccessPopupComponent } from './audit-plan-success-popup/audit-plan-success-popup.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import {MatButtonModule} from '@angular/material/button';
+import { ImportCreatePlanDialogComponent } from './import-create-plan-dialog/import-create-plan-dialog.component';
 
 
 @NgModule({
@@ -32,7 +36,9 @@ import { IgxCalendarModule, IgxIconModule } from 'igniteui-angular';
     UserManagementComponent,
     LoginComponent,
     HeaderComponent,
-    DropdownArrowIconsComponent
+    DropdownArrowIconsComponent,
+    AuditPlanSuccessPopupComponent,
+    ImportCreatePlanDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +48,9 @@ import { IgxCalendarModule, IgxIconModule } from 'igniteui-angular';
     HttpClientModule,
     BrowserAnimationsModule,
     IgxCalendarModule,
-    IgxIconModule
+    IgxIconModule,
+    MatDialogModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent],

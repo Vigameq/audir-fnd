@@ -1,17 +1,21 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { IgxCalendarComponent, IgxDialogComponent, IgxCalendarView, IViewDateChangeEventArgs } from 'igniteui-angular';
+import { Audit } from 'src/model/audit.model';
+import { AudirService } from 'src/services/audir-services.service';
+import { AuditPlanSuccessPopupComponent } from '../audit-plan-success-popup/audit-plan-success-popup.component';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { ImportCreatePlanDialogComponent } from '../import-create-plan-dialog/import-create-plan-dialog.component';
 
 @Component({
   selector: 'app-audit-plan',
   templateUrl: './audit-plan.component.html',
-  styleUrls: ['./audit-plan.component.scss']
+  styleUrls: ['./audit-plan.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuditPlanComponent {
   @ViewChild('calendar', { static: true }) public calendar?: IgxCalendarComponent;
-  @ViewChild('alert', { static: true }) public dialog?: IgxDialogComponent;
-  public loggerHeader = `Interact with the calendar to see the events logged here in sequence:`;
-
   auditPlanForm: FormGroup = new FormGroup({
     linkAudit: new FormControl(''),
     auditTitle: new FormControl(''),
@@ -27,15 +31,84 @@ export class AuditPlanComponent {
     auditScopeValue: new FormControl('')
   });
   isAuditorDropdownOpen = false;
-  availableOptions = ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 2', 'Option 3', 'Option 4'];
-  availableOptions1 = ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 2', 'Option 3', 'Option 4'];
-
+  cities = ["Agartala", "Aizawl", "Amaravati", "Bengaluru", "Bhopal", "Bhubaneswar", "Chandigarh", "Chandigarh", "Chennai", "Dehradun", "Dispur", "Gandhinagar", "Gangtok", "Hyderabad", "Imphal", "Itanagar", "Jaipur", "Kohima", "Kolkata", "Lucknow", "Mumbai", "Panaji", "Patna", "Raipur", "Ranchi", "Shillong", "Shimla", "Thiruvananthapuram"];
+  countries = ["India"];
   selectedOptions: string[] = [];
+  parent_audits: any[] = [];
+  templates: any[] = [];
+  auditees: any[] = [];
+  auditors: any[] = [];
 
-  constructor(private formBuilder: FormBuilder) { }
+  auditPlans: any = [{
+    date: '06 May',
+    audit_title: 'gadi1',
+    id: 'gg00891',
+    auditors: 'gowtham'
+  },
+  {
+    date: '06 May',
+    audit_title: 'gadi1',
+    id: 'gg00891',
+    auditors: 'gowtham'
+  },
+  {
+    date: '06 May',
+    audit_title: 'gadi1',
+    id: 'gg00891',
+    auditors: 'gowtham'
+  },
+  {
+    date: '06 May',
+    audit_title: 'gadi1',
+    id: 'gg00891',
+    auditors: 'gowtham'
+  },
+  {
+    date: '06 May',
+    audit_title: 'gadi1',
+    id: 'gg00891',
+    auditors: 'gowtham'
+  },
+  {
+    date: '06 May',
+    audit_title: 'gadi1',
+    id: 'gg00891',
+    auditors: 'gowtham'
+  },
+  {
+    date: '06 May',
+    audit_title: 'gadi1',
+    id: 'gg00891',
+    auditors: 'gowtham'
+  },
+  {
+    date: '06 May',
+    audit_title: 'gadi1',
+    id: 'gg00891',
+    auditors: 'gowtham'
+  },
+  {
+    date: '06 May',
+    audit_title: 'gadi1',
+    id: 'gg00891',
+    auditors: 'gowtham'
+  },
+  {
+    date: '06 May',
+    audit_title: 'gadi1',
+    id: 'gg00891',
+    auditors: 'gowtham'
+  },
+  {
+    date: '06 May',
+    audit_title: 'gadi1-dfghj',
+    id: 'gg00891',
+    auditors: 'gowtham and more'
+  }];
+
+  constructor(private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router) { }
 
   ngOnInit(): void {
-
     this.auditPlanForm = this.formBuilder.group(
       {
         linkAudit: ['', Validators.required],
@@ -50,10 +123,20 @@ export class AuditPlanComponent {
         cityName: ['', Validators.required],
         countryName: ['', Validators.required],
         auditScopeValue: ['', Validators.required]
+      });
+    this.getPlanItems();
+  }
+
+  getPlanItems() {
+    const email = localStorage.getItem('user')?.toString() || '';
+    this.audirService.getPlanItems(email).subscribe((items: any) => {
+      if (items) {
+        this.parent_audits = items.parent_audits;
+        this.templates = items.templates;
+        this.auditees = items.users.auditees;
+        this.auditors = items.users.auditors;
       }
-
-    );
-
+    })
   }
 
   onAuditorSelectionChange(event: Event) {
@@ -71,6 +154,57 @@ export class AuditPlanComponent {
 
   onSubmit() {
 
+    // console.log(this.auditPlanForm);
+    if (this.auditPlanForm) {
+      const plan: Audit = {
+        link_audit: this.auditPlanForm.value?.linkAudit,
+        audit_title: this.auditPlanForm.value?.auditTitle,
+        functions: this.auditPlanForm.value?.functions,
+        template: this.auditPlanForm.value?.templateValue,
+        function_template: this.auditPlanForm.value?.functionTemplateValue,
+        start_date: this.auditPlanForm.value?.startDateTime,
+        end_date: this.auditPlanForm.value?.endDateTime,
+        auditors: [this.auditPlanForm.value?.auditorValue],
+        auditees: [this.auditPlanForm.value?.auditeesValue],
+        city: this.auditPlanForm.value?.cityName,
+        country: this.auditPlanForm.value?.countryName,
+        audit_scope: this.auditPlanForm.value?.auditScopeValue,
+        audit_type: "ISO 270015",
+        eMail: localStorage.getItem('user')?.toString() || ''
+      }
+      this.audirService.createAuditPlan(plan).subscribe(response => {
+        if (response) {
+          this.auditPlanForm.reset();
+          this.openSuccessDialog();
+        }
+      })
+    }
+  }
+
+  openImportPlanDialog(): void {
+    const dialogRef = this.dialog.open(ImportCreatePlanDialogComponent, {
+      width: '654px',
+      height: '509px',
+      data: { id: 'GG196678' }
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      this.router.navigate(['/auditPlan']);
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  openSuccessDialog(): void {
+    const dialogRef = this.dialog.open(AuditPlanSuccessPopupComponent, {
+      width: '654px',
+      height: '827px',
+      data: { id: 'GG196678' }
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      this.router.navigate(['/auditPlan']);
+      console.log(`Dialog result: ${result}`);
+    });
   }
 
   toggleDropdown() {

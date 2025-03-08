@@ -1,0 +1,25 @@
+.import-create-plan {
+    font-family: 'Apple SD Gothic Neo', sans-serif;
+    min-height: 509px;
+
+    .header-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 30px;
+
+        .header {
+            font-weight: 700;
+            font-size: 32px;
+            line-height: 100%;
+            color: #575757;
+        }
+    }
+
+    .import-dialog-content .import-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
