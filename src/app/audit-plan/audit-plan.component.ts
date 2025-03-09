@@ -38,7 +38,7 @@ export class AuditPlanComponent {
   templates: any[] = [];
   auditees: any[] = [];
   auditors: any[] = [];
-
+  isImportVisible: boolean = true;
   auditPlans: any = [{
     date: '06 May',
     audit_title: 'gadi1',
@@ -106,9 +106,11 @@ export class AuditPlanComponent {
     auditors: 'gowtham and more'
   }];
 
-  constructor(private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router) {
+  }
 
   ngOnInit(): void {
+    this.isImportVisible = true;
     this.auditPlanForm = this.formBuilder.group(
       {
         linkAudit: ['', Validators.required],
@@ -153,7 +155,6 @@ export class AuditPlanComponent {
 
 
   onSubmit() {
-
     // console.log(this.auditPlanForm);
     if (this.auditPlanForm) {
       const plan: Audit = {
@@ -182,16 +183,22 @@ export class AuditPlanComponent {
   }
 
   openImportPlanDialog(): void {
+    this.importVisibility();
     const dialogRef = this.dialog.open(ImportCreatePlanDialogComponent, {
       width: '654px',
-      height: '509px',
+      height: '464px',
       data: { id: 'GG196678' }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
       this.router.navigate(['/auditPlan']);
+      this.importVisibility();
       console.log(`Dialog result: ${result}`);
     });
+  }
+
+  importVisibility() {
+    this.isImportVisible = !this.isImportVisible;
   }
 
   openSuccessDialog(): void {

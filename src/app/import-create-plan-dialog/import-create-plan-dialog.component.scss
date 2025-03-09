@@ -1,6 +1,6 @@
 .import-create-plan {
     font-family: 'Apple SD Gothic Neo', sans-serif;
-    min-height: 509px;
+    min-height: 464px;
 
     .header-section {
         display: flex;
@@ -15,11 +15,79 @@
             line-height: 100%;
             color: #575757;
         }
+
+        .close-icon{
+            cursor: pointer;
+        }
     }
 
     .import-dialog-content .import-steps {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 20px;
+
+        .download-template,
+        .fill-template,
+        .upload-template,
+        .validate-template,
+        .create-plan {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            align-items: center;
+
+            .text {
+                flex: 2;
+                padding-left: 38px;
+
+                span {
+                    font-size: 16px;
+                    font-weight: 400;
+                    color: #515151;
+                    line-height: 100%;
+                }
+            }
+
+            .button {
+                flex: 1;
+
+                button {
+                    height: 36px;
+                    width: 164px;
+                    border-radius: 30px;
+                    color: #FFFFFF;
+                    background-color: #1D2431;
+                    border: 1px solid #000000;
+                    font-size: 14px;
+                    font-weight: 400;
+                    line-height: 100%;
+                    text-align: center;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .download-template .button button {
+            background-color: #FFFFFF;
+            color: #1D2431;
+        }
+    }
+
+    .mat-dialog-actions-section {
+        padding: 2px 30px 20px;
+
+        button {
+            height:36px;
+            width: 164px;
+            border-radius: 30px;
+            border: 1px solid #000000;
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+
+        button:hover {
+            background-color: #000000;
+            color: #FFFFFF;
+        }
     }
 }

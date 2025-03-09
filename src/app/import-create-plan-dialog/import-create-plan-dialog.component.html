@@ -3,21 +3,36 @@
         <div class="header">
             <span>Import Audit Plan</span>
         </div>
-        <div class="close-icon">
+        <div class="close-icon" (click)="closeDialog()" mat-dialog-close>
             <img src="../assets/images/close.png" alt="close" id="close-icon" />
         </div>
     </div>
     <mat-dialog-content class="import-dialog-content">
         <div class="import-steps">
-        <div><span>Step 1: Download the template</span><button><span>Download Template</span></button></div>
-        <div><span>Step 2: Fill the template with required questions according to the format</span></div>
-        <div><span>Step 3: Upload the completed template</span><button>Upload Plan</button></div>
-        <div><span>Step 4: Validate Uploaded template</span><button>Validate</button></div>
-        <div><span>Step 5: Create Audit Plan</span><button>Create</button></div>
+            <div class="download-template">
+                <div class="text"><span>Step 1: Download the template</span></div>
+                <div class="button"><button>Download
+                        Template</button></div>
+            </div>
+            <div class="fill-template">
+                <div class="text"><span>Step 2: Fill the template with required<br>questions according to the
+                        format</span></div>
+            </div>
+            <div class="upload-template">
+                <div class="text"><span>Step 3: Upload the completed template</span></div>
+                <div class="button"><button>Upload Plan</button></div>
+            </div>
+            <div class="validate-template">
+                <div class="text"><span>Step 4: Validate Uploaded template</span></div>
+                <div class="button"><button>Validate</button></div>
+            </div>
+            <div class="create-plan">
+                <div class="text"><span>Step 5: Create Audit Plan</span></div>
+                <div class="button"><button>Create</button></div>
+            </div>
         </div>
     </mat-dialog-content>
-    <mat-dialog-actions align="center">
+    <mat-dialog-actions align="center" class="mat-dialog-actions-section">
         <button mat-button mat-dialog-close>Done</button>
     </mat-dialog-actions>
-
 </div>
