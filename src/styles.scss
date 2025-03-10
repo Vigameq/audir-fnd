@@ -23,3 +23,23 @@ body {
 .mat-mdc-dialog-container .mdc-dialog__surface {
   border-radius: 20px !important;
 }
+
+.igx-calendar__date--current .igx-calendar__date-content,
+.igx-calendar__date--current .igx-calendar__date-content :hover {
+  color: gold !important;
+}
+
+.igx-calendar__date--selected .igx-calendar__date-content {
+  background-color: gold;
+}
+
+.igx-calendar__date--selected.igx-calendar__date--current .igx-calendar__date-content {
+  color: black !important;
+  background-color: gold;
+  font-weight: 600;
+}
+
+.igx-calendar-picker__prev :hover,
+.igx-calendar-picker__next :hover {
+  color: gold !important;
+}

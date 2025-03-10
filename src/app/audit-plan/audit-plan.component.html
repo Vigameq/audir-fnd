@@ -168,8 +168,8 @@
     <div class="calendar-and-plans-section">
         <div class="calendar-section">
             <article class="calendar-wrapper">
-                <igx-calendar #calendar (selected)="onSelection($event)" selection="single"
-                    (viewDateChanged)="viewDateChanged($event)"></igx-calendar>
+                <igx-calendar #calendar (selected)="onSelection($event)" selection="single" [minDate]="startDate"
+                    [maxDate]="endDate" (viewDateChanged)="viewDateChanged($event)"></igx-calendar>
             </article>
         </div>
         <div class="audit-information">
@@ -192,7 +192,7 @@
                     </div>
                 </div>
             </div>
-            <div class="view-more" *ngIf="!showAllPlans"><a>View More...</a></div>
+            <div class="view-more" *ngIf="!showAllPlans"><a (click)="navigateToAuditPerform()">View More...</a></div>
         </div>
     </div>
 </div>

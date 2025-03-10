@@ -16,6 +16,8 @@ import { EditPlanDialogComponent } from '../edit-plan-dialog/edit-plan-dialog.co
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuditPlanComponent {
+  startDate: Date = new Date(2025, 2, 6);
+  endDate: Date = new Date(2025, 2, 10);
   @ViewChild('calendar', { static: true }) public calendar?: IgxCalendarComponent;
   auditPlanForm: FormGroup = new FormGroup({
     linkAudit: new FormControl(''),
@@ -249,5 +251,10 @@ export class AuditPlanComponent {
   private parseDate(date: Date) {
     const monthFormatter = new Intl.DateTimeFormat('en', { month: 'long' });
     return `${monthFormatter.format(date)} ${date.getFullYear()}`;
+  }
+
+  public navigateToAuditPerform() {
+    this.router.navigate(['/auditPerform']);
+    localStorage.setItem('header', 'Audit Perform');
   }
 }

@@ -16,12 +16,15 @@ export class LoginComponent {
     localStorage.setItem('login_success', '');
   }
 
+
+
   onSubmit() {
     this.authService.login(this.email, this.password).subscribe(
       (response: any) => {
         if (response) {
           localStorage.setItem('login_success', 'success');
           localStorage.setItem('user', response.eMail);
+          localStorage.setItem('header', 'Audit Plan');
           this.router.navigate(['/auditPlan']);
         } else {
           this.errorMessage = 'Invalid login credentials';

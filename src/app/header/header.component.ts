@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, Renderer2, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -6,18 +7,22 @@ import { Component, ElementRef, Input, Renderer2, ViewChild } from '@angular/cor
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-  @Input() displayHeaderName: string = 'Dashboard';
+  @Input() displayHeaderName: any = localStorage.getItem('header') ? localStorage.getItem('header') : '';
   @ViewChild('dropdown') dropdown: ElementRef | undefined;
   profileDropdownOptions = ['Gowtham Gadipudi', 'Edit Profile', 'logout'];
   selectedOption: string = this.profileDropdownOptions[0];
   isOpen: boolean = false;
 
-  constructor(private renderer: Renderer2) {}
+  constructor(private renderer: Renderer2, private router: Router) { }
 
   onOptionChange(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.selectedOption = target.value;
     console.log("Selected Option: ", this.selectedOption);
+    if (this.selectedOption === 'logout') {
+      localStorage.setItem('login_success', '');
+      this.router.navigate(['/login']);
+    }
   }
 
   onDropdownClick(): void {

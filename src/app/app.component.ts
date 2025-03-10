@@ -20,7 +20,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 })
 export class AppComponent {
   title = 'audir-fnd';
-  receivedHeaderName: string = 'Dashboard';
+  receivedHeaderName: any = localStorage.getItem('header') ? localStorage.getItem('header') : '';
 
   constructor(private authService: AuthService) { }
   isAuthenticated(): boolean {
