@@ -6,7 +6,8 @@
                 <button class="toggle-button">Offline</button>
                 <button class="toggle-button">Virtual</button>
             </div>
-            <button class="import-button" *ngIf="isImportVisible" (click)="openImportPlanDialog()">+ Import</button>
+            <button class="import-button" 
+             (click)="openImportPlanDialog()">+ Import</button>
         </div>
         <div class="form-container">
             <form [formGroup]="auditPlanForm" (ngSubmit)="onSubmit()">

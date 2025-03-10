@@ -66,6 +66,11 @@
                     text-align: center;
                     cursor: pointer;
                 }
+
+                button:hover {
+                    border-color: gold;
+                    color:gold;
+                }
             }
         }
 
@@ -89,8 +94,9 @@
         }
 
         button:hover {
+            border-color: gold;
             background-color: #000000;
-            color: #FFFFFF;
+            color: gold;
         }
     }
 }

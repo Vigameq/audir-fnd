@@ -16,4 +16,21 @@ export class AudirService {
   createAuditPlan(auditPlan: any) {
     return this.http.post('/audire/api/planAudit', auditPlan);
   }
+
+  downloadTemplate(): Observable<ArrayBuffer> {
+    return this.http.get<any>('/audire/api/downloadAuditPlan', {
+      responseType: 'arraybuffer' as 'json'
+    });
+  }
+
+  uploadPlan(email: any, uploadTemplate: any): any {
+    return this.http.post<any>('/audire/api/uploadTemplate', uploadTemplate, email);
+  }
+  validatePlan(email: string, uploadAuditPlan: any): any {
+    return this.http.post<any>('/audire/api/validateAuditPlan', email, uploadAuditPlan);
+  }
+  createPlans(email: string, uploadAuditPlan: any): any {
+    return this.http.post<any>('/audire/api/bulkAuditCreate', email, uploadAuditPlan);
+  }
+
 }

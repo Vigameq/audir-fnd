@@ -11,7 +11,7 @@
         <div class="import-steps">
             <div class="download-template">
                 <div class="text"><span>Step 1: Download the template</span></div>
-                <div class="button"><button>Download
+                <div class="button"><button (click)="downloadTemplate()">Download
                         Template</button></div>
             </div>
             <div class="fill-template">
@@ -20,15 +20,15 @@
             </div>
             <div class="upload-template">
                 <div class="text"><span>Step 3: Upload the completed template</span></div>
-                <div class="button"><button>Upload Plan</button></div>
+                <div class="button"><button (click)="uploadTemplate()">Upload Plan</button></div>
             </div>
             <div class="validate-template">
                 <div class="text"><span>Step 4: Validate Uploaded template</span></div>
-                <div class="button"><button>Validate</button></div>
+                <div class="button"><button (click)="validateTemplate()">Validate</button></div>
             </div>
             <div class="create-plan">
                 <div class="text"><span>Step 5: Create Audit Plan</span></div>
-                <div class="button"><button>Create</button></div>
+                <div class="button"><button (click)="createPlan()">Create</button></div>
             </div>
         </div>
     </mat-dialog-content>

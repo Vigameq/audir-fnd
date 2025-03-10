@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 export class HeaderComponent {
   @Input() displayHeaderName: any = localStorage.getItem('header') ? localStorage.getItem('header') : '';
   @ViewChild('dropdown') dropdown: ElementRef | undefined;
-  profileDropdownOptions = ['Gowtham Gadipudi', 'Edit Profile', 'logout'];
+  profileDropdownOptions = ['Gowtham Gadipudi', 'logout'];
   selectedOption: string = this.profileDropdownOptions[0];
   isOpen: boolean = false;
 
