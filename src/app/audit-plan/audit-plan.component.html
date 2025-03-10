@@ -175,7 +175,7 @@
         <div class="audit-information">
             <span class="audit-info-header">Audit Information</span>
             <div class="audit-plans">
-                <div class="plans-list" *ngFor="let plan of auditPlans">
+                <div class="plans-list" *ngFor="let plan of (showAllPlans ? auditPlans : auditPlans.slice(0, 4))">
                     <div class="plan-details">
                         <div class="date-and-id">
                             <div class="date"><span>{{plan.date}}</span></div>
@@ -186,12 +186,13 @@
                             <div class="auditor"><span>{{plan.auditors}}</span></div>
                         </div>
                     </div>
-                    <div class="edit-icon">
+                    <div class="edit-icon" (click)="openEditPlanDialog()">
                         <img src="../assets/images/Ellipse.png" alt="Ellipse" id="ellipse-icon" />
                         <img src="../assets/images/Vector.png" alt="Vector" id="vector-icon" />
                     </div>
                 </div>
             </div>
+            <div class="view-more" *ngIf="!showAllPlans"><a>View More...</a></div>
         </div>
     </div>
 </div>

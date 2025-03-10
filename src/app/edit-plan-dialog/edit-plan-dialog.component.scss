@@ -1,0 +1,127 @@
+.edit-Plan-dialog {
+    padding: 20px 20px 40px;
+    min-height: 576px;
+
+    .mat-dialog-content {
+        padding: 0px;
+        font-family: 'Apple SD Gothic Neo', sans-serif;
+        min-height: 516px;
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+
+            .edit-header {
+                font-size: 22px;
+                font-weight: 500;
+                color: #4E4E4E;
+                line-height: 100%;
+                padding: 30px 20px 0px;
+
+                span {
+                    padding: 10px 15px 0 0;
+                }
+
+                img {
+                    margin-bottom: 6px;
+                }
+            }
+
+            .plan-id {
+                font-size: 48px;
+                font-weight: 700;
+                line-height: 100%;
+                padding: 10px 0 20px 20px;
+                height: 72px;
+                color: #575757;
+            }
+
+            .edit-section {
+                background-color: #FAFAFA;
+                border-radius: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                padding: 30px 30px 10px;
+
+                .edit-fields {
+                    flex: 8;
+                    display: flex;
+                    flex-direction: row;
+                    gap: 30px;
+
+                    .left-section,
+                    .right-section {
+                        display: flex;
+                        flex-direction: column;
+                        flex: 1;
+                        gap: 20px;
+
+                        input,
+                        select {
+                            min-width: 262px;
+                            min-height: 46px;
+                            border-radius: 20px;
+                            border: none;
+                            outline: none;
+                            padding: 6px 12px;
+                            appearance: none;
+                        }
+
+                        input:hover,
+                        select:hover {
+                            border: 1px solid gold;
+                        }
+
+                        input::placeholder {
+                            color: #1D2431; 
+                          }
+                          
+                    }
+                }
+
+                .action-butons {
+                    flex: 2;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    gap: 20px;
+
+                    .cancel,
+                    .save-changes {
+                        font-size: 16px;
+                        font-weight: 400;
+                        height: 46px;
+                        min-width: 148px;
+                        border-radius: 6px;
+                        border: 1px solid #1D2431;
+                    }
+
+                    .cancel {
+                        background-color: #FFFFFF;
+
+                        span {
+                            color: #1D2431;
+                        }
+                    }
+
+                    .save-changes {
+                        background-color: #1D2431;
+
+                        span {
+                            color: #FFFFFF;
+                        }
+                    }
+
+                    .cancel:hover,
+                    .save-changes:hover {
+                        border-color: gold;
+                    }
+
+                }
+            }
+        }
+    }
+}

@@ -7,6 +7,7 @@ import { AuditPlanSuccessPopupComponent } from '../audit-plan-success-popup/audi
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ImportCreatePlanDialogComponent } from '../import-create-plan-dialog/import-create-plan-dialog.component';
+import { EditPlanDialogComponent } from '../edit-plan-dialog/edit-plan-dialog.component';
 
 @Component({
   selector: 'app-audit-plan',
@@ -39,6 +40,7 @@ export class AuditPlanComponent {
   auditees: any[] = [];
   auditors: any[] = [];
   isImportVisible: boolean = true;
+  showAllPlans: boolean = false;
   auditPlans: any = [{
     date: '06 May',
     audit_title: 'gadi1',
@@ -111,6 +113,7 @@ export class AuditPlanComponent {
 
   ngOnInit(): void {
     this.isImportVisible = true;
+    this.showAllPlans = (this.auditPlans.length <= 4) ? true : false;
     this.auditPlanForm = this.formBuilder.group(
       {
         linkAudit: ['', Validators.required],
@@ -193,6 +196,19 @@ export class AuditPlanComponent {
     dialogRef.afterClosed().subscribe((result: any) => {
       this.router.navigate(['/auditPlan']);
       this.importVisibility();
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  openEditPlanDialog(): void {
+    const dialogRef = this.dialog.open(EditPlanDialogComponent, {
+      width: '654px',
+      height: '576px',
+      data: { id: 'GG196678' }
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      this.router.navigate(['/auditPlan']);
       console.log(`Dialog result: ${result}`);
     });
   }

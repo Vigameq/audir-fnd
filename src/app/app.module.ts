@@ -21,6 +21,7 @@ import { AuditPlanSuccessPopupComponent } from './audit-plan-success-popup/audit
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import { ImportCreatePlanDialogComponent } from './import-create-plan-dialog/import-create-plan-dialog.component';
+import { EditPlanDialogComponent } from './edit-plan-dialog/edit-plan-dialog.component';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { ImportCreatePlanDialogComponent } from './import-create-plan-dialog/imp
     HeaderComponent,
     DropdownArrowIconsComponent,
     AuditPlanSuccessPopupComponent,
-    ImportCreatePlanDialogComponent
+    ImportCreatePlanDialogComponent,
+    EditPlanDialogComponent
   ],
   imports: [
     BrowserModule,
