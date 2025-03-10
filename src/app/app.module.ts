@@ -17,11 +17,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { DropdownArrowIconsComponent } from './dropdown-arrow-icons/dropdown-arrow-icons.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IgxCalendarModule, IgxIconModule } from 'igniteui-angular';
-import { AuditPlanSuccessPopupComponent } from './audit-plan-success-popup/audit-plan-success-popup.component';
+import { AuditPlanSuccessPopupComponent } from './audit-plan/audit-plan-success-popup/audit-plan-success-popup.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
-import { ImportCreatePlanDialogComponent } from './import-create-plan-dialog/import-create-plan-dialog.component';
-import { EditPlanDialogComponent } from './edit-plan-dialog/edit-plan-dialog.component';
+import { ImportCreatePlanDialogComponent } from './audit-plan/import-create-plan-dialog/import-create-plan-dialog.component';
+import { EditPlanDialogComponent } from './audit-plan/edit-plan-dialog/edit-plan-dialog.component';
 
 
 @NgModule({

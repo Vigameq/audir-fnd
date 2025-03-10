@@ -3,11 +3,11 @@ import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { IgxCalendarComponent, IgxDialogComponent, IgxCalendarView, IViewDateChangeEventArgs } from 'igniteui-angular';
 import { Audit } from 'src/model/audit.model';
 import { AudirService } from 'src/services/audir-services.service';
-import { AuditPlanSuccessPopupComponent } from '../audit-plan-success-popup/audit-plan-success-popup.component';
+import { AuditPlanSuccessPopupComponent } from './audit-plan-success-popup/audit-plan-success-popup.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { ImportCreatePlanDialogComponent } from '../import-create-plan-dialog/import-create-plan-dialog.component';
-import { EditPlanDialogComponent } from '../edit-plan-dialog/edit-plan-dialog.component';
+import { ImportCreatePlanDialogComponent } from './import-create-plan-dialog/import-create-plan-dialog.component';
+import { EditPlanDialogComponent } from './edit-plan-dialog/edit-plan-dialog.component';
 
 @Component({
   selector: 'app-audit-plan',
