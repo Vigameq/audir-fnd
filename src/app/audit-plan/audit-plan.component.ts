@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { IgxCalendarComponent, IgxDialogComponent, IgxCalendarView, IViewDateChangeEventArgs } from 'igniteui-angular';
 import { Audit } from 'src/model/audit.model';
@@ -110,7 +110,7 @@ export class AuditPlanComponent {
     auditors: 'gowtham and more'
   }];
 
-  constructor(private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -180,11 +180,32 @@ export class AuditPlanComponent {
       }
       this.audirService.createAuditPlan(plan).subscribe(response => {
         if (response) {
-          this.auditPlanForm.reset();
+          this.resetForm();
           this.openSuccessDialog();
         }
       })
     }
+  }
+
+  onClearForm() {
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.auditPlanForm.reset({
+      linkAudit: [''],
+      auditTitle: [''],
+      functions: [''],
+      templateValue: [''],
+      functionTemplateValue: [''],
+      startDateTime: [''],
+      endDateTime: [''],
+      auditorValue: [[]],
+      auditeesValue: [[]],
+      cityName: [''],
+      countryName: [''],
+      auditScopeValue: ['']
+    });
   }
 
   openImportPlanDialog(): void {
@@ -198,6 +219,7 @@ export class AuditPlanComponent {
     dialogRef.afterClosed().subscribe((result: any) => {
       this.router.navigate(['/auditPlan']);
       this.importVisibility();
+      this.changeDetectorRef.detectChanges();
       console.log(`Dialog result: ${result}`);
     });
   }
@@ -222,7 +244,7 @@ export class AuditPlanComponent {
   openSuccessDialog(): void {
     const dialogRef = this.dialog.open(AuditPlanSuccessPopupComponent, {
       width: '654px',
-      height: '827px',
+      height: '576px',
       data: { id: 'GG196678' }
     });
 
@@ -254,7 +276,7 @@ export class AuditPlanComponent {
   }
 
   public navigateToAuditPerform() {
-    this.router.navigate(['/auditPerform']);
     localStorage.setItem('header', 'Audit Perform');
+    this.router.navigate(['/auditPerform']);
   }
 }

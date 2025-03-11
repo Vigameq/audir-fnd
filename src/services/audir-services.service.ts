@@ -33,4 +33,7 @@ export class AudirService {
     return this.http.post<any>('/audire/api/bulkAuditCreate', email, uploadAuditPlan);
   }
 
+  getData(): any {
+    return this.http.get('/assets/json/data.json');
+  }
 }

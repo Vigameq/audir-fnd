@@ -59,7 +59,7 @@
                     border-radius: 30px;
                     color: #FFFFFF;
                     background-color: #1D2431;
-                    border: 1px solid #000000;
+                    border: 1px solid #1D2431;
                     font-size: 14px;
                     font-weight: 400;
                     line-height: 100%;
@@ -68,8 +68,9 @@
                 }
 
                 button:hover {
-                    border-color: gold;
-                    color:gold;
+                    border-color: #FDE714;
+                    background-color: #FDE714;
+                    color: #1D2431;
                 }
             }
         }
@@ -94,9 +95,9 @@
         }
 
         button:hover {
-            border-color: gold;
-            background-color: #000000;
-            color: gold;
+            border-color: #FDE714;
+            background-color: #FDE714;
+            color: #000000;
         }
     }
 }

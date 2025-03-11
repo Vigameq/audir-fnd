@@ -64,15 +64,22 @@
       &.active a {
         background-color: #1D2431;
         border-radius: 15px;
+
         span {
           color: #FFFFFF;
         }
       }
 
       &:hover {
-        background-color: #1D2431;
+        background-color: #FDE714;
 
         a {
+          span {
+            color: #1D2431;
+          }
+        }
+
+        &.active a {
           span {
             color: #FFFFFF;
           }

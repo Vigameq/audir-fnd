@@ -72,13 +72,13 @@
 
                         input:hover,
                         select:hover {
-                            border: 1px solid gold;
+                            border: 1px solid #FDE714;
                         }
 
                         input::placeholder {
-                            color: #1D2431; 
-                          }
-                          
+                            color: #1D2431;
+                        }
+
                     }
                 }
 
@@ -115,9 +115,16 @@
                         }
                     }
 
-                    .cancel:hover,
+                    button:hover {
+                        border-color: #FDE714;
+                    }
+
                     .save-changes:hover {
-                        border-color: gold;
+                        background-color: #FDE714;
+
+                        span {
+                            color: #1D2431;
+                        }
                     }
 
                 }

@@ -26,20 +26,20 @@ body {
 
 .igx-calendar__date--current .igx-calendar__date-content,
 .igx-calendar__date--current .igx-calendar__date-content :hover {
-  color: gold !important;
+  color: #FDE714 !important;
 }
 
 .igx-calendar__date--selected .igx-calendar__date-content {
-  background-color: gold;
+  background-color: #FDE714;
 }
 
 .igx-calendar__date--selected.igx-calendar__date--current .igx-calendar__date-content {
   color: black !important;
-  background-color: gold;
+  background-color: #FDE714;
   font-weight: 600;
 }
 
-.igx-calendar-picker__prev :hover,
-.igx-calendar-picker__next :hover {
-  color: gold !important;
+.igx-calendar-picker__date:hover,
+.igx-calendar-picker div:hover {
+  color: #FDE714 !important;
 }

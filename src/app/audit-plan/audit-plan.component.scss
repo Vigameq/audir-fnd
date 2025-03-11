@@ -44,7 +44,7 @@
             }
 
             .import-button {
-                background: #1D2431;
+                background-color: #1D2431;
                 color: white;
                 padding: 8px 20px;
                 border-radius: 8px;
@@ -54,6 +54,13 @@
                 margin-right: 12px;
                 height: 44px;
             }
+
+            .import-button:hover {
+                background-color: #FDE714;
+                color: #1D2431;
+                border-color: #FDE714;
+            }
+
         }
 
         .form-container {
@@ -127,6 +134,11 @@
             .city,
             .country {
                 flex: 1;
+
+                input,
+                select {
+                    min-height: 50px;
+                }
             }
 
             .auditees-auditors-row {
@@ -187,6 +199,11 @@
                 cursor: pointer;
             }
 
+            .clear-button:hover {
+                color: #1D2431;
+                border-color: #FDE714;
+            }
+
             .create-button {
                 background: #000000;
                 padding: 10px;
@@ -198,6 +215,12 @@
                 color: #ffff;
                 margin-left: 20px;
                 cursor: pointer;
+            }
+
+            .create-button:hover {
+                background-color: #FDE714;
+                color: #1D2431;
+                border-color: #FDE714;
             }
         }
     }
@@ -335,7 +358,7 @@
 
                 a:hover {
                     text-decoration: underline;
-                    color: gold;
+                    color: #FDE714;
                 }
             }
         }
