@@ -26,11 +26,11 @@ export class AudirService {
   uploadPlan(email: any, uploadTemplate: any): any {
     return this.http.post<any>('/audire/api/uploadTemplate', uploadTemplate, email);
   }
-  validatePlan(email: string, uploadAuditPlan: any): any {
-    return this.http.post<any>('/audire/api/validateAuditPlan', email, uploadAuditPlan);
+  validatePlan(formData: FormData): any {
+    return this.http.post<any>('/audire/api/validateAuditPlan', formData);
   }
-  createPlans(email: string, uploadAuditPlan: any): any {
-    return this.http.post<any>('/audire/api/bulkAuditCreate', email, uploadAuditPlan);
+  createPlans(formData: FormData): any {
+    return this.http.post<any>('/audire/api/bulkAuditCreate', formData);
   }
 
   getData(): any {

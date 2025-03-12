@@ -10,6 +10,9 @@ import { AudirService } from 'src/services/audir-services.service';
 })
 export class ImportCreatePlanDialogComponent {
   email: any;
+  isUploaded: boolean = false;
+  file: File | null = null;
+  isValidated: boolean = false;
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router, private audirService: AudirService,) {
     this.email = localStorage.getItem('user')?.toString() || '';
   }
@@ -35,15 +38,45 @@ export class ImportCreatePlanDialogComponent {
     );
   }
 
-  uploadTemplate() {
-
+  uploadTemplate(event: any) {
+    this.file = event.target.files[0];
+    if (!this.file) {
+      return;
+    }
+    // const reader: FileReader = new FileReader();
+    // reader.onload = () => {
+      console.log('Excel file uploaded successfully.');
+    // };
+    this.isUploaded = true;
+    //reader.readAsArrayBuffer(this.file); 
   }
 
   validateTemplate() {
-
+    if (!this.file) {
+      return;
+    }
+    if (this.isUploaded) {
+      const validateFormData = new FormData();
+      validateFormData.append('uploadAuditPlan', this.file);
+      validateFormData.append('eMail', this.email);
+      this.audirService.validatePlan(validateFormData).subscribe((result: any) => {
+        this.isValidated = true;
+        console.log(result);
+      })
+    }
   }
 
   createPlan() {
-
+    if (!this.file) {
+      return;
+    }
+    if(this.isValidated){
+      const createFormData = new FormData();
+      createFormData.append('uploadAuditPlan', this.file);
+      createFormData.append('eMail', this.email);
+      this.audirService.createPlans(createFormData).subscribe((result:any)=>{
+        console.log(result);
+      })
+    }
   }
 }

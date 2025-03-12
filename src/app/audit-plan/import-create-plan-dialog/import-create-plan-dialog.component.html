@@ -20,7 +20,13 @@
             </div>
             <div class="upload-template">
                 <div class="text"><span>Step 3: Upload the completed template</span></div>
-                <div class="button"><button (click)="uploadTemplate()">Upload Plan</button></div>
+                <div class="button">
+                    <label for="fileUpload" class="upload-btn">
+                        Upload Plan 
+<svg *ngIf="isUploaded" width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill="green" d="M512 64a448 448 0 1 1 0 896 448 448 0 0 1 0-896zm-55.808 536.384-99.52-99.584a38.4 38.4 0 1 0-54.336 54.336l126.72 126.72a38.272 38.272 0 0 0 54.336 0l262.4-262.464a38.4 38.4 0 1 0-54.272-54.336L456.192 600.384z"/></svg>
+                        <input type="file" id="fileUpload" (change)="uploadTemplate($event)" hidden>
+                    </label>
+                 </div>
             </div>
             <div class="validate-template">
                 <div class="text"><span>Step 4: Validate Uploaded template</span></div>

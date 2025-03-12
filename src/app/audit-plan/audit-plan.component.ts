@@ -163,7 +163,7 @@ export class AuditPlanComponent {
     // console.log(this.auditPlanForm);
     if (this.auditPlanForm) {
       const plan: Audit = {
-        link_audit: this.auditPlanForm.value?.linkAudit,
+        link_audit: this.auditPlanForm.value?.linkAudit ? this.auditPlanForm.value?.linkAudit : null,
         audit_title: this.auditPlanForm.value?.auditTitle,
         functions: this.auditPlanForm.value?.functions,
         template: this.auditPlanForm.value?.templateValue,

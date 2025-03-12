@@ -52,7 +52,26 @@
 
             .button {
                 flex: 1;
-
+                .upload-btn {
+                    display: inline-block;
+                    background-color: #1a1e29;
+                    color: white;
+                    padding: 6px 24px;
+                    font-size: 14px;
+                    border-radius: 30px;
+                    cursor: pointer;
+                    text-align: center;
+                    /* font-weight: 500; */
+                    border: none;
+                    transition: background 0.3s ease;
+                    width: 164px;
+                  }
+                  
+                  .upload-btn:hover {
+                    background-color: #FDE714; 
+                    color: #1D2431;
+                  }
+            
                 button {
                     height: 36px;
                     width: 164px;
