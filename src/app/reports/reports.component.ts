@@ -10,7 +10,7 @@ export class ReportsComponent {
   isFunctionsDropdownOpen: boolean = false;
   isStandardDropdownOpen: boolean = false;
   standardDropdownOptions = ['options1', 'option2', 'option3'];
-  standardSelectedOption: string = ''; 
+  standardSelectedOption: string = '';
   functionsDropdownOptions = ['options2', 'option2', 'option3'];
   functionsSelectedOption: string = '';
   reportsData = [
