@@ -160,7 +160,6 @@ export class AuditPlanComponent {
 
 
   onSubmit() {
-    // console.log(this.auditPlanForm);
     if (this.auditPlanForm) {
       const plan: Audit = {
         link_audit: this.auditPlanForm.value?.linkAudit ? this.auditPlanForm.value?.linkAudit : null,
