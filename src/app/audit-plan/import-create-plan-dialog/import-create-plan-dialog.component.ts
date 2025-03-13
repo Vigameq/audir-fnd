@@ -10,9 +10,11 @@ import { AudirService } from 'src/services/audir-services.service';
 })
 export class ImportCreatePlanDialogComponent {
   email: any;
-  isUploaded: boolean = false;
+  isDownloaded: boolean | undefined;
+  isUploaded: boolean | undefined;
   file: File | null = null;
-  isValidated: boolean = false;
+  isValidated: boolean | undefined;
+  isCreated: boolean | undefined;
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router, private audirService: AudirService,) {
     this.email = localStorage.getItem('user')?.toString() || '';
   }
@@ -31,9 +33,12 @@ export class ImportCreatePlanDialogComponent {
         templateDownloadLink.download = 'planTemplate.xlsx';
         templateDownloadLink.click();
         URL.revokeObjectURL(templateFileURL);
-      },
-      (error: any) => {
-        console.error('Error downloading plan template file:', error);
+        this.isDownloaded = true;
+        this.audirService.showSuccess('Plan Template file Downloaded successfully');
+      }, (error: any) => {
+        this.isDownloaded = false;
+        console.error('Error for downloading plan template file:', error);
+        this.audirService.showError('Plan Template File Download Failed');
       }
     );
   }
@@ -41,18 +46,19 @@ export class ImportCreatePlanDialogComponent {
   uploadTemplate(event: any) {
     this.file = event.target.files[0];
     if (!this.file) {
+      this.isUploaded = false;
+      this.audirService.showError('Plan Template File Upload Failed');
       return;
     }
-    // const reader: FileReader = new FileReader();
-    // reader.onload = () => {
-      console.log('Excel file uploaded successfully.');
-    // };
     this.isUploaded = true;
-    //reader.readAsArrayBuffer(this.file); 
+    this.audirService.showSuccess('Plan Template File Uploaded Successfully');
+    console.log('Excel file uploaded successfully.');
   }
 
   validateTemplate() {
     if (!this.file) {
+      this.isValidated = false;
+      this.audirService.showError('Plan Template File Validation Failed, Please Upload Correct File');
       return;
     }
     if (this.isUploaded) {
@@ -62,21 +68,38 @@ export class ImportCreatePlanDialogComponent {
       this.audirService.validatePlan(validateFormData).subscribe((result: any) => {
         this.isValidated = true;
         console.log(result);
+        this.audirService.showSuccess('Plan Template File Validated Successfully');
+      }, (error: any) => {
+        this.isValidated = false;
+        this.audirService.showError('Plan Template File Validation Failed');
+        console.error('Error for validating plan template file:', error);
       })
+    } else {
+      this.isValidated = false;
     }
   }
 
   createPlan() {
     if (!this.file) {
+      this.audirService.showError('Plan Template file Creation Failed, Please Upload Correct File');
+      this.isCreated = false;
       return;
     }
-    if(this.isValidated){
+    if (this.isValidated) {
       const createFormData = new FormData();
       createFormData.append('uploadAuditPlan', this.file);
       createFormData.append('eMail', this.email);
-      this.audirService.createPlans(createFormData).subscribe((result:any)=>{
+      this.audirService.createPlans(createFormData).subscribe((result: any) => {
+        this.isCreated = true;
+        this.audirService.showSuccess('Audit Plan Created successfully');
         console.log(result);
+      }, (error: any) => {
+        this.isCreated = false;
+        this.audirService.showError('Plan Template file Creation Failed');
+        console.error('Error for creation of audit plan:', error);
       })
+    } else {
+      this.isCreated = false;
     }
   }
 }

@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AudirService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   getPlanItems(email: string): Observable<any> {
     const emailId = { "eMail": email }
@@ -35,5 +36,32 @@ export class AudirService {
 
   getData(): any {
     return this.http.get('/assets/json/data.json');
+  }
+
+  showSuccess(message: string) {
+    this.toastr.success(message, 'Success', {
+      timeOut: 2000,
+      positionClass: 'toast-bottom-right',
+      progressBar: true,
+      progressAnimation: 'decreasing'
+    });
+  }
+
+  showError(message: string) {
+    this.toastr.error(message, 'Error',{
+      timeOut: 2000,
+      positionClass: 'toast-bottom-right',
+      progressBar: true,
+      progressAnimation: 'decreasing'
+    });
+  }
+
+  showWarning(message: string) {
+    this.toastr.warning(message, 'Warning',{
+      timeOut: 2000,
+      positionClass: 'toast-bottom-right',
+      progressBar: true,
+      progressAnimation: 'decreasing'
+    });
   }
 }
