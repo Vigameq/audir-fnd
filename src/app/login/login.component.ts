@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { Output, EventEmitter } from '@angular/core';
+import { AudirService } from 'src/services/audir-services.service';
 
 @Component({
   selector: 'app-login',
@@ -11,12 +12,9 @@ import { Output, EventEmitter } from '@angular/core';
 export class LoginComponent {
   email = '';
   password = '';
-  errorMessage = '';
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService, private router: Router, private audirService: AudirService) {
     localStorage.setItem('login_success', '');
   }
-
-
 
   onSubmit() {
     this.authService.login(this.email, this.password).subscribe(
@@ -26,12 +24,17 @@ export class LoginComponent {
           localStorage.setItem('user', response.eMail);
           localStorage.setItem('header', 'Audit Plan');
           this.router.navigate(['/auditPlan']);
+          this.audirService.showSuccess('Login Successfull');
         } else {
-          this.errorMessage = 'Invalid login credentials';
+          this.audirService.showError('Invalid Login Credentials, Please Provide Valid Credentials');
         }
       },
       (error: any) => {
-        this.errorMessage = 'An error occurred. Please try again.';
+        if (error.error.status === 500) {
+          this.audirService.showError(error.error.statusText);
+        } else {
+          this.audirService.showError(error.error.message);
+        }
         console.error(error);
       }
     );

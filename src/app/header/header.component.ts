@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, Renderer2, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AudirService } from 'src/services/audir-services.service';
 
 @Component({
   selector: 'app-header',
@@ -10,11 +11,11 @@ import { filter } from 'rxjs/operators';
 export class HeaderComponent {
   @Input() displayHeaderName: any;
   @ViewChild('dropdown') dropdown: ElementRef | undefined;
-  profileDropdownOptions = ['Gowtham Gadipudi', 'logout'];
+  profileDropdownOptions = ['Gowtham Gadipudi', 'Logout'];
   selectedOption: string = this.profileDropdownOptions[0];
   isOpen: boolean = false;
 
-  constructor(private renderer: Renderer2, private router: Router) {
+  constructor(private renderer: Renderer2, private router: Router, private audirService: AudirService) {
   }
 
   ngOnInit(): void {
@@ -29,10 +30,11 @@ export class HeaderComponent {
     const target = event.target as HTMLSelectElement;
     this.selectedOption = target.value;
     console.log("Selected Option: ", this.selectedOption);
-    if (this.selectedOption === 'logout') {
+    if (this.selectedOption === 'Logout') {
       localStorage.setItem('login_success', '');
       localStorage.setItem('header', '');
       this.router.navigate(['/login']);
+      this.audirService.showSuccess('Logout Successfull');
     }
   }
 

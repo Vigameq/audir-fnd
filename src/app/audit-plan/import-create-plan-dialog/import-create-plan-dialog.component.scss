@@ -53,7 +53,8 @@
             .button {
                 flex: 1;
 
-                button {
+                button,
+                .upload-btn {
                     height: 36px;
                     width: 164px;
                     border-radius: 30px;
@@ -67,10 +68,17 @@
                     cursor: pointer;
                 }
 
-                button:hover {
+                button:hover,
+                .upload-btn:hover {
                     border-color: #FDE714;
                     background-color: #FDE714;
                     color: #1D2431;
+                }
+
+                .upload-btn {
+                    display: inline-block;
+                    padding: 10px 24px;
+                    transition: background 0.3s ease;
                 }
             }
         }
@@ -79,6 +87,12 @@
             background-color: #FFFFFF;
             color: #1D2431;
         }
+
+        .svg-icon {
+            min-width: 20px;
+        }
+
+
     }
 
     .mat-dialog-actions-section {

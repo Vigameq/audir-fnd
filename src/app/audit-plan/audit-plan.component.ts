@@ -155,14 +155,12 @@ export class AuditPlanComponent {
       this.selectedOptions = this.selectedOptions.filter(option => option !== checkbox.value);
     }
     this.auditPlanForm.get('auditorValue')?.setValue(this.selectedOptions);
-
   }
-
 
   onSubmit() {
     if (this.auditPlanForm) {
       const plan: Audit = {
-        link_audit: this.auditPlanForm.value?.linkAudit,
+        link_audit: this.auditPlanForm.value?.linkAudit ? this.auditPlanForm.value?.linkAudit : null,
         audit_title: this.auditPlanForm.value?.auditTitle,
         functions: this.auditPlanForm.value?.functions,
         template: this.auditPlanForm.value?.templateValue,
@@ -177,12 +175,23 @@ export class AuditPlanComponent {
         audit_type: "ISO 270015",
         eMail: localStorage.getItem('user')?.toString() || ''
       }
-      this.audirService.createAuditPlan(plan).subscribe(response => {
-        if (response) {
-          this.resetForm();
-          this.openSuccessDialog();
+      if (plan.audit_title && plan.functions && plan.template && plan.function_template && plan.start_date && plan.end_date && plan.auditors && plan.auditees && plan.city && plan.country && plan.audit_scope) {
+        this.audirService.createAuditPlan(plan).subscribe(response => {
+          if (response) {
+            this.resetForm();
+            this.openSuccessDialog();
+          } else {
+            this.audirService.showError('Audit Plan Creation Failed');
+
+          }
+        }, (error: any) => {
+          this.audirService.showError('Audit Plan Creation Failed');
+          console.error('Error for creation of audit plan:', error);
         }
-      })
+        )
+      } else {
+        this.audirService.showError('Audit Plan Creation Failed, Please Enter All Required Fields');
+      }
     }
   }
 
@@ -218,6 +227,7 @@ export class AuditPlanComponent {
     dialogRef.afterClosed().subscribe((result: any) => {
       this.router.navigate(['/auditPlan']);
       this.importVisibility();
+      this.getPlanItems();
       this.changeDetectorRef.detectChanges();
       console.log(`Dialog result: ${result}`);
     });
@@ -232,6 +242,7 @@ export class AuditPlanComponent {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       this.router.navigate(['/auditPlan']);
+      this.getPlanItems();
       console.log(`Dialog result: ${result}`);
     });
   }
@@ -249,6 +260,7 @@ export class AuditPlanComponent {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       this.router.navigate(['/auditPlan']);
+      this.getPlanItems();
       console.log(`Dialog result: ${result}`);
     });
   }
