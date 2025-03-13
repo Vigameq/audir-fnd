@@ -110,6 +110,7 @@ export class AuditPlanComponent {
     auditors: 'gowtham and more'
   }];
   selectedDate: Date | undefined;
+  isClear: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
   }
@@ -192,12 +193,13 @@ export class AuditPlanComponent {
         }
         )
       } else {
-        this.audirService.showError('Please enter mandatory (*) fields');
+        if(!this.isClear)this.audirService.showError('Please enter mandatory (*) fields');
       }
     }
   }
 
   onClearForm() {
+    this.isClear = true;
     this.resetForm();
   }
 
