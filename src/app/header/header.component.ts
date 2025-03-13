@@ -34,7 +34,7 @@ export class HeaderComponent {
       localStorage.setItem('login_success', '');
       localStorage.setItem('header', '');
       this.router.navigate(['/login']);
-      this.audirService.showSuccess('Logout Successfull');
+      this.audirService.showSuccess('Logout successful');
     }
   }
 

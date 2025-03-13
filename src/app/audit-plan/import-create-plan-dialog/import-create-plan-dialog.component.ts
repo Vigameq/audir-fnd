@@ -30,15 +30,15 @@ export class ImportCreatePlanDialogComponent {
         const templateFileURL = URL.createObjectURL(blobData);
         const templateDownloadLink = document.createElement('a');
         templateDownloadLink.href = templateFileURL;
-        templateDownloadLink.download = 'planTemplate.xlsx';
+        templateDownloadLink.download = 'Audit_plan.xlsx';
         templateDownloadLink.click();
         URL.revokeObjectURL(templateFileURL);
         this.isDownloaded = true;
-        this.audirService.showSuccess('Plan Template file Downloaded successfully');
+        this.audirService.showSuccess('Audit_plan.xlsx downloaded successfully');
       }, (error: any) => {
         this.isDownloaded = false;
         console.error('Error for downloading plan template file:', error);
-        this.audirService.showError('Plan Template File Download Failed');
+        this.audirService.showError('Download failed');
       }
     );
   }
@@ -47,18 +47,18 @@ export class ImportCreatePlanDialogComponent {
     this.file = event.target.files[0];
     if (!this.file) {
       this.isUploaded = false;
-      this.audirService.showError('Plan Template File Upload Failed');
+      this.audirService.showError('Upload failed');
       return;
     }
     this.isUploaded = true;
-    this.audirService.showSuccess('Plan Template File Uploaded Successfully');
+    this.audirService.showSuccess('Upload Successful');
     console.log('Excel file uploaded successfully.');
   }
 
   validateTemplate() {
     if (!this.file) {
       this.isValidated = false;
-      this.audirService.showError('Plan Template File Validation Failed, Please Upload Correct File');
+      this.audirService.showError('Audit plan validation failed, please upload correct file');
       return;
     }
     if (this.isUploaded) {
@@ -68,10 +68,10 @@ export class ImportCreatePlanDialogComponent {
       this.audirService.validatePlan(validateFormData).subscribe((result: any) => {
         this.isValidated = true;
         console.log(result);
-        this.audirService.showSuccess('Plan Template File Validated Successfully');
+        this.audirService.showSuccess('Audit plan validation successful');
       }, (error: any) => {
         this.isValidated = false;
-        this.audirService.showError('Plan Template File Validation Failed');
+        this.audirService.showError('Audit plan validation failed');
         console.error('Error for validating plan template file:', error);
       })
     } else {
@@ -81,7 +81,7 @@ export class ImportCreatePlanDialogComponent {
 
   createPlan() {
     if (!this.file) {
-      this.audirService.showError('Plan Template file Creation Failed, Please Upload Correct File');
+      this.audirService.showError('Upload failed, please upload correct file');
       this.isCreated = false;
       return;
     }
@@ -91,11 +91,11 @@ export class ImportCreatePlanDialogComponent {
       createFormData.append('eMail', this.email);
       this.audirService.createPlans(createFormData).subscribe((result: any) => {
         this.isCreated = true;
-        this.audirService.showSuccess('Audit Plan Created successfully');
+        this.audirService.showSuccess('Audit plan created successfully');
         console.log(result);
       }, (error: any) => {
         this.isCreated = false;
-        this.audirService.showError('Plan Template file Creation Failed');
+        this.audirService.showError('Failed to create audit plan');
         console.error('Error for creation of audit plan:', error);
       })
     } else {
