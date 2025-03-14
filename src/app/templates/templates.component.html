@@ -1,1 +1,63 @@
-<p>templates works!</p>
+<div class="audit-perform-container">
+    <div class="filtering-and-import-section">
+        <div class="dropdown-and-import-section">
+            <div class="dropdown-section">
+                <div class="standard-dropdown-section" (click)="onStandardDropdownClick()" #standardDropdown>
+                    <select class="standard-dropdown-select" (change)="onStandardOptionChange($event)"
+                        [(ngModel)]="standardSelectedOption">
+                        <option value="" disabled selected>Select Standards</option>
+                        <option *ngFor="let standardOption of standardDropdownOptions" [value]="standardOption">
+                            {{ standardOption }}
+                        </option>
+                    </select>
+                    <div class="dropdown-arrow">
+                        <app-dropdown-arrow-icons [isOpen]="isStandardDropdownOpen"></app-dropdown-arrow-icons>
+                    </div>
+                </div>
+            </div>
+            <div class="import">
+                <button class="import-button">+ Import</button>
+            </div>
+        </div>
+        <div class="function-selection">
+            <div class="function-list" *ngFor="let functionItem of functionList" (click)="selectFunction(functionItem)"
+                [ngClass]="{'selected': selectedFunction.includes(functionItem)}">
+                <div class="function">
+                    <span>{{ functionItem }}</span>
+                </div>
+                <div class="svg-icon">
+                    <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z"
+                            fill="#0F1729" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="filtered-data-display-section">
+        <div class="funtion-name"><span>Function 1</span></div>
+        <div *ngFor="let question of allQuestions" class="filtered-questions-section">
+            <div class="question-number"><span>{{question.questionNumber}}</span></div>
+            <div class="questions-text-with-delete-icon">
+                <div class="question-text">
+                    <span>{{question.questionText}}</span>
+                </div>
+                <div class="edit-and-delete-icon">
+                    <div class="edit-question-icon">
+                        <img src="../assets/images/Vector.png" alt="Edit" id="edit-icon" />
+                    </div>
+                    <div class="delete-question-icon">
+                        <svg width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <g>
+                                <path fill="none" d="M0 0h24v24H0z" />
+                                <path
+                                    d="M7 4V2h10v2h5v2h-2v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6H2V4h5zM6 6v14h12V6H6zm3 3h2v8H9V9zm4 0h2v8h-2V9z" />
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
