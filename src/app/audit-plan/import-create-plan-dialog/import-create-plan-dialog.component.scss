@@ -52,7 +52,13 @@
 
             .button {
                 flex: 1;
-
+                button.disabled {
+                    background-color: #cccccc !important;
+                    cursor: not-allowed !important;
+                    opacity: 0.6;
+                    color: #333333;
+                    border-color: #cccccc;
+                  }
                 button,
                 .upload-btn {
                     height: 36px;

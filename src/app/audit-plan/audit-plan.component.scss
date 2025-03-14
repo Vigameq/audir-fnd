@@ -26,7 +26,7 @@
                 border-radius: 32px;
                 overflow: hidden;
                 width: 75%;
-                height: 61px;
+                height: 50px;
 
                 .toggle-button {
                     flex: 1;
@@ -51,8 +51,9 @@
                 font-size: 16px;
                 border: 1px solid #2C2C2C;
                 cursor: pointer;
-                margin-right: 12px;
+                // margin-right: 12px;
                 height: 44px;
+                width: 140px;
             }
 
             .import-button:hover {
@@ -111,6 +112,10 @@
                 display: flex;
                 flex-direction: row;
                 gap: 40px;
+            }
+
+            .asterisk{
+                color: #ff0000;
             }
 
             .audit-title-input,

@@ -34,7 +34,7 @@ export class AuditPlanComponent {
     auditScopeValue: new FormControl('')
   });
   isAuditorDropdownOpen = false;
-  cities = ["Agartala", "Aizawl", "Amaravati", "Bengaluru", "Bhopal", "Bhubaneswar", "Chandigarh", "Chandigarh", "Chennai", "Dehradun", "Dispur", "Gandhinagar", "Gangtok", "Hyderabad", "Imphal", "Itanagar", "Jaipur", "Kohima", "Kolkata", "Lucknow", "Mumbai", "Panaji", "Patna", "Raipur", "Ranchi", "Shillong", "Shimla", "Thiruvananthapuram"];
+  cities = ["Amaravati", "Bengaluru", "Bhopal", "Bhubaneswar", "Chandigarh", "Chennai", "Dehradun", "Gandhinagar", "Gangtok", "Hyderabad", "Jaipur", "Kolkata", "Lucknow", "Mumbai", "Panaji", "Patna", "Raipur", "Ranchi", "Shillong", "Shimla", "Thiruvananthapuram"];
   countries = ["India"];
   selectedOptions: string[] = [];
   parent_audits: any[] = [];
@@ -109,6 +109,8 @@ export class AuditPlanComponent {
     id: 'gg00891',
     auditors: 'gowtham and more'
   }];
+  selectedDate: Date | undefined;
+  isClear: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
   }
@@ -118,9 +120,9 @@ export class AuditPlanComponent {
     this.showAllPlans = (this.auditPlans.length <= 4) ? true : false;
     this.auditPlanForm = this.formBuilder.group(
       {
-        linkAudit: ['', Validators.required],
+        linkAudit: [''],
         auditTitle: ['', Validators.required],
-        functions: ['', Validators.required],
+        functions: [''],
         templateValue: ['', Validators.required],
         functionTemplateValue: ['', Validators.required],
         startDateTime: ['', Validators.required],
@@ -180,22 +182,24 @@ export class AuditPlanComponent {
           if (response) {
             this.resetForm();
             this.openSuccessDialog();
+            this.selectedDate = undefined;
           } else {
-            this.audirService.showError('Audit Plan Creation Failed');
+            this.audirService.showError('Failed to create audit plan');
 
           }
         }, (error: any) => {
-          this.audirService.showError('Audit Plan Creation Failed');
+          this.audirService.showError('Failed to create audit plan');
           console.error('Error for creation of audit plan:', error);
         }
         )
       } else {
-        this.audirService.showError('Audit Plan Creation Failed, Please Enter All Required Fields');
+        if(!this.isClear)this.audirService.showError('Please enter mandatory (*) fields');
       }
     }
   }
 
   onClearForm() {
+    this.isClear = true;
     this.resetForm();
   }
 
@@ -214,6 +218,11 @@ export class AuditPlanComponent {
       countryName: [''],
       auditScopeValue: ['']
     });
+  }
+
+  onDateChange(){
+    this.selectedDate = new Date(this.auditPlanForm.value.startDateTime);
+    
   }
 
   openImportPlanDialog(): void {
@@ -253,9 +262,9 @@ export class AuditPlanComponent {
 
   openSuccessDialog(): void {
     const dialogRef = this.dialog.open(AuditPlanSuccessPopupComponent, {
-      width: '654px',
-      height: '576px',
-      data: { id: 'GG196678' }
+      width: '500px',
+      height: '480px',
+      data: { id: 'Vig196678' }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {

@@ -24,9 +24,9 @@ export class LoginComponent {
           localStorage.setItem('user', response.eMail);
           localStorage.setItem('header', 'Audit Plan');
           this.router.navigate(['/auditPlan']);
-          this.audirService.showSuccess('Login Successfull');
+          //this.audirService.showSuccess('Login Successfull');
         } else {
-          this.audirService.showError('Invalid Login Credentials, Please Provide Valid Credentials');
+          this.audirService.showError('Invalid credentials');
         }
       },
       (error: any) => {

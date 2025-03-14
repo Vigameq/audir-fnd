@@ -16,8 +16,7 @@
                         <label for="linkAudit" class="form-label">Link Audit</label>
                     </div>
                     <div class="link-audit-select">
-                        <select id="linkAudit" class="dropdown-select" formControlName="linkAudit" name="linkAudit"
-                            required>
+                        <select id="linkAudit" class="dropdown-select" formControlName="linkAudit" name="linkAudit">
                             <option value="" disabled selected>Select Audit</option>
                             <option *ngFor="let audit of parent_audits" [value]="audit.title">
                                 {{audit.title}}</option>
@@ -26,7 +25,7 @@
                 </div>
                 <div class="audit-title-and-functions-row">
                     <div class="audit-title">
-                        <label for="audit-title" class="form-label">Audit Title</label>
+                        <label for="audit-title" class="form-label">Audit Title <span class="asterisk">*</span></label>
                         <input id="audit-title" class="audit-title-input" formControlName="auditTitle"
                             name="auditTitle" />
                         <!-- <select id="audit-title" class="dropdown-select" formControlName="auditTitle" name="auditTitle"
@@ -50,7 +49,7 @@
                 </div>
                 <div class="templates-row">
                     <div class="template">
-                        <label for="templates" class="form-label">Template</label>
+                        <label for="templates" class="form-label">Template <span class="asterisk">*</span></label>
                         <select id="templates" class="dropdown-select" formControlName="templateValue"
                             name="templateValue" required>
                             <option value="" disabled selected>Select template..</option>
@@ -59,7 +58,7 @@
                         </select>
                     </div>
                     <div class="function-template">
-                        <label for="function-templates" class="form-label">Functions Template</label>
+                        <label for="function-templates" class="form-label">Functions Template <span class="asterisk">*</span></label>
                         <select id="function-templates" class="dropdown-select" formControlName="functionTemplateValue"
                             name="functionTemplateValue" required>
                             <option value="" disabled selected>Select template..</option>
@@ -70,19 +69,19 @@
                 </div>
                 <div class="date-time-row">
                     <div class="start-date-time">
-                        <label for="start-date-time" class="form-label">Start Date & Time</label>
-                        <input type="datetime-local" id="start-date-time" class="form-control"
+                        <label for="start-date-time" class="form-label">Start Date & Time <span class="asterisk">*</span></label>
+                        <input type="datetime-local" id="start-date-time" class="form-control" (change)="onDateChange()"
                             formControlName="startDateTime" name="startDateTime" required />
                     </div>
                     <div class="end-date-time">
-                        <label for="end-date-time" class="form-label">End Date & Time</label>
+                        <label for="end-date-time" class="form-label">End Date & Time <span class="asterisk">*</span></label>
                         <input type="datetime-local" id="end-date-time" class="form-control"
                             formControlName="endDateTime" name="endDateTime" required />
                     </div>
                 </div>
                 <div class="auditees-auditors-row">
                     <div class="auditors">
-                        <label for="auditorDropdown" class="auditor-label">Auditors</label>
+                        <label for="auditorDropdown" class="auditor-label">Auditors <span class="asterisk">*</span></label>
                         <!-- <div class="auditorDropdown">
                             <button class="auditor-dropdown-button" type="button" id="auditor-select-dropdown"
                                 (click)="toggleDropdown()">
@@ -107,7 +106,7 @@
                         </select>
                     </div>
                     <div class="auditees">
-                        <label for="auditeeDropdown" class="auditee-label">Auditees</label>
+                        <label for="auditeeDropdown" class="auditee-label">Auditees <span class="asterisk">*</span></label>
                         <!-- <div class="auditeeDropdown">
                             <button class="auditee-dropdown-button" type="button" id="auditee-select-dropdown">
                                 Select auditees
@@ -131,7 +130,7 @@
                 </div>
                 <div class="city-country-row">
                     <div class="city">
-                        <label for="city-name" class="form-label">City</label>
+                        <label for="city-name" class="form-label">City <span class="asterisk">*</span></label>
                         <select id="city-name" class="dropdown-select" formControlName="cityName" name="cityName"
                             required>
                             <option value="" disabled selected>Select City</option>
@@ -140,7 +139,7 @@
                         </select>
                     </div>
                     <div class="country">
-                        <label for="country-name" class="form-label">Country</label>
+                        <label for="country-name" class="form-label">Country <span class="asterisk">*</span></label>
                         <select id="country-name" class="dropdown-select" formControlName="countryName"
                             name="countryName" required>
                             <option value="" disabled selected>Select Country</option>
@@ -152,7 +151,7 @@
                 </div>
                 <div class="audit-scope-row">
                     <div class="audit-scope-label">
-                        <label for="audit-scope" class="form-label">Audit Scope</label>
+                        <label for="audit-scope" class="form-label">Audit Scope <span class="asterisk">*</span></label>
                     </div>
                     <div class="auditscope-textarea">
                         <textarea id="audit-scope" class="audit-scope-textarea" rows="4"
@@ -170,7 +169,7 @@
         <div class="calendar-section">
             <article class="calendar-wrapper">
                 <igx-calendar #calendar (selected)="onSelection($event)" selection="single" [minDate]="startDate"
-                    [maxDate]="endDate" (viewDateChanged)="viewDateChanged($event)"></igx-calendar>
+                    [maxDate]="endDate" (viewDateChanged)="viewDateChanged($event)" [(ngModel)]="selectedDate" ></igx-calendar>
             </article>
         </div>
         <div class="audit-information">
