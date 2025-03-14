@@ -1,4 +1,7 @@
-import { Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { ImportTemplateDialogComponent } from './Import-template-dialog/import-template-dialog/import-template-dialog.component';
 
 @Component({
   selector: 'app-templates',
@@ -35,11 +38,12 @@ export class TemplatesComponent {
   ]
   selectedFunction: string[] = [];
   standardSelectedOption: string = '';
+  isImportVisible: boolean = true;
+
   @ViewChild('standardDropdown') standardDropdown: ElementRef | undefined;
   isStandardDropdownOpen: boolean = false;
 
-
-  constructor(private renderer: Renderer2) { }
+  constructor(private renderer: Renderer2, private changeDetectorRef: ChangeDetectorRef, private dialog: MatDialog, private router: Router) { }
 
   onStandardOptionChange(event: Event) {
     const target = event.target as HTMLSelectElement;
@@ -57,6 +61,26 @@ export class TemplatesComponent {
         this.isStandardDropdownOpen = false;
       }
     });
+  }
+
+  openImportTemplateDialog(): void {
+    this.importVisibility();
+    const dialogRef = this.dialog.open(ImportTemplateDialogComponent, {
+      width: '654px',
+      height: '408px',
+      data: { id: 'GG196678' }
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      this.router.navigate(['/templates']);
+      this.importVisibility();
+      this.changeDetectorRef.detectChanges();
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  importVisibility() {
+    this.isImportVisible = !this.isImportVisible;
   }
 
   selectFunction(functionItem: string) {

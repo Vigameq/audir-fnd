@@ -18,8 +18,14 @@ export class AudirService {
     return this.http.post('/audire/api/planAudit', auditPlan);
   }
 
-  downloadTemplate(): Observable<ArrayBuffer> {
+  downloadPlanTemplate(): Observable<ArrayBuffer> {
     return this.http.get<any>('/audire/api/downloadAuditPlan', {
+      responseType: 'arraybuffer' as 'json'
+    });
+  }
+
+  downloadTemplate(): Observable<ArrayBuffer> {
+    return this.http.get<any>('/audire/api/downloadAuditTemplate', {
       responseType: 'arraybuffer' as 'json'
     });
   }
@@ -48,7 +54,7 @@ export class AudirService {
   }
 
   showError(message: string) {
-    this.toastr.error(message, 'Error',{
+    this.toastr.error(message, 'Error', {
       timeOut: 2000,
       positionClass: 'toast-bottom-right',
       progressBar: true,
@@ -57,7 +63,7 @@ export class AudirService {
   }
 
   showWarning(message: string) {
-    this.toastr.warning(message, 'Warning',{
+    this.toastr.warning(message, 'Warning', {
       timeOut: 2000,
       positionClass: 'toast-bottom-right',
       progressBar: true,

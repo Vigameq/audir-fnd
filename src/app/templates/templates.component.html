@@ -16,7 +16,8 @@
                 </div>
             </div>
             <div class="import">
-                <button class="import-button">+ Import</button>
+                <button class="import-button" *ngIf="isImportVisible"
+                (click)="openImportTemplateDialog()">+ Import</button>
             </div>
         </div>
         <div class="function-selection">
