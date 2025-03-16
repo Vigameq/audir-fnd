@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, Renderer2, ViewChild } from '
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ImportTemplateDialogComponent } from './Import-template-dialog/import-template-dialog/import-template-dialog.component';
+import { AuditorRemarksComponent } from './Import-template-dialog/auditor-remarks/auditor-remarks.component';
 
 @Component({
   selector: 'app-templates',
@@ -89,5 +90,22 @@ export class TemplatesComponent {
     } else {
       this.selectedFunction.push(functionItem);
     }
+  }
+
+  editQuestion() {
+    const dialogRef = this.dialog.open(AuditorRemarksComponent, {
+      width: '634px',
+      height: '360px',
+      data: { id: 'GG196678' }
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      this.router.navigate(['/templates']);
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  deleteQuestion() {
+
   }
 }

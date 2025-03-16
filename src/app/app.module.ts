@@ -24,6 +24,7 @@ import { ImportCreatePlanDialogComponent } from './audit-plan/import-create-plan
 import { EditPlanDialogComponent } from './audit-plan/edit-plan-dialog/edit-plan-dialog.component';
 import { ToastrModule } from 'ngx-toastr';
 import { ImportTemplateDialogComponent } from './templates/Import-template-dialog/import-template-dialog/import-template-dialog.component';
+import { AuditorRemarksComponent } from './templates/Import-template-dialog/auditor-remarks/auditor-remarks.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { ImportTemplateDialogComponent } from './templates/Import-template-dialo
     AuditPlanSuccessPopupComponent,
     ImportCreatePlanDialogComponent,
     EditPlanDialogComponent,
-    ImportTemplateDialogComponent
+    ImportTemplateDialogComponent,
+    AuditorRemarksComponent
   ],
   imports: [
     BrowserModule,
