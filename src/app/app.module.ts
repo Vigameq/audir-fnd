@@ -23,6 +23,8 @@ import {MatButtonModule} from '@angular/material/button';
 import { ImportCreatePlanDialogComponent } from './audit-plan/import-create-plan-dialog/import-create-plan-dialog.component';
 import { EditPlanDialogComponent } from './audit-plan/edit-plan-dialog/edit-plan-dialog.component';
 import { ToastrModule } from 'ngx-toastr';
+import { ImportTemplateDialogComponent } from './templates/Import-template-dialog/import-template-dialog/import-template-dialog.component';
+import { AuditorRemarksComponent } from './templates/Import-template-dialog/auditor-remarks/auditor-remarks.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { ToastrModule } from 'ngx-toastr';
     DropdownArrowIconsComponent,
     AuditPlanSuccessPopupComponent,
     ImportCreatePlanDialogComponent,
-    EditPlanDialogComponent
+    EditPlanDialogComponent,
+    ImportTemplateDialogComponent,
+    AuditorRemarksComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,18 @@
+<div class="auditor-remarks">
+    <div class="header-section">
+        <div class="header">
+            <span>Auditor Remarks</span>
+        </div>
+        <div class="close-icon" (click)="closeDialog()" mat-dialog-close>
+            <img src="../assets/images/close.png" alt="close" id="close-icon" />
+        </div>
+    </div>
+    <mat-dialog-content class="auditor-remarks-content">
+        <div class="auditor-remarks-textarea"> <textarea placeholder=""></textarea>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center" class="mat-dialog-actions-section">
+        <button mat-dialog-close class="cancel"><span>Cancel</span></button>
+        <button class="save-changes"><span>Approval</span></button>
+    </mat-dialog-actions>
+</div>

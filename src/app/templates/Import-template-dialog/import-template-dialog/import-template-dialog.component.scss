@@ -1,6 +1,6 @@
 .import-create-plan {
     font-family: 'Apple SD Gothic Neo', sans-serif;
-    min-height: 464px;
+    min-height: 408px;
 
     .header-section {
         display: flex;
@@ -23,6 +23,7 @@
 
     .import-dialog-content .import-steps {
         display: flex;
+        height:216px;
         flex-direction: column;
         gap: 20px;
         font-family: 'Apple SD Gothic Neo', sans-serif;
@@ -31,7 +32,7 @@
         .download-template,
         .fill-template,
         .upload-template,
-        .validate-template,
+        .template-name,
         .create-plan {
             display: flex;
             flex-direction: row;
