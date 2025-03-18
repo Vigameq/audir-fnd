@@ -6,8 +6,8 @@
                     <select class="standard-dropdown-select" (change)="onStandardOptionChange($event)"
                         [(ngModel)]="standardSelectedOption">
                         <option value="" disabled selected>Select Standards</option>
-                        <option *ngFor="let standardOption of standardDropdownOptions" [value]="standardOption">
-                            {{ standardOption }}
+                        <option *ngFor="let standardOption of templates" [value]="standardOption.name">
+                            {{ standardOption.name }}
                         </option>
                     </select>
                     <div class="dropdown-arrow">
@@ -20,11 +20,14 @@
                     Import</button>
             </div>
         </div>
+        <div class="recent-templates-label">
+            <span>Recent Templates</span>
+        </div>
         <div class="function-selection">
-            <div class="function-list" *ngFor="let functionItem of functionList" (click)="selectFunction(functionItem)"
-                [ngClass]="{'selected': selectedFunction.includes(functionItem)}">
+            <div class="function-list" *ngFor="let functionItem of templates.slice(0,4)"
+                (click)="selectFunction(functionItem)" [ngClass]="{'selected': selectedFunctionId.includes(functionItem.id)}">
                 <div class="function">
-                    <span>{{ functionItem }}</span>
+                    <span>{{ functionItem.name }}</span>
                 </div>
                 <div class="svg-icon">
                     <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +53,8 @@
                         <img src="../assets/images/Vector.png" alt="Edit" id="edit-icon" (click)="editQuestion()" />
                     </div>
                     <div class="delete-question-icon">
-                        <svg width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" (click)="deleteQuestion()">
+                        <svg width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                            (click)="deleteQuestion()">
                             <g>
                                 <path fill="none" d="M0 0h24v24H0z" />
                                 <path

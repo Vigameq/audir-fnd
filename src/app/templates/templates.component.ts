@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ImportTemplateDialogComponent } from './Import-template-dialog/import-template-dialog/import-template-dialog.component';
 import { AuditorRemarksComponent } from './Import-template-dialog/auditor-remarks/auditor-remarks.component';
+import { AudirService } from 'src/services/audir-services.service';
 
 @Component({
   selector: 'app-templates',
@@ -10,8 +11,7 @@ import { AuditorRemarksComponent } from './Import-template-dialog/auditor-remark
   styleUrls: ['./templates.component.scss']
 })
 export class TemplatesComponent {
-  standardDropdownOptions = ['options1', 'option2', 'option3'];
-  functionList: any[] = ['Function1Function1Funct', 'Function2FunctFunction1', 'Function3Function1', 'Function1Function1', 'Function2Function1', 'Function3Function2', 'Function1Function4', 'Function2', 'Function3Function13'];
+  templates: any[] = [];
   allQuestions: any[] = [
     {
       questionNumber: 'Question1',
@@ -37,16 +37,21 @@ export class TemplatesComponent {
       questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?'
     }
   ]
-  selectedFunction: string[] = [];
+  selectedFunctionId: any[] = [];
   standardSelectedOption: string = '';
   isImportVisible: boolean = true;
 
   @ViewChild('standardDropdown') standardDropdown: ElementRef | undefined;
   isStandardDropdownOpen: boolean = false;
 
-  constructor(private renderer: Renderer2, private changeDetectorRef: ChangeDetectorRef, private dialog: MatDialog, private router: Router) { }
+  constructor(private renderer: Renderer2, private changeDetectorRef: ChangeDetectorRef, private dialog: MatDialog, private router: Router, private audirService: AudirService) { }
+
+  ngOnInit(): void {
+    this.getPlanItems();
+  }
 
   onStandardOptionChange(event: Event) {
+    this.selectedFunctionId = [];
     const target = event.target as HTMLSelectElement;
     console.log("Selected Option: ", this.standardSelectedOption, target);
     this.standardSelectedOption = target.value;
@@ -73,6 +78,7 @@ export class TemplatesComponent {
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
+      this.getPlanItems();
       this.router.navigate(['/templates']);
       this.importVisibility();
       this.changeDetectorRef.detectChanges();
@@ -84,11 +90,13 @@ export class TemplatesComponent {
     this.isImportVisible = !this.isImportVisible;
   }
 
-  selectFunction(functionItem: string) {
-    if (this.selectedFunction.includes(functionItem)) {
-      this.selectedFunction = this.selectedFunction.filter(Option => Option !== functionItem);
+  selectFunction(functionItem: any) {
+    this.selectedFunctionId = [];
+    this.standardSelectedOption = '';
+    if (this.selectedFunctionId.includes(functionItem)) {
+      this.selectedFunctionId = this.selectedFunctionId.filter(Option => Option.id !== functionItem.id);
     } else {
-      this.selectedFunction.push(functionItem);
+      this.selectedFunctionId.push(functionItem.id);
     }
   }
 
@@ -103,6 +111,15 @@ export class TemplatesComponent {
       this.router.navigate(['/templates']);
       console.log(`Dialog result: ${result}`);
     });
+  }
+
+  getPlanItems() {
+    const email = localStorage.getItem('user')?.toString() || '';
+    this.audirService.getPlanItems(email).subscribe((items: any) => {
+      if (items) {
+        this.templates = items.templates;
+      }
+    })
   }
 
   deleteQuestion() {
