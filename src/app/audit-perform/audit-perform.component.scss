@@ -1,0 +1,142 @@
+.audit-perfom {
+    max-width: 100%;
+    margin: 16px 40px 0 44px;
+
+    .search-dropdown-section {
+        width: 100%;
+        height: 127px;
+        display: flex;
+        background-color: #1D2431;
+        border-radius: 15px;
+        border: 1px #000000;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .audit-perform-search-bar {
+            position: relative;
+            height: 44px;
+            max-width: 327px;
+            margin: 20px;
+            font-size: 16px;
+            font-family: 'Apple SD Gothic Neo', sans-serif;
+
+
+            .audit-perform-search-input {
+                max-width: 327px;
+                padding: 10px 30px 10px 18px;
+                font-size: 16px;
+                color: #000000;
+                border: 1px solid #D9D9D9;
+                border-radius: 24px;
+                outline: none;
+            }
+
+            .audit-perform-search-input::placeholder {
+                color: #515151;
+            }
+
+
+            .audit-perform-search-input:focus {
+                border-color: #FFEA00;
+            }
+
+            .clear-btn {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: transparent;
+                border: none;
+                font-size: 12px;
+                cursor: pointer;
+                color: #1D2431;
+            }
+
+            .clear-btn:hover {
+                color: #FFEA00;
+            }
+
+        }
+
+        .dropdown-section {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin: 0 10px;
+
+            .standard-dropdown-section {
+                margin: 20px 10px 20px 10px;
+
+                .standard-dropdown-select {
+                    width: 240px;
+                    height: 44px;
+                    background-color: #FAFAFA;
+                    font-family: 'Apple SD Gothic Neo', sans-serif;
+                    border: 1px solid #dbdbdb;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    padding: 6px;
+                    padding-right: 30px;
+                    appearance: none;
+                    cursor: pointer;
+                }
+
+                .dropdown-arrow {
+                    position: absolute;
+                    top: 48%;
+                    transform: translateY(-50%);
+                    pointer-events: none;
+                    left: 226px;
+                }
+            }
+        }
+
+    }
+
+    .audit-perform-container-section {
+        margin: 40px 0 30px 0;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    @media (min-width: 960px) and (max-width: 1280px) {
+
+        .standard-dropdown-select {
+            width: 200px !important;
+        }
+
+        .standard-dropdown-section .dropdown-arrow {
+            left: 240px !important;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 960px) {
+
+        .standard-dropdown-select {
+            width: 160px !important;
+        }
+
+        .standard-dropdown-section .dropdown-arrow {
+            left: 200px !important;
+        }
+    }
+
+    @media (min-width: 640px) and (max-width: 768px) {
+
+        .standard-dropdown-select {
+            width: 140px !important;
+        }
+
+        .audit-perform-search-input {
+            width: 160px !important;
+        }
+
+        .standard-dropdown-section .dropdown-arrow {
+            left: 180px !important;
+        }
+    }
+}
