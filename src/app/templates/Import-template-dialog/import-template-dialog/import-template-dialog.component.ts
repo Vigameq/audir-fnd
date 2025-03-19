@@ -12,9 +12,10 @@ export class ImportTemplateDialogComponent {
   email: any;
   isDownloaded: boolean | undefined;
   isUploaded: boolean | undefined;
-  file: File | null = null;
+  templateFile!: File;
   isTemplateName: boolean | undefined;
   isCreated: boolean | undefined;
+  templateNameValue = '';
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router, private audirService: AudirService,) {
     this.email = localStorage.getItem('user')?.toString() || '';
   }
@@ -44,8 +45,8 @@ export class ImportTemplateDialogComponent {
   }
 
   uploadAuditTemplate(event: any) {
-    this.file = event.target.files[0];
-    if (!this.file) {
+    this.templateFile = event.target.files[0];
+    if (!this.templateFile) {
       this.isUploaded = false;
       this.audirService.showError('Upload failed');
       return;
@@ -55,27 +56,27 @@ export class ImportTemplateDialogComponent {
     console.log('Excel file uploaded successfully.');
   }
 
-  templateName() {
-    if (!this.file) {
-      this.isTemplateName = false;
-      this.audirService.showError('Audit plan validation failed, please upload correct file');
-      return;
-    }
-    if (this.isUploaded) {
-      const validateFormData = new FormData();
-      validateFormData.append('uploadAuditPlan', this.file);
-      validateFormData.append('eMail', this.email);
-      this.audirService.validatePlan(validateFormData).subscribe((result: any) => {
-        this.isTemplateName = true;
+  createTemplateName() {
+    this.isTemplateName = true;
+  }
+
+  importTemplate() {
+    if (this.isTemplateName && this.isUploaded) {
+      const templateData = new FormData();
+      templateData.append('uploadTemplate', this.templateFile);
+      templateData.append('eMail', this.email);
+      templateData.append('type', this.templateNameValue);
+      this.audirService.uploadTemplate(templateData).subscribe((result: any) => {
+        this.isCreated = true;
+        this.audirService.showSuccess('Audit plan created successfully');
         console.log(result);
-        this.audirService.showSuccess('Audit plan validation successful');
       }, (error: any) => {
-        this.isTemplateName = false;
-        this.audirService.showError('Audit plan validation failed');
-        console.error('Error for validating plan template file:', error);
+        this.isCreated = false;
+        this.audirService.showError('Failed to create audit Template');
+        console.error('Error for creation of audit Template:', error);
       })
     } else {
-      this.isTemplateName = false;
+      this.isCreated = false;
     }
   }
 }

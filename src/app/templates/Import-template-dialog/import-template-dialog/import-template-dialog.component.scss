@@ -1,4 +1,4 @@
-.import-create-plan {
+.import-create-template {
     font-family: 'Apple SD Gothic Neo', sans-serif;
     min-height: 408px;
 
@@ -23,7 +23,7 @@
 
     .import-dialog-content .import-steps {
         display: flex;
-        height:216px;
+        height: 216px;
         flex-direction: column;
         gap: 20px;
         font-family: 'Apple SD Gothic Neo', sans-serif;
@@ -32,8 +32,7 @@
         .download-template,
         .fill-template,
         .upload-template,
-        .template-name,
-        .create-plan {
+        .template-name {
             display: flex;
             flex-direction: row;
             width: 100%;
@@ -53,15 +52,18 @@
 
             .button {
                 flex: 1;
+
                 button.disabled {
                     background-color: #cccccc !important;
                     cursor: not-allowed !important;
                     opacity: 0.6;
                     color: #333333;
                     border-color: #cccccc;
-                  }
+                }
+
                 button,
-                .upload-btn {
+                .upload-btn,
+                input {
                     height: 36px;
                     width: 164px;
                     border-radius: 30px;
@@ -73,6 +75,19 @@
                     line-height: 100%;
                     text-align: center;
                     cursor: pointer;
+                }
+
+                input {
+                    text-align: left;
+                    color: #1D2431;
+                    cursor: text;
+                    outline: none;
+                    padding: 0 20px;
+                    background-color: #FFFFFF;
+                }
+
+                input:hover {
+                    border-color: #FDE714;
                 }
 
                 button:hover,
@@ -120,6 +135,14 @@
             border-color: #FDE714;
             background-color: #FDE714;
             color: #000000;
+        }
+
+        button.disabled {
+            background-color: #cccccc !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
+            color: #333333;
+            border-color: #cccccc;
         }
     }
 }
