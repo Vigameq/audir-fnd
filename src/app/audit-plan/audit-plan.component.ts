@@ -36,7 +36,7 @@ export class AuditPlanComponent {
   isAuditorDropdownOpen = false;
   cities = ["Amaravati", "Bengaluru", "Bhopal", "Bhubaneswar", "Chandigarh", "Chennai", "Dehradun", "Gandhinagar", "Gangtok", "Hyderabad", "Jaipur", "Kolkata", "Lucknow", "Mumbai", "Panaji", "Patna", "Raipur", "Ranchi", "Shillong", "Shimla", "Thiruvananthapuram"];
   countries = ["India"];
-  selectedOptions: string[] = [];
+  selectedTemplate: string[] = [];
   parent_audits: any[] = [];
   templates: any[] = [];
   auditees: any[] = [];
@@ -148,15 +148,15 @@ export class AuditPlanComponent {
     })
   }
 
-  onAuditorSelectionChange(event: Event) {
+  onTemplateSelectionChange(event: Event) {
     const checkbox = event.target as HTMLInputElement;
     // const currentValue = this.auditPlanForm.get('auditorValue')?.value;
     if (checkbox.checked) {
-      this.selectedOptions.push(checkbox.value);
+      this.selectedTemplate.push(checkbox.value);
     } else {
-      this.selectedOptions = this.selectedOptions.filter(option => option !== checkbox.value);
+      this.selectedTemplate = this.selectedTemplate.filter(option => option !== checkbox.value);
     }
-    this.auditPlanForm.get('auditorValue')?.setValue(this.selectedOptions);
+    this.auditPlanForm.get('auditorValue')?.setValue(this.selectedTemplate);
   }
 
   onSubmit() {
@@ -165,7 +165,7 @@ export class AuditPlanComponent {
         link_audit: this.auditPlanForm.value?.linkAudit ? this.auditPlanForm.value?.linkAudit : null,
         audit_title: this.auditPlanForm.value?.auditTitle,
         functions: this.auditPlanForm.value?.functions,
-        template: this.auditPlanForm.value?.templateValue,
+        template: this.selectedTemplate,
         function_template: this.auditPlanForm.value?.functionTemplateValue,
         start_date: this.auditPlanForm.value?.startDateTime,
         end_date: this.auditPlanForm.value?.endDateTime,
@@ -177,11 +177,11 @@ export class AuditPlanComponent {
         audit_type: "ISO 270015",
         eMail: localStorage.getItem('user')?.toString() || ''
       }
-      if (plan.audit_title && plan.functions && plan.template && plan.function_template && plan.start_date && plan.end_date && plan.auditors && plan.auditees && plan.city && plan.country && plan.audit_scope) {
+      if (plan.audit_title && plan.functions  && plan.start_date && plan.end_date && plan.audit_scope) {
         this.audirService.createAuditPlan(plan).subscribe(response => {
           if (response) {
             this.resetForm();
-            this.openSuccessDialog();
+            this.openSuccessDialog(plan.audit_title);
             this.selectedDate = undefined;
           } else {
             this.audirService.showError('Failed to create audit plan');
@@ -260,11 +260,11 @@ export class AuditPlanComponent {
     this.isImportVisible = !this.isImportVisible;
   }
 
-  openSuccessDialog(): void {
+  openSuccessDialog(audit_title: string) {
     const dialogRef = this.dialog.open(AuditPlanSuccessPopupComponent, {
       width: '500px',
       height: '480px',
-      data: { id: 'Vig196678' }
+      data: { id: audit_title }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {

@@ -30,8 +30,8 @@ export class AudirService {
     });
   }
 
-  uploadPlan(email: any, uploadTemplate: any): any {
-    return this.http.post<any>('/audire/api/uploadTemplate', uploadTemplate, email);
+  uploadTemplate(formData: FormData): any {
+    return this.http.post<any>('/audire/api/uploadTemplate', formData);
   }
   validatePlan(formData: FormData): any {
     return this.http.post<any>('/audire/api/validateAuditPlan', formData);

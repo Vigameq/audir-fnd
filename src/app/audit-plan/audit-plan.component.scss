@@ -112,8 +112,37 @@
                 display: flex;
                 flex-direction: row;
                 gap: 40px;
-            }
 
+            }
+            .dropdown {
+                min-width: 48%;
+              }
+              
+              .dropbtn {
+                background-color: #ffffff;
+                color: #000000;
+                padding: 10px;
+                border: 1px solid #dbdbdb;
+                cursor: pointer;
+                border-radius: 5px;
+              }
+              
+              .dropdown-content {
+                display: grid;
+                position: absolute;
+                background-color: #ffffff;
+                min-width: 160px;
+                /* box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); */
+                padding: 10px;
+                z-index: 1;
+                border-radius: 5px;
+                border: 1px solid #dbdbdb;
+                width: 100%;
+                .template-value{
+                    margin-left: 15px !important;
+                }
+              }
+              
             .asterisk{
                 color: #ff0000;
             }
@@ -395,3 +424,4 @@
         width: 100%;
     }
 }
+
