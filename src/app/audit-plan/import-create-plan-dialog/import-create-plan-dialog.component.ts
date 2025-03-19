@@ -24,7 +24,7 @@ export class ImportCreatePlanDialogComponent {
   }
 
   downloadPlanTemplate(): any {
-    this.audirService.downloadPlanTemplate().subscribe(
+    this.audirService.downloadAuditPlan().subscribe(
       (response: ArrayBuffer) => {
         const blobData = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const templateFileURL = URL.createObjectURL(blobData);

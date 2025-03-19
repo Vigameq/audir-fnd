@@ -18,13 +18,13 @@ export class AudirService {
     return this.http.post('/audire/api/planAudit', auditPlan);
   }
 
-  downloadPlanTemplate(): Observable<ArrayBuffer> {
+  downloadAuditPlan(): Observable<ArrayBuffer> {
     return this.http.get<any>('/audire/api/downloadAuditPlan', {
       responseType: 'arraybuffer' as 'json'
     });
   }
 
-  downloadTemplate(): Observable<ArrayBuffer> {
+  downloadAuditTemplate(): Observable<ArrayBuffer> {
     return this.http.get<any>('/audire/api/downloadAuditTemplate', {
       responseType: 'arraybuffer' as 'json'
     });

@@ -177,11 +177,11 @@ export class AuditPlanComponent {
         audit_type: "ISO 270015",
         eMail: localStorage.getItem('user')?.toString() || ''
       }
-      if (plan.audit_title && plan.functions && plan.template && plan.function_template && plan.start_date && plan.end_date && plan.auditors && plan.auditees && plan.city && plan.country && plan.audit_scope) {
+      if (plan.audit_title && plan.functions  && plan.start_date && plan.end_date && plan.audit_scope) {
         this.audirService.createAuditPlan(plan).subscribe(response => {
           if (response) {
             this.resetForm();
-            this.openSuccessDialog();
+            this.openSuccessDialog(plan.audit_title);
             this.selectedDate = undefined;
           } else {
             this.audirService.showError('Failed to create audit plan');
@@ -260,11 +260,11 @@ export class AuditPlanComponent {
     this.isImportVisible = !this.isImportVisible;
   }
 
-  openSuccessDialog(): void {
+  openSuccessDialog(audit_title: string) {
     const dialogRef = this.dialog.open(AuditPlanSuccessPopupComponent, {
       width: '500px',
       height: '480px',
-      data: { id: 'Vig196678' }
+      data: { id: audit_title }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {

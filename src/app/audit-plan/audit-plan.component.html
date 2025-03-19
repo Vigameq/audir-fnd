@@ -13,7 +13,7 @@
             <form [formGroup]="auditPlanForm" (ngSubmit)="onSubmit()">
                 <div class="link-audit-row">
                     <div class="link-audit-label">
-                        <label for="linkAudit" class="form-label">Link Audit</label>
+                        <label for="linkAudit" class="form-label">Parent Audit</label>
                     </div>
                     <div class="link-audit-select">
                         <select id="linkAudit" class="dropdown-select" formControlName="linkAudit" name="linkAudit">
@@ -36,7 +36,7 @@
                         </select> -->
                     </div>
                     <div class="functions">
-                        <label for="function" class="form-label">Functions</label>
+                        <label for="function" class="form-label">Functions <span class="asterisk">*</span></label>
                         <input id="function" class="audit-function-input" formControlName="functions"
                             name="functions" />
                         <!-- <select id="function" class="dropdown-select" formControlName="functions" name="functions"
@@ -58,7 +58,7 @@
                         </select>
                     </div>
                     <div class="function-template">
-                        <label for="function-templates" class="form-label">Functions Template <span class="asterisk">*</span></label>
+                        <label for="function-templates" class="form-label">Functions Template </label>
                         <select id="function-templates" class="dropdown-select" formControlName="functionTemplateValue"
                             name="functionTemplateValue" required>
                             <option value="" disabled selected>Select template..</option>
@@ -81,7 +81,7 @@
                 </div>
                 <div class="auditees-auditors-row">
                     <div class="auditors">
-                        <label for="auditorDropdown" class="auditor-label">Auditors <span class="asterisk">*</span></label>
+                        <label for="auditorDropdown" class="auditor-label">Lead Auditors </label>
                         <!-- <div class="auditorDropdown">
                             <button class="auditor-dropdown-button" type="button" id="auditor-select-dropdown"
                                 (click)="toggleDropdown()">
@@ -106,7 +106,7 @@
                         </select>
                     </div>
                     <div class="auditees">
-                        <label for="auditeeDropdown" class="auditee-label">Auditees <span class="asterisk">*</span></label>
+                        <label for="auditeeDropdown" class="auditee-label">Auditees </label>
                         <!-- <div class="auditeeDropdown">
                             <button class="auditee-dropdown-button" type="button" id="auditee-select-dropdown">
                                 Select auditees
@@ -130,7 +130,7 @@
                 </div>
                 <div class="city-country-row">
                     <div class="city">
-                        <label for="city-name" class="form-label">City <span class="asterisk">*</span></label>
+                        <label for="city-name" class="form-label">City </label>
                         <select id="city-name" class="dropdown-select" formControlName="cityName" name="cityName"
                             required>
                             <option value="" disabled selected>Select City</option>
@@ -139,7 +139,7 @@
                         </select>
                     </div>
                     <div class="country">
-                        <label for="country-name" class="form-label">Country <span class="asterisk">*</span></label>
+                        <label for="country-name" class="form-label">Country </label>
                         <select id="country-name" class="dropdown-select" formControlName="countryName"
                             name="countryName" required>
                             <option value="" disabled selected>Select Country</option>
@@ -173,7 +173,7 @@
             </article>
         </div>
         <div class="audit-information">
-            <span class="audit-info-header">Audit Information</span>
+            <span class="audit-info-header">Planned audits</span>
             <div class="audit-plans">
                 <div class="plans-list" *ngFor="let plan of (showAllPlans ? auditPlans : auditPlans.slice(0, 4))">
                     <div class="plan-details">
