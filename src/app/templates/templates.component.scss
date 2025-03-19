@@ -123,6 +123,7 @@
         display: flex;
         flex-direction: column;
         margin: 30px 0px 20px 0px;
+        width: 100%;
 
         .funtion-name {
             margin: 10px 0px;
@@ -159,6 +160,21 @@
                     font-weight: 400;
                     color: #575757;
                     line-height: 100%;
+                    width: 100%;
+                }
+
+                .question-text-input {
+                    width: 90%;
+                    height: 40px;
+                    outline: none;
+                    border: 1px solid #dbdbdb;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    padding: 6px 10px;
+                }
+
+                .question-text-input:focus {
+                    border-color: #FDE714;
                 }
 
                 .edit-and-delete-icon {
@@ -169,11 +185,18 @@
 
                     .edit-question-icon {
                         min-width: 16px;
+
                         img {
                             margin-bottom: 8px;
                             height: 16px;
                             width: 16px;
                             cursor: pointer;
+                        }
+                        svg {
+                            height: 18px;
+                            width: 18px;
+                            cursor: pointer;
+                            margin-top: 12px;
                         }
                     }
 
@@ -182,6 +205,13 @@
                             margin-bottom: 8px;
                             height: 16px;
                             width: 16px;
+                            cursor: pointer;
+                        }
+
+                        #cancel {
+                            height: 18px;
+                            width: 18px;
+                            margin-top: 12px;
                             cursor: pointer;
                         }
                     }

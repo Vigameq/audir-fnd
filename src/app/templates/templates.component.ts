@@ -12,29 +12,36 @@ import { AudirService } from 'src/services/audir-services.service';
 })
 export class TemplatesComponent {
   templates: any[] = [];
+  editedQuestionText: string | undefined = '';
   allQuestions: any[] = [
     {
       questionNumber: 'Question1',
-      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?'
+      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?',
+      showEditIcon: true
     },
     {
       questionNumber: 'Question1',
-      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?'
+      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?',
+      showEditIcon: true
     },
     {
       questionNumber: 'Question1',
-      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?'
+      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?',
+      showEditIcon: true
     },
     {
       questionNumber: 'Question1',
-      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?'
+      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?',
+      showEditIcon: true
     },
     {
       questionNumber: 'Question1',
-      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?'
+      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?',
+      showEditIcon: true
     }, {
       questionNumber: 'Question1',
-      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?'
+      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?',
+      showEditIcon: true
     }
   ]
   selectedFunctionId: any[] = [];
@@ -100,17 +107,24 @@ export class TemplatesComponent {
     }
   }
 
-  editQuestion() {
-    const dialogRef = this.dialog.open(AuditorRemarksComponent, {
-      width: '634px',
-      height: '360px',
-      data: { id: 'GG196678' }
-    });
+  editQuestion(index: number, type: string, questionText?: string) {
+    if (type === 'edit' || type === 'cancel') {
+      this.allQuestions[index].showEditIcon = type === 'edit' ? false : true;
+      this.editedQuestionText = questionText;
+      return;
+    }
+    this.allQuestions[index].showEditIcon = true;
+    this.allQuestions[index].questionText = this.editedQuestionText;
+    // const dialogRef = this.dialog.open(AuditorRemarksComponent, {
+    //   width: '634px',
+    //   height: '360px',
+    //   data: { id: 'GG196678' }
+    // });
 
-    dialogRef.afterClosed().subscribe((result: any) => {
-      this.router.navigate(['/templates']);
-      console.log(`Dialog result: ${result}`);
-    });
+    // dialogRef.afterClosed().subscribe((result: any) => {
+    //   this.router.navigate(['/templates']);
+    //   console.log(`Dialog result: ${result}`);
+    // });
   }
 
   getPlanItems() {
@@ -122,7 +136,7 @@ export class TemplatesComponent {
     })
   }
 
-  deleteQuestion() {
-
+  deleteQuestion(index: number) {
+    this.allQuestions.splice(index, 1);
   }
 }
