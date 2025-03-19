@@ -48,15 +48,19 @@
                     </div>
                 </div>
                 <div class="templates-row">
-                    <div class="template">
-                        <label for="templates" class="form-label">Template <span class="asterisk">*</span></label>
-                        <select id="templates" class="dropdown-select" formControlName="templateValue"
-                            name="templateValue" required>
-                            <option value="" disabled selected>Select template..</option>
-                            <option *ngFor="let template of templates" [value]="template.name">
-                                {{ template.name }}</option>
-                        </select>
-                    </div>
+                    <div class="dropdown">
+                        <label for="templates" class="form-label">Template </label>
+                        <div (click)="toggleDropdown()" class="dropbtn">
+                          Select templates
+                        </div>
+                        <div *ngIf="isAuditorDropdownOpen" class="dropdown-content">
+                          <label *ngFor="let template of templates">
+                            <input type="checkbox" [value]="template.name" (change)="onTemplateSelectionChange($event)" 
+                                   [checked]="selectedTemplate.includes(template)" />
+                            <span class="template-value">{{ template.name }}</span><br>
+                          </label>
+                        </div>
+                      </div>
                     <div class="function-template">
                         <label for="function-templates" class="form-label">Functions Template </label>
                         <select id="function-templates" class="dropdown-select" formControlName="functionTemplateValue"

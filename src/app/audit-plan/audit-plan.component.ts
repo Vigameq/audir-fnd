@@ -36,7 +36,7 @@ export class AuditPlanComponent {
   isAuditorDropdownOpen = false;
   cities = ["Amaravati", "Bengaluru", "Bhopal", "Bhubaneswar", "Chandigarh", "Chennai", "Dehradun", "Gandhinagar", "Gangtok", "Hyderabad", "Jaipur", "Kolkata", "Lucknow", "Mumbai", "Panaji", "Patna", "Raipur", "Ranchi", "Shillong", "Shimla", "Thiruvananthapuram"];
   countries = ["India"];
-  selectedOptions: string[] = [];
+  selectedTemplate: string[] = [];
   parent_audits: any[] = [];
   templates: any[] = [];
   auditees: any[] = [];
@@ -148,15 +148,15 @@ export class AuditPlanComponent {
     })
   }
 
-  onAuditorSelectionChange(event: Event) {
+  onTemplateSelectionChange(event: Event) {
     const checkbox = event.target as HTMLInputElement;
     // const currentValue = this.auditPlanForm.get('auditorValue')?.value;
     if (checkbox.checked) {
-      this.selectedOptions.push(checkbox.value);
+      this.selectedTemplate.push(checkbox.value);
     } else {
-      this.selectedOptions = this.selectedOptions.filter(option => option !== checkbox.value);
+      this.selectedTemplate = this.selectedTemplate.filter(option => option !== checkbox.value);
     }
-    this.auditPlanForm.get('auditorValue')?.setValue(this.selectedOptions);
+    this.auditPlanForm.get('auditorValue')?.setValue(this.selectedTemplate);
   }
 
   onSubmit() {
@@ -165,7 +165,7 @@ export class AuditPlanComponent {
         link_audit: this.auditPlanForm.value?.linkAudit ? this.auditPlanForm.value?.linkAudit : null,
         audit_title: this.auditPlanForm.value?.auditTitle,
         functions: this.auditPlanForm.value?.functions,
-        template: this.auditPlanForm.value?.templateValue,
+        template: this.selectedTemplate,
         function_template: this.auditPlanForm.value?.functionTemplateValue,
         start_date: this.auditPlanForm.value?.startDateTime,
         end_date: this.auditPlanForm.value?.endDateTime,
