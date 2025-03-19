@@ -5,7 +5,7 @@
                 <div class="standard-dropdown-section" (click)="onStandardDropdownClick()" #standardDropdown>
                     <select class="standard-dropdown-select" (change)="onStandardOptionChange($event)"
                         [(ngModel)]="standardSelectedOption">
-                        <option value="" disabled selected>Select Standards</option>
+                        <option value="" disabled selected>Select Templates</option>
                         <option *ngFor="let standardOption of templates" [value]="standardOption.name">
                             {{ standardOption.name }}
                         </option>
@@ -41,7 +41,7 @@
         </div>
     </div>
     <div class="filtered-data-display-section">
-        <div class="funtion-name"><span>Function 1</span></div>
+        <div class="funtion-name"><span>IS027001-Q4</span></div>
         <div *ngFor="let question of allQuestions" class="filtered-questions-section">
             <div class="question-number"><span>{{question.questionNumber}}</span></div>
             <div class="questions-text-with-delete-icon">
@@ -50,7 +50,7 @@
                 </div>
                 <div class="edit-and-delete-icon">
                     <div class="edit-question-icon">
-                        <img src="../assets/images/Vector.png" alt="Edit" id="edit-icon" (click)="editQuestion()" />
+                        <img src="../assets/images/Vector.png" alt="Edit" id="edit-icon" />
                     </div>
                     <div class="delete-question-icon">
                         <svg width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
