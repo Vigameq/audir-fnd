@@ -11,11 +11,15 @@ import { AudirService } from 'src/services/audir-services.service';
 export class HeaderComponent {
   @Input() displayHeaderName: any;
   @ViewChild('dropdown') dropdown: ElementRef | undefined;
-  profileDropdownOptions = ['Gowtham Gadipudi', 'Logout'];
-  selectedOption: string = this.profileDropdownOptions[0];
+  profileDropdownOptions : any[] = [];
+  selectedOption: string ;
   isOpen: boolean = false;
+  userName: any = "";
 
   constructor(private renderer: Renderer2, private router: Router, private audirService: AudirService) {
+    this.userName = localStorage.getItem('user')?localStorage.getItem('user'):"";
+    this.profileDropdownOptions = [this.userName.split('@')[0], 'Logout'];
+    this.selectedOption = this.profileDropdownOptions[0].split('@')[0];
   }
 
   ngOnInit(): void {

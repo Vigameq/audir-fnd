@@ -16,31 +16,31 @@ export class TemplatesComponent {
   allQuestions: any[] = [
     {
       questionNumber: 'Question1',
-      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?',
+      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
       showEditIcon: true
     },
     {
       questionNumber: 'Question1',
-      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?',
+      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
       showEditIcon: true
     },
     {
       questionNumber: 'Question1',
-      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?',
+      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
       showEditIcon: true
     },
     {
       questionNumber: 'Question1',
-      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?',
+      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
       showEditIcon: true
     },
     {
       questionNumber: 'Question1',
-      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?',
+      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
       showEditIcon: true
     }, {
       questionNumber: 'Question1',
-      questionText: 'Howewwwwwwwwwww was the random question, let play chess fastly or slowly and bowl fasttttttttttttttttttttttttttttttttttttttttttttttttt?',
+      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
       showEditIcon: true
     }
   ]
