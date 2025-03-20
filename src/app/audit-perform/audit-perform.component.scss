@@ -16,15 +16,15 @@
         .audit-perform-search-bar {
             position: relative;
             height: 44px;
-            max-width: 327px;
+            width: 100%;
             margin: 20px;
             font-size: 16px;
             font-family: 'Apple SD Gothic Neo', sans-serif;
 
 
             .audit-perform-search-input {
-                max-width: 327px;
-                padding: 10px 30px 10px 18px;
+                width: 85%;
+                padding: 10px 30px 10px 20px;
                 font-size: 16px;
                 color: #000000;
                 border: 1px solid #D9D9D9;
@@ -43,8 +43,8 @@
 
             .clear-btn {
                 position: absolute;
-                right: 10px;
-                top: 50%;
+                right: 176px;
+                top: 52%;
                 transform: translateY(-50%);
                 background: transparent;
                 border: none;
@@ -61,9 +61,6 @@
 
         .dropdown-section {
             position: relative;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
             margin: 0 10px;
 
             .standard-dropdown-section {
@@ -95,48 +92,133 @@
 
     }
 
+    .Audit-info-label {
+        margin-top: 30px;
+        font-weight: 700;
+        font-size: 22px;
+        color: #4E4E4E;
+        line-height: 100%;
+    }
+
     .audit-perform-container-section {
-        margin: 40px 0 30px 0;
+        margin: 10px 0 30px 0;
         max-width: 100%;
         display: flex;
         flex-direction: column;
         gap: 30px;
-    }
 
-    @media (min-width: 960px) and (max-width: 1280px) {
+        .audit-perform-container {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #1D2431;
+            border-radius: 20px;
+            padding: 20px 40px 26px;
+            gap: 20px;
 
-        .standard-dropdown-select {
-            width: 200px !important;
+            .audit-perfom-details {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+                .plan-creation-id span {
+                    font-size: 20px;
+                    font-weight: 700;
+                    line-height: 100%;
+                    color: #515151;
+                }
+
+                .templates-location-details {
+                    font-size: 20px;
+                    font-weight: 400;
+                    line-height: 100%;
+                    color: #515151;
+
+                    .templates-details {
+                        padding-bottom: 2px;
+                    }
+                }
+
+                .duration-details {
+                    font-size: 16px;
+                    font-weight: 400;
+                    line-height: 100%;
+                    color: #515151;
+
+                    .time-details {
+                        padding-top: 2px;
+
+                        .end-time {
+                            margin-left: 30px;
+                        }
+                    }
+                }
+            }
+
+            .audit-progress-details {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                .audit-progress-label,
+                .auditor-details,
+                .percentage {
+                    font-size: 14px;
+                    font-weight: 400;
+                    line-height: 100%;
+                    color: #515151;
+                }
+
+                .progress-percentage {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 4px;
+
+                    .progress-bar {
+                        border-radius: 20px;
+                        height: 27px;
+                        width: 245px;
+                        border: 1px solid #000000;
+                        background-color: #FFFFFF;
+
+                        .progress-percentage {
+                            height: 100%;
+                            background-color: #000000;
+                            border-radius: 20px;
+                            transition: width 0.3s ease;
+                        }
+                    }
+                }
+            }
+
+            .audit-count {
+                min-width: 35px;
+                min-height: 35px;
+                position: absolute;
+                left: -18px;
+                border-radius: 50%;
+                top: 50%;
+                padding: 2px;
+                transform: translateY(-50%);
+                background-color: #000000;
+                border: 1px solid #000000;
+                font-size: 20px;
+                font-weight: 400;
+                line-height: 100%;
+                cursor: pointer;
+                color: #FFFFFF;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
         }
 
-        .standard-dropdown-section .dropdown-arrow {
-            left: 240px !important;
-        }
-    }
-
-    @media (min-width: 768px) and (max-width: 960px) {
-
-        .standard-dropdown-select {
-            width: 160px !important;
-        }
-
-        .standard-dropdown-section .dropdown-arrow {
-            left: 200px !important;
-        }
-    }
-
-    @media (min-width: 640px) and (max-width: 768px) {
-
-        .standard-dropdown-select {
-            width: 140px !important;
-        }
-
-        .audit-perform-search-input {
-            width: 160px !important;
-        }
-
-        .standard-dropdown-section .dropdown-arrow {
-            left: 180px !important;
+        .vertical-bar,
+        .hyphen {
+            margin: 0 6px;
         }
     }
 }

@@ -7,29 +7,25 @@ import { Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
 })
 export class AuditPerformComponent {
   searchQuery: string = '';
-  isFunctionsDropdownOpen: boolean = false;
   isStandardDropdownOpen: boolean = false;
   standardDropdownOptions = ['options1', 'option2', 'option3'];
   standardSelectedOption: string = '';
-  functionsDropdownOptions = ['options2', 'option2', 'option3'];
-  functionsSelectedOption: string = '';
-  reportsData = [
-    { name: 'Item 1', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india' },
-    { name: 'Item 2', standardType: 'This2', functionType: 'function2', city: 'hyderabad', country: 'india' },
-    { name: 'Item 3', standardType: 'This3', functionType: 'function3', city: 'kerala', country: 'india' },
-    { name: 'Item 4', standardType: 'This4', functionType: 'function4', city: 'Amaravathi', country: 'india' },
-    { name: 'Item 1', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india' },
-    { name: 'Item 2', standardType: 'This2', functionType: 'function2', city: 'hyderabad', country: 'india' },
-    { name: 'Item 3', standardType: 'This3', functionType: 'function3', city: 'kerala', country: 'india' },
-    { name: 'Item 4', standardType: 'This4', functionType: 'function4', city: 'Amaravathi', country: 'india' },
-    { name: 'Item 1', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india' },
-    { name: 'Item 2', standardType: 'This2', functionType: 'function2', city: 'hyderabad', country: 'india' },
-    { name: 'Item 3', standardType: 'This3', functionType: 'function3', city: 'kerala', country: 'india' },
-    { name: 'Item 4', standardType: 'This4', functionType: 'function4', city: 'Amaravathi', country: 'india' }
+  auditPerformInfoData = [
+    { id: 'VIG1893893', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '70', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
+    { id: 'VIG18938932', standardType: 'This2', functionType: 'function2', city: 'hyderabad', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '20', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
+    { id: 'VIG18938933', standardType: 'This3', functionType: 'function3', city: 'kerala', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '30', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
+    { id: 'VIG18938934', standardType: 'This4', functionType: 'function4', city: 'Amaravathi', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '40', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
+    { id: 'VIG18938931', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '90', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
+    { id: 'VIG18938932', standardType: 'This2', functionType: 'function2', city: 'hyderabad', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '90', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
+    { id: 'VIG18938933', standardType: 'This3', functionType: 'function3', city: 'kerala', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '80', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
+    { id: 'VIG18938934', standardType: 'This4', functionType: 'function4', city: 'Amaravathi', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '30', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
+    { id: 'VIG18938931', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '26', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
+    { id: 'VIG18938932', standardType: 'This2', functionType: 'function2', city: 'hyderabad', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '10', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
+    { id: 'VIG18938933', standardType: 'This3', functionType: 'function3', city: 'kerala', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '50', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
+    { id: 'VIG18938934', standardType: 'This4', functionType: 'function4', city: 'Amaravathi', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '60', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' }
   ];
 
   @ViewChild('standardDropdown') standardDropdown: ElementRef | undefined;
-  @ViewChild('functionsDropdown') functionsDropdown: ElementRef | undefined;
 
   constructor(private renderer: Renderer2) { }
 
@@ -50,24 +46,12 @@ export class AuditPerformComponent {
   onStandardDropdownClick(): void {
     this.isStandardDropdownOpen = !this.isStandardDropdownOpen;
   }
-  onFunctionsOptionChange(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    this.functionsSelectedOption = target.value;
-    console.log("Selected Option: ", this.functionsSelectedOption);
-  }
 
-  onFunctionsDropdownClick(): void {
-    this.isFunctionsDropdownOpen = !this.isFunctionsDropdownOpen;
-  }
   ngAfterViewInit() {
     this.renderer.listen('document', 'click', (event: Event) => {
       if (this.standardDropdown && !this.standardDropdown.nativeElement.contains(event.target)) {
         this.isStandardDropdownOpen = false;
       }
-      if (this.functionsDropdown && !this.functionsDropdown.nativeElement.contains(event.target)) {
-        this.isFunctionsDropdownOpen = false;
-      }
-
     });
   }
 }
