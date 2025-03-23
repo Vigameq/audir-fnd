@@ -1,0 +1,69 @@
+<div class="function-audit-info-container">
+    <div class="parent-navigation-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M20 40C8.95161 40 0 31.0484 0 20C0 8.95161 8.95161 0 20 0C31.0484 0 40 8.95161 40 20C40 31.0484 31.0484 40 20 40ZM29.3548 16.4516H20V10.7339C20 9.87097 18.9516 9.43548 18.3468 10.0484L9.12903 19.3145C8.75 19.6935 8.75 20.2984 9.12903 20.6774L18.3468 29.9435C18.9597 30.5564 20 30.121 20 29.2581V23.5484H29.3548C29.8871 23.5484 30.3226 23.1129 30.3226 22.5806V17.4194C30.3226 16.8871 29.8871 16.4516 29.3548 16.4516Z"
+                fill="black" />
+        </svg>
+    </div>
+    <div class="function-audit-info">
+        <div class="header-label"><span>Audit Perform</span></div>
+        <div class="audit-info-section">
+            <div class="left-section">
+                <div class="audit-info-label"><span>Audit Information</span></div>
+                <div class="audit-creation-id"><span>{{auditorInfo.id}}</span></div>
+                <div class="templates-location-details">
+                    <div class="templates-details">
+                        <span>{{auditorInfo.standardType}}</span>
+                        <span class="vertical-bar">|</span>
+                        <span>{{auditorInfo.functionType}}
+                        </span>
+                    </div>
+                    <div class="location-details"><span>{{auditorInfo.city}}</span>
+                        <span class="vertical-bar">|</span>
+                        <span>{{auditorInfo.country}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="right-section">
+                <div class="duration-details">
+                    <div class="date-details">
+                        <span>{{auditorInfo.startDate}}</span>
+                        <span class="hyphen">-</span>
+                        <span>{{auditorInfo.endDate}}
+                        </span>
+                    </div>
+                    <div class="time-details">
+                        <span class="start-time">{{auditorInfo.startTime}}</span>
+                        <span class="end-time">{{auditorInfo.endTime}}
+                        </span>
+                    </div>
+                </div>
+                <div class="lead-auditor-label"><span>Lead Auditor Required</span></div>
+                <div class="auditor-details">
+                    <span>{{auditorInfo.auditorName}}</span>
+                    <span class="vertical-bar">|</span>
+                    <span>{{auditorInfo.auditCompaey}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="progress-percentage">
+            <div class="progress-bar">
+                <div class="progress-percentage" [ngStyle]="{ 'width': auditorInfo.percentage + '%' }">
+                </div>
+            </div>
+            <div class="percentage"><span>{{auditorInfo.percentage}}% complete</span></div>
+        </div>
+    </div>
+    <div class="functional-template-question-section">
+        <div *ngFor="let question of allfunctionalQuestions" class="questions-section">
+            <div class="question-number-and-text">
+                <div class="question-number"><span>{{question.questionNumber}}</span></div>
+                <div class="question-text">
+                    <span>{{question.questionText}}</span>
+                </div>
+            </div>
+            <div class="status"><span>{{question.status}}</span></div>
+        </div>
+    </div>
+</div>

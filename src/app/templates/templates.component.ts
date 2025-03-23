@@ -43,7 +43,7 @@ export class TemplatesComponent {
       questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
       showEditIcon: true
     }
-  ]
+  ];
   selectedFunctionId: any[] = [];
   standardSelectedOption: string = '';
   isImportVisible: boolean = true;

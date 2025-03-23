@@ -1,6 +1,7 @@
 .audit-perfom {
     max-width: 100%;
     margin: 16px 40px 0 44px;
+    font-family: 'Apple SD Gothic Neo', sans-serif;
 
     .search-dropdown-section {
         width: 100%;
@@ -175,7 +176,7 @@
                     display: flex;
                     flex-direction: row;
                     align-items: center;
-                    gap: 4px;
+                    gap: 6px;
 
                     .progress-bar {
                         border-radius: 20px;
