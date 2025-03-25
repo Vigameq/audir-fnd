@@ -56,14 +56,14 @@
         </div>
     </div>
     <div class="functional-template-question-section">
-        <div *ngFor="let question of allfunctionalQuestions" class="questions-section">
+        <div *ngFor="let question of allFunctionalQuestions; let i = index" class="questions-section">
             <div class="question-number-and-text">
                 <div class="question-number"><span>{{question.questionNumber}}</span></div>
                 <div class="question-text">
                     <span>{{question.questionText}}</span>
                 </div>
             </div>
-            <div class="status"><span>{{question.status}}</span></div>
+            <div class="status" (click)="customizeQuestion(i)"><span>{{question.status}}</span></div>
         </div>
     </div>
 </div>

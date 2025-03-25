@@ -45,3 +45,27 @@ body {
 .toast-container .ngx-toastr {
   border-radius: 15px !important;
 }
+
+.customize-question-dialog-container {
+  position: absolute !important;
+  right: 0;
+  top: 8px;
+  bottom: 0;
+  margin-bottom: 8px;
+  animation: slideInFromRight 0.5s ease-in-out forwards;
+
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: 1px !important;
+    overflow-y: hidden;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
