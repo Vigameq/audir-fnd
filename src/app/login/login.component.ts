@@ -19,8 +19,9 @@ export class LoginComponent {
   onSubmit() {
     this.authService.login(this.email, this.password).subscribe(
       (response: any) => {
-        if (response) {
+        if (response) {          
           localStorage.setItem('login_success', 'success');
+          localStorage.setItem("userDetails",JSON.stringify(response));
           localStorage.setItem('user', response.eMail);
           localStorage.setItem('header', 'Audit Plan');
           this.router.navigate(['/auditPlan']);

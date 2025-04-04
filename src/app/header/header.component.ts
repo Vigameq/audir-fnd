@@ -12,17 +12,20 @@ export class HeaderComponent {
   @Input() displayHeaderName: any;
   @ViewChild('dropdown') dropdown: ElementRef | undefined;
   profileDropdownOptions : any[] = [];
-  selectedOption: string ;
+  selectedOption!: string ;
   isOpen: boolean = false;
   userName: any = "";
+  userDetails: any;
 
   constructor(private renderer: Renderer2, private router: Router, private audirService: AudirService) {
-    this.userName = localStorage.getItem('user')?localStorage.getItem('user'):"";
-    this.profileDropdownOptions = [this.userName.split('@')[0], 'Logout'];
-    this.selectedOption = this.profileDropdownOptions[0].split('@')[0];
+    this.userName = localStorage.getItem('user')?localStorage.getItem('user'):""; 
   }
 
   ngOnInit(): void {
+    this.userDetails = localStorage.getItem('userDetails');
+    this.profileDropdownOptions = [`${JSON.parse(this.userDetails)?.firstname.charAt(0).toUpperCase() + JSON.parse(this.userDetails)?.firstname.slice(1).toLowerCase()}
+       ${JSON.parse(this.userDetails)?.lastName.charAt(0).toUpperCase() + JSON.parse(this.userDetails)?.lastName.slice(1).toLowerCase()}`, 'Logout'];
+    this.selectedOption = this.profileDropdownOptions[0];
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
