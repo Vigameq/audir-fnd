@@ -18,6 +18,11 @@ export class AudirService {
     return this.http.post('/audire/api/planAudit', auditPlan);
   }
 
+  getTemplate(template_id: any) {
+    const templateDetails = { "template_id": template_id }
+    return this.http.post('/audire/api/getTemplate', templateDetails);
+  }
+
   downloadPlanTemplate(): Observable<ArrayBuffer> {
     return this.http.get<any>('/audire/api/downloadAuditPlan', {
       responseType: 'arraybuffer' as 'json'

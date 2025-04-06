@@ -3,10 +3,10 @@
         <div class="dropdown-and-import-section">
             <div class="dropdown-section">
                 <div class="standard-dropdown-section" (click)="onStandardDropdownClick()" #standardDropdown>
-                    <select class="standard-dropdown-select" (change)="onStandardOptionChange($event)"
+                    <select class="standard-dropdown-select" (change)="onStandardOptionChange()"
                         [(ngModel)]="standardSelectedOption">
                         <option value="" disabled selected>Select Templates</option>
-                        <option *ngFor="let standardOption of templates" [value]="standardOption.name">
+                        <option *ngFor="let standardOption of templates" [ngValue]="standardOption">
                             {{ standardOption.name }}
                         </option>
                     </select>
@@ -41,17 +41,18 @@
         </div>
     </div>
     <div class="filtered-data-display-section">
-        <div class="funtion-name"><span>Function 1</span></div>
+        <div class="funtion-name"><span>{{templateName}}</span></div>
         <div *ngFor="let question of allQuestions; let i = index" class="filtered-questions-section">
-            <div class="question-number"><span>{{question.questionNumber}}</span></div>
+            <div class="question-number"><span>Question {{i+1}}</span></div>
             <div class="questions-text-with-delete-icon">
                 <div class="question-text">
-                    <span *ngIf="question.showEditIcon">{{question.questionText}}</span>
+                    <span>{{question}}</span>
+                    <!-- <span *ngIf="question.showEditIcon">{{question}}</span>
                     <input *ngIf="!question.showEditIcon" id="question-text-input" class="question-text-input"
-                        name="questionText" [(ngModel)]="editedQuestionText" placeholder="Enter Question..." />
+                        name="questionText" [(ngModel)]="editedQuestionText" placeholder="Enter Question..." /> -->
                 </div>
                 <div class="edit-and-delete-icon">
-                    <div class="edit-question-icon">
+                    <!-- <div class="edit-question-icon">
                         <img src="../assets/images/Vector.png" alt="Edit" id="edit-icon" *ngIf="question.showEditIcon"
                             (click)="editQuestion(i,'edit',question.questionText)" />
                         <svg width="16px" height="16px" viewBox="0 0 24 24" id="check-circle" fill="none"
@@ -61,22 +62,24 @@
                                 d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12ZM12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM7.70711 12.2929L10 14.5858L16.2929 8.29289C16.6834 7.90237 17.3166 7.90237 17.7071 8.29289C18.0976 8.68342 18.0976 9.31658 17.7071 9.70711L10.7071 16.7071C10.3166 17.0976 9.68342 17.0976 9.29289 16.7071L6.29289 13.7071C5.90237 13.3166 5.90237 12.6834 6.29289 12.2929C6.68342 11.9024 7.31658 11.9024 7.70711 12.2929Z"
                                 fill="#1dd91d" />
                         </svg>
-                    </div>
+                    </div> -->
                     <div class="delete-question-icon">
                         <svg width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                            *ngIf="question.showEditIcon" (click)="deleteQuestion(i)">
+                            (click)="deleteQuestion(i)">
+                            <!-- <svg width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                            *ngIf="question.showEditIcon" (click)="deleteQuestion(i)"> -->
                             <g>
                                 <path fill="none" d="M0 0h24v24H0z" />
                                 <path
                                     d="M7 4V2h10v2h5v2h-2v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6H2V4h5zM6 6v14h12V6H6zm3 3h2v8H9V9zm4 0h2v8h-2V9z" />
                             </g>
                         </svg>
-                        <svg width="16px" height="16px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
+                        <!-- <svg width="16px" height="16px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
                             id="cancel" *ngIf="!question.showEditIcon"
                             (click)="editQuestion(i,'cancel',question.questionText)">
                             <path fill="red"
                                 d="M10,0 C15.5228475,0 20,4.4771525 20,10 C20,15.5228475 15.5228475,20 10,20 C4.4771525,20 0,15.5228475 0,10 C0,4.4771525 4.4771525,0 10,0 Z M10,1.39534884 C5.24778239,1.39534884 1.39534884,5.24778239 1.39534884,10 C1.39534884,14.7522176 5.24778239,18.6046512 10,18.6046512 C14.7522176,18.6046512 18.6046512,14.7522176 18.6046512,10 C18.6046512,5.24778239 14.7522176,1.39534884 10,1.39534884 Z M12.2066229,6.83655409 C12.4730122,6.5704103 12.9047155,6.57060929 13.1708593,6.83699857 C13.4370031,7.10338784 13.4368041,7.53509119 13.1704149,7.80123498 L13.1704149,7.80123498 L10.975,9.994 L13.1704149,12.1870677 C13.4368041,12.4532115 13.4370031,12.8849148 13.1708593,13.1513041 C12.9047155,13.4176934 12.4730122,13.4178924 12.2066229,13.1517486 L10.01,10.957 L7.81496625,13.1517486 C7.57521591,13.391278 7.20156116,13.4150698 6.93520889,13.223235 L6.85072984,13.1513041 C6.58458604,12.8849148 6.58478504,12.4532115 6.85117431,12.1870677 L6.85117431,12.1870677 L9.046,9.994 L6.85117431,7.80123498 C6.58478504,7.53509119 6.58458604,7.10338784 6.85072984,6.83699857 C7.11687363,6.57060929 7.54857698,6.5704103 7.81496625,6.83655409 L10.01,9.03 Z" />
-                        </svg>
+                        </svg> -->
                     </div>
                 </div>
             </div>

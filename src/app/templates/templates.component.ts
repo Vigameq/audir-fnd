@@ -13,39 +13,10 @@ import { AudirService } from 'src/services/audir-services.service';
 export class TemplatesComponent {
   templates: any[] = [];
   editedQuestionText: string | undefined = '';
-  allQuestions: any[] = [
-    {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      showEditIcon: true
-    },
-    {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      showEditIcon: true
-    },
-    {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      showEditIcon: true
-    },
-    {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      showEditIcon: true
-    },
-    {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      showEditIcon: true
-    }, {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      showEditIcon: true
-    }
-  ]
+  allQuestions: any[] = []
   selectedFunctionId: any[] = [];
-  standardSelectedOption: string = '';
+  standardSelectedOption: any = '';
+  templateName: string = '';
   isImportVisible: boolean = true;
 
   @ViewChild('standardDropdown') standardDropdown: ElementRef | undefined;
@@ -54,14 +25,25 @@ export class TemplatesComponent {
   constructor(private renderer: Renderer2, private changeDetectorRef: ChangeDetectorRef, private dialog: MatDialog, private router: Router, private audirService: AudirService) { }
 
   ngOnInit(): void {
-    this.getPlanItems();
+    this.getTemplates();
   }
 
-  onStandardOptionChange(event: Event) {
-    this.selectedFunctionId = [];
-    const target = event.target as HTMLSelectElement;
-    console.log("Selected Option: ", this.standardSelectedOption, target);
-    this.standardSelectedOption = target.value;
+  onStandardOptionChange() {
+    if (this.templateName !== this.standardSelectedOption.name) {
+      this.selectedFunctionId = [];
+      this.templateName = this.standardSelectedOption.name;
+      this.getTemplateQuestions(this.standardSelectedOption.id);
+    }
+  }
+
+  getTemplateQuestions(template_id: number) {
+    this.audirService.getTemplate(template_id).subscribe((templateDetails: any) => {
+      if (templateDetails) {
+        this.allQuestions = templateDetails.questions;
+      }
+    }, (error: any) => {
+      console.error('Error for getting template details:', error);
+    })
   }
 
   onStandardDropdownClick(): void {
@@ -85,7 +67,7 @@ export class TemplatesComponent {
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
-      this.getPlanItems();
+      this.getTemplates();
       this.router.navigate(['/templates']);
       this.importVisibility();
       this.changeDetectorRef.detectChanges();
@@ -98,13 +80,19 @@ export class TemplatesComponent {
   }
 
   selectFunction(functionItem: any) {
-    this.selectedFunctionId = [];
-    this.standardSelectedOption = '';
-    if (this.selectedFunctionId.includes(functionItem)) {
-      this.selectedFunctionId = this.selectedFunctionId.filter(Option => Option.id !== functionItem.id);
-    } else {
+    if (this.templateName !== functionItem.name) {
+      this.selectedFunctionId = [];
+      this.standardSelectedOption = '';
+      // if (this.selectedFunctionId.includes(functionItem)) {
+      //   this.selectedFunctionId = this.selectedFunctionId.filter(Option => Option.id !== functionItem.id);
+      // } else {
+      //   this.selectedFunctionId.push(functionItem.id);
+      // }
       this.selectedFunctionId.push(functionItem.id);
+      this.templateName = functionItem.name;
+      this.getTemplateQuestions(this.selectedFunctionId[0]);
     }
+
   }
 
   editQuestion(index: number, type: string, questionText?: string) {
@@ -127,12 +115,14 @@ export class TemplatesComponent {
     // });
   }
 
-  getPlanItems() {
+  getTemplates() {
     const email = localStorage.getItem('user')?.toString() || '';
-    this.audirService.getPlanItems(email).subscribe((items: any) => {
-      if (items) {
-        this.templates = items.templates;
+    this.audirService.getPlanItems(email).subscribe((planDetails: any) => {
+      if (planDetails) {
+        this.templates = planDetails.templates;
       }
+    }, (error: any) => {
+      console.error('Error for getting plan details:', error);
     })
   }
 

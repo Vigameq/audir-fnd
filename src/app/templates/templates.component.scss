@@ -156,6 +156,8 @@
                 margin: 10px 0 10px 10px;
 
                 .question-text {
+                    display: flex;
+                    align-items: center;
                     font-size: 16px;
                     font-weight: 400;
                     color: #575757;
@@ -202,7 +204,6 @@
 
                     .delete-question-icon {
                         svg {
-                            margin-bottom: 8px;
                             height: 16px;
                             width: 16px;
                             cursor: pointer;
