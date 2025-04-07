@@ -19,12 +19,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IgxCalendarModule, IgxIconModule } from 'igniteui-angular';
 import { AuditPlanSuccessPopupComponent } from './audit-plan/audit-plan-success-popup/audit-plan-success-popup.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { ImportCreatePlanDialogComponent } from './audit-plan/import-create-plan-dialog/import-create-plan-dialog.component';
 import { EditPlanDialogComponent } from './audit-plan/edit-plan-dialog/edit-plan-dialog.component';
 import { ToastrModule } from 'ngx-toastr';
 import { ImportTemplateDialogComponent } from './templates/Import-template-dialog/import-template-dialog/import-template-dialog.component';
 import { AuditorRemarksComponent } from './templates/Import-template-dialog/auditor-remarks/auditor-remarks.component';
+import { SpecificFunctionAuditInfoComponent } from './audit-perform/specific-function-audit-info/specific-function-audit-info.component';
+import { CustomiseAuditQuestionDialogComponent } from './audit-perform/customise-audit-question-dialog/customise-audit-question-dialog.component';
+import { AuditFunctionalQuestionProgressDialogComponent } from './audit-perform/audit-functional-question-progress-dialog/audit-functional-question-progress-dialog.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,10 @@ import { AuditorRemarksComponent } from './templates/Import-template-dialog/audi
     ImportCreatePlanDialogComponent,
     EditPlanDialogComponent,
     ImportTemplateDialogComponent,
-    AuditorRemarksComponent
+    AuditorRemarksComponent,
+    SpecificFunctionAuditInfoComponent,
+    CustomiseAuditQuestionDialogComponent,
+    AuditFunctionalQuestionProgressDialogComponent
   ],
   imports: [
     BrowserModule,

@@ -13,7 +13,37 @@ import { AudirService } from 'src/services/audir-services.service';
 export class TemplatesComponent {
   templates: any[] = [];
   editedQuestionText: string | undefined = '';
-  allQuestions: any[] = []
+  allQuestions: any[] = [
+    {
+      questionNumber: 'Question1',
+      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
+      showEditIcon: true
+    },
+    {
+      questionNumber: 'Question1',
+      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
+      showEditIcon: true
+    },
+    {
+      questionNumber: 'Question1',
+      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
+      showEditIcon: true
+    },
+    {
+      questionNumber: 'Question1',
+      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
+      showEditIcon: true
+    },
+    {
+      questionNumber: 'Question1',
+      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
+      showEditIcon: true
+    }, {
+      questionNumber: 'Question1',
+      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
+      showEditIcon: true
+    }
+  ];
   selectedFunctionId: any[] = [];
   standardSelectedOption: any = '';
   templateName: string = '';

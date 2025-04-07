@@ -1,0 +1,225 @@
+.audit-perfom {
+    max-width: 100%;
+    margin: 16px 40px 0 44px;
+    font-family: 'Apple SD Gothic Neo', sans-serif;
+
+    .search-dropdown-section {
+        width: 100%;
+        height: 127px;
+        display: flex;
+        background-color: #1D2431;
+        border-radius: 15px;
+        border: 1px #000000;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .audit-perform-search-bar {
+            position: relative;
+            height: 44px;
+            width: 100%;
+            margin: 20px;
+            font-size: 16px;
+            font-family: 'Apple SD Gothic Neo', sans-serif;
+
+
+            .audit-perform-search-input {
+                width: 85%;
+                padding: 10px 30px 10px 20px;
+                font-size: 16px;
+                color: #000000;
+                border: 1px solid #D9D9D9;
+                border-radius: 24px;
+                outline: none;
+            }
+
+            .audit-perform-search-input::placeholder {
+                color: #515151;
+            }
+
+
+            .audit-perform-search-input:focus {
+                border-color: #FFEA00;
+            }
+
+            .clear-btn {
+                position: absolute;
+                right: 176px;
+                top: 52%;
+                transform: translateY(-50%);
+                background: transparent;
+                border: none;
+                font-size: 12px;
+                cursor: pointer;
+                color: #1D2431;
+            }
+
+            .clear-btn:hover {
+                color: #FFEA00;
+            }
+
+        }
+
+        .dropdown-section {
+            position: relative;
+            margin: 0 10px;
+
+            .standard-dropdown-section {
+                margin: 20px 10px 20px 10px;
+
+                .standard-dropdown-select {
+                    width: 240px;
+                    height: 44px;
+                    background-color: #FAFAFA;
+                    font-family: 'Apple SD Gothic Neo', sans-serif;
+                    border: 1px solid #dbdbdb;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    padding: 6px;
+                    padding-right: 30px;
+                    appearance: none;
+                    cursor: pointer;
+                }
+
+                .dropdown-arrow {
+                    position: absolute;
+                    top: 48%;
+                    transform: translateY(-50%);
+                    pointer-events: none;
+                    left: 226px;
+                }
+            }
+        }
+
+    }
+
+    .Audit-info-label {
+        margin-top: 30px;
+        font-weight: 700;
+        font-size: 22px;
+        color: #4E4E4E;
+        line-height: 100%;
+    }
+
+    .audit-perform-container-section {
+        margin: 10px 0 30px 0;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+
+        .audit-perform-container {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #1D2431;
+            border-radius: 20px;
+            padding: 20px 40px 26px;
+            gap: 20px;
+
+            .audit-perfom-details {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+                .plan-creation-id span {
+                    font-size: 20px;
+                    font-weight: 700;
+                    line-height: 100%;
+                    color: #515151;
+                }
+
+                .templates-location-details {
+                    font-size: 20px;
+                    font-weight: 400;
+                    line-height: 100%;
+                    color: #515151;
+
+                    .templates-details {
+                        padding-bottom: 2px;
+                    }
+                }
+
+                .duration-details {
+                    font-size: 16px;
+                    font-weight: 400;
+                    line-height: 100%;
+                    color: #515151;
+
+                    .time-details {
+                        padding-top: 2px;
+
+                        .end-time {
+                            margin-left: 30px;
+                        }
+                    }
+                }
+            }
+
+            .audit-progress-details {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                .audit-progress-label,
+                .auditor-details,
+                .percentage {
+                    font-size: 14px;
+                    font-weight: 400;
+                    line-height: 100%;
+                    color: #515151;
+                }
+
+                .progress-percentage {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 6px;
+
+                    .progress-bar {
+                        border-radius: 20px;
+                        height: 27px;
+                        width: 245px;
+                        border: 1px solid #000000;
+                        background-color: #FFFFFF;
+
+                        .progress-percentage {
+                            height: 100%;
+                            background-color: #000000;
+                            border-radius: 20px;
+                            transition: width 0.3s ease;
+                        }
+                    }
+                }
+            }
+
+            .audit-count {
+                min-width: 35px;
+                min-height: 35px;
+                position: absolute;
+                left: -18px;
+                border-radius: 50%;
+                top: 50%;
+                padding: 2px;
+                transform: translateY(-50%);
+                background-color: #000000;
+                border: 1px solid #000000;
+                font-size: 20px;
+                font-weight: 400;
+                line-height: 100%;
+                cursor: pointer;
+                color: #FFFFFF;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+
+        .vertical-bar,
+        .hyphen {
+            margin: 0 6px;
+        }
+    }
+}
