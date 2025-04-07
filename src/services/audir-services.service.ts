@@ -45,6 +45,13 @@ export class AudirService {
     return this.http.post<any>('/audire/api/bulkAuditCreate', formData);
   }
 
+  /* services for Audit perform */
+
+  getAuditLists(payload:any){
+    return this.http.post<any>('/audire/api/listAudits', payload);
+  }
+
+
   getData(): any {
     return this.http.get('/assets/json/data.json');
   }

@@ -25,62 +25,115 @@
     </div>
     <div class="Audit-info-label"><span>Audit Information</span></div>
     <div class="audit-perform-container-section">
-        <div class="audit-perform-container" *ngFor="let auditPerformItem of auditPerformInfoData">
-            <div class="audit-perfom-details">
-                <div class="plan-creation-id"><span>{{auditPerformItem.id}}</span></div>
-                <div class="templates-location-details">
-                    <div class="templates-details">
-                        <span>{{auditPerformItem.standardType}}</span>
-                        <span class="vertical-bar">|</span>
-                        <span>{{auditPerformItem.functionType}}
-                        </span>
+        <div *ngFor="let auditPerformItem of auditList">
+            <div class="audit-perform-container" >
+                <div class="audit-perfom-details">
+                    <div class="plan-creation-id"><span>{{auditPerformItem.audit_title}}</span></div>
+                    <div class="templates-location-details">
+                        <!-- <div class="templates-details">
+                            <span>{{auditPerformItem.city}}</span>
+                            <span class="vertical-bar">|</span>
+                            <span>{{auditPerformItem.country}}
+                            </span>
+                        </div> -->
+                        <!-- <div class="location-details"><span>{{auditPerformItem.city}}</span>
+                            <span class="vertical-bar">|</span>
+                            <span>{{auditPerformItem.country}}</span>
+                        </div> -->
                     </div>
-                    <div class="location-details"><span>{{auditPerformItem.city}}</span>
-                        <span class="vertical-bar">|</span>
-                        <span>{{auditPerformItem.country}}</span>
-                    </div>
-                </div>
-                <div class="duration-details">
-                    <div class="date-details">
-                        <span>{{auditPerformItem.startDate}}</span>
-                        <span class="hyphen">-</span>
-                        <span>{{auditPerformItem.endDate}}
-                        </span>
-                    </div>
-                    <div class="time-details">
-                        <span class="start-time">{{auditPerformItem.startTime}}</span>
-                        <span class="end-time">{{auditPerformItem.endTime}}
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="audit-progress-details">
-                <div class="audit-progress-label">
-                    <span>Audit Progress</span>
-                </div>
-                <div class="progress-percentage">
-                    <div class="progress-bar">
-                        <div class="progress-percentage" [ngStyle]="{ 'width': auditPerformItem.percentage + '%' }">
+                    <div class="duration-details">
+                        <!-- <div class="date-details">
+                            <span>{{auditPerformItem.startDate}}veew</span>
+                            <span class="hyphen">-</span>
+                            <span>{{auditPerformItem.endDate}}
+                            </span>
+                        </div> -->
+                        <div class="time-details">
+                            <span class="start-time">{{auditPerformItem.start_date | date:'EEE, dd MMM yyyy'}}</span>
+                            <span class="end-time">{{auditPerformItem.end_date | date:'EEE, dd MMM yyyy'}}
+                            </span>
                         </div>
                     </div>
-                    <div class="percentage"><span>{{auditPerformItem.percentage}}%</span></div>
                 </div>
-                <div class="auditor-details">
-                    <span>{{auditPerformItem.auditorName}}</span>
-                    <span class="vertical-bar">|</span>
-                    <span>{{auditPerformItem.auditCompaey}}</span>
+                <div class="audit-progress-details">
+                    <div class="audit-progress-label">
+                        <span>Audit Progress</span>
+                    </div>
+                    <div class="progress-percentage">
+                        <div class="progress-bar">
+                            <div class="progress-percentage" [ngStyle]="{ 'width': auditPerformItem.percentage + '%' }">
+                            </div>
+                        </div>
+                        <div class="percentage"><span>{{auditPerformItem.percentage}}%</span></div>
+                    </div>
+                    <div class="auditor-details">
+                        <span>{{auditPerformItem.auditors[0]}}</span>
+                        <!-- <span class="vertical-bar">|</span>
+                        <span>{{auditPerformItem.auditCompaey}}</span> -->
+                    </div>
                 </div>
+                <div class="delete-icon">
+                    <!-- <svg width="22px" height="22px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <g>
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M7 4V2h10v2h5v2h-2v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6H2V4h5zM6 6v14h12V6H6zm3 3h2v8H9V9zm4 0h2v8h-2V9z" />
+                        </g>
+                    </svg> -->
+                </div>
+                <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0">
+                    <span (click)="showChildFlag()">{{auditPerformItem.sub_audits.length}}</span></div>
+    
             </div>
-            <div class="delete-icon">
-                <svg width="22px" height="22px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <g>
-                        <path fill="none" d="M0 0h24v24H0z" />
-                        <path
-                            d="M7 4V2h10v2h5v2h-2v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6H2V4h5zM6 6v14h12V6H6zm3 3h2v8H9V9zm4 0h2v8h-2V9z" />
-                    </g>
-                </svg>
+
+            <div *ngIf="auditPerformItem.sub_audits.length>0" style="position: relative;
+                left: 30px;
+                border-left: 1px solid;
+                padding: 10px;" >
+                <div class="audit-perform-container" style="margin: 30px 0 0 25px;width: 96%;" *ngFor="let sub_audit of auditPerformItem.sub_audits">
+                    <div class="audit-perfom-details">
+                        <div class="plan-creation-id"><span>{{sub_audit.audit_title}}</span></div>
+                        <div class="templates-location-details">
+                        </div>
+                        <div class="duration-details">
+                            <div class="time-details">
+                                <span class="start-time">{{sub_audit.start_date | date:'EEE, dd MMM yyyy'}}</span>
+                                <span class="end-time">{{sub_audit.end_date | date:'EEE, dd MMM yyyy'}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="audit-progress-details">
+                        <div class="audit-progress-label">
+                            <span>Audit Progress</span>
+                        </div>
+                        <div class="progress-percentage">
+                            <div class="progress-bar">
+                                <div class="progress-percentage"
+                                    [ngStyle]="{ 'width': auditPerformItem.percentage + '%' }">
+                                </div>
+                            </div>
+                            <div class="percentage"><span>{{sub_audit.percentage}}%</span></div>
+                        </div>
+                        <div class="auditor-details">
+                            <span>{{sub_audit.auditors[0]}}</span>
+                        </div>
+                    </div>
+                    <div class="delete-icon">
+
+                    </div>
+                    <span>
+                        <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12.1094 0C18.7988 0 24.2188 5.41992 24.2188 12.1094C24.2188 18.7988 18.7988 24.2188 12.1094 24.2188C5.41992 24.2188 0 18.7988 0 12.1094C0 5.41992 5.41992 0 12.1094 0ZM6.44531 14.2578H12.1094V17.7197C12.1094 18.2422 12.7441 18.5059 13.1104 18.1348L18.6914 12.5244C18.9209 12.2949 18.9209 11.9287 18.6914 11.6992L13.1104 6.08398C12.7393 5.71289 12.1094 5.97656 12.1094 6.49902V9.96094H6.44531C6.12305 9.96094 5.85938 10.2246 5.85938 10.5469V13.6719C5.85938 13.9941 6.12305 14.2578 6.44531 14.2578Z"
+                                fill="black" />
+                        </svg>
+                    </span>
+                </div>
+                
             </div>
-            <div class="audit-count"><span>4</span></div>
+           
         </div>
     </div>
+
 </div>

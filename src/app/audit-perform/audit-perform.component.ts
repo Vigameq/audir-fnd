@@ -1,4 +1,5 @@
 import { Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { AudirService } from 'src/services/audir-services.service';
 
 @Component({
   selector: 'app-audit-perform',
@@ -10,6 +11,7 @@ export class AuditPerformComponent {
   isStandardDropdownOpen: boolean = false;
   standardDropdownOptions = ['options1', 'option2', 'option3'];
   standardSelectedOption: string = '';
+  showChild: boolean = false;
   auditPerformInfoData = [
     { id: 'VIG1893893', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '70', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
     { id: 'VIG18938932', standardType: 'This2', functionType: 'function2', city: 'hyderabad', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '20', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' },
@@ -26,8 +28,33 @@ export class AuditPerformComponent {
   ];
 
   @ViewChild('standardDropdown') standardDropdown: ElementRef | undefined;
+  auditList: any;
 
-  constructor(private renderer: Renderer2) { }
+  constructor(private renderer: Renderer2,private audirService: AudirService) { }
+
+  ngOnInit(){
+    this.getAuditLists();
+  }
+
+  getAuditLists(){
+    var payload = {
+      eMail: "chandrahas@gmail.com",
+      start_date_filter: {
+          from: "2023-01-09",
+          to: "2024-01-09"
+      },
+      "status_filter": ["completed","created","inprogress","submitted"]
+  }
+    this.audirService.getAuditLists(payload).subscribe((response: any)=>{
+      if(response){
+        this.auditList = response.audit_data;
+      }      
+    })
+  }
+
+  showChildFlag(){
+    this.showChild = !this.showChild;
+  }
 
   onSearch() {
     console.log('Search query:', this.searchQuery);
