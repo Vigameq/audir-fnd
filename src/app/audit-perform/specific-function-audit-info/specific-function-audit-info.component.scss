@@ -6,6 +6,10 @@
     max-width: 100%;
     font-family: 'Apple SD Gothic Neo', sans-serif;
 
+    .parent-navigation-icon{
+        cursor: pointer;
+    }
+
     .function-audit-info {
         display: flex;
         flex-direction: column;
@@ -95,6 +99,19 @@
             }
         }
 
+        .audit-scope{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 20px;
+            border: 1px solid #000000;
+            background-color: #1D2431;
+            color: #FFFFFF;
+            gap: 20px;
+            border-radius: 15px;
+            line-height: 100%;
+        }
+
         .progress-percentage {
             display: flex;
             flex-direction: row;
@@ -104,7 +121,7 @@
             .progress-bar {
                 border-radius: 20px;
                 height: 23px;
-                width: 70%;
+                width: 100%;
                 border: 1px solid #000000;
                 background-color: #FFFFFF;
 

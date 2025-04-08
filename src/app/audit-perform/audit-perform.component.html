@@ -49,8 +49,8 @@
                             </span>
                         </div> -->
                         <div class="time-details">
-                            <span class="start-time">{{auditPerformItem.start_date | date:'EEE, dd MMM yyyy'}}</span>
-                            <span class="end-time">{{auditPerformItem.end_date | date:'EEE, dd MMM yyyy'}}
+                            <span class="start-time">{{auditPerformItem.start_date | date:'dd MMM yyyy - HH:mm'}}</span>
+                            <span class="end-time">{{auditPerformItem.end_date | date:'dd MMM yyyy - HH:mm'}}
                             </span>
                         </div>
                     </div>
@@ -82,13 +82,13 @@
                     </svg> -->
                 </div>
                 <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0">
-                    <span (click)="showChildFlag()">{{auditPerformItem.sub_audits.length}}</span></div>
+                    <span>{{auditPerformItem.sub_audits.length}}</span></div>
     
             </div>
 
             <div *ngIf="auditPerformItem.sub_audits.length>0" style="position: relative;
                 left: 30px;
-                border-left: 1px solid;
+                
                 padding: 10px;" >
                 <div class="audit-perform-container" style="margin: 30px 0 0 25px;width: 96%;" *ngFor="let sub_audit of auditPerformItem.sub_audits">
                     <div class="audit-perfom-details">
@@ -97,8 +97,8 @@
                         </div>
                         <div class="duration-details">
                             <div class="time-details">
-                                <span class="start-time">{{sub_audit.start_date | date:'EEE, dd MMM yyyy'}}</span>
-                                <span class="end-time">{{sub_audit.end_date | date:'EEE, dd MMM yyyy'}}
+                                <span class="start-time">{{sub_audit.start_date | date:'dd MMM yyyy - HH:mm'}}</span>
+                                <span class="end-time">{{sub_audit.end_date | date:'dd MMM yyyy - HH:mm'}}
                                 </span>
                             </div>
                         </div>
@@ -122,13 +122,13 @@
                     <div class="delete-icon">
 
                     </div>
-                    <span>
+                    <div class="show-question-svg" [routerLink]="[sub_audit.audit_id]">
                         <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M12.1094 0C18.7988 0 24.2188 5.41992 24.2188 12.1094C24.2188 18.7988 18.7988 24.2188 12.1094 24.2188C5.41992 24.2188 0 18.7988 0 12.1094C0 5.41992 5.41992 0 12.1094 0ZM6.44531 14.2578H12.1094V17.7197C12.1094 18.2422 12.7441 18.5059 13.1104 18.1348L18.6914 12.5244C18.9209 12.2949 18.9209 11.9287 18.6914 11.6992L13.1104 6.08398C12.7393 5.71289 12.1094 5.97656 12.1094 6.49902V9.96094H6.44531C6.12305 9.96094 5.85938 10.2246 5.85938 10.5469V13.6719C5.85938 13.9941 6.12305 14.2578 6.44531 14.2578Z"
                                 fill="black" />
                         </svg>
-                    </span>
+                    </div>
                 </div>
                 
             </div>

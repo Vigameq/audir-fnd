@@ -40,8 +40,8 @@ export class AuditPerformComponent {
     var payload = {
       eMail: "chandrahas@gmail.com",
       start_date_filter: {
-          from: "2023-01-09",
-          to: "2024-01-09"
+          from: "2024-06-09",
+          to: "2025-12-30"
       },
       "status_filter": ["completed","created","inprogress","submitted"]
   }
@@ -52,8 +52,8 @@ export class AuditPerformComponent {
     })
   }
 
-  showChildFlag(){
-    this.showChild = !this.showChild;
+  showQuestions(){
+    
   }
 
   onSearch() {
