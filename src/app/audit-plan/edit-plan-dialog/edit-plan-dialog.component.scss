@@ -1,11 +1,11 @@
 .edit-Plan-dialog {
     padding: 20px 20px 40px;
-    min-height: 576px;
+    min-height: 472px;
 
     .mat-dialog-content {
         padding: 0px;
         font-family: 'Apple SD Gothic Neo', sans-serif;
-        min-height: 516px;
+        min-height: 412px;
 
         .content {
             display: flex;
@@ -33,7 +33,7 @@
                 font-size: 48px;
                 font-weight: 700;
                 line-height: 100%;
-                padding: 10px 0 20px 20px;
+                padding: 10px 20px;
                 height: 72px;
                 color: #575757;
             }

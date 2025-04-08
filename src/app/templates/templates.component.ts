@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, Renderer2, ViewChild } from '
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ImportTemplateDialogComponent } from './Import-template-dialog/import-template-dialog/import-template-dialog.component';
-import { AuditorRemarksComponent } from './Import-template-dialog/auditor-remarks/auditor-remarks.component';
+// import { AuditorRemarksComponent } from './Import-template-dialog/auditor-remarks/auditor-remarks.component';
 import { AudirService } from 'src/services/audir-services.service';
 
 @Component({
@@ -13,39 +13,10 @@ import { AudirService } from 'src/services/audir-services.service';
 export class TemplatesComponent {
   templates: any[] = [];
   editedQuestionText: string | undefined = '';
-  allQuestions: any[] = [
-    {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      showEditIcon: true
-    },
-    {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      showEditIcon: true
-    },
-    {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      showEditIcon: true
-    },
-    {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      showEditIcon: true
-    },
-    {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      showEditIcon: true
-    }, {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      showEditIcon: true
-    }
-  ];
+  allQuestions: any[] = []
   selectedFunctionId: any[] = [];
-  standardSelectedOption: string = '';
+  standardSelectedOption: any = { name: 'Select Template' };
+  templateName: string = '';
   isImportVisible: boolean = true;
 
   @ViewChild('standardDropdown') standardDropdown: ElementRef | undefined;
@@ -54,14 +25,26 @@ export class TemplatesComponent {
   constructor(private renderer: Renderer2, private changeDetectorRef: ChangeDetectorRef, private dialog: MatDialog, private router: Router, private audirService: AudirService) { }
 
   ngOnInit(): void {
-    this.getPlanItems();
+    this.getTemplates();
   }
 
-  onStandardOptionChange(event: Event) {
-    this.selectedFunctionId = [];
-    const target = event.target as HTMLSelectElement;
-    console.log("Selected Option: ", this.standardSelectedOption, target);
-    this.standardSelectedOption = target.value;
+  onStandardOptionChange() {
+    if (this.templateName !== this.standardSelectedOption.name || this.standardSelectedOption.id === this.selectedFunctionId[0]) {
+      this.selectedFunctionId = [];
+      this.templateName = this.standardSelectedOption.name;
+      this.getTemplateQuestions(this.standardSelectedOption.id);
+      localStorage.setItem("selectedTemplate", JSON.stringify(this.standardSelectedOption));
+    }
+  }
+
+  getTemplateQuestions(template_id: number) {
+    this.audirService.getTemplate(template_id).subscribe((templateDetails: any) => {
+      if (templateDetails) {
+        this.allQuestions = templateDetails.questions;
+      }
+    }, (error: any) => {
+      console.error('Error for getting template details:', error);
+    })
   }
 
   onStandardDropdownClick(): void {
@@ -85,7 +68,7 @@ export class TemplatesComponent {
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
-      this.getPlanItems();
+      this.getTemplates();
       this.router.navigate(['/templates']);
       this.importVisibility();
       this.changeDetectorRef.detectChanges();
@@ -97,46 +80,60 @@ export class TemplatesComponent {
     this.isImportVisible = !this.isImportVisible;
   }
 
-  selectFunction(functionItem: any) {
-    this.selectedFunctionId = [];
-    this.standardSelectedOption = '';
-    if (this.selectedFunctionId.includes(functionItem)) {
-      this.selectedFunctionId = this.selectedFunctionId.filter(Option => Option.id !== functionItem.id);
-    } else {
+  selectTemplateFunction(functionItem: any) {
+    if (this.templateName !== functionItem.name || this.standardSelectedOption.id === functionItem.id) {
+      this.selectedFunctionId = [];
+      this.standardSelectedOption = { name: 'Select Template' };
+      // if (this.selectedFunctionId.includes(functionItem)) {
+      //   this.selectedFunctionId = this.selectedFunctionId.filter(Option => Option.id !== functionItem.id);
+      // } else {
+      //   this.selectedFunctionId.push(functionItem.id);
+      // }
       this.selectedFunctionId.push(functionItem.id);
+      this.templateName = functionItem.name;
+      this.getTemplateQuestions(this.selectedFunctionId[0]);
+      localStorage.setItem("selectedTemplate", JSON.stringify({}));
     }
   }
 
-  editQuestion(index: number, type: string, questionText?: string) {
-    if (type === 'edit' || type === 'cancel') {
-      this.allQuestions[index].showEditIcon = type === 'edit' ? false : true;
-      this.editedQuestionText = questionText;
-      return;
-    }
-    this.allQuestions[index].showEditIcon = true;
-    this.allQuestions[index].questionText = this.editedQuestionText;
-    // const dialogRef = this.dialog.open(AuditorRemarksComponent, {
-    //   width: '634px',
-    //   height: '360px',
-    //   data: { id: 'GG196678' }
-    // });
+  // editQuestion(index: number, type: string, questionText?: string) {
+  //   if (type === 'edit' || type === 'cancel') {
+  //     this.allQuestions[index].showEditIcon = type === 'edit' ? false : true;
+  //     this.editedQuestionText = questionText;
+  //     return;
+  //   }
+  //   this.allQuestions[index].showEditIcon = true;
+  //   this.allQuestions[index].questionText = this.editedQuestionText;
+  //   // const dialogRef = this.dialog.open(AuditorRemarksComponent, {
+  //   //   width: '634px',
+  //   //   height: '360px',
+  //   //   data: { id: 'GG196678' }
+  //   // });
 
-    // dialogRef.afterClosed().subscribe((result: any) => {
-    //   this.router.navigate(['/templates']);
-    //   console.log(`Dialog result: ${result}`);
-    // });
-  }
+  //   // dialogRef.afterClosed().subscribe((result: any) => {
+  //   //   this.router.navigate(['/templates']);
+  //   //   console.log(`Dialog result: ${result}`);
+  //   // });
+  // }
 
-  getPlanItems() {
+  getTemplates() {
     const email = localStorage.getItem('user')?.toString() || '';
-    this.audirService.getPlanItems(email).subscribe((items: any) => {
-      if (items) {
-        this.templates = items.templates;
+    const selectedTemplate: any = JSON.parse(localStorage.getItem("selectedTemplate") as any);
+    if (selectedTemplate.name) {
+      this.standardSelectedOption = selectedTemplate;
+      this.templateName = this.standardSelectedOption.name;
+      this.getTemplateQuestions(this.standardSelectedOption.id);
+    }
+    this.audirService.getPlanItems(email).subscribe((planDetails: any) => {
+      if (planDetails) {
+        this.templates = planDetails.templates;
       }
+    }, (error: any) => {
+      console.error('Error for getting plan details:', error);
     })
   }
 
-  deleteQuestion(index: number) {
-    this.allQuestions.splice(index, 1);
-  }
+  // deleteQuestion(index: number) {
+  //   this.allQuestions.splice(index, 1);
+  // }
 }

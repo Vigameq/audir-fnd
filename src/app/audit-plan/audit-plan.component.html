@@ -6,8 +6,7 @@
                 <button class="toggle-button">Offline</button>
                 <button class="toggle-button">Virtual</button>
             </div>
-            <button class="import-button" *ngIf="isImportVisible"
-             (click)="openImportPlanDialog()">+ Import</button>
+            <button class="import-button" *ngIf="isImportVisible" (click)="openImportPlanDialog()">+ Import</button>
         </div>
         <div class="form-container">
             <form [formGroup]="auditPlanForm" (ngSubmit)="onSubmit()">
@@ -25,7 +24,7 @@
                 </div>
                 <div class="audit-title-and-functions-row">
                     <div class="audit-title">
-                        <label for="audit-title" class="form-label">Audit Title <span class="asterisk">*</span></label>
+                        <label for="audit-title" class="form-label">Audit Title<span class="asterisk">*</span></label>
                         <input id="audit-title" class="audit-title-input" formControlName="auditTitle"
                             name="auditTitle" />
                         <!-- <select id="audit-title" class="dropdown-select" formControlName="auditTitle" name="auditTitle"
@@ -36,7 +35,7 @@
                         </select> -->
                     </div>
                     <div class="functions">
-                        <label for="function" class="form-label">Functions <span class="asterisk">*</span></label>
+                        <label for="function" class="form-label">Functions<span class="asterisk">*</span></label>
                         <input id="function" class="audit-function-input" formControlName="functions"
                             name="functions" />
                         <!-- <select id="function" class="dropdown-select" formControlName="functions" name="functions"
@@ -48,21 +47,22 @@
                     </div>
                 </div>
                 <div class="templates-row">
-                    <div class="dropdown">
-                        <label for="templates" class="form-label">Template </label>
-                        <div (click)="toggleDropdown()" class="dropbtn">
-                          Select templates
+                    <div class="dropdown" (click)="toggleDropdown($event)">
+                        <label for="templates" class="form-label">Template</label>
+                        <div  class="dropbtn">
+                            Select templates..
                         </div>
-                        <div *ngIf="isAuditorDropdownOpen" class="dropdown-content">
-                          <label *ngFor="let template of templates">
-                            <input type="checkbox" [value]="template.name" (change)="onTemplateSelectionChange($event)" 
-                                   [checked]="selectedTemplate.includes(template)" />
-                            <span class="template-value">{{ template.name }}</span><br>
-                          </label>
+                        <div *ngIf="isAuditorDropdownOpen" class="dropdown-content" #templateDropdown>
+                            <label *ngFor="let template of templates" (click)="onCheckboxClick($event)">
+                                <input type="checkbox" [value]="template.name"
+                                    (change)="onTemplateSelectionChange($event)"
+                                    [checked]="selectedTemplate.includes(template)" />
+                                <span class="template-value">{{ template.name }}</span>
+                            </label>
                         </div>
-                      </div>
+                    </div>
                     <div class="function-template">
-                        <label for="function-templates" class="form-label">Functions Template </label>
+                        <label for="function-templates" class="form-label">Functions Template</label>
                         <select id="function-templates" class="dropdown-select" formControlName="functionTemplateValue"
                             name="functionTemplateValue" required>
                             <option value="" disabled selected>Select template..</option>
@@ -73,19 +73,21 @@
                 </div>
                 <div class="date-time-row">
                     <div class="start-date-time">
-                        <label for="start-date-time" class="form-label">Start Date & Time <span class="asterisk">*</span></label>
-                        <input type="datetime-local" id="start-date-time" class="form-control" (change)="onDateChange()"
+                        <label for="start-date-time" class="form-label">Start Date & Time<span
+                                class="asterisk">*</span></label>
+                        <input type="datetime-local" id="start-date-time" class="form-control"
                             formControlName="startDateTime" name="startDateTime" required />
                     </div>
                     <div class="end-date-time">
-                        <label for="end-date-time" class="form-label">End Date & Time <span class="asterisk">*</span></label>
+                        <label for="end-date-time" class="form-label">End Date & Time<span
+                                class="asterisk">*</span></label>
                         <input type="datetime-local" id="end-date-time" class="form-control"
                             formControlName="endDateTime" name="endDateTime" required />
                     </div>
                 </div>
                 <div class="auditees-auditors-row">
                     <div class="auditors">
-                        <label for="auditorDropdown" class="auditor-label">Lead Auditors </label>
+                        <label for="auditorDropdown" class="auditor-label">Lead Auditors</label>
                         <!-- <div class="auditorDropdown">
                             <button class="auditor-dropdown-button" type="button" id="auditor-select-dropdown"
                                 (click)="toggleDropdown()">
@@ -110,7 +112,7 @@
                         </select>
                     </div>
                     <div class="auditees">
-                        <label for="auditeeDropdown" class="auditee-label">Auditees </label>
+                        <label for="auditeeDropdown" class="auditee-label">Auditees</label>
                         <!-- <div class="auditeeDropdown">
                             <button class="auditee-dropdown-button" type="button" id="auditee-select-dropdown">
                                 Select auditees
@@ -134,7 +136,7 @@
                 </div>
                 <div class="city-country-row">
                     <div class="city">
-                        <label for="city-name" class="form-label">City </label>
+                        <label for="city-name" class="form-label">City</label>
                         <select id="city-name" class="dropdown-select" formControlName="cityName" name="cityName"
                             required>
                             <option value="" disabled selected>Select City</option>
@@ -143,7 +145,7 @@
                         </select>
                     </div>
                     <div class="country">
-                        <label for="country-name" class="form-label">Country </label>
+                        <label for="country-name" class="form-label">Country</label>
                         <select id="country-name" class="dropdown-select" formControlName="countryName"
                             name="countryName" required>
                             <option value="" disabled selected>Select Country</option>
@@ -155,7 +157,7 @@
                 </div>
                 <div class="audit-scope-row">
                     <div class="audit-scope-label">
-                        <label for="audit-scope" class="form-label">Audit Scope <span class="asterisk">*</span></label>
+                        <label for="audit-scope" class="form-label">Audit Scope<span class="asterisk">*</span></label>
                     </div>
                     <div class="auditscope-textarea">
                         <textarea id="audit-scope" class="audit-scope-textarea" rows="4"
@@ -172,31 +174,35 @@
     <div class="calendar-and-plans-section">
         <div class="calendar-section">
             <article class="calendar-wrapper">
-                <igx-calendar #calendar (selected)="onSelection($event)" selection="single" [minDate]="startDate"
-                    [maxDate]="endDate" (viewDateChanged)="viewDateChanged($event)" [(ngModel)]="selectedDate" ></igx-calendar>
+                <igx-calendar (selected)="onSelection($event)" selection="single"
+                    [(ngModel)]="selectedDate"></igx-calendar>
             </article>
         </div>
         <div class="audit-information">
             <span class="audit-info-header">Planned audits</span>
             <div class="audit-plans">
-                <div class="plans-list" *ngFor="let plan of (showAllPlans ? auditPlans : auditPlans.slice(0, 4))">
+                <div class="plans-list" *ngFor="let plan of auditPlans">
+                <!-- <div class="plans-list" *ngFor="let plan of (showAllPlans ? auditPlans : auditPlans.slice(0, 4))"> -->
                     <div class="plan-details">
                         <div class="date-and-id">
-                            <div class="date"><span>{{plan.date}}</span></div>
-                            <div class="id-number"><span>{{plan.id}}</span></div>
+                            <div class="date"><span>{{plan.start_date | date: 'dd MMM'}}</span></div>
+                            <div class="id-number"><span>{{plan.audit_id}}</span></div>
                         </div>
                         <div class="title-and-auditor">
                             <div class="title"><span>{{plan.audit_title}}</span></div>
-                            <div class="auditor"><span>{{plan.auditors}}</span></div>
+                            <div class="auditor">
+                                <span *ngIf="plan.auditors.length===1">{{plan.auditors[0]}}</span>
+                                <span *ngIf="plan.auditors.length>1">{{plan.auditors[0]}} and more</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="edit-icon" (click)="openEditPlanDialog()">
+                    <div class="edit-icon" (click)="openEditPlanDialog(plan)">
                         <img src="../assets/images/Ellipse.png" alt="Ellipse" id="ellipse-icon" />
                         <img src="../assets/images/Vector.png" alt="Vector" id="vector-icon" />
                     </div>
                 </div>
             </div>
-            <div class="view-more" *ngIf="!showAllPlans"><a (click)="navigateToAuditPerform()">View More...</a></div>
+            <!-- <div class="view-more" *ngIf="!showAllPlans"><a (click)="navigateToAuditPerform()">View More...</a></div> -->
         </div>
     </div>
 </div>

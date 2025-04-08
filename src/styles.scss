@@ -62,3 +62,7 @@ body {
     transform: translateX(0);
   }
 }
+
+.igx-calendar__date .igx-calendar__date-content:hover {
+  cursor: pointer !important;
+}

@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { IgxCalendarComponent, IgxDialogComponent, IgxCalendarView, IViewDateChangeEventArgs } from 'igniteui-angular';
 import { Audit } from 'src/model/audit.model';
 import { AudirService } from 'src/services/audir-services.service';
 import { AuditPlanSuccessPopupComponent } from './audit-plan-success-popup/audit-plan-success-popup.component';
@@ -8,17 +7,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ImportCreatePlanDialogComponent } from './import-create-plan-dialog/import-create-plan-dialog.component';
 import { EditPlanDialogComponent } from './edit-plan-dialog/edit-plan-dialog.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-audit-plan',
   templateUrl: './audit-plan.component.html',
   styleUrls: ['./audit-plan.component.scss'],
+  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuditPlanComponent {
-  startDate: Date = new Date(2025, 2, 6);
-  endDate: Date = new Date(2025, 2, 10);
-  @ViewChild('calendar', { static: true }) public calendar?: IgxCalendarComponent;
+  @ViewChild('templateDropdown', { static: false }) templateDropdown!: ElementRef;
+
   auditPlanForm: FormGroup = new FormGroup({
     linkAudit: new FormControl(''),
     auditTitle: new FormControl(''),
@@ -42,82 +42,17 @@ export class AuditPlanComponent {
   auditees: any[] = [];
   auditors: any[] = [];
   isImportVisible: boolean = true;
-  showAllPlans: boolean = false;
-  auditPlans: any = [{
-    date: '06 May',
-    audit_title: 'gadi1',
-    id: 'gg00891',
-    auditors: 'gowtham'
-  },
-  {
-    date: '06 May',
-    audit_title: 'gadi1',
-    id: 'gg00891',
-    auditors: 'gowtham'
-  },
-  {
-    date: '06 May',
-    audit_title: 'gadi1',
-    id: 'gg00891',
-    auditors: 'gowtham'
-  },
-  {
-    date: '06 May',
-    audit_title: 'gadi1',
-    id: 'gg00891',
-    auditors: 'gowtham'
-  },
-  {
-    date: '06 May',
-    audit_title: 'gadi1',
-    id: 'gg00891',
-    auditors: 'gowtham'
-  },
-  {
-    date: '06 May',
-    audit_title: 'gadi1',
-    id: 'gg00891',
-    auditors: 'gowtham'
-  },
-  {
-    date: '06 May',
-    audit_title: 'gadi1',
-    id: 'gg00891',
-    auditors: 'gowtham'
-  },
-  {
-    date: '06 May',
-    audit_title: 'gadi1',
-    id: 'gg00891',
-    auditors: 'gowtham'
-  },
-  {
-    date: '06 May',
-    audit_title: 'gadi1',
-    id: 'gg00891',
-    auditors: 'gowtham'
-  },
-  {
-    date: '06 May',
-    audit_title: 'gadi1',
-    id: 'gg00891',
-    auditors: 'gowtham'
-  },
-  {
-    date: '06 May',
-    audit_title: 'gadi1-dfghj',
-    id: 'gg00891',
-    auditors: 'gowtham and more'
-  }];
-  selectedDate: Date | undefined;
+  // showAllPlans: boolean = false;
+  auditPlans: any = [];
+  selectedDate: any = new Date();
   isClear: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(private datePipe: DatePipe, private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
     this.isImportVisible = true;
-    this.showAllPlans = (this.auditPlans.length <= 4) ? true : false;
+    // this.showAllPlans = (this.auditPlans.length <= 4) ? true : false;
     this.auditPlanForm = this.formBuilder.group(
       {
         linkAudit: [''],
@@ -134,6 +69,7 @@ export class AuditPlanComponent {
         auditScopeValue: ['', Validators.required]
       });
     this.getPlanItems();
+    this.getAllAuditPlan();
   }
 
   getPlanItems() {
@@ -151,12 +87,14 @@ export class AuditPlanComponent {
   onTemplateSelectionChange(event: Event) {
     const checkbox = event.target as HTMLInputElement;
     // const currentValue = this.auditPlanForm.get('auditorValue')?.value;
-    if (checkbox.checked) {
-      this.selectedTemplate.push(checkbox.value);
-    } else {
-      this.selectedTemplate = this.selectedTemplate.filter(option => option !== checkbox.value);
+    if (!this.selectedTemplate.includes(checkbox.value)) {
+      if (checkbox.checked) {
+        this.selectedTemplate.push(checkbox.value);
+      } else {
+        this.selectedTemplate = this.selectedTemplate.filter(option => option !== checkbox.value);
+      }
+      this.auditPlanForm.get('auditorValue')?.setValue(this.selectedTemplate);
     }
-    this.auditPlanForm.get('auditorValue')?.setValue(this.selectedTemplate);
   }
 
   onSubmit() {
@@ -177,7 +115,7 @@ export class AuditPlanComponent {
         audit_type: "ISO 270015",
         eMail: localStorage.getItem('user')?.toString() || ''
       }
-      if (plan.audit_title && plan.functions  && plan.start_date && plan.end_date && plan.audit_scope) {
+      if (plan.audit_title && plan.functions && plan.start_date && plan.end_date && plan.audit_scope) {
         this.audirService.createAuditPlan(plan).subscribe(response => {
           if (response) {
             this.resetForm();
@@ -193,7 +131,7 @@ export class AuditPlanComponent {
         }
         )
       } else {
-        if(!this.isClear)this.audirService.showError('Please enter mandatory (*) fields');
+        if (!this.isClear) this.audirService.showError('Please enter mandatory (*) fields');
       }
     }
   }
@@ -220,11 +158,6 @@ export class AuditPlanComponent {
     });
   }
 
-  onDateChange(){
-    this.selectedDate = new Date(this.auditPlanForm.value.startDateTime);
-    
-  }
-
   openImportPlanDialog(): void {
     this.importVisibility();
     const dialogRef = this.dialog.open(ImportCreatePlanDialogComponent, {
@@ -242,16 +175,23 @@ export class AuditPlanComponent {
     });
   }
 
-  openEditPlanDialog(): void {
+  openEditPlanDialog(planDetails: any): void {
     const dialogRef = this.dialog.open(EditPlanDialogComponent, {
       width: '654px',
-      height: '576px',
-      data: { id: 'GG196678' }
+      height: '472px',
+      data: {
+        'planDetails': planDetails,
+        'auditees': this.auditees,
+        'auditors': this.auditors
+      }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
-      this.router.navigate(['/auditPlan']);
-      this.getPlanItems();
+      if (result === 'success') {
+        this.getAllAuditPlan();
+        this.router.navigate(['/auditPlan']);
+        this.changeDetectorRef.detectChanges();
+      }
       console.log(`Dialog result: ${result}`);
     });
   }
@@ -274,29 +214,47 @@ export class AuditPlanComponent {
     });
   }
 
-  toggleDropdown() {
+  toggleDropdown(event:any) {
+    event.stopPropagation();
     this.isAuditorDropdownOpen = !this.isAuditorDropdownOpen;
   }
 
-  public onSelection(dates: Date | Date[]) {
-    const logger: HTMLElement = document.querySelector('.logger')!;
-    dates = dates as Date[];
-    logger.innerHTML = `<span> => 'onSelectionChanged': ${dates.length} dates selected.<br>${logger.innerHTML}`;
+  onCheckboxClick(event: Event) {
+    event.stopPropagation();
   }
 
-  public viewDateChanged(event: IViewDateChangeEventArgs) {
-    const logger: HTMLElement = document.querySelector('.logger')!;
-    const eventArgs = `event.previousValue: ${this.parseDate(event.previousValue)} | event.currentValue: ${this.parseDate(event.currentValue)}`;
-    logger.innerHTML = `<span> => 'viewDateChanged': ${eventArgs}</span><br>${logger.innerHTML}`;
-  }
-
-  private parseDate(date: Date) {
-    const monthFormatter = new Intl.DateTimeFormat('en', { month: 'long' });
-    return `${monthFormatter.format(date)} ${date.getFullYear()}`;
+  public onSelection(event: any) {
+    if (event) {
+      this.getAllAuditPlan();
+    }
+    this.changeDetectorRef.detectChanges();
   }
 
   public navigateToAuditPerform() {
     localStorage.setItem('header', 'Audit Perform');
     this.router.navigate(['/auditPerform']);
+  }
+
+  getAllAuditPlan() {
+    const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd')!;
+    const email = localStorage.getItem('user')?.toString() || '';
+    this.audirService.getAllPlans(email, formattedDate).subscribe((response: any) => {
+      if (response) {
+        this.auditPlans = response.audit_data.length > 0 ? response.audit_data : [];
+      } else {
+        this.audirService.showError('Failed to get audit plans');
+      }
+    }, (error: any) => {
+      this.audirService.showError('Failed to get audit plans');
+      console.error('Error for getting audit plan:', error);
+    });
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    const dropdownMenuElement = this.templateDropdown?.nativeElement;
+    if (dropdownMenuElement && !dropdownMenuElement.contains(event.target as Node)) {
+      this.isAuditorDropdownOpen = false;
+    }
   }
 }
