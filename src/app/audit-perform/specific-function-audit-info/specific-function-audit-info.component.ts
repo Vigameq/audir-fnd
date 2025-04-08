@@ -1,0 +1,109 @@
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { CustomiseAuditQuestionDialogComponent } from '../customise-audit-question-dialog/customise-audit-question-dialog.component';
+import { AuditFunctionalQuestionProgressDialogComponent } from '../audit-functional-question-progress-dialog/audit-functional-question-progress-dialog.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AudirService } from 'src/services/audir-services.service';
+import { Location } from "@angular/common";
+
+@Component({
+  selector: 'app-specific-function-audit-info',
+  templateUrl: './specific-function-audit-info.component.html',
+  styleUrls: ['./specific-function-audit-info.component.scss']
+})
+export class SpecificFunctionAuditInfoComponent {
+  auditorInfo = { id: 'VIG1893893', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '70', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' };
+
+
+  progressData = [
+    {
+      label: 'Auditor Note',
+      auditorName: 'Krishna Achar',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      date: '21/05/2024',
+      lineHeight: 0,
+      color: ''
+    },
+    {
+      label: 'Auditee Response',
+      auditorName: 'Rajesh Rao',
+      type: 'Purchase',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      date: '27/05/2024',
+      lineHeight: 0,
+      color: ''
+    },
+    {
+      label: 'NC Closed',
+      auditorName: 'Krishna Achar',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      date: '28/05/2024',
+      lineHeight: 0,
+      color: ''
+    }
+  ];
+  allFunctionalQuestions!: any[];
+  auditInfo: any;
+  constructor(private dialog: MatDialog, 
+    private route: ActivatedRoute, 
+    private audirService: AudirService,
+    private location:Location,
+    private readonly router: Router) { 
+    this.route.paramMap.subscribe(params => {
+        const auditId = {"audit_id":params.get('id')}
+        this.getQuestions(auditId);
+        this.getPlanAudit(auditId);
+    });
+  }
+
+  ngOnInit(){
+  }
+
+  getQuestions(auditId:any){
+    this.audirService.getAuditQuestions(auditId).subscribe((auditQuestion:any)=>{
+      if(auditQuestion){
+        const templates = auditQuestion.questions.template;
+        const firstKey = Object.keys(templates)[0];
+        this.allFunctionalQuestions = templates[firstKey];
+      }
+     })
+  }
+
+  getPlanAudit(auditId:any){
+    this.audirService.getAuditPlan(auditId).subscribe((audit:any)=>{
+      if(audit){
+        this.auditInfo = audit.audit_data;
+      }      
+    })
+  }
+
+  questionInfo(index: number) {
+    const dialogRef = this.dialog.open(CustomiseAuditQuestionDialogComponent, {
+      width: 'auto',
+      position: { right: '0', top: '0' },
+      panelClass: 'customize-question-dialog-container',
+      data: this.allFunctionalQuestions[index]
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  questionProgressData() {
+    const dialogRef = this.dialog.open(AuditFunctionalQuestionProgressDialogComponent, {
+      width: 'auto',
+      position: { right: '0', top: '0' },
+      panelClass: 'question-progress-dialog-container',
+      data: { auditorInfo: this.auditorInfo, progressData: this.progressData }
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  back(){
+    this.location.back();
+  }
+}
