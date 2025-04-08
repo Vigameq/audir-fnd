@@ -59,6 +59,7 @@ export class ReportsComponent {
   onFunctionsDropdownClick(): void {
     this.isFunctionsDropdownOpen = !this.isFunctionsDropdownOpen;
   }
+  
   ngAfterViewInit() {
     this.renderer.listen('document', 'click', (event: Event) => {
       if (this.standardDropdown && !this.standardDropdown.nativeElement.contains(event.target)) {

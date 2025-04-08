@@ -6,7 +6,7 @@
                 <img src="../assets/images/Vector.png" alt="Edit" id="edit-icon" />
             </div>
             <div class="plan-id">
-                <span>{{data.id}}</span>
+                <span>{{planDetails.audit_id}}</span>
             </div>
             <div class="form-container">
                 <form [formGroup]="editPlanForm" (ngSubmit)="onSaveChanges()">
@@ -14,48 +14,50 @@
                         <div class="edit-fields">
                             <div class="left-section">
                                 <div class="start-date-time">
-                                    <input type="datetime-local" id="start-date-time" class="form-control" placeholder="Start Date"
+                                    <input type="datetime-local" id="start-date-time" class="form-control"
                                         formControlName="startDateTimeValue" name="startDateTime" required />
                                 </div>
-                                <div class="audit-type">
+                                <!-- <div class="audit-type">
                                     <input id="audit-type" class="audit-type-input" formControlName="auditTypeValue" placeholder="Audit Type"
                                         name="auditType" />
-                                </div>
+                                </div> -->
                                 <div class="assignTo">
                                     <select id="assignTo" class="dropdown-select" formControlName="assignToValue"
                                         name="assignTo" required>
-                                        <option value="" disabled selected>Assign To</option>
-                                        <option *ngFor="let auditor of auditors" [value]="auditor.Name">
-                                            {{ auditor.Name }}</option>
+                                        <option value="" disabled selected>{{editPlanForm.value.assignToValue}}</option>
+                                        <option *ngFor="let auditee of auditees" [value]="auditee.Name">
+                                            {{ auditee.Name }}</option>
                                     </select>
                                 </div>
-                                <div class="city">
+                                <!-- <div class="city">
                                     <select id="city-name" class="dropdown-select" formControlName="cityNameValue"
                                         name="cityName" required>
                                         <option value="" disabled selected>City</option>
                                         <option *ngFor="let cityOption of cities" [value]="cityOption">
                                             {{ cityOption}}</option>
                                     </select>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="right-section">
                                 <div class="end-date-time">
-                                    <input type="datetime-local" id="end-date-time" class="form-control" placeholder="End Date"
-                                        formControlName="endDateTimeValue" name="endDateTime" required />
+                                    <input type="datetime-local" id="end-date-time" class="form-control"
+                                        placeholder="End Date" formControlName="endDateTimeValue" name="endDateTime"
+                                        required />
                                 </div>
-                                <div class="sub-audit-type">
+                                <!-- <div class="sub-audit-type">
                                     <input id="sub-audit-type" class="sub-audit-type-input" placeholder="Sub-Audit Type"
                                         formControlName="subAuditTypeValue" name="subAuditType" />
-                                </div>
+                                </div> -->
                                 <div class="leadAuditor">
                                     <select id="leadAuditor" class="dropdown-select" formControlName="leadAuditorValue"
                                         name="leadAuditor" required>
-                                        <option value="" disabled selected>Lead Auditor</option>
-                                        <option *ngFor="let auditee of auditees" [value]="auditee.Name">
-                                            {{ auditee.Name }}</option>
+                                        <option value="editPlanForm.value.leadAuditorValue" disabled selected>{{editPlanForm.value.leadAuditorValue}}
+                                        </option>
+                                        <option *ngFor="let auditor of auditors" [value]="auditor.Name">
+                                            {{ auditor.Name }}</option>
                                     </select>
                                 </div>
-                                <div class="country">
+                                <!-- <div class="country">
                                     <select id="country-name" class="dropdown-select" formControlName="countryNameValue"
                                         name="countryName" required>
                                         <option value="" disabled selected>Country</option>
@@ -63,12 +65,12 @@
                                             {{ countryOption }}
                                         </option>
                                     </select>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <div class="action-butons">
-                            <button mat-dialog-close class="cancel"><span>Cancel</span></button>
-                            <button class="save-changes"><span>Save Changes</span></button>
+                            <button mat-dialog-close class="cancel" (click)="onClose()"><span>Cancel</span></button>
+                            <button class="save-changes" (click)="onSuccess()"><span>Save Changes</span></button>
                         </div>
                     </div>
                 </form>

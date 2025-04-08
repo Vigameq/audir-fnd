@@ -114,20 +114,25 @@
                 gap: 40px;
 
             }
+
             .dropdown {
-                min-width: 48%;
-              }
-              
-              .dropbtn {
+                flex: 1;
+            }
+
+            .dropbtn {
                 background-color: #ffffff;
                 color: #000000;
-                padding: 10px;
+                padding: 6px 10px;
                 border: 1px solid #dbdbdb;
                 cursor: pointer;
                 border-radius: 5px;
-              }
-              
-              .dropdown-content {
+                margin: 0 0 10px;
+                display: flex;
+                align-items: center;
+                height: 50px;
+            }
+
+            .dropdown-content {
                 display: grid;
                 position: absolute;
                 background-color: #ffffff;
@@ -138,13 +143,16 @@
                 border-radius: 5px;
                 border: 1px solid #dbdbdb;
                 width: 100%;
-                .template-value{
+                top: 82px;
+
+                .template-value {
                     margin-left: 15px !important;
                 }
-              }
-              
-            .asterisk{
+            }
+
+            .asterisk {
                 color: #ff0000;
+                padding-left: 4px;
             }
 
             .audit-title-input,
@@ -326,7 +334,7 @@
                         .date-and-id {
                             display: flex;
                             flex-direction: column;
-                            align-items: center;
+                            align-items: flex-start;
                             padding-right: 10px;
                             border-right: 2px solid #5E5D5D;
                             gap: 4px;
@@ -339,7 +347,7 @@
                             }
 
                             .id-number {
-                                font-size: 16px;
+                                font-size: 14px;
                                 color: #4E4E4E;
                                 font-weight: 400;
                                 line-height: 100%;
@@ -359,7 +367,7 @@
                             }
 
                             .auditor {
-                                font-size: 16px;
+                                font-size: 14px;
                                 color: #4E4E4E;
                                 font-weight: 400;
                                 line-height: 100%;
@@ -424,4 +432,3 @@
         width: 100%;
     }
 }
-

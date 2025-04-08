@@ -45,3 +45,7 @@ body {
 .toast-container .ngx-toastr {
   border-radius: 15px !important;
 }
+
+.igx-calendar__date .igx-calendar__date-content:hover {
+  cursor: pointer !important;
+}

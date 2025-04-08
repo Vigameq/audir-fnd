@@ -10,7 +10,7 @@ export class AudirService {
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   getPlanItems(email: string): Observable<any> {
-    const emailId = { "eMail": email }
+    const emailId = { "eMail": email };
     return this.http.post('/audire/api/planItems', emailId);
   }
 
@@ -19,8 +19,24 @@ export class AudirService {
   }
 
   getTemplate(template_id: any) {
-    const templateDetails = { "template_id": template_id }
+    const templateDetails = { "template_id": template_id };
     return this.http.post('/audire/api/getTemplate', templateDetails);
+  }
+
+  getAllPlans(email: any, date: any) {
+    const emailDateDetails = {
+      "eMail": email,
+      "start_date_filter": {
+        "from": date,
+        "to": date
+      },
+      "status_filter": ["completed", "created"]
+    };
+    return this.http.post('/audire/api/listAudits', emailDateDetails);
+  }
+
+  updateAuditPlan(updatedAuditDetails:any) {
+    return this.http.post('/audire/api/updateAuditPlan', updatedAuditDetails);
   }
 
   downloadPlanTemplate(): Observable<ArrayBuffer> {

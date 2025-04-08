@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, Renderer2, ViewChild } from '
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ImportTemplateDialogComponent } from './Import-template-dialog/import-template-dialog/import-template-dialog.component';
-import { AuditorRemarksComponent } from './Import-template-dialog/auditor-remarks/auditor-remarks.component';
+// import { AuditorRemarksComponent } from './Import-template-dialog/auditor-remarks/auditor-remarks.component';
 import { AudirService } from 'src/services/audir-services.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class TemplatesComponent {
   editedQuestionText: string | undefined = '';
   allQuestions: any[] = []
   selectedFunctionId: any[] = [];
-  standardSelectedOption: any = '';
+  standardSelectedOption: any = { name: 'Select Template' };
   templateName: string = '';
   isImportVisible: boolean = true;
 
@@ -29,10 +29,11 @@ export class TemplatesComponent {
   }
 
   onStandardOptionChange() {
-    if (this.templateName !== this.standardSelectedOption.name) {
+    if (this.templateName !== this.standardSelectedOption.name || this.standardSelectedOption.id === this.selectedFunctionId[0]) {
       this.selectedFunctionId = [];
       this.templateName = this.standardSelectedOption.name;
       this.getTemplateQuestions(this.standardSelectedOption.id);
+      localStorage.setItem("selectedTemplate", JSON.stringify(this.standardSelectedOption));
     }
   }
 
@@ -79,10 +80,10 @@ export class TemplatesComponent {
     this.isImportVisible = !this.isImportVisible;
   }
 
-  selectFunction(functionItem: any) {
-    if (this.templateName !== functionItem.name) {
+  selectTemplateFunction(functionItem: any) {
+    if (this.templateName !== functionItem.name || this.standardSelectedOption.id === functionItem.id) {
       this.selectedFunctionId = [];
-      this.standardSelectedOption = '';
+      this.standardSelectedOption = { name: 'Select Template' };
       // if (this.selectedFunctionId.includes(functionItem)) {
       //   this.selectedFunctionId = this.selectedFunctionId.filter(Option => Option.id !== functionItem.id);
       // } else {
@@ -91,32 +92,38 @@ export class TemplatesComponent {
       this.selectedFunctionId.push(functionItem.id);
       this.templateName = functionItem.name;
       this.getTemplateQuestions(this.selectedFunctionId[0]);
+      localStorage.setItem("selectedTemplate", JSON.stringify({}));
     }
-
   }
 
-  editQuestion(index: number, type: string, questionText?: string) {
-    if (type === 'edit' || type === 'cancel') {
-      this.allQuestions[index].showEditIcon = type === 'edit' ? false : true;
-      this.editedQuestionText = questionText;
-      return;
-    }
-    this.allQuestions[index].showEditIcon = true;
-    this.allQuestions[index].questionText = this.editedQuestionText;
-    // const dialogRef = this.dialog.open(AuditorRemarksComponent, {
-    //   width: '634px',
-    //   height: '360px',
-    //   data: { id: 'GG196678' }
-    // });
+  // editQuestion(index: number, type: string, questionText?: string) {
+  //   if (type === 'edit' || type === 'cancel') {
+  //     this.allQuestions[index].showEditIcon = type === 'edit' ? false : true;
+  //     this.editedQuestionText = questionText;
+  //     return;
+  //   }
+  //   this.allQuestions[index].showEditIcon = true;
+  //   this.allQuestions[index].questionText = this.editedQuestionText;
+  //   // const dialogRef = this.dialog.open(AuditorRemarksComponent, {
+  //   //   width: '634px',
+  //   //   height: '360px',
+  //   //   data: { id: 'GG196678' }
+  //   // });
 
-    // dialogRef.afterClosed().subscribe((result: any) => {
-    //   this.router.navigate(['/templates']);
-    //   console.log(`Dialog result: ${result}`);
-    // });
-  }
+  //   // dialogRef.afterClosed().subscribe((result: any) => {
+  //   //   this.router.navigate(['/templates']);
+  //   //   console.log(`Dialog result: ${result}`);
+  //   // });
+  // }
 
   getTemplates() {
     const email = localStorage.getItem('user')?.toString() || '';
+    const selectedTemplate: any = JSON.parse(localStorage.getItem("selectedTemplate") as any);
+    if (selectedTemplate.name) {
+      this.standardSelectedOption = selectedTemplate;
+      this.templateName = this.standardSelectedOption.name;
+      this.getTemplateQuestions(this.standardSelectedOption.id);
+    }
     this.audirService.getPlanItems(email).subscribe((planDetails: any) => {
       if (planDetails) {
         this.templates = planDetails.templates;
@@ -126,7 +133,7 @@ export class TemplatesComponent {
     })
   }
 
-  deleteQuestion(index: number) {
-    this.allQuestions.splice(index, 1);
-  }
+  // deleteQuestion(index: number) {
+  //   this.allQuestions.splice(index, 1);
+  // }
 }
