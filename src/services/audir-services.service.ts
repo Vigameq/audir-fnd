@@ -18,6 +18,10 @@ export class AudirService {
     return this.http.post('/audire/api/planAudit', auditPlan);
   }
 
+  getAuditPlan(audit_id:any){
+    return this.http.post('/audire/api/getAuditPlan', audit_id);
+  }
+
   getTemplate(template_id: any) {
     const templateDetails = { "template_id": template_id };
     return this.http.post('/audire/api/getTemplate', templateDetails);
@@ -60,6 +64,17 @@ export class AudirService {
   createPlans(formData: FormData): any {
     return this.http.post<any>('/audire/api/bulkAuditCreate', formData);
   }
+
+  /* services for Audit perform */
+
+  getAuditLists(payload:any){
+    return this.http.post<any>('/audire/api/listAudits', payload);
+  }
+
+  getAuditQuestions(payload:any){
+    return this.http.post<any>('/audire/api/getAuditQuestions', payload);
+  }
+
 
   getData(): any {
     return this.http.get('/assets/json/data.json');

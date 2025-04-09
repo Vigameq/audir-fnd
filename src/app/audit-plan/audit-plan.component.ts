@@ -81,7 +81,9 @@ export class AuditPlanComponent {
         this.auditees = items.users.auditees;
         this.auditors = items.users.auditors;
       }
-    })
+    }, (error: any) => {
+      console.error('Error for getting plans:', error);
+    });
   }
 
   onTemplateSelectionChange(event: Event) {

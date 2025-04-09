@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CustomiseAuditQuestionDialogComponent } from '../customise-audit-question-dialog/customise-audit-question-dialog.component';
 import { AuditFunctionalQuestionProgressDialogComponent } from '../audit-functional-question-progress-dialog/audit-functional-question-progress-dialog.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AudirService } from 'src/services/audir-services.service';
+import { Location } from "@angular/common";
 
 @Component({
   selector: 'app-specific-function-audit-info',
@@ -10,27 +13,7 @@ import { AuditFunctionalQuestionProgressDialogComponent } from '../audit-functio
 })
 export class SpecificFunctionAuditInfoComponent {
   auditorInfo = { id: 'VIG1893893', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '70', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' };
-  // progressData = {
-  //   auditorNote: {
-  //     label: 'Auditor Note',
-  //     name: 'Krishna Achar',
-  //     note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-  //     date: '21/05/2024'
-  //   },
-  //   auditeeResponse: {
-  //     label: 'Auditee Response',
-  //     name: 'Rajesh Rao',
-  //     type: 'Purchase',
-  //     response: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-  //     date: '27/05/2024'
-  //   },
-  //   closure: {
-  //     label: 'NC Closed',
-  //     closedBy: 'NC Closed',
-  //     closureDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-  //     date: '28/05/2024'
-  //   }
-  // };
+
 
   progressData = [
     {
@@ -59,46 +42,56 @@ export class SpecificFunctionAuditInfoComponent {
       color: ''
     }
   ];
-  allFunctionalQuestions: any[] = [
-    {
-      questionNumber: 'Question1',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      status: 'Noteworthy'
-    },
-    {
-      questionNumber: 'Question2',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      status: 'complaint'
-    },
-    {
-      questionNumber: 'Question3',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      status: 'OFI'
-    },
-    {
-      questionNumber: 'Question4',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      status: 'OFI'
-    },
-    {
-      questionNumber: 'Question5',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      status: 'OFI'
-    },
-    {
-      questionNumber: 'Question6',
-      questionText: 'Does the organization continually improve the suitability, adequacy and effectiveness of the quality management system?',
-      status: 'OFI'
-    }
-  ];
-  constructor(private dialog: MatDialog) { }
+  allFunctionalQuestions!: any[];
+  auditInfo: any;
+  auditId: any;
+  constructor(private dialog: MatDialog,
+    private route: ActivatedRoute,
+    private audirService: AudirService,
+    private location: Location,
+    private readonly router: Router) {
+    this.route.paramMap.subscribe(params => {
+      this.auditId = { "audit_id": params.get('id') };
+      this.getPlanAudit(this.auditId);
+      this.getQuestions(this.auditId);
+    });
+  }
 
-  customizeQuestion(index: number) {
+  ngOnInit() {
+  }
+
+  getQuestions(auditId: any) {
+    this.audirService.getAuditQuestions(auditId).subscribe((auditQuestion: any) => {
+      if (auditQuestion) {
+        const templates = auditQuestion.questions.template;
+        const firstKey = Object.keys(templates)[0];
+        this.allFunctionalQuestions = templates[firstKey];
+      }
+    }, (error: any) => {
+      console.error('Error for getting questions:', error);
+    });
+  }
+
+  getPlanAudit(auditId: any) {
+    this.audirService.getAuditPlan(auditId).subscribe((audit: any) => {
+      if (audit) {
+        this.auditInfo = audit.audit_data;
+      }
+    }, (error: any) => {
+      console.error('Error for getting audit plan:', error);
+    });
+  }
+
+  questionInfo(index: number) {
     const dialogRef = this.dialog.open(CustomiseAuditQuestionDialogComponent, {
       width: 'auto',
       position: { right: '0', top: '0' },
       panelClass: 'customize-question-dialog-container',
-      data: this.allFunctionalQuestions[index]
+      data: {
+        index:index+1,
+        questionText: this.allFunctionalQuestions[index],
+        auditId: this.auditId
+      }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
@@ -117,5 +110,9 @@ export class SpecificFunctionAuditInfoComponent {
     dialogRef.afterClosed().subscribe((result: any) => {
       console.log(`Dialog result: ${result}`);
     });
+  }
+
+  back() {
+    this.location.back();
   }
 }

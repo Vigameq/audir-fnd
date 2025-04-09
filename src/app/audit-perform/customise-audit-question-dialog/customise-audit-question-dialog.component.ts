@@ -46,7 +46,7 @@ export class CustomiseAuditQuestionDialogComponent {
   constructor(private renderer: Renderer2, public dialogRef: MatDialogRef<CustomiseAuditQuestionDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
-    this.functionalAuditForQuestions.questionNumber = this.data.questionNumber;
+    this.functionalAuditForQuestions.questionNumber = 'Question' + this.data.index;
     this.functionalAuditForQuestions.questionText = this.data.questionText;
   }
 

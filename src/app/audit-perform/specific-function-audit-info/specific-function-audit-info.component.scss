@@ -6,6 +6,10 @@
     max-width: 100%;
     font-family: 'Apple SD Gothic Neo', sans-serif;
 
+    .parent-navigation-icon {
+        cursor: pointer;
+    }
+
     .function-audit-info {
         display: flex;
         flex-direction: column;
@@ -45,18 +49,23 @@
                     line-height: 100%;
                 }
 
-                .audit-creation-id,
-                .templates-location-details {
+                .audit-title,
+                .templates-location-details,
+                .function-details {
                     font-size: 20px;
                     font-family: 400;
                     line-height: 100%;
+                }
+
+                .location-details {
+                    font-size: 14px;
                 }
 
                 .templates-location-details .templates-details {
                     padding-bottom: 4px;
                 }
 
-                .audit-creation-id {
+                .audit-title {
                     margin-bottom: 12px;
                 }
             }
@@ -81,7 +90,8 @@
                     }
                 }
 
-                .lead-auditor-label {
+                .lead-auditor-label,
+                .auditee-label {
                     font-size: 14px;
                     font-weight: 400;
                     line-height: 100%;
@@ -95,6 +105,30 @@
             }
         }
 
+        .audit-scope {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            border: 1px solid #000000;
+            background-color: #1D2431;
+            color: #FFFFFF;
+            gap: 10px;
+            border-radius: 15px;
+            line-height: 100%;
+
+            .audit-scope-label {
+                font-size: 20px;
+                font-family: 400;
+                line-height: 100%;
+            }
+
+            .audit-scope-info {
+                font-size: 16px;
+                font-family: 400;
+                line-height: 100%;
+            }
+        }
+
         .progress-percentage {
             display: flex;
             flex-direction: row;
@@ -104,7 +138,7 @@
             .progress-bar {
                 border-radius: 20px;
                 height: 23px;
-                width: 70%;
+                width: 100%;
                 border: 1px solid #000000;
                 background-color: #FFFFFF;
 
@@ -125,7 +159,7 @@
 
         .vertical-bar,
         .hyphen {
-            margin: 0 6px;
+            margin: 0 4px;
         }
     }
 
@@ -134,6 +168,7 @@
         flex-direction: column;
         gap: 20px;
         line-height: 100%;
+        cursor: pointer;
 
         .questions-section {
             display: flex;

@@ -29,8 +29,7 @@ export class LoginComponent {
         } else {
           this.audirService.showError('Invalid credentials');
         }
-      },
-      (error: any) => {
+      }, (error: any) => {
         if (error.error.status === 500) {
           this.audirService.showError(error.error.statusText);
         } else {
