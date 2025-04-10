@@ -6,7 +6,7 @@
                 <img src="../assets/images/Vector.png" alt="Edit" id="edit-icon" />
             </div>
             <div class="plan-id">
-                <span>{{planDetails.audit_id}}</span>
+                <span>{{planDetails.audit_title}}</span>
             </div>
             <div class="form-container">
                 <form [formGroup]="editPlanForm" (ngSubmit)="onSaveChanges()">
@@ -22,7 +22,7 @@
                                         name="auditType" />
                                 </div> -->
                                 <div class="assignTo">
-                                    <select id="assignTo" class="dropdown-select" formControlName="assignToValue"
+                                    <select id="assignTo" class="dropdown-select" formControlName="assignToValue" 
                                         name="assignTo" required>
                                         <option value="" disabled selected>{{editPlanForm.value.assignToValue}}</option>
                                         <option *ngFor="let auditee of auditees" [value]="auditee.Name">
@@ -49,7 +49,7 @@
                                         formControlName="subAuditTypeValue" name="subAuditType" />
                                 </div> -->
                                 <div class="leadAuditor">
-                                    <select id="leadAuditor" class="dropdown-select" formControlName="leadAuditorValue"
+                                    <select id="leadAuditor" class="dropdown-select" formControlName="leadAuditorValue" 
                                         name="leadAuditor" required>
                                         <option value="editPlanForm.value.leadAuditorValue" disabled selected>{{editPlanForm.value.leadAuditorValue}}
                                         </option>

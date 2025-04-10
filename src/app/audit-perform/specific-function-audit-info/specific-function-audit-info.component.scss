@@ -221,4 +221,13 @@
             }
         }
     }
+    .cancel-save-btns{
+        .save{
+            float: right;
+            border-radius: 5px;
+            background: #000000;
+            color: #ffff;
+            padding: 5px 30px;
+        }
+    }
 }
