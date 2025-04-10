@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ImportCreatePlanDialogComponent } from './import-create-plan-dialog/import-create-plan-dialog.component';
 import { EditPlanDialogComponent } from './edit-plan-dialog/edit-plan-dialog.component';
 import { DatePipe } from '@angular/common';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-audit-plan',
@@ -46,11 +47,12 @@ export class AuditPlanComponent {
   auditPlans: any = [];
   selectedDate: any = new Date();
   isClear: boolean = false;
+  isLoading: boolean = false;
 
   constructor(private datePipe: DatePipe, private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.isImportVisible = true;
     // this.showAllPlans = (this.auditPlans.length <= 4) ? true : false;
     this.auditPlanForm = this.formBuilder.group(
@@ -69,7 +71,7 @@ export class AuditPlanComponent {
         auditScopeValue: ['', Validators.required]
       });
     this.getPlanItems();
-    this.getAllAuditPlan();
+    await this.getAllAuditPlan();
   }
 
   getPlanItems() {
@@ -122,7 +124,6 @@ export class AuditPlanComponent {
           if (response) {
             this.resetForm();
             this.openSuccessDialog(plan.audit_title);
-            this.selectedDate = undefined;
           } else {
             this.audirService.showError('Failed to create audit plan');
 
@@ -188,9 +189,9 @@ export class AuditPlanComponent {
       }
     });
 
-    dialogRef.afterClosed().subscribe((result: any) => {
+    dialogRef.afterClosed().subscribe(async (result: any) => {
       if (result === 'success') {
-        this.getAllAuditPlan();
+        await this.getAllAuditPlan();
         this.router.navigate(['/auditPlan']);
         this.changeDetectorRef.detectChanges();
       }
@@ -216,7 +217,7 @@ export class AuditPlanComponent {
     });
   }
 
-  toggleDropdown(event:any) {
+  toggleDropdown(event: any) {
     event.stopPropagation();
     this.isAuditorDropdownOpen = !this.isAuditorDropdownOpen;
   }
@@ -225,11 +226,11 @@ export class AuditPlanComponent {
     event.stopPropagation();
   }
 
-  public onSelection(event: any) {
-    if (event) {
-      this.getAllAuditPlan();
+  async onSelection(date: any) {
+    this.isLoading = true;
+    if (date) {
+      await this.getAllAuditPlan();
     }
-    this.changeDetectorRef.detectChanges();
   }
 
   public navigateToAuditPerform() {
@@ -237,20 +238,28 @@ export class AuditPlanComponent {
     this.router.navigate(['/auditPerform']);
   }
 
-  getAllAuditPlan() {
-    const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd')!;
-    const email = localStorage.getItem('user')?.toString() || '';
-    this.audirService.getAllPlans(email, formattedDate).subscribe((response: any) => {
+
+
+  async getAllAuditPlan() {
+    const formattedDate: any = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd')!;
+    const email: any = localStorage.getItem('user')?.toString() || '';
+    try {
+      const response: any = await firstValueFrom(this.audirService.getAllPlans(email, formattedDate));
       if (response) {
+        this.isLoading = false;
         this.auditPlans = response.audit_data.length > 0 ? response.audit_data : [];
       } else {
+        this.isLoading = false;
         this.audirService.showError('Failed to get audit plans');
       }
-    }, (error: any) => {
+    } catch (error) {
+      this.isLoading = false;
       this.audirService.showError('Failed to get audit plans');
       console.error('Error for getting audit plan:', error);
-    });
+    }
+    this.changeDetectorRef.detectChanges();
   }
+
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
