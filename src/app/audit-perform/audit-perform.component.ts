@@ -126,7 +126,6 @@ export class AuditPerformComponent {
     const email = localStorage.getItem('user')?.toString() || '';
     this.audirService.getPlanItems(email).subscribe((items: any) => {
       if (items) {
-        console.log('this.------', items)
         this.auditeeDropdownOptions = items.users.auditees;
       }
     }, (error: any) => {

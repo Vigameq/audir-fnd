@@ -41,8 +41,6 @@ export class EditPlanDialogComponent {
       assignToValue: this.planDetails.auditees[0],
       leadAuditorValue: this.planDetails.auditors[0]
     });
-    console.log('111---',this.planDetails)
-
   }
   onSaveChanges() {
     const editedAuditPlan: any = {

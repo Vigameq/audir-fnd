@@ -24,7 +24,7 @@
                                 <div class="assignTo">
                                     <select id="assignTo" class="dropdown-select" formControlName="assignToValue"
                                         name="assignTo" required>
-                                        <option value="" disabled selected>{{editPlanForm.value.assignToValue}}</option>
+                                        <option [value]="editPlanForm.value.assignToValue" disabled selected>{{editPlanForm.value.assignToValue}}</option>
                                         <option *ngFor="let auditee of auditees" [value]="auditee.Name">
                                             {{ auditee.Name }}</option>
                                     </select>
@@ -51,7 +51,7 @@
                                 <div class="leadAuditor">
                                     <select id="leadAuditor" class="dropdown-select" formControlName="leadAuditorValue"
                                         name="leadAuditor" required>
-                                        <option value="editPlanForm.value.leadAuditorValue" disabled selected>{{editPlanForm.value.leadAuditorValue}}
+                                        <option [value]="editPlanForm.value.leadAuditorValue" disabled selected>{{editPlanForm.value.leadAuditorValue}}
                                         </option>
                                         <option *ngFor="let auditor of auditors" [value]="auditor.Name">
                                             {{ auditor.Name }}</option>
