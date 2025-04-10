@@ -6,7 +6,7 @@
                 <img src="../assets/images/Vector.png" alt="Edit" id="edit-icon" />
             </div>
             <div class="plan-id">
-                <span>{{planDetails.audit_id}}</span>
+                <span>{{planDetails.audit_title}}</span>
             </div>
             <div class="form-container">
                 <form [formGroup]="editPlanForm" (ngSubmit)="onSaveChanges()">
