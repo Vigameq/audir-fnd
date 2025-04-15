@@ -12,18 +12,6 @@
             <div class="left-section">
                 <div class="audit-info-label"><span>Audit Information</span></div>
                 <div class="audit-title"><span>{{auditInfo.audit_title}}</span></div>
-                <div class="templates-location-details">
-                    <div class="templates-details">
-                        <span>{{auditInfo.function_template[0]}}</span>
-                        <span class="vertical-bar">|</span>
-                        <span>{{auditInfo.template[0]}}
-                        </span>
-                    </div>
-                    <div class="location-details"><span>{{auditorInfo.city}}</span>
-                        <span class="vertical-bar" *ngIf="auditorInfo.city && auditorInfo.country">|</span>
-                        <span>{{auditorInfo.country}}</span>
-                    </div>
-                </div>
                 <div class="function-details">
                     <div class="functions">
                         <span>{{auditInfo.functions}}</span>
@@ -32,6 +20,19 @@
                         <span>{{auditInfo.functions}}</span>
                     </div> -->
                 </div>
+                <div class="templates-location-details">
+                    <div class="templates-details">
+                        <span>{{auditInfo.function_template[0]}}</span>
+                        <span class="vertical-bar">|</span>
+                        <span>{{auditInfo.template[0]}}
+                        </span>
+                    </div>
+                    <div class="location-details"><span>{{auditInfo.city}}</span>
+                        <span class="vertical-bar" *ngIf="auditorInfo.city && auditorInfo.country">|</span>
+                        <span>{{auditInfo.country}}</span>
+                    </div>
+                </div>
+                
             </div>
             <div class="right-section">
                 <div class="duration-details">
@@ -80,5 +81,8 @@
             </div>
             <!-- <div class="status" (click)="customizeQuestion(i)"><span>{{question.status}}</span></div> -->
         </div>
+    </div>
+    <div class="cancel-save-btns">
+        <button class="save">Submit</button>
     </div>
 </div>
