@@ -35,6 +35,7 @@ export class AuditPlanComponent {
     auditScopeValue: new FormControl('')
   });
   isAuditorDropdownOpen = false;
+  isTemplateDropdownOpened = false;
   cities = ["Amaravati", "Bengaluru", "Bhopal", "Bhubaneswar", "Chandigarh", "Chennai", "Dehradun", "Gandhinagar", "Gangtok", "Hyderabad", "Jaipur", "Kolkata", "Lucknow", "Mumbai", "Panaji", "Patna", "Raipur", "Ranchi", "Shillong", "Shimla", "Thiruvananthapuram"];
   countries = ["India"];
   selectedTemplate: string[] = [];
@@ -88,16 +89,20 @@ export class AuditPlanComponent {
     });
   }
 
-  onTemplateSelectionChange(event: Event) {
+  onTemplateSelectionChange(event: Event, index: any) {
     const checkbox = event.target as HTMLInputElement;
     // const currentValue = this.auditPlanForm.get('auditorValue')?.value;
     if (!this.selectedTemplate.includes(checkbox.value)) {
       if (checkbox.checked) {
         this.selectedTemplate.push(checkbox.value);
+        this.templates[index].checked = true;
       } else {
         this.selectedTemplate = this.selectedTemplate.filter(option => option !== checkbox.value);
       }
       this.auditPlanForm.get('auditorValue')?.setValue(this.selectedTemplate);
+    }
+    else{
+      this.templates[index].checked = false;
     }
   }
 
@@ -220,6 +225,13 @@ export class AuditPlanComponent {
   toggleDropdown(event: any) {
     event.stopPropagation();
     this.isAuditorDropdownOpen = !this.isAuditorDropdownOpen;
+    if (!this.isTemplateDropdownOpened) {
+      this.isTemplateDropdownOpened = true;
+      this.templates = this.templates.map((templateObj: any) => {
+        templateObj.checked = false;
+        return templateObj;
+      });
+    }
   }
 
   onCheckboxClick(event: Event) {
@@ -237,8 +249,6 @@ export class AuditPlanComponent {
     localStorage.setItem('header', 'Audit Perform');
     this.router.navigate(['/auditPerform']);
   }
-
-
 
   async getAllAuditPlan() {
     const formattedDate: any = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd')!;
@@ -259,7 +269,6 @@ export class AuditPlanComponent {
     }
     this.changeDetectorRef.detectChanges();
   }
-
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {

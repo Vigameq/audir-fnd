@@ -49,14 +49,14 @@
                 <div class="templates-row">
                     <div class="dropdown" (click)="toggleDropdown($event)">
                         <label for="templates" class="form-label">Template</label>
-                        <div  class="dropbtn">
+                        <div class="dropbtn">
                             Select templates..
                         </div>
                         <div *ngIf="isAuditorDropdownOpen" class="dropdown-content" #templateDropdown>
-                            <label *ngFor="let template of templates" (click)="onCheckboxClick($event)">
+                            <label *ngFor="let template of templates; let i = index" (click)="onCheckboxClick($event)">
                                 <input type="checkbox" [value]="template.name"
-                                    (change)="onTemplateSelectionChange($event)"
-                                    [checked]="selectedTemplate.includes(template)" />
+                                    (change)="onTemplateSelectionChange($event,i)"
+                                    [checked]="templates[i].checked" />
                                 <span class="template-value">{{ template.name }}</span>
                             </label>
                         </div>
@@ -174,8 +174,8 @@
     <div class="calendar-and-plans-section">
         <div class="calendar-section">
             <article class="calendar-wrapper">
-                <igx-calendar [(ngModel)]="selectedDate" (selected)="onSelection($event)" selection="single"
-                    ></igx-calendar>
+                <igx-calendar [(ngModel)]="selectedDate" (selected)="onSelection($event)"
+                    selection="single"></igx-calendar>
             </article>
         </div>
         <div class="audit-information">
@@ -183,7 +183,7 @@
             <div *ngIf="isLoading">Loading planned audits...</div>
             <div class="audit-plans" *ngIf="!isLoading && auditPlans.length > 0">
                 <div class="plans-list" *ngFor="let plan of auditPlans">
-                <!-- <div class="plans-list" *ngFor="let plan of (showAllPlans ? auditPlans : auditPlans.slice(0, 4))"> -->
+                    <!-- <div class="plans-list" *ngFor="let plan of (showAllPlans ? auditPlans : auditPlans.slice(0, 4))"> -->
                     <div class="plan-details">
                         <div class="date-and-id">
                             <div class="date"><span>{{plan.start_date | date: 'dd MMM'}}</span></div>
