@@ -63,9 +63,7 @@ export class SpecificFunctionAuditInfoComponent {
   getQuestions(auditId: any) {
     this.audirService.getAuditQuestions(auditId).subscribe((auditQuestion: any) => {
       if (auditQuestion) {
-        const templates = auditQuestion.questions.template;
-        const firstKey = Object.keys(templates)[0];
-        this.allFunctionalQuestions = templates[firstKey];
+        this.allFunctionalQuestions = Object.values(auditQuestion.questions.template).flat();
       }
     }, (error: any) => {
       console.error('Error for getting questions:', error);

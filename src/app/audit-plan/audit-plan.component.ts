@@ -113,7 +113,7 @@ export class AuditPlanComponent {
         audit_title: this.auditPlanForm.value?.auditTitle,
         functions: this.auditPlanForm.value?.functions,
         template: this.selectedTemplate,
-        function_template: this.auditPlanForm.value?.functionTemplateValue,
+        function_template: [this.auditPlanForm.value?.functionTemplateValue],
         start_date: this.auditPlanForm.value?.startDateTime,
         end_date: this.auditPlanForm.value?.endDateTime,
         auditors: [this.auditPlanForm.value?.auditorValue],
