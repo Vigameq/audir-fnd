@@ -91,6 +91,15 @@
                 padding: 6px;
                 cursor: pointer;
                 margin-bottom: 10px;
+                appearance: none;
+                padding-right: 30px;
+            }
+
+            .date-time-row,
+            .audit-title-and-functions-row {
+                input {
+                    margin-bottom: 10px;
+                }
             }
 
             textarea {
@@ -115,14 +124,18 @@
 
             }
 
-            .dropdown {
+            .template-dropdown,
+            .auditors,
+            .auditees {
+                position: relative;
                 flex: 1;
             }
 
             .dropbtn {
                 background-color: #ffffff;
                 color: #000000;
-                padding: 6px 10px;
+                padding: 6px;
+                padding-right: 30px;
                 border: 1px solid #dbdbdb;
                 cursor: pointer;
                 border-radius: 5px;
@@ -130,6 +143,12 @@
                 display: flex;
                 align-items: center;
                 height: 50px;
+
+                span {
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
             }
 
             .dropdown-content {
@@ -145,7 +164,9 @@
                 width: 100%;
                 top: 82px;
 
-                .template-value {
+                .template-value,
+                .auditor-value,
+                .auditee-value {
                     margin-left: 15px !important;
                 }
             }
@@ -167,12 +188,10 @@
 
             .audit-title,
             .functions,
-            .template,
             .function-template,
             .start-date-time,
             .end-date-time,
-            .auditors,
-            .auditees,
+            .lead-auditor,
             .city,
             .country {
                 flex: 1;
@@ -183,45 +202,17 @@
                 }
             }
 
-            .auditees-auditors-row {
-
-                .auditor-dropdown-button,
-                .auditee-dropdown-button {
-                    position: relative;
-                    width: 100%;
-                    padding: 10px;
-                    font-size: 16px;
-                    color: #000000;
-                    background-color: white;
-                    border: 1px solid #dbdbdb;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    text-align: left;
-                }
-
-                .auditor-dropdown-options,
-                .auditee-dropdown-options {
-                    width: 442px;
-                    position: absolute;
-                    background-color: white;
-                    border: 1px solid #dbdbdb;
-                    padding: 10px;
-                    color: #000000;
-                    border-radius: 6px;
-                    max-height: 200px;
-                    overflow-y: auto;
-
-                    input[type="checkbox"] {
-                        margin-right: 10px;
-                    }
-                }
-
-            }
-
             .auditeeDropdown,
             .auditorDropdown,
             input {
                 margin-bottom: 10px;
+            }
+
+            .function-template,
+            .lead-auditor,
+            .city,
+            .country {
+                position: relative;
             }
 
             .button-group {
@@ -263,6 +254,14 @@
                 background-color: #FDE714;
                 color: #1D2431;
                 border-color: #FDE714;
+            }
+
+            .dropdown-arrow {
+                position: absolute;
+                top: 62%;
+                transform: translateY(-50%);
+                pointer-events: none;
+                right: 8px;
             }
         }
     }

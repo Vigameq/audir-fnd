@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Renderer2, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Audit } from 'src/model/audit.model';
 import { AudirService } from 'src/services/audir-services.service';
@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { ImportCreatePlanDialogComponent } from './import-create-plan-dialog/import-create-plan-dialog.component';
 import { EditPlanDialogComponent } from './edit-plan-dialog/edit-plan-dialog.component';
 import { DatePipe } from '@angular/common';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-audit-plan',
@@ -19,26 +19,36 @@ import { firstValueFrom } from 'rxjs';
 })
 export class AuditPlanComponent {
   @ViewChild('templateDropdown', { static: false }) templateDropdown!: ElementRef;
+  @ViewChild('auditorsDropdown', { static: false }) auditorsDropdown!: ElementRef;
+  @ViewChild('auditeesDropdown', { static: false }) auditeesDropdown!: ElementRef;
+  @ViewChild('functionTemplateDropdown', { static: false }) functionTemplateDropdown!: ElementRef;
+  @ViewChild('leadAuditorDropdown', { static: false }) leadAuditorDropdown!: ElementRef;
+  @ViewChild('cityDropdown', { static: false }) cityDropdown!: ElementRef;
+  @ViewChild('countryDropdown', { static: false }) countryDropdown!: ElementRef;
+  @ViewChild('auditTitle') auditTitleElement!: ElementRef;
 
   auditPlanForm: FormGroup = new FormGroup({
-    linkAudit: new FormControl(''),
+    parentAudit: new FormControl(''),
     auditTitle: new FormControl(''),
     functions: new FormControl(''),
-    templateValue: new FormControl(''),
-    functionTemplateValue: new FormControl(''),
+    templateValue: new FormControl([]),
+    functionTemplateValue: new FormControl([]),
     startDateTime: new FormControl(''),
     endDateTime: new FormControl(''),
+    leadAuditorValue: new FormControl(''),
     auditorValue: new FormControl([]),
     auditeesValue: new FormControl([]),
     cityName: new FormControl(''),
     countryName: new FormControl(''),
     auditScopeValue: new FormControl('')
   });
-  isAuditorDropdownOpen = false;
+  isTemplateOptionsOpen = false;
   isTemplateDropdownOpened = false;
   cities = ["Amaravati", "Bengaluru", "Bhopal", "Bhubaneswar", "Chandigarh", "Chennai", "Dehradun", "Gandhinagar", "Gangtok", "Hyderabad", "Jaipur", "Kolkata", "Lucknow", "Mumbai", "Panaji", "Patna", "Raipur", "Ranchi", "Shillong", "Shimla", "Thiruvananthapuram"];
   countries = ["India"];
   selectedTemplate: string[] = [];
+  selectedAuditor: string[] = [];
+  selectedAuditees: string[] = [];
   parent_audits: any[] = [];
   templates: any[] = [];
   auditees: any[] = [];
@@ -49,8 +59,22 @@ export class AuditPlanComponent {
   selectedDate: any = new Date();
   isClear: boolean = false;
   isLoading: boolean = false;
+  isParentAudit: boolean = false;
+  private destroy$ = new Subject<void>();
+  selectedTemplateOptions: string = 'Select templates..';
+  selectedAuditorOptions: string = 'Select Auditors..';
+  selectedAuditeesOptions: string = 'Select Auditees..';
+  maxWidth: any;
+  isAuditorOptionsOpen = false;
+  isAuditeesOptionsOpen = false;
+  isAuditorDropdownOpened = false;
+  isAuditeesDropdownOpened = false;
+  isFunctionTemplateDropdownOpen = false;
+  isLeadAuditorDropdownOpen = false;
+  isCityDropdownOpen = false;
+  isCountryDropdownOpen = false;
 
-  constructor(private datePipe: DatePipe, private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(private renderer: Renderer2, private datePipe: DatePipe, private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -58,19 +82,26 @@ export class AuditPlanComponent {
     // this.showAllPlans = (this.auditPlans.length <= 4) ? true : false;
     this.auditPlanForm = this.formBuilder.group(
       {
-        linkAudit: [''],
+        parentAudit: [''],
         auditTitle: ['', Validators.required],
         functions: [''],
-        templateValue: ['', Validators.required],
-        functionTemplateValue: ['', Validators.required],
+        templateValue: [[], Validators.required],
+        functionTemplateValue: [[], Validators.required],
         startDateTime: ['', Validators.required],
         endDateTime: ['', Validators.required],
+        leadAuditorValue: ['', Validators.required],
         auditorValue: [[], Validators.required],
         auditeesValue: [[], Validators.required],
         cityName: ['', Validators.required],
         countryName: ['', Validators.required],
         auditScopeValue: ['', Validators.required]
       });
+    this.auditPlanForm.get('parentAudit')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      if (value) {
+        this.isParentAudit = true;
+        this.auditPlanForm.get('leadAuditorValue')?.setValue('');
+      }
+    });
     this.getPlanItems();
     await this.getAllAuditPlan();
   }
@@ -91,40 +122,69 @@ export class AuditPlanComponent {
 
   onTemplateSelectionChange(event: Event, index: any) {
     const checkbox = event.target as HTMLInputElement;
-    // const currentValue = this.auditPlanForm.get('auditorValue')?.value;
     if (!this.selectedTemplate.includes(checkbox.value)) {
       if (checkbox.checked) {
         this.selectedTemplate.push(checkbox.value);
         this.templates[index].checked = true;
-      } else {
-        this.selectedTemplate = this.selectedTemplate.filter(option => option !== checkbox.value);
       }
-      this.auditPlanForm.get('auditorValue')?.setValue(this.selectedTemplate);
     }
-    else{
+    else {
       this.templates[index].checked = false;
+      this.selectedTemplate = this.selectedTemplate.filter(option => option !== checkbox.value);
     }
+    this.selectedTemplateOptions = this.selectedTemplate.length > 0 ? this.selectedTemplate.join(', ') : 'Select templates..';
+  }
+
+  onAuditeeSelectionChange(event: Event, index: any) {
+    const checkbox = event.target as HTMLInputElement;
+    if (!this.selectedAuditees.includes(checkbox.value)) {
+      if (checkbox.checked) {
+        this.selectedAuditees.push(checkbox.value);
+        this.auditees[index].checked = true;
+      }
+    }
+    else {
+      this.auditees[index].checked = false;
+      this.selectedAuditees = this.selectedAuditees.filter(option => option !== checkbox.value);
+    }
+    this.selectedAuditeesOptions = this.selectedAuditees.length > 0 ? this.selectedAuditees.join(', ') : 'Select Auditees..';
+  }
+
+  onAuditorSelectionChange(event: Event, index: any) {
+    const checkbox = event.target as HTMLInputElement;
+    if (!this.selectedAuditor.includes(checkbox.value)) {
+      if (checkbox.checked) {
+        this.selectedAuditor.push(checkbox.value);
+        this.auditors[index].checked = true;
+      }
+    }
+    else {
+      this.auditors[index].checked = false;
+      this.selectedAuditor = this.selectedAuditor.filter(option => option !== checkbox.value);
+    }
+    this.selectedAuditorOptions = this.selectedAuditor.length > 0 ? this.selectedAuditor.join(', ') : 'Select Auditors..';
   }
 
   onSubmit() {
     if (this.auditPlanForm) {
       const plan: Audit = {
-        link_audit: this.auditPlanForm.value?.linkAudit ? this.auditPlanForm.value?.linkAudit : null,
+        link_audit: this.auditPlanForm.value?.parentAudit ? this.auditPlanForm.value?.parentAudit : null,
         audit_title: this.auditPlanForm.value?.auditTitle,
         functions: this.auditPlanForm.value?.functions,
         template: this.selectedTemplate,
-        function_template: [this.auditPlanForm.value?.functionTemplateValue],
+        function_template: this.auditPlanForm.value?.functionTemplateValue,
         start_date: this.auditPlanForm.value?.startDateTime,
         end_date: this.auditPlanForm.value?.endDateTime,
-        auditors: [this.auditPlanForm.value?.auditorValue],
-        auditees: [this.auditPlanForm.value?.auditeesValue],
+        leadAuditorValue: this.auditPlanForm?.value?.leadAuditorValue,
+        auditors: this.selectedAuditor,
+        auditees: this.selectedAuditees,
         city: this.auditPlanForm.value?.cityName,
         country: this.auditPlanForm.value?.countryName,
         audit_scope: this.auditPlanForm.value?.auditScopeValue,
         audit_type: "ISO 270015",
         eMail: localStorage.getItem('user')?.toString() || ''
       }
-      if (plan.audit_title && plan.functions && plan.start_date && plan.end_date && plan.audit_scope) {
+      if (this.checkRequiredPlanValues(plan)) {
         this.audirService.createAuditPlan(plan).subscribe(response => {
           if (response) {
             this.resetForm();
@@ -144,26 +204,39 @@ export class AuditPlanComponent {
     }
   }
 
+  checkRequiredPlanValues(plan: Audit) {
+    const checkPlanValues = plan.audit_title && plan.start_date && plan.end_date && plan.audit_scope;
+    return (this.isParentAudit ? checkPlanValues : (checkPlanValues && plan.leadAuditorValue));
+  }
+
   onClearForm() {
     this.isClear = true;
     this.resetForm();
   }
 
   resetForm() {
+    this.isParentAudit = false;
     this.auditPlanForm.reset({
-      linkAudit: [''],
-      auditTitle: [''],
-      functions: [''],
-      templateValue: [''],
-      functionTemplateValue: [''],
-      startDateTime: [''],
-      endDateTime: [''],
-      auditorValue: [[]],
-      auditeesValue: [[]],
-      cityName: [''],
-      countryName: [''],
-      auditScopeValue: ['']
+      parentAudit: '',
+      auditTitle: '',
+      functions: '',
+      templateValue: [],
+      functionTemplateValue: [],
+      startDateTime: '',
+      endDateTime: '',
+      leadAuditorValue: [],
+      auditorValue: [],
+      auditeesValue: [],
+      cityName: '',
+      countryName: '',
+      auditScopeValue: ''
     });
+    this.selectedTemplate = [];
+    this.selectedAuditor = [];
+    this.selectedAuditees = [];
+    this.selectedTemplateOptions = 'Select templates..';
+    this.selectedAuditorOptions = 'Select Auditors..';
+    this.selectedAuditeesOptions = 'Select Auditees..';
   }
 
   openImportPlanDialog(): void {
@@ -222,16 +295,44 @@ export class AuditPlanComponent {
     });
   }
 
-  toggleDropdown(event: any) {
+  templateToggleDropdown(event: any) {
+    this.isAuditorOptionsOpen = false;
+    this.isAuditeesOptionsOpen = false;
     event.stopPropagation();
-    this.isAuditorDropdownOpen = !this.isAuditorDropdownOpen;
+    this.isTemplateOptionsOpen = !this.isTemplateOptionsOpen;
     if (!this.isTemplateDropdownOpened) {
       this.isTemplateDropdownOpened = true;
-      this.templates = this.templates.map((templateObj: any) => {
-        templateObj.checked = false;
-        return templateObj;
-      });
+      this.templates = this.setCheckedOption(this.templates);
     }
+  }
+
+  auditorToggleDropdown(event: any) {
+    this.isTemplateOptionsOpen = false;
+    this.isAuditeesOptionsOpen = false;
+    event.stopPropagation();
+    this.isAuditorOptionsOpen = !this.isAuditorOptionsOpen;
+    if (!this.isAuditorDropdownOpened) {
+      this.isAuditorDropdownOpened = true;
+      this.auditors = this.setCheckedOption(this.auditors);
+    }
+  }
+
+  auditeesToggleDropdown(event: any) {
+    this.isTemplateOptionsOpen = false;
+    this.isAuditorOptionsOpen = false;
+    event.stopPropagation();
+    this.isAuditeesOptionsOpen = !this.isAuditeesOptionsOpen;
+    if (!this.isAuditeesDropdownOpened) {
+      this.isAuditeesDropdownOpened = true;
+      this.auditees = this.setCheckedOption(this.auditees);
+    }
+  }
+
+  setCheckedOption(optionsList: any) {
+    return optionsList.map((objectValue: any) => {
+      objectValue.checked = false;
+      return objectValue;
+    });
   }
 
   onCheckboxClick(event: Event) {
@@ -270,11 +371,84 @@ export class AuditPlanComponent {
     this.changeDetectorRef.detectChanges();
   }
 
+  updateWidth() {
+    this.maxWidth = this.auditTitleElement.nativeElement.offsetWidth - 38;
+  }
+
+  onFunctionTemplateDropdownClick(): void {
+    this.isFunctionTemplateDropdownOpen = !this.isFunctionTemplateDropdownOpen;
+  }
+
+  onLeadAuditorDropdownClick(): void {
+    this.isLeadAuditorDropdownOpen = !this.isLeadAuditorDropdownOpen;
+  }
+
+  onCityDropdownClick(): void {
+    this.isCityDropdownOpen = !this.isCityDropdownOpen;
+  }
+
+  onCountryDropdownClick(): void {
+    this.isCountryDropdownOpen = !this.isCountryDropdownOpen;
+  }
+
+  ngAfterViewInit() {
+    this.updateWidth();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.updateWidth();
+  }
+
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
-    const dropdownMenuElement = this.templateDropdown?.nativeElement;
-    if (dropdownMenuElement && !dropdownMenuElement.contains(event.target as Node)) {
-      this.isAuditorDropdownOpen = false;
+    const templateDropdownMenuElement = this.templateDropdown?.nativeElement;
+    const auditorsDropdownMenuElement = this.auditorsDropdown?.nativeElement;
+    const auditeesDropdownMenuElement = this.auditeesDropdown?.nativeElement;
+    const functionTemplateDropdownMenuElement = this.functionTemplateDropdown?.nativeElement;
+    const leadAuditorDropdownMenuElement = this.leadAuditorDropdown?.nativeElement;
+    const cityDropdownMenuElement = this.cityDropdown?.nativeElement;
+    const countryDropdownMenuElement = this.countryDropdown?.nativeElement;
+
+    if (this.isTemplateOptionsOpen) {
+      if (templateDropdownMenuElement && !templateDropdownMenuElement.contains(event.target as Node)) {
+        this.isTemplateOptionsOpen = false;
+      }
     }
+    else if (this.isAuditorOptionsOpen) {
+      if (auditorsDropdownMenuElement && !auditorsDropdownMenuElement.contains(event.target as Node)) {
+        this.isAuditorOptionsOpen = false;
+      }
+    }
+    else if (this.isAuditeesOptionsOpen) {
+      if (auditeesDropdownMenuElement && !auditeesDropdownMenuElement.contains(event.target as Node)) {
+        this.isAuditeesOptionsOpen = false;
+      }
+    }
+    else if (this.isFunctionTemplateDropdownOpen) {
+      if (functionTemplateDropdownMenuElement && !functionTemplateDropdownMenuElement.contains(event.target as Node)) {
+        this.isFunctionTemplateDropdownOpen = false;
+      }
+    }
+    else if (this.isLeadAuditorDropdownOpen) {
+      if (leadAuditorDropdownMenuElement && !leadAuditorDropdownMenuElement.contains(event.target as Node)) {
+        this.isLeadAuditorDropdownOpen = false;
+      }
+    }
+    else if (this.isCityDropdownOpen) {
+      if (cityDropdownMenuElement && !cityDropdownMenuElement.contains(event.target as Node)) {
+        this.isCityDropdownOpen = false;
+      }
+    }
+    else if (this.isCountryDropdownOpen) {
+      if (countryDropdownMenuElement && !countryDropdownMenuElement.contains(event.target as Node)) {
+        this.isCountryDropdownOpen = false;
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

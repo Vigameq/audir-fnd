@@ -12,10 +12,11 @@
             <form [formGroup]="auditPlanForm" (ngSubmit)="onSubmit()">
                 <div class="link-audit-row">
                     <div class="link-audit-label">
-                        <label for="linkAudit" class="form-label">Parent Audit</label>
+                        <label for="parentAudit" class="form-label">Parent Audit</label>
                     </div>
                     <div class="link-audit-select">
-                        <select id="linkAudit" class="dropdown-select" formControlName="linkAudit" name="linkAudit">
+                        <select id="parentAudit" class="dropdown-select" formControlName="parentAudit"
+                            name="parentAudit">
                             <option value="" disabled selected>Select Audit</option>
                             <option *ngFor="let audit of parent_audits" [value]="audit.title">
                                 {{audit.title}}</option>
@@ -23,52 +24,49 @@
                     </div>
                 </div>
                 <div class="audit-title-and-functions-row">
-                    <div class="audit-title">
+                    <div class="audit-title" #auditTitle>
                         <label for="audit-title" class="form-label">Audit Title<span class="asterisk">*</span></label>
                         <input id="audit-title" class="audit-title-input" formControlName="auditTitle"
                             name="auditTitle" />
-                        <!-- <select id="audit-title" class="dropdown-select" formControlName="auditTitle" name="auditTitle"
-                            required>
-                            <option value="" disabled selected>Select Audit Title</option>
-                            <option *ngFor="let auditTitleOption of availableOptions" [value]="auditTitleOption">
-                                {{ auditTitleOption }}</option>
-                        </select> -->
                     </div>
                     <div class="functions">
-                        <label for="function" class="form-label">Functions<span class="asterisk">*</span></label>
+                        <label for="function" class="form-label">Functions</label>
                         <input id="function" class="audit-function-input" formControlName="functions"
                             name="functions" />
-                        <!-- <select id="function" class="dropdown-select" formControlName="functions" name="functions"
-                            required>
-                            <option value="" disabled selected>Select Audit Title</option>
-                            <option *ngFor="let functionOption of availableOptions" [value]="functionOption">
-                                {{ functionOption }}</option>
-                        </select> -->
                     </div>
                 </div>
                 <div class="templates-row">
-                    <div class="dropdown" (click)="toggleDropdown($event)">
+                    <div class="template-dropdown" (click)="templateToggleDropdown($event)">
                         <label for="templates" class="form-label">Template</label>
-                        <div class="dropbtn">
-                            Select templates..
+                        <div class="dropbtn" [matTooltip]="selectedTemplateOptions">
+                            <span [ngStyle]="{'max-width.px': maxWidth}">{{selectedTemplateOptions}}</span>
                         </div>
-                        <div *ngIf="isAuditorDropdownOpen" class="dropdown-content" #templateDropdown>
+                        <div *ngIf="isTemplateOptionsOpen" class="dropdown-content" #templateDropdown>
                             <label *ngFor="let template of templates; let i = index" (click)="onCheckboxClick($event)">
-                                <input type="checkbox" [value]="template.name"
-                                    (change)="onTemplateSelectionChange($event,i)"
-                                    [checked]="templates[i].checked" />
+                                <input type="checkbox" [value]="template.name" class="checkbox-input"
+                                    (change)="onTemplateSelectionChange($event,i)" [checked]="templates[i].checked" />
                                 <span class="template-value">{{ template.name }}</span>
                             </label>
+                        </div>
+                        <div class="dropdown-arrow">
+                            <app-dropdown-arrow-icons [isOpen]="isTemplateOptionsOpen"></app-dropdown-arrow-icons>
                         </div>
                     </div>
                     <div class="function-template">
                         <label for="function-templates" class="form-label">Functions Template</label>
-                        <select id="function-templates" class="dropdown-select" formControlName="functionTemplateValue"
-                            name="functionTemplateValue" required>
-                            <option value="" disabled selected>Select template..</option>
-                            <option *ngFor="let template of templates" [value]="template.name">
-                                {{ template.name }}</option>
-                        </select>
+                        <div class="function-template-dropdown" (click)="onFunctionTemplateDropdownClick()"
+                            #functionTemplateDropdown>
+                            <select id="function-templates" class="dropdown-select"
+                                formControlName="functionTemplateValue" name="functionTemplateValue" required>
+                                <option value="" disabled selected>Select template..</option>
+                                <option *ngFor="let template of templates" [value]="template.name">
+                                    {{ template.name }}</option>
+                            </select>
+                            <div class="dropdown-arrow">
+                                <app-dropdown-arrow-icons
+                                    [isOpen]="isFunctionTemplateDropdownOpen"></app-dropdown-arrow-icons>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="date-time-row">
@@ -86,73 +84,84 @@
                     </div>
                 </div>
                 <div class="auditees-auditors-row">
-                    <div class="auditors">
-                        <label for="auditorDropdown" class="auditor-label">Lead Auditors</label>
-                        <!-- <div class="auditorDropdown">
-                            <button class="auditor-dropdown-button" type="button" id="auditor-select-dropdown"
-                                (click)="toggleDropdown()">
-                                Select auditors
-                            </button>
-                            <div *ngIf="isAuditorDropdownOpen" class="auditor-dropdown-options"
-                                formControlName="auditorValue">
-                                <div class="auditor-check" *ngFor="let auditorOption of availableOptions">
-                                    <label class="auditor-dropdown-option">
-                                        <input class="auditor-check-input" type="checkbox" [value]="auditorOption"
-                                            (change)="onAuditorSelectionChange($event)" />
-                                        {{ auditorOption }}
-                                    </label>
-                                </div>
+                    <div class="lead-auditor" *ngIf="!isParentAudit">
+                        <label for="leadAuditorDropdown" class="form-label">Lead Auditor<span
+                                class="asterisk">*</span></label>
+                        <div class="lead-auditor-dropdown" (click)="onLeadAuditorDropdownClick()" #leadAuditorDropdown>
+                            <select id="lead-auditor" class="dropdown-select" formControlName="leadAuditorValue"
+                                name="leadAuditorValue" required>
+                                <option value="" disabled selected>Select Lead Auditor..</option>
+                                <option *ngFor="let auditor of auditors" [value]="auditor.Name">
+                                    {{ auditor.Name }}</option>
+                            </select>
+                            <div class="dropdown-arrow">
+                                <app-dropdown-arrow-icons
+                                    [isOpen]="isLeadAuditorDropdownOpen"></app-dropdown-arrow-icons>
                             </div>
-                        </div> -->
-                        <select id="auditor" class="dropdown-select" formControlName="auditorValue" name="auditorValue"
-                            required>
-                            <option value="" disabled selected>Select Auditors..</option>
-                            <option *ngFor="let auditor of auditors" [value]="auditor.Name">
-                                {{ auditor.Name }}</option>
-                        </select>
+                        </div>
                     </div>
-                    <div class="auditees">
-                        <label for="auditeeDropdown" class="auditee-label">Auditees</label>
-                        <!-- <div class="auditeeDropdown">
-                            <button class="auditee-dropdown-button" type="button" id="auditee-select-dropdown">
-                                Select auditees
-                            </button>
-                            <div *ngIf="false" class="auditee-dropdown-options" formControlName="auditeesValue">
-                                <div class="auditee-check" *ngFor="let auditeesOption of availableOptions1">
-                                    <label class="auditee-dropdown-option">
-                                        <input class="auditee-check-input" type="checkbox" [value]="auditeesOption" />
-                                        {{ auditeesOption }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div> -->
-                        <select id="auditee" class="dropdown-select" formControlName="auditeesValue"
-                            name="auditeesValue" required>
-                            <option value="" disabled selected>Select Auditees..</option>
-                            <option *ngFor="let auditee of auditees" [value]="auditee.Name">
-                                {{ auditee.Name }}</option>
-                        </select>
+                    <div class="auditors" (click)="auditorToggleDropdown($event)">
+                        <label for="auditorDropdown" class="form-label">Auditors</label>
+                        <div class="dropbtn" [matTooltip]="selectedAuditorOptions">
+                            <span [ngStyle]="{'max-width.px': maxWidth}">{{selectedAuditorOptions}}</span>
+                        </div>
+                        <div *ngIf="isAuditorOptionsOpen" class="dropdown-content" #auditorsDropdown>
+                            <label *ngFor="let auditor of auditors; let i = index" (click)="onCheckboxClick($event)">
+                                <input type="checkbox" [value]="auditor.Name" class="checkbox-input"
+                                    (change)="onAuditorSelectionChange($event,i)" [checked]="auditors[i].checked" />
+                                <span class="auditor-value">{{ auditor.Name }}</span>
+                            </label>
+                        </div>
+                        <div class="dropdown-arrow">
+                            <app-dropdown-arrow-icons [isOpen]="isAuditorOptionsOpen"></app-dropdown-arrow-icons>
+                        </div>
+                    </div>
+                    <div class="auditees" (click)="auditeesToggleDropdown($event)" *ngIf="isParentAudit">
+                        <label for="auditeeDropdown" class="form-label">Auditees</label>
+                        <div class="dropbtn" [matTooltip]="selectedAuditeesOptions">
+                            <span [ngStyle]="{'max-width.px': maxWidth}">{{selectedAuditeesOptions}}</span>
+                        </div>
+                        <div *ngIf="isAuditeesOptionsOpen" class="dropdown-content" #auditeesDropdown>
+                            <label *ngFor="let auditee of auditees; let i = index" (click)="onCheckboxClick($event)">
+                                <input type="checkbox" [value]="auditee.Name" class="checkbox-input"
+                                    (change)="onAuditeeSelectionChange($event,i)" [checked]="auditees[i].checked" />
+                                <span class="auditee-value">{{ auditee.Name }}</span>
+                            </label>
+                        </div>
+                        <div class="dropdown-arrow">
+                            <app-dropdown-arrow-icons [isOpen]="isAuditeesOptionsOpen"></app-dropdown-arrow-icons>
+                        </div>
                     </div>
                 </div>
                 <div class="city-country-row">
                     <div class="city">
                         <label for="city-name" class="form-label">City</label>
-                        <select id="city-name" class="dropdown-select" formControlName="cityName" name="cityName"
-                            required>
-                            <option value="" disabled selected>Select City</option>
-                            <option *ngFor="let cityOption of cities" [value]="cityOption">
-                                {{ cityOption}}</option>
-                        </select>
+                        <div class="city-dropdown" (click)="onCityDropdownClick()" #cityDropdown>
+                            <select id="city-name" class="dropdown-select" formControlName="cityName" name="cityName"
+                                required>
+                                <option value="" disabled selected>Select City</option>
+                                <option *ngFor="let cityOption of cities" [value]="cityOption">
+                                    {{ cityOption}}</option>
+                            </select>
+                            <div class="dropdown-arrow">
+                                <app-dropdown-arrow-icons [isOpen]="isCityDropdownOpen"></app-dropdown-arrow-icons>
+                            </div>
+                        </div>
                     </div>
                     <div class="country">
                         <label for="country-name" class="form-label">Country</label>
-                        <select id="country-name" class="dropdown-select" formControlName="countryName"
-                            name="countryName" required>
-                            <option value="" disabled selected>Select Country</option>
-                            <option *ngFor="let countryOption of countries" [value]="countryOption">
-                                {{ countryOption }}
-                            </option>
-                        </select>
+                        <div class="country-dropdown" (click)="onCountryDropdownClick()" #countryDropdown>
+                            <select id="country-name" class="dropdown-select" formControlName="countryName"
+                                name="countryName" required>
+                                <option value="" disabled selected>Select Country</option>
+                                <option *ngFor="let countryOption of countries" [value]="countryOption">
+                                    {{ countryOption }}
+                                </option>
+                            </select>
+                            <div class="dropdown-arrow">
+                                <app-dropdown-arrow-icons [isOpen]="isCountryDropdownOpen"></app-dropdown-arrow-icons>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="audit-scope-row">

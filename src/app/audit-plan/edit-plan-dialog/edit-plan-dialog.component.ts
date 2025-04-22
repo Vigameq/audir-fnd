@@ -53,7 +53,6 @@ export class EditPlanDialogComponent {
       'country': this.planDetails.country,
       'audit_type': this.planDetails.audit_type
     };
-    console.log('111---',editedAuditPlan)
     this.audirService.updateAuditPlan(editedAuditPlan).subscribe((response: any) => {
       if (response) {
         this.audirService.showSuccess(response.message);

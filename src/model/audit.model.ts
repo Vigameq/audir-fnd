@@ -6,8 +6,9 @@ export interface Audit {
     function_template: string[];
     start_date: string;
     end_date: string;
+    leadAuditorValue?: string;
     auditors: string[];
-    auditees: string[];
+    auditees?: string[];
     city: string;
     country: string;
     audit_scope: string;
