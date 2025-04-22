@@ -31,7 +31,8 @@
                     <div class="templates-location-details">
                         <div class="templates-details">
                             <span>{{auditPerformItem.template[0]}}</span>
-                            <span class="vertical-bar">|</span>
+                            <span class="vertical-bar"
+                                *ngIf="auditPerformItem.template[0] && auditPerformItem.function_template[0]">|</span>
                             <span>{{auditPerformItem.function_template[0]}}
                             </span>
                         </div>
@@ -133,8 +134,8 @@
                                 <div class="percentage"><span>{{sub_audit.percentage}}%</span></div>
                             </div>
                             <div class="auditor-details">
-                            <span>{{sub_audit.auditors[0]}}</span>
-                        </div>
+                                <span>{{sub_audit.auditors[0]}}</span>
+                            </div>
                         </div>
                         <div class="dropdown-section">
                             <div class="auditee-dropdown-section" (click)="onAuditeeDropdownClick()" #auditeeDropdown>

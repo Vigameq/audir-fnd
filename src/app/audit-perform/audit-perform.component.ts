@@ -10,7 +10,6 @@ export class AuditPerformComponent {
   searchQuery: string = '';
   isStandardDropdownOpen: boolean = false;
   isAuditeeDropdownOpen: boolean = false;
-  isSubAuditOpened: boolean = false;
   standardDropdownOptions = ['options1', 'option2', 'option3'];
   auditeeDropdownOptions: any;
   standardSelectedOption: string = '';
@@ -20,7 +19,7 @@ export class AuditPerformComponent {
   auditList: any;
   auditeeSelectedValue: any = '';
 
-  constructor( private renderer: Renderer2, private audirService: AudirService) { }
+  constructor(private renderer: Renderer2, private audirService: AudirService) { }
 
   ngOnInit() {
     this.getPlanItems();
@@ -46,7 +45,7 @@ export class AuditPerformComponent {
       console.error('Error for getting audits:', error);
     });
 
-    this.auditList = this.auditList.map((obj: any) => {
+    this.auditList = this.auditList?.map((obj: any) => {
       obj.isSubAuditsOpened = false;
       return obj;
     });
@@ -54,8 +53,7 @@ export class AuditPerformComponent {
 
   openSubAudits(index: any) {
     this.auditList[index].isSubAuditsOpened = !this.auditList[index].isSubAuditsOpened;
-    if (!this.isSubAuditOpened) {
-      this.isSubAuditOpened = true;
+    if (this.auditList[index].isSubAuditsOpened) {
       this.auditList[index].sub_audits = this.auditList[index].sub_audits.map((obj: any) => {
         obj.lineHeight = 0;
         return obj;
