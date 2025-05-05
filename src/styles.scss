@@ -53,6 +53,35 @@ body {
   }
 }
 
+.date-filter-and-reset {
+
+  .mat-mdc-form-field-has-icon-suffix .mat-mdc-text-field-wrapper {
+    border-radius: 30px !important;
+  }
+
+  .mat-mdc-text-field-wrapper:not(.mdc-text-field--outlined) .mat-mdc-form-field-infix {
+    padding-top: 22px;
+    padding-bottom: 4px;
+  }
+
+  .mat-mdc-form-field-infix {
+    min-height: 50px;
+  }
+
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: #FFFFFF;
+  }
+
+  .mdc-text-field--filled:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label,
+  .mdc-text-field--filled:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label--float-above {
+    color: #bbaa09;
+  }
+
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::after {
+    border-bottom-color: #FDE714;
+  }
+}
+
 @keyframes slideInFromRight {
   from {
     transform: translateX(100%);
@@ -65,4 +94,23 @@ body {
 
 .igx-calendar__date .igx-calendar__date-content:hover {
   cursor: pointer !important;
+}
+
+.mat-calendar-body-selected {
+  background-color: #FDE714 !important;
+}
+
+@media (hover: hover) {
+  .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover>.mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+    background-color: #FDE714 !important;
+  }
+}
+
+.cdk-keyboard-focused .mat-calendar-body-active>.mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical),
+.cdk-program-focused .mat-calendar-body-active>.mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+  background-color: #FDE714 !important;
+}
+
+.mat-datepicker-toggle-active {
+  color: #FDE714 !important;
 }

@@ -8,18 +8,22 @@ import { AudirService } from 'src/services/audir-services.service';
 })
 export class AuditPerformComponent {
   searchQuery: string = '';
-  isStandardDropdownOpen: boolean = false;
+  // isStandardDropdownOpen: boolean = false;
   isAuditeeDropdownOpen: boolean = false;
-  standardDropdownOptions = ['options1', 'option2', 'option3'];
+  // standardDropdownOptions = ['options1', 'option2', 'option3'];
   auditeeDropdownOptions: any;
-  standardSelectedOption: string = '';
+  // standardSelectedOption: string = '';
   @ViewChildren('detailsContent') detailsContentElements!: QueryList<ElementRef>;
-  @ViewChild('standardDropdown') standardDropdown: ElementRef | undefined;
+  // @ViewChild('standardDropdown') standardDropdown: ElementRef | undefined;
   @ViewChild('auditeeDropdown') auditeeDropdown: ElementRef | undefined;
   auditList: any;
   auditeeSelectedValue: any = '';
+  fromDate!: string;
+  toDate!: string;
 
-  constructor(private renderer: Renderer2, private audirService: AudirService) { }
+  constructor(private renderer: Renderer2, private audirService: AudirService) {
+    this.resetDateFilter();
+  }
 
   ngOnInit() {
     this.getPlanItems();
@@ -91,14 +95,14 @@ export class AuditPerformComponent {
     this.searchQuery = '';
   }
 
-  onStandardOptionChange(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    this.standardSelectedOption = target.value;
-  }
+  // onStandardOptionChange(event: Event) {
+  //   const target = event.target as HTMLSelectElement;
+  //   this.standardSelectedOption = target.value;
+  // }
 
-  onStandardDropdownClick(): void {
-    this.isStandardDropdownOpen = !this.isStandardDropdownOpen;
-  }
+  // onStandardDropdownClick(): void {
+  //   this.isStandardDropdownOpen = !this.isStandardDropdownOpen;
+  // }
 
   onAuditeeDropdownClick() {
     this.isAuditeeDropdownOpen = !this.isAuditeeDropdownOpen;
@@ -111,9 +115,9 @@ export class AuditPerformComponent {
 
   ngAfterViewInit() {
     this.renderer.listen('document', 'click', (event: Event) => {
-      if (this.standardDropdown && !this.standardDropdown.nativeElement.contains(event.target)) {
-        this.isStandardDropdownOpen = false;
-      }
+      // if (this.standardDropdown && !this.standardDropdown.nativeElement.contains(event.target)) {
+      //   this.isStandardDropdownOpen = false;
+      // }
       if (this.auditeeDropdown && !this.auditeeDropdown.nativeElement.contains(event.target)) {
         this.isAuditeeDropdownOpen = false;
       }
@@ -129,5 +133,16 @@ export class AuditPerformComponent {
     }, (error: any) => {
       console.error('Error for getting plans:', error);
     });
+  }
+
+  onDateChange() {
+  }
+
+  resetDateFilter() {
+    const now = new Date();
+    const utcToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    const utcTomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+    this.fromDate = utcToday.toISOString().substring(0, 10);
+    this.toDate = utcTomorrow.toISOString().substring(0, 10);
   }
 }

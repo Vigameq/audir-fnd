@@ -3,7 +3,7 @@
     margin: 16px 40px 0 44px;
     font-family: 'Apple SD Gothic Neo', sans-serif;
 
-    .search-dropdown-section {
+    .search-date-filter-section {
         width: 100%;
         height: 127px;
         display: flex;
@@ -13,6 +13,7 @@
         align-items: center;
         flex-direction: row;
         justify-content: space-between;
+        gap: 10px;
 
         .audit-perform-search-bar {
             position: relative;
@@ -60,34 +61,68 @@
 
         }
 
-        .dropdown-section {
-            position: relative;
-            margin: 0 10px;
+        // .dropdown-section {
+        //     position: relative;
+        //     margin: 0 10px;
 
-            .standard-dropdown-section {
-                margin: 20px 10px 20px 10px;
+        //     .standard-dropdown-section {
+        //         margin: 20px 10px 20px 10px;
 
-                .standard-dropdown-select {
-                    width: 240px;
-                    height: 44px;
-                    background-color: #FAFAFA;
-                    font-family: 'Apple SD Gothic Neo', sans-serif;
-                    border: 1px solid #dbdbdb;
-                    border-radius: 6px;
-                    font-size: 16px;
-                    padding: 6px;
-                    padding-right: 30px;
-                    appearance: none;
-                    cursor: pointer;
+        //         .standard-dropdown-select {
+        //             width: 240px;
+        //             height: 44px;
+        //             background-color: #FAFAFA;
+        //             font-family: 'Apple SD Gothic Neo', sans-serif;
+        //             border: 1px solid #dbdbdb;
+        //             border-radius: 6px;
+        //             font-size: 16px;
+        //             padding: 6px;
+        //             padding-right: 30px;
+        //             appearance: none;
+        //             cursor: pointer;
+        //         }
+
+        //         .dropdown-arrow {
+        //             position: absolute;
+        //             top: 48%;
+        //             transform: translateY(-50%);
+        //             pointer-events: none;
+        //             left: 226px;
+        //         }
+        //     }
+        // }
+
+        .date-filter-and-reset {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            padding-right: 20px;
+            align-items: center;
+
+            .from-date,
+            .to-date {
+                margin-top: 20px;
+
+                .custom-date-picker {
+                    width: 190px;
                 }
+            }
 
-                .dropdown-arrow {
-                    position: absolute;
-                    top: 48%;
-                    transform: translateY(-50%);
-                    pointer-events: none;
-                    left: 226px;
-                }
+            .reset input {
+                cursor: pointer;
+                font-size: 16px;
+                color: #575757;
+                outline: none;
+                border: none;
+                border-radius: 6px;
+                padding: 6px;
+                width: 60px;
+            }
+
+            .reset input:active {
+                color: #000000;
+                background-color: #FFEA00;
+                border: 1px #FFEA00;
             }
         }
 
@@ -257,7 +292,7 @@
                     .auditee-dropdown-section {
                         display: flex;
                         flex-direction: column;
-                        gap:6px;
+                        gap: 6px;
                         margin: 20px 10px 20px 10px;
 
                         .auditee-dropdown-select {

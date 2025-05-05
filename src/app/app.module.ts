@@ -16,6 +16,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DropdownArrowIconsComponent } from './dropdown-arrow-icons/dropdown-arrow-icons.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { IgxCalendarModule, IgxIconModule } from 'igniteui-angular';
 import { AuditPlanSuccessPopupComponent } from './audit-plan/audit-plan-success-popup/audit-plan-success-popup.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -65,7 +69,11 @@ import { AuditFunctionalQuestionProgressDialogComponent } from './audit-perform/
     MatDialogModule,
     MatButtonModule,
     ToastrModule.forRoot(),
-    MatTooltipModule
+    MatTooltipModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [],
   bootstrap: [AppComponent],

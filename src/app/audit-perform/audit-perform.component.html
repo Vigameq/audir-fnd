@@ -1,5 +1,5 @@
 <div class="audit-perfom">
-    <div class="search-dropdown-section">
+    <div class="search-date-filter-section">
         <div class="audit-perform-search-bar">
             <input type="text" [(ngModel)]="searchQuery" placeholder="Search by code" (input)="onSearch()"
                 class="audit-perform-search-input" />
@@ -7,7 +7,7 @@
                 &#10006;
             </button>
         </div>
-        <div class="dropdown-section">
+        <!-- <div class="dropdown-section">
             <div class="standard-dropdown-section" (click)="onStandardDropdownClick()" #standardDropdown>
                 <select class="standard-dropdown-select" (change)="onStandardOptionChange($event)"
                     [(ngModel)]="standardSelectedOption">
@@ -19,6 +19,27 @@
                 <div class="dropdown-arrow">
                     <app-dropdown-arrow-icons [isOpen]="isStandardDropdownOpen"></app-dropdown-arrow-icons>
                 </div>
+            </div>
+        </div> -->
+        <div class="date-filter-and-reset">
+            <div class="from-date">
+                <mat-form-field appearance="fill" class="custom-date-picker">
+                    <mat-label>From Date</mat-label>
+                    <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" (dateChange)="onDateChange()" name="fromDate">
+                    <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #fromPicker></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="to-date">
+                <mat-form-field appearance="fill" class="custom-date-picker">
+                    <mat-label>To Date</mat-label>
+                    <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate" (dateChange)="onDateChange()" name="toDate" [min]="fromDate">
+                    <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #toPicker></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="reset">
+                <input type="reset" (click)="resetDateFilter()">
             </div>
         </div>
     </div>
@@ -115,7 +136,8 @@
                                     </span>
                                 </div>
                                 <div class="time-details">
-                                    <span class="start-time">{{auditPerformItem.start_date | date:'hh:mm a':'UTC'}}</span>
+                                    <span class="start-time">{{auditPerformItem.start_date | date:'hh:mm
+                                        a':'UTC'}}</span>
                                     <span class="end-time">{{auditPerformItem.end_date | date:'hh:mm a':'UTC'}}
                                     </span>
                                 </div>
@@ -148,7 +170,8 @@
                                     </option>
                                 </select>
                                 <div class="dropdown-arrow">
-                                    <app-dropdown-arrow-icons [isOpen]="isAuditeeDropdownOpen"></app-dropdown-arrow-icons>
+                                    <app-dropdown-arrow-icons
+                                        [isOpen]="isAuditeeDropdownOpen"></app-dropdown-arrow-icons>
                                 </div>
                             </div>
                         </div>
