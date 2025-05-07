@@ -12,8 +12,6 @@ import { Location } from "@angular/common";
   styleUrls: ['./specific-function-audit-info.component.scss']
 })
 export class SpecificFunctionAuditInfoComponent {
-  auditorInfo = { id: 'VIG1893893', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '70', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' };
-
 
   progressData = [
     {
@@ -58,6 +56,7 @@ export class SpecificFunctionAuditInfoComponent {
   }
 
   ngOnInit() {
+    
   }
 
   getQuestions(auditId: any) {
@@ -102,7 +101,7 @@ export class SpecificFunctionAuditInfoComponent {
       width: 'auto',
       position: { right: '0', top: '0' },
       panelClass: 'question-progress-dialog-container',
-      data: { auditorInfo: this.auditorInfo, progressData: this.progressData }
+      data: { auditorInfo: this.auditInfo, progressData: this.progressData }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {

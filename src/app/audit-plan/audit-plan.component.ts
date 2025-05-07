@@ -183,7 +183,7 @@ export class AuditPlanComponent {
         function_template: (this.auditPlanForm.value?.functionTemplateValue).length > 0 ? [this.auditPlanForm.value?.functionTemplateValue] : '',
         start_date: this.auditPlanForm.value?.startDateTime,
         end_date: this.auditPlanForm.value?.endDateTime,
-        lead_auditor: this.auditPlanForm.value?.parentAudit ? this.auditPlanForm?.value?.leadAuditorValue : '',
+        lead_auditor: this.auditPlanForm?.value?.leadAuditorValue,
         auditors: this.selectedAuditorsEmail,
         auditees: this.selectedAuditeesEmail,
         city: this.auditPlanForm.value?.cityName,
