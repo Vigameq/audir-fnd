@@ -69,7 +69,6 @@ export class ImportTemplateDialogComponent {
       this.audirService.uploadTemplate(templateData).subscribe((result: any) => {
         this.isCreated = true;
         this.audirService.showSuccess('Audit plan created successfully');
-        console.log(result);
       }, (error: any) => {
         this.isCreated = false;
         this.audirService.showError('Failed to create audit Template');

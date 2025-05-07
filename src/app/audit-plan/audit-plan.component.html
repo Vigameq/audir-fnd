@@ -36,9 +36,10 @@
                     </div>
                 </div>
                 <div class="templates-row">
-                    <div class="template-dropdown" (click)="templateToggleDropdown($event)">
+                    <div class="template-dropdown">
                         <label for="templates" class="form-label">Template</label>
-                        <div class="dropbtn" [matTooltip]="selectedTemplateOptions">
+                        <div class="dropbtn" [matTooltip]="selectedTemplateOptions"
+                            (click)="templateToggleDropdown($event)">
                             <span [ngStyle]="{'max-width.px': maxWidth}">{{selectedTemplateOptions}}</span>
                         </div>
                         <div *ngIf="isTemplateOptionsOpen" class="dropdown-content" #templateDropdown>
@@ -74,12 +75,13 @@
                         <label for="start-date-time" class="form-label">Start Date & Time<span
                                 class="asterisk">*</span></label>
                         <input type="datetime-local" id="start-date-time" class="form-control"
-                            formControlName="startDateTime" name="startDateTime" required />
+                            (change)="onStartDateChange($event)" formControlName="startDateTime" name="startDateTime"
+                            required />
                     </div>
                     <div class="end-date-time">
                         <label for="end-date-time" class="form-label">End Date & Time<span
                                 class="asterisk">*</span></label>
-                        <input type="datetime-local" id="end-date-time" class="form-control"
+                        <input type="datetime-local" id="end-date-time" class="form-control" [min]="startDate"
                             formControlName="endDateTime" name="endDateTime" required />
                     </div>
                 </div>
@@ -100,15 +102,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="auditors" (click)="auditorToggleDropdown($event)">
+                    <div class="auditors">
                         <label for="auditorDropdown" class="form-label">Auditors</label>
-                        <div class="dropbtn" [matTooltip]="selectedAuditorOptions">
+                        <div class="dropbtn" [matTooltip]="selectedAuditorOptions"
+                            (click)="auditorToggleDropdown($event)">
                             <span [ngStyle]="{'max-width.px': maxWidth}">{{selectedAuditorOptions}}</span>
                         </div>
                         <div *ngIf="isAuditorOptionsOpen" class="dropdown-content" #auditorsDropdown>
                             <label *ngFor="let auditor of auditors; let i = index" (click)="onCheckboxClick($event)">
                                 <input type="checkbox" [value]="auditor.Name" class="checkbox-input"
-                                    (change)="onAuditorSelectionChange($event,i)" [checked]="auditors[i].checked" />
+                                    (change)="onAuditorSelectionChange($event,i,auditor)"
+                                    [checked]="auditors[i].checked" />
                                 <span class="auditor-value">{{ auditor.Name }}</span>
                             </label>
                         </div>
@@ -116,15 +120,17 @@
                             <app-dropdown-arrow-icons [isOpen]="isAuditorOptionsOpen"></app-dropdown-arrow-icons>
                         </div>
                     </div>
-                    <div class="auditees" (click)="auditeesToggleDropdown($event)" *ngIf="isParentAudit">
+                    <div class="auditees" *ngIf="isParentAudit">
                         <label for="auditeeDropdown" class="form-label">Auditees</label>
-                        <div class="dropbtn" [matTooltip]="selectedAuditeesOptions">
+                        <div class="dropbtn" [matTooltip]="selectedAuditeesOptions"
+                            (click)="auditeesToggleDropdown($event)">
                             <span [ngStyle]="{'max-width.px': maxWidth}">{{selectedAuditeesOptions}}</span>
                         </div>
                         <div *ngIf="isAuditeesOptionsOpen" class="dropdown-content" #auditeesDropdown>
                             <label *ngFor="let auditee of auditees; let i = index" (click)="onCheckboxClick($event)">
                                 <input type="checkbox" [value]="auditee.Name" class="checkbox-input"
-                                    (change)="onAuditeeSelectionChange($event,i)" [checked]="auditees[i].checked" />
+                                    (change)="onAuditeeSelectionChange($event,i,auditee)"
+                                    [checked]="auditees[i].checked" />
                                 <span class="auditee-value">{{ auditee.Name }}</span>
                             </label>
                         </div>

@@ -3,10 +3,10 @@ export interface Audit {
     audit_title: string;
     functions: string;
     template: string[];
-    function_template: string[];
+    function_template: any;
     start_date: string;
     end_date: string;
-    leadAuditorValue?: string;
+    lead_auditor?: string;
     auditors: string[];
     auditees?: string[];
     city: string;

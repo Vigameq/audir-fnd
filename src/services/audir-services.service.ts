@@ -27,16 +27,16 @@ export class AudirService {
     return this.http.post('/audire/api/getTemplate', templateDetails);
   }
 
-  getAllPlans(email: any, date: any) {
+  getAllChildPlans(email: any, date: any) {
     const emailDateDetails = {
       "eMail": email,
       "start_date_filter": {
         "from": date,
         "to": date
       },
-      "status_filter": ["completed", "created"]
+      "status_filter": ["completed","created", "lead_auditor"]
     };
-    return this.http.post('/audire/api/listAudits', emailDateDetails);
+    return this.http.post('/audire/api/listChildAudits', emailDateDetails);
   }
 
   updateAuditPlan(updatedAuditDetails:any) {

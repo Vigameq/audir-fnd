@@ -67,7 +67,6 @@ export class ImportCreatePlanDialogComponent {
       validateFormData.append('eMail', this.email);
       this.audirService.validatePlan(validateFormData).subscribe((result: any) => {
         this.isValidated = true;
-        console.log(result);
         this.audirService.showSuccess('Audit plan validation successful');
       }, (error: any) => {
         this.isValidated = false;
@@ -92,7 +91,6 @@ export class ImportCreatePlanDialogComponent {
       this.audirService.createPlans(createFormData).subscribe((result: any) => {
         this.isCreated = true;
         this.audirService.showSuccess('Audit plan created successfully');
-        console.log(result);
       }, (error: any) => {
         this.isCreated = false;
         this.audirService.showError('Failed to create audit plan');

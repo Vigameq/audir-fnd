@@ -1,9 +1,11 @@
+import { DatePipe } from '@angular/common';
 import { Component, ElementRef, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { AudirService } from 'src/services/audir-services.service';
 
 @Component({
   selector: 'app-audit-perform',
   templateUrl: './audit-perform.component.html',
+  providers: [DatePipe],
   styleUrls: ['./audit-perform.component.scss']
 })
 export class AuditPerformComponent {
@@ -18,27 +20,28 @@ export class AuditPerformComponent {
   @ViewChild('auditeeDropdown') auditeeDropdown: ElementRef | undefined;
   auditList: any;
   auditeeSelectedValue: any = '';
-  fromDate!: string;
-  toDate!: string;
+  fromDate: any;
+  toDate: any;
+  utcToday: any;
+  utcTomorrow: any;
 
-  constructor(private renderer: Renderer2, private audirService: AudirService) {
+  constructor(private renderer: Renderer2, private audirService: AudirService, private datePipe: DatePipe) {
     this.resetDateFilter();
   }
 
   ngOnInit() {
     this.getPlanItems();
-    this.getAuditLists();
   }
 
-  getAuditLists() {
+  getAuditLists(fromDate: string, toDate: string) {
     const email = localStorage.getItem('user')?.toString() || '';
     var payload = {
       eMail: email,
       start_date_filter: {
-        from: "2024-06-09",
-        to: "2025-12-30"
+        from: fromDate,
+        to: toDate
       },
-      "status_filter": ["completed", "created", "inprogress", "submitted"]
+      status_filter: ["completed", "created", "inprogress", "submitted"]
     };
 
     this.audirService.getAuditLists(payload).subscribe((response: any) => {
@@ -136,13 +139,21 @@ export class AuditPerformComponent {
   }
 
   onDateChange() {
+    this.fromDate = this.datePipe.transform(this.fromDate, 'yyyy-MM-dd');
+    if (this.fromDate >= this.toDate) {
+      this.toDate = new Date(this.fromDate);
+      this.toDate.setDate(this.toDate.getDate() + 1);
+    }
+    this.toDate = this.datePipe.transform(this.toDate, 'yyyy-MM-dd');
+    this.getAuditLists(this.fromDate, this.toDate);
   }
 
   resetDateFilter() {
     const now = new Date();
-    const utcToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    const utcTomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
-    this.fromDate = utcToday.toISOString().substring(0, 10);
-    this.toDate = utcTomorrow.toISOString().substring(0, 10);
+    this.utcToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+    this.fromDate = this.utcToday.toISOString().substring(0, 10);
+    this.toDate = this.utcTomorrow.toISOString().substring(0, 10);
+    this.getAuditLists(this.fromDate, this.toDate);
   }
 }

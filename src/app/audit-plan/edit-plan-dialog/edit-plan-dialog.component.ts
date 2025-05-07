@@ -36,7 +36,7 @@ export class EditPlanDialogComponent {
 
   setPlanFormValues() {
     this.editPlanForm.setValue({
-      startDateTimeValue: (new Date(this.planDetails.start_date)).toISOString().slice(0, 16),
+      startDateTimeValue: this.planDetails.start_date,
       endDateTimeValue: (new Date(this.planDetails.end_date)).toISOString().slice(0, 16),
       assignToValue: this.planDetails.auditees[0],
       leadAuditorValue: this.planDetails.auditors[0]

@@ -157,6 +157,7 @@
 
             .audit-perfom-details {
                 display: flex;
+                flex: 1;
                 flex-direction: column;
                 gap: 10px;
 
@@ -203,6 +204,7 @@
 
             .audit-progress-details {
                 display: flex;
+                flex: 1;
                 flex-direction: column;
                 gap: 4px;
 
@@ -350,5 +352,13 @@
                 cursor: pointer;
             }
         }
+    }
+
+    .no-audit-data {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 100%;
+        color: #515151;
+        padding-top: 20px;
     }
 }

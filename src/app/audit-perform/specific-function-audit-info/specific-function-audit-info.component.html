@@ -21,18 +21,19 @@
                     </div> -->
                 </div>
                 <div class="templates-location-details">
-                    <div class="templates-details">
+                    <div class="templates-details" *ngIf="auditInfo.function_template[0] || auditInfo.template[0]">
                         <span>{{auditInfo.function_template[0]}}</span>
-                        <span class="vertical-bar">|</span>
+                        <span class="vertical-bar"
+                            *ngIf="auditInfo.function_template[0] && auditInfo.template[0]">|</span>
                         <span>{{auditInfo.template[0]}}
                         </span>
                     </div>
-                    <div class="location-details"><span>{{auditInfo.city}}</span>
+                    <div class="location-details" *ngIf="auditorInfo.city || auditorInfo.country">
+                        <span>{{auditInfo.city}}</span>
                         <span class="vertical-bar" *ngIf="auditorInfo.city && auditorInfo.country">|</span>
                         <span>{{auditInfo.country}}</span>
                     </div>
                 </div>
-                
             </div>
             <div class="right-section">
                 <div class="duration-details">

@@ -44,20 +44,22 @@
         </div>
     </div>
     <div class="Audit-info-label"><span>Audit Information</span></div>
-    <div class="audit-perform-container-section">
+    <div class="audit-perform-container-section" *ngIf="auditList?.length > 0">
         <div *ngFor="let auditPerformItem of auditList; let i = index">
             <div class="audit-perform-container">
                 <div class="audit-perfom-details">
                     <div class="plan-creation-id"><span>{{auditPerformItem.audit_title}}</span></div>
                     <div class="templates-location-details">
-                        <div class="templates-details">
+                        <div class="templates-details"
+                            *ngIf="auditPerformItem.template[0] || auditPerformItem.function_template[0]">
                             <span>{{auditPerformItem.template[0]}}</span>
                             <span class="vertical-bar"
                                 *ngIf="auditPerformItem.template[0] && auditPerformItem.function_template[0]">|</span>
                             <span>{{auditPerformItem.function_template[0]}}
                             </span>
                         </div>
-                        <div class="location-details"><span>{{auditPerformItem.city}}</span>
+                        <div class="location-details" *ngIf="auditPerformItem.country || auditPerformItem.city">
+                            <span>{{auditPerformItem.city}}</span>
                             <span class="vertical-bar"
                                 *ngIf="auditPerformItem.country && auditPerformItem.city">|</span>
                             <span>{{auditPerformItem.country}}</span>
@@ -94,15 +96,15 @@
                         <span>{{auditPerformItem.auditCompany}}</span> -->
                     </div>
                 </div>
-                <div class="delete-icon">
-                    <!-- <svg width="22px" height="22px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <!-- <div class="delete-icon">
+                    <svg width="22px" height="22px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <g>
                             <path fill="none" d="M0 0h24v24H0z" />
                             <path
                                 d="M7 4V2h10v2h5v2h-2v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6H2V4h5zM6 6v14h12V6H6zm3 3h2v8H9V9zm4 0h2v8h-2V9z" />
                         </g>
-                    </svg> -->
-                </div>
+                    </svg>
+                </div> -->
                 <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0" (click)="openSubAudits(i)">
                     <span>{{auditPerformItem.sub_audits.length}}</span>
                 </div>
@@ -123,7 +125,8 @@
                                     <span>{{sub_audit.functions}}
                                     </span>
                                 </div>
-                                <div class="location-details"><span>{{sub_audit.city}}</span>
+                                <div class="location-details" *ngIf="sub_audit.country || sub_audit.city">
+                                    <span>{{sub_audit.city}}</span>
                                     <span class="vertical-bar" *ngIf="sub_audit.country && sub_audit.city">|</span>
                                     <span>{{sub_audit.country}}</span>
                                 </div>
@@ -187,5 +190,7 @@
             </div>
         </div>
     </div>
-
+    <div class="no-audit-data" *ngIf="auditList?.length === 0">
+        <span>No audit information is available in the selected date range</span>
+    </div>
 </div>

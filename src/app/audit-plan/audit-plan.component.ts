@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Audit } from 'src/model/audit.model';
 import { AudirService } from 'src/services/audir-services.service';
@@ -48,7 +48,9 @@ export class AuditPlanComponent {
   countries = ["India"];
   selectedTemplate: string[] = [];
   selectedAuditor: string[] = [];
+  selectedAuditorsEmail: string[] = [];
   selectedAuditees: string[] = [];
+  selectedAuditeesEmail: string[] = [];
   parent_audits: any[] = [];
   templates: any[] = [];
   auditees: any[] = [];
@@ -73,12 +75,15 @@ export class AuditPlanComponent {
   isLeadAuditorDropdownOpen = false;
   isCityDropdownOpen = false;
   isCountryDropdownOpen = false;
+  startDate: any;
+  userEmail: string = '';
 
-  constructor(private renderer: Renderer2, private datePipe: DatePipe, private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(private datePipe: DatePipe, private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
   }
 
   async ngOnInit(): Promise<void> {
     this.isImportVisible = true;
+    this.userEmail = this.getEmail();
     // this.showAllPlans = (this.auditPlans.length <= 4) ? true : false;
     this.auditPlanForm = this.formBuilder.group(
       {
@@ -88,7 +93,7 @@ export class AuditPlanComponent {
         templateValue: [[], Validators.required],
         functionTemplateValue: [[], Validators.required],
         startDateTime: ['', Validators.required],
-        endDateTime: ['', Validators.required],
+        endDateTime: [{ value: '', disabled: true }, Validators.required],
         leadAuditorValue: ['', Validators.required],
         auditorValue: [[], Validators.required],
         auditeesValue: [[], Validators.required],
@@ -103,12 +108,11 @@ export class AuditPlanComponent {
       }
     });
     this.getPlanItems();
-    await this.getAllAuditPlan();
+    await this.getAllChildAuditPlan();
   }
 
   getPlanItems() {
-    const email = localStorage.getItem('user')?.toString() || '';
-    this.audirService.getPlanItems(email).subscribe((items: any) => {
+    this.audirService.getPlanItems(this.userEmail).subscribe((items: any) => {
       if (items) {
         this.parent_audits = items.parent_audits;
         this.templates = items.templates;
@@ -135,32 +139,36 @@ export class AuditPlanComponent {
     this.selectedTemplateOptions = this.selectedTemplate.length > 0 ? this.selectedTemplate.join(', ') : 'Select templates..';
   }
 
-  onAuditeeSelectionChange(event: Event, index: any) {
+  onAuditeeSelectionChange(event: Event, index: any, auditee: any) {
     const checkbox = event.target as HTMLInputElement;
     if (!this.selectedAuditees.includes(checkbox.value)) {
       if (checkbox.checked) {
         this.selectedAuditees.push(checkbox.value);
+        this.selectedAuditeesEmail.push(auditee.email);
         this.auditees[index].checked = true;
       }
     }
     else {
       this.auditees[index].checked = false;
       this.selectedAuditees = this.selectedAuditees.filter(option => option !== checkbox.value);
+      this.selectedAuditeesEmail = this.selectedAuditeesEmail.filter(option => option !== auditee.email);
     }
     this.selectedAuditeesOptions = this.selectedAuditees.length > 0 ? this.selectedAuditees.join(', ') : 'Select Auditees..';
   }
 
-  onAuditorSelectionChange(event: Event, index: any) {
+  onAuditorSelectionChange(event: Event, index: any, auditor: any) {
     const checkbox = event.target as HTMLInputElement;
     if (!this.selectedAuditor.includes(checkbox.value)) {
       if (checkbox.checked) {
         this.selectedAuditor.push(checkbox.value);
+        this.selectedAuditorsEmail.push(auditor.email);
         this.auditors[index].checked = true;
       }
     }
     else {
       this.auditors[index].checked = false;
       this.selectedAuditor = this.selectedAuditor.filter(option => option !== checkbox.value);
+      this.selectedAuditorsEmail = this.selectedAuditorsEmail.filter(option => option !== auditor.email);
     }
     this.selectedAuditorOptions = this.selectedAuditor.length > 0 ? this.selectedAuditor.join(', ') : 'Select Auditors..';
   }
@@ -172,17 +180,17 @@ export class AuditPlanComponent {
         audit_title: this.auditPlanForm.value?.auditTitle,
         functions: this.auditPlanForm.value?.functions,
         template: this.selectedTemplate,
-        function_template: this.auditPlanForm.value?.functionTemplateValue,
+        function_template: (this.auditPlanForm.value?.functionTemplateValue).length > 0 ? [this.auditPlanForm.value?.functionTemplateValue] : '',
         start_date: this.auditPlanForm.value?.startDateTime,
         end_date: this.auditPlanForm.value?.endDateTime,
-        leadAuditorValue: this.auditPlanForm?.value?.leadAuditorValue,
-        auditors: this.selectedAuditor,
-        auditees: this.selectedAuditees,
+        lead_auditor: this.auditPlanForm.value?.parentAudit ? this.auditPlanForm?.value?.leadAuditorValue : '',
+        auditors: this.selectedAuditorsEmail,
+        auditees: this.selectedAuditeesEmail,
         city: this.auditPlanForm.value?.cityName,
         country: this.auditPlanForm.value?.countryName,
         audit_scope: this.auditPlanForm.value?.auditScopeValue,
         audit_type: "ISO 270015",
-        eMail: localStorage.getItem('user')?.toString() || ''
+        eMail: this.userEmail
       }
       if (this.checkRequiredPlanValues(plan)) {
         this.audirService.createAuditPlan(plan).subscribe(response => {
@@ -206,7 +214,7 @@ export class AuditPlanComponent {
 
   checkRequiredPlanValues(plan: Audit) {
     const checkPlanValues = plan.audit_title && plan.start_date && plan.end_date && plan.audit_scope;
-    return (this.isParentAudit ? checkPlanValues : (checkPlanValues && plan.leadAuditorValue));
+    return (this.isParentAudit ? checkPlanValues : (checkPlanValues && plan.lead_auditor));
   }
 
   onClearForm() {
@@ -223,7 +231,7 @@ export class AuditPlanComponent {
       templateValue: [],
       functionTemplateValue: [],
       startDateTime: '',
-      endDateTime: '',
+      endDateTime: { value: '', disabled: true },
       leadAuditorValue: [],
       auditorValue: [],
       auditeesValue: [],
@@ -233,6 +241,8 @@ export class AuditPlanComponent {
     });
     this.selectedTemplate = [];
     this.selectedAuditor = [];
+    this.selectedAuditorsEmail = [];
+    this.selectedAuditeesEmail = [];
     this.selectedAuditees = [];
     this.selectedTemplateOptions = 'Select templates..';
     this.selectedAuditorOptions = 'Select Auditors..';
@@ -269,7 +279,7 @@ export class AuditPlanComponent {
 
     dialogRef.afterClosed().subscribe(async (result: any) => {
       if (result === 'success') {
-        await this.getAllAuditPlan();
+        await this.getAllChildAuditPlan();
         this.router.navigate(['/auditPlan']);
         this.changeDetectorRef.detectChanges();
       }
@@ -342,7 +352,7 @@ export class AuditPlanComponent {
   async onSelection(date: any) {
     this.isLoading = true;
     if (date) {
-      await this.getAllAuditPlan();
+      await this.getAllChildAuditPlan();
     }
   }
 
@@ -351,11 +361,10 @@ export class AuditPlanComponent {
     this.router.navigate(['/auditPerform']);
   }
 
-  async getAllAuditPlan() {
-    const formattedDate: any = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd')!;
-    const email: any = localStorage.getItem('user')?.toString() || '';
+  async getAllChildAuditPlan() {
+    const formattedDate: any = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
     try {
-      const response: any = await firstValueFrom(this.audirService.getAllPlans(email, formattedDate));
+      const response: any = await firstValueFrom(this.audirService.getAllChildPlans(this.userEmail, formattedDate));
       if (response) {
         this.isLoading = false;
         this.auditPlans = response.audit_data.length > 0 ? response.audit_data : [];
@@ -389,6 +398,10 @@ export class AuditPlanComponent {
 
   onCountryDropdownClick(): void {
     this.isCountryDropdownOpen = !this.isCountryDropdownOpen;
+  }
+
+  getEmail() {
+    return localStorage.getItem('user')?.toString() || '';
   }
 
   ngAfterViewInit() {
@@ -445,6 +458,15 @@ export class AuditPlanComponent {
         this.isCountryDropdownOpen = false;
       }
     }
+  }
+
+  onStartDateChange(date: any) {
+    const input: any = date.target as HTMLInputElement;
+    this.startDate = input.value;
+    if (this.auditPlanForm.get('endDateTime')?.enabled && (this.auditPlanForm.get('endDateTime')?.value < this.startDate)) {
+      this.auditPlanForm.get('endDateTime')?.setValue(this.startDate);
+    }
+    this.auditPlanForm.get('endDateTime')?.enable();
   }
 
   ngOnDestroy(): void {
