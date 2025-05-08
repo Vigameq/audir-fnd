@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CustomiseAuditQuestionDialogComponent } from '../customise-audit-question-dialog/customise-audit-question-dialog.component';
 import { AuditFunctionalQuestionProgressDialogComponent } from '../audit-functional-question-progress-dialog/audit-functional-question-progress-dialog.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { AudirService } from 'src/services/audir-services.service';
 import { Location } from "@angular/common";
 
@@ -12,8 +12,6 @@ import { Location } from "@angular/common";
   styleUrls: ['./specific-function-audit-info.component.scss']
 })
 export class SpecificFunctionAuditInfoComponent {
-  auditorInfo = { id: 'VIG1893893', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india', startDate: '26/05/2024', endDate: '28/05/2024', startTime: '10:00 AM', endTime: '10:00 AM', percentage: '70', auditorName: 'Krishna Achar', auditCompaey: 'ACS Manufacturing Group' };
-
 
   progressData = [
     {
@@ -43,16 +41,17 @@ export class SpecificFunctionAuditInfoComponent {
     }
   ];
   allFunctionalQuestions!: any[];
+  auditCompletionPercentage!:any;
   auditInfo: any;
   auditId: any;
   constructor(private dialog: MatDialog,
     private route: ActivatedRoute,
     private audirService: AudirService,
-    private location: Location,
-    private readonly router: Router) {
+    private location: Location) {
     this.route.paramMap.subscribe(params => {
       this.auditId = { "audit_id": params.get('id') };
       this.getPlanAudit(this.auditId);
+      this.getAuditPlanCompletionPercentage(this.auditId);
       this.getQuestions(this.auditId);
     });
   }
@@ -67,6 +66,18 @@ export class SpecificFunctionAuditInfoComponent {
       }
     }, (error: any) => {
       console.error('Error for getting questions:', error);
+    });
+  }
+
+  getAuditPlanCompletionPercentage(auditId:any){
+    this.audirService.getAuditCompletionPercentage(auditId).subscribe((response: any) => {
+      if (response) {
+        this.auditCompletionPercentage= response.completion_percent;
+      } else {
+        console.error('Unable to get audit completion percentage');
+      }
+    }, (error: any) => {
+      console.error('Unable to get audit completion percentage:', error);
     });
   }
 
@@ -102,7 +113,7 @@ export class SpecificFunctionAuditInfoComponent {
       width: 'auto',
       position: { right: '0', top: '0' },
       panelClass: 'question-progress-dialog-container',
-      data: { auditorInfo: this.auditorInfo, progressData: this.progressData }
+      data: { auditorInfo: this.auditInfo, progressData: this.progressData }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {

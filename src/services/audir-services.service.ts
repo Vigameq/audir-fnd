@@ -18,7 +18,7 @@ export class AudirService {
     return this.http.post('/audire/api/planAudit', auditPlan);
   }
 
-  getAuditPlan(audit_id:any){
+  getAuditPlan(audit_id: any) {
     return this.http.post('/audire/api/getAuditPlan', audit_id);
   }
 
@@ -34,13 +34,17 @@ export class AudirService {
         "from": date,
         "to": date
       },
-      "status_filter": ["completed","created", "lead_auditor"]
+      "status_filter": ["completed", "created", "lead_auditor"]
     };
     return this.http.post('/audire/api/listChildAudits', emailDateDetails);
   }
 
-  updateAuditPlan(updatedAuditDetails:any) {
+  updateAuditPlan(updatedAuditDetails: any) {
     return this.http.post('/audire/api/updateAuditPlan', updatedAuditDetails);
+  }
+
+  getAuditCompletionPercentage(audit_id: any) {
+    return this.http.post('/audire/api/getAuditCompletionPercent', audit_id);
   }
 
   downloadPlanTemplate(): Observable<ArrayBuffer> {
@@ -67,11 +71,11 @@ export class AudirService {
 
   /* services for Audit perform */
 
-  getAuditLists(payload:any){
+  getAuditLists(payload: any) {
     return this.http.post<any>('/audire/api/listAudits', payload);
   }
 
-  getAuditQuestions(payload:any){
+  getAuditQuestions(payload: any) {
     return this.http.post<any>('/audire/api/getAuditQuestions', payload);
   }
 
