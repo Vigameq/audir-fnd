@@ -19,7 +19,7 @@ export class AuditPerformComponent {
   // @ViewChild('standardDropdown') standardDropdown: ElementRef | undefined;
   @ViewChild('auditeeDropdown') auditeeDropdown: ElementRef | undefined;
   auditList: any;
-  auditeeSelectedValue: any = '';
+  auditeeSelectedValue: any = [];
   fromDate: any;
   toDate: any;
   utcToday: any;
@@ -65,6 +65,9 @@ export class AuditPerformComponent {
         obj.lineHeight = 0;
         return obj;
       });
+      this.auditeeSelectedValue = Array.from({ length: this.auditList[index].sub_audits.length }, (_) => ({
+        selectedValue: ''
+      }));
       this.updateLineHeights(index);
     }
   }
@@ -111,9 +114,31 @@ export class AuditPerformComponent {
     this.isAuditeeDropdownOpen = !this.isAuditeeDropdownOpen;
   }
 
-  onAuditeeOptionChange(event: any) {
-    const target = event.target as HTMLSelectElement;
-    this.auditeeSelectedValue = target.value;
+  onAuditeeOptionChange(sub_audit: any, index: number) {
+    this.updatePlanWithNewAssignee(sub_audit, index);
+  }
+
+  updatePlanWithNewAssignee(sub_audit: any, index: number) {
+    const updatedAuditPlan: any = {
+      'audit_id': sub_audit.audit_id,
+      'start_date': sub_audit.start_date,
+      'end_date': sub_audit.end_date,
+      'auditors': sub_audit.auditors,
+      'auditees': [this.auditeeSelectedValue[index].selectedValue.email],
+      'city': sub_audit.city,
+      'country': sub_audit.country,
+      'audit_type': sub_audit.audit_type
+    };
+    this.audirService.updateAuditPlan(updatedAuditPlan).subscribe((response: any) => {
+      if (response) {
+        this.audirService.showSuccess(response.message);
+      } else {
+        this.audirService.showError('Failed to update audit plan');
+      }
+    }, (error: any) => {
+      this.audirService.showError('Failed to update audit plan');
+      console.error('Error for updating audit plan:', error);
+    });
   }
 
   ngAfterViewInit() {

@@ -25,7 +25,8 @@
             <div class="from-date">
                 <mat-form-field appearance="fill" class="custom-date-picker">
                     <mat-label>From Date</mat-label>
-                    <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" (dateChange)="onDateChange()" name="fromDate">
+                    <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" (dateChange)="onDateChange()"
+                        name="fromDate">
                     <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
                     <mat-datepicker #fromPicker></mat-datepicker>
                 </mat-form-field>
@@ -33,7 +34,8 @@
             <div class="to-date">
                 <mat-form-field appearance="fill" class="custom-date-picker">
                     <mat-label>To Date</mat-label>
-                    <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate" (dateChange)="onDateChange()" name="toDate" [min]="fromDate">
+                    <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate" (dateChange)="onDateChange()"
+                        name="toDate" [min]="fromDate">
                     <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
                     <mat-datepicker #toPicker></mat-datepicker>
                 </mat-form-field>
@@ -110,7 +112,7 @@
                 </div>
             </div>
             <div *ngIf="auditPerformItem.sub_audits.length > 0 && auditPerformItem.isSubAuditsOpened">
-                <div class="sub-audit" *ngFor="let sub_audit of auditPerformItem.sub_audits">
+                <div class="sub-audit" *ngFor="let sub_audit of auditPerformItem.sub_audits; let i = index">
                     <div class="tree-node">
                         <div class="line" [ngStyle]="{'height.px': sub_audit.lineHeight}"></div>
                         <div class="dot"></div>
@@ -164,10 +166,11 @@
                         <div class="dropdown-section">
                             <div class="auditee-dropdown-section" (click)="onAuditeeDropdownClick()" #auditeeDropdown>
                                 <label for="auditee-name" class="auditee-label">Assign To</label>
-                                <select class="auditee-dropdown-select" (change)="onAuditeeOptionChange($event)"
-                                    [(ngModel)]="auditeeSelectedValue">
+                                <select class="auditee-dropdown-select"
+                                    [(ngModel)]="auditeeSelectedValue[i].selectedValue"
+                                    (change)="onAuditeeOptionChange(sub_audit,i)">
                                     <option value="" disabled selected>Select</option>
-                                    <option *ngFor="let auditee of auditeeDropdownOptions" [value]="auditee">
+                                    <option *ngFor="let auditee of auditeeDropdownOptions" [ngValue]="auditee">
                                         {{ auditee.Name }}
                                     </option>
                                 </select>
