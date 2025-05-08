@@ -2,6 +2,8 @@ import { Component, ElementRef, Input, Renderer2, ViewChild } from '@angular/cor
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AudirService } from 'src/services/audir-services.service';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-header',
@@ -17,7 +19,7 @@ export class HeaderComponent {
   userName: any = "";
   userDetails: any;
 
-  constructor(private renderer: Renderer2, private router: Router, private audirService: AudirService) {
+  constructor(private renderer: Renderer2, private router: Router, private audirService: AudirService,private dialog: MatDialog) {
     this.userName = localStorage.getItem('user') ? localStorage.getItem('user') : "";
   }
 
@@ -55,5 +57,13 @@ export class HeaderComponent {
         this.isOpen = false;
       }
     });
+  }
+
+  openNotification(){
+    const dialogRef = this.dialog.open(NotificationsComponent, {
+          
+          data: {
+          }
+        });
   }
 }

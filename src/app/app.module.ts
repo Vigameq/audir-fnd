@@ -29,6 +29,7 @@ import { AuditorRemarksComponent } from './templates/Import-template-dialog/audi
 import { SpecificFunctionAuditInfoComponent } from './audit-perform/specific-function-audit-info/specific-function-audit-info.component';
 import { CustomiseAuditQuestionDialogComponent } from './audit-perform/customise-audit-question-dialog/customise-audit-question-dialog.component';
 import { AuditFunctionalQuestionProgressDialogComponent } from './audit-perform/audit-functional-question-progress-dialog/audit-functional-question-progress-dialog.component';
+import { NotificationsComponent } from './header/notifications/notifications.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { AuditFunctionalQuestionProgressDialogComponent } from './audit-perform/
     AuditorRemarksComponent,
     SpecificFunctionAuditInfoComponent,
     CustomiseAuditQuestionDialogComponent,
-    AuditFunctionalQuestionProgressDialogComponent
+    AuditFunctionalQuestionProgressDialogComponent,
+    NotificationsComponent
   ],
   imports: [
     BrowserModule,

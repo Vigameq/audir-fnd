@@ -80,6 +80,11 @@ export class AudirService {
     return this.http.get('/assets/json/data.json');
   }
 
+  getNotifications(email: string): Observable<any> {
+    const emailId = { "email": email };
+    return this.http.post('/audire/api/getNotifications', emailId);
+  }
+
   showSuccess(message: string) {
     this.toastr.success(message, 'Success', {
       timeOut: 2000,
