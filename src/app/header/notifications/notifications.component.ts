@@ -23,4 +23,10 @@ export class NotificationsComponent {
       this.notifications = response.notifications;
     })
   }
+
+  updateNotification(note: { id: number[]; }){
+    this.audirService.updateNotifications(note.id).subscribe(response => {
+      this.getNotifications();
+    })
+  }
 }

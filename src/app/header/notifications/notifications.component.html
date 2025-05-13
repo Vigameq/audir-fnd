@@ -6,16 +6,16 @@
     </div>
   
     <div class="notification-list">
-      <div *ngFor="let note of notifications" class="notification-item" [ngStyle]="{ 'border-left': note.is_read ? '8px solid grey' : '8px solid #fce72b' }">
+      <div *ngFor="let note of notifications" (click)="updateNotification(note)" class="notification-item" [ngStyle]="{ 'border-left': note.is_read ? '5px solid #999' : '5px solid #FDE714' }">
        
         <div class="message">
           <!-- <div>
             <strong class="username">{{ note.user }}</strong>
             <span class="action">{{ note.action }}</span>
           </div> -->
-          <div  class="comment">{{ note.message }}</div>
+          <div  class="comment" [ngStyle]="{ 'color': note.is_read ? '#999' : 'black' }">{{ note.message }}</div>
         </div>
-        <span class="time">{{ note.created_at | date: 'dd MMM yyyy'}}</span>
+        <span class="time" [ngStyle]="{ 'color': note.is_read ? '#999' : 'black' }">{{ note.created_at | date: 'dd MMM'}}</span>
       </div>
     </div>
   

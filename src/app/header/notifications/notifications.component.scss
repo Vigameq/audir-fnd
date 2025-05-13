@@ -7,9 +7,9 @@ $time-color: #aaa;
 $background: #fafafa;
 
 .notification-container {
-  width: 400px;
+  width: 450px;
   background: white;
-  border-radius: 16px;
+  border-radius: 12px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   font-family: 'Arial', sans-serif;
   overflow: hidden;
@@ -24,12 +24,14 @@ $background: #fafafa;
     h2 {
       margin: 0;
       font-size: 18px;
+      font-weight: bold;
     }
   }
 
   .notification-list {
     max-height: 400px;
     overflow-y: auto;
+    cursor: pointer;
   }
 
   .notification-item {

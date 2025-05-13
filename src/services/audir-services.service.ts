@@ -85,6 +85,14 @@ export class AudirService {
     return this.http.post('/audire/api/getNotifications', emailId);
   }
 
+  updateNotifications(id: number[]): Observable<any> {    
+    const payload ={
+      "email": "user1@gmail.com",
+      "notification_id": [id]
+  }
+    return this.http.post('/audire/api/updateNotifications', payload);
+  }
+
   showSuccess(message: string) {
     this.toastr.success(message, 'Success', {
       timeOut: 2000,
