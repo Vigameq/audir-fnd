@@ -16,9 +16,9 @@
                     </div>
                     <div class="link-audit-select">
                         <select id="parentAudit" class="dropdown-select" formControlName="parentAudit"
-                            name="parentAudit">
+                            (change)="onParentAuditChange()" name="parentAudit">
                             <option value="" disabled selected>Select Audit</option>
-                            <option *ngFor="let audit of parent_audits" [value]="audit.title">
+                            <option *ngFor="let audit of parent_audits" [ngValue]="audit">
                                 {{audit.title}}</option>
                         </select>
                     </div>
@@ -76,12 +76,12 @@
                                 class="asterisk">*</span></label>
                         <input type="datetime-local" id="start-date-time" class="form-control"
                             (change)="onStartDateChange($event)" formControlName="startDateTime" name="startDateTime"
-                            required />
+                            [min]="minDateTime" [max]="maxDateTime" required />
                     </div>
                     <div class="end-date-time">
                         <label for="end-date-time" class="form-label">End Date & Time<span
                                 class="asterisk">*</span></label>
-                        <input type="datetime-local" id="end-date-time" class="form-control" [min]="startDate"
+                        <input type="datetime-local" id="end-date-time" class="form-control" [min]="startDate" [max]="maxDateTime"
                             formControlName="endDateTime" name="endDateTime" required />
                     </div>
                 </div>
