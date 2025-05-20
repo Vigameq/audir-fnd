@@ -15,7 +15,8 @@
                 <div class="question-text">{{functionalAuditForQuestions.questionText}}</div>
             </div>
             <div class="audit-section">
-                <div class="auditor-note">
+                <div class="res-hist-btn"><button (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
+                <div class="auditor-note" *ngIf="isAuditor">
                     <div class="auditor-note-label"><span>Auditor Note</span></div>
                     <div class="auditor-note-fields-section">
                         <div class="audit-note-textarea"><textarea id="audit-note-textarea" rows="4" name="auditNote"
@@ -23,7 +24,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="auditee-response">
+                <div class="auditee-response" *ngIf="!isAuditor">
                     <div class="auditee-response-label"><span>Auditee Response</span></div>
                     <div class="auditee-response-fields-section">
                         <div class="auditee-response-textarea"><textarea id="auditee-response-textarea" rows="4"
@@ -44,7 +45,7 @@
                     </div>
                 </div>
                 <div *ngFor="let itemcount of totalFindings; let i = index">
-                    <div [id]="'audit-findings-' + i" class="audit-findings">
+                    <div [id]="'audit-findings-' + i" class="audit-findings" *ngIf="isAuditor">
                         <div class="audit-findings-label"><span>Audit Finding</span></div>
                         <div class="audit-findings-fields-section">
                             <div class="audit-findings-textarea">
@@ -88,12 +89,15 @@
         </div>
     </mat-dialog-content>
     <mat-dialog-actions class="action-btns">
-        <div class="addAuditFinding" (click)="addFindings()"><svg width="24" height="24" viewBox="0 0 21 21" fill=""
-                xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M3.45895 8.21V5.186H0.578953V3.26H3.45895V0.289999H5.56495V3.26H8.42695V5.186H5.56495V8.21H3.45895Z"
-                    fill="" />
-            </svg><span>Add Audit Finding</span></div>
+        <div class="addAuditFinding" (click)="addFindings()" *ngIf="isAuditor">
+            <button [class.disabled]="totalFindings.length >= 5" [disabled]="totalFindings.length >= 5">
+                <svg width="24" height="24" viewBox="0 0 21 21" fill="" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M3.45895 8.21V5.186H0.578953V3.26H3.45895V0.289999H5.56495V3.26H8.42695V5.186H5.56495V8.21H3.45895Z"
+                        fill="" />
+                </svg><span>Add Audit Finding</span>
+            </button>
+        </div>
         <div class="cancel-save-btns">
             <button class="cancel" mat-dialog-close>Cancel</button>
             <button class="save">Save</button>

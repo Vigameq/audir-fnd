@@ -93,7 +93,7 @@
                         <div class="percentage"><span>{{auditPerformItem.percentage}}%</span></div>
                     </div>
                     <div class="auditor-details">
-                        <span>{{auditPerformItem.auditors[0]}}</span>
+                        <span>{{auditPerformItem.auditors[0]?.name}}</span>
                         <!-- <span class="vertical-bar">|</span>
                         <span>{{auditPerformItem.auditCompany}}</span> -->
                     </div>
@@ -160,7 +160,7 @@
                                 <div class="percentage"><span>{{sub_audit.percentage}}%</span></div>
                             </div>
                             <div class="auditor-details">
-                                <span>{{sub_audit.auditors[0]}}</span>
+                                <span>{{sub_audit.auditors[0].name}}</span>
                             </div>
                         </div>
                         <div class="dropdown-section">

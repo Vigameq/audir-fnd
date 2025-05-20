@@ -124,7 +124,7 @@ export class AuditPerformComponent {
       'start_date': sub_audit.start_date,
       'end_date': sub_audit.end_date,
       'auditors': sub_audit.auditors,
-      'auditees': [this.auditeeSelectedValue[index].selectedValue.email],
+      'auditees': [{ email: this.auditeeSelectedValue[index].selectedValue.email, name: this.auditeeSelectedValue[index].selectedValue.Name }],
       'city': sub_audit.city,
       'country': sub_audit.country,
       'audit_type': sub_audit.audit_type

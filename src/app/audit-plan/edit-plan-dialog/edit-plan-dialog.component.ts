@@ -38,8 +38,8 @@ export class EditPlanDialogComponent {
     this.editPlanForm.setValue({
       startDateTimeValue: (new Date(this.planDetails.start_date)).toISOString().slice(0, 16),
       endDateTimeValue: (new Date(this.planDetails.end_date)).toISOString().slice(0, 16),
-      assignToValue: this.planDetails.auditees[0],
-      leadAuditorValue: this.planDetails.auditors[0]
+      assignToValue: this.planDetails.auditees[0]?.name,
+      leadAuditorValue: this.planDetails.auditors[0]?.name
     });
   }
   onSaveChanges() {

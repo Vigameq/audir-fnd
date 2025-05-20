@@ -64,6 +64,30 @@
                 line-height: 100%;
                 gap: 20px;
 
+                .res-hist-btn {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-end;
+
+                    button {
+                        width: 220px;
+                        height: 44px;
+                        line-height: 100%;
+                        font-size: 16px;
+                        background-color: #1D2431;
+                        border: 1px #1D2431 solid;
+                        color: #fff;
+                        outline: none;
+                    }
+
+                    button:hover {
+                        background-color: #FDE714;
+                        color: #1D2431;
+                        border: 1px #FDE714 solid;
+                        outline: none;
+                    }
+                }
+
                 .auditor-note,
                 .auditee-response,
                 .audit-findings {
@@ -232,25 +256,51 @@
         .addAuditFinding {
             cursor: pointer;
 
-            svg {
-                fill: #848484;
-                margin-top: 10px;
-                line-height: 100%;
+            button {
+                border: none;
+                outline: none;
+                background: none;
+
+                svg {
+                    fill: #848484;
+                    margin-top: 10px;
+                    line-height: 100%;
+                }
+
+                svg:hover {
+                    fill: #FDE714;
+                }
+
+                span {
+                    font-weight: 700;
+                    font-size: 18px;
+                    line-height: 100%;
+                    color: #848484;
+                }
             }
 
-            svg:hover {
-                fill: #FDE714;
-            }
+            button.disabled {
+                cursor: not-allowed !important;
 
-            span {
-                font-weight: 700;
-                font-size: 18px;
-                line-height: 100%;
-                color: #848484;
+                span {
+                    color: #cccccc
+                }
+
+                svg {
+                    fill: #cccccc
+                }
+
+                svg:hover {
+                    fill: #cccccc;
+                }
+
+                span:hover {
+                    color: #cccccc;
+                }
             }
         }
 
-        .addAuditFinding span:hover {
+        .addAuditFinding button span:hover {
             color: #FDE714;
         }
 
@@ -258,6 +308,7 @@
             display: flex;
             flex-direction: row;
             gap: 10px;
+            margin-left: auto;
 
             .cancel,
             .save {

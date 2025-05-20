@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, QueryList, ViewChildren, ElementRef, ChangeDetectorRef, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-audit-functional-question-progress-dialog',
@@ -10,7 +10,7 @@ export class AuditFunctionalQuestionProgressDialogComponent {
   @ViewChildren('statusContent') statusContentElements!: QueryList<ElementRef>;
   statusData: any[] = [];
 
-  constructor(private cdr: ChangeDetectorRef, @Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor(private cdr: ChangeDetectorRef, public dialogRef: MatDialogRef<AuditFunctionalQuestionProgressDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
     this.statusData = this.data.progressData;
@@ -55,5 +55,9 @@ export class AuditFunctionalQuestionProgressDialogComponent {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+  }
+
+  closeResponseDialog(): void {
+    this.dialogRef.close();
   }
 }
