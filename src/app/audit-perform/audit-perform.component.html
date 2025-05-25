@@ -93,7 +93,7 @@
                         <div class="percentage"><span>{{auditPerformItem.percentage}}%</span></div>
                     </div>
                     <div class="auditor-details">
-                        <span>{{auditPerformItem.auditors[0]?.name}}</span>
+                        <span>{{auditPerformItem.lead_auditor}}</span>
                         <!-- <span class="vertical-bar">|</span>
                         <span>{{auditPerformItem.auditCompany}}</span> -->
                     </div>
@@ -112,7 +112,7 @@
                 </div>
             </div>
             <div *ngIf="auditPerformItem.sub_audits.length > 0 && auditPerformItem.isSubAuditsOpened">
-                <div class="sub-audit" *ngFor="let sub_audit of auditPerformItem.sub_audits; let i = index">
+                <div class="sub-audit" *ngFor="let sub_audit of auditPerformItem.sub_audits; let j = index">
                     <div class="tree-node">
                         <div class="line" [ngStyle]="{'height.px': sub_audit.lineHeight}"></div>
                         <div class="dot"></div>
@@ -159,26 +159,38 @@
                                 </div>
                                 <div class="percentage"><span>{{sub_audit.percentage}}%</span></div>
                             </div>
-                            <div class="auditor-details">
-                                <span>{{sub_audit.auditors[0].name}}</span>
+                            <div class="auditor-details" [matTooltip]="showAuditors(sub_audit.auditors)">
+                                <span>{{showAuditors(sub_audit.auditors)}}</span>
                             </div>
                         </div>
-                        <div class="dropdown-section">
-                            <div class="auditee-dropdown-section" (click)="onAuditeeDropdownClick()" #auditeeDropdown>
-                                <label for="auditee-name" class="auditee-label">Assign To</label>
-                                <select class="auditee-dropdown-select"
-                                    [(ngModel)]="auditeeSelectedValue[i].selectedValue"
-                                    (change)="onAuditeeOptionChange(sub_audit,i)">
-                                    <option value="" disabled selected>Select</option>
-                                    <option *ngFor="let auditee of auditeeDropdownOptions" [ngValue]="auditee">
-                                        {{ auditee.Name }}
-                                    </option>
-                                </select>
-                                <div class="dropdown-arrow">
-                                    <app-dropdown-arrow-icons
-                                        [isOpen]="isAuditeeDropdownOpen"></app-dropdown-arrow-icons>
-                                </div>
+                        <div class="auditees">
+                            <label for="auditeeDropdown" class="auditee-label">Auditee</label>
+                            <div class="dropbtn" [matTooltip]="selectedAuditeesOptions[j]"
+                                (click)="auditeesToggleDropdown($event,j)">
+                                <span>{{selectedAuditeesOptions[j]}}</span>
                             </div>
+                            <div *ngIf="isAuditeesOptionsOpen[j]" class="dropdown-content" #auditeeDropdown>
+                                <label *ngFor="let auditee of subAuditAuditees[j].auditees; let k = index"
+                                    (click)="onCheckboxClick($event)">
+                                    <input type="checkbox" [value]="auditee.Name" class="checkbox-input"
+                                        (change)="onAuditeeSelectionChange($event,j,k,auditee)"
+                                        [checked]="auditee.checked" />
+                                    <span class="auditee-value">{{ auditee.Name }}</span>
+                                </label>
+                            </div>
+                            <div class="dropdown-arrow">
+                                <app-dropdown-arrow-icons
+                                    [isOpen]="isAuditeesDropdownOpened[j]"></app-dropdown-arrow-icons>
+                            </div>
+                        </div>
+                        <div class="svg-icon">
+                            <svg width="20px" height="20px" viewBox="0 0 24 24"
+                                id="meteor-icon-kit__regular-check-circle" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" (click)="updatePlanWithNewAssignee(sub_audit,j)">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12ZM12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM7.70711 12.2929L10 14.5858L16.2929 8.29289C16.6834 7.90237 17.3166 7.90237 17.7071 8.29289C18.0976 8.68342 18.0976 9.31658 17.7071 9.70711L10.7071 16.7071C10.3166 17.0976 9.68342 17.0976 9.29289 16.7071L6.29289 13.7071C5.90237 13.3166 5.90237 12.6834 6.29289 12.2929C6.68342 11.9024 7.31658 11.9024 7.70711 12.2929Z"
+                                    fill="#1dd91d" />
+                            </svg>
                         </div>
                     </div>
                     <div class="show-question-svg" [routerLink]="[sub_audit.audit_id]">

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, ElementRef, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { AudirService } from 'src/services/audir-services.service';
 
 @Component({
@@ -9,23 +9,25 @@ import { AudirService } from 'src/services/audir-services.service';
   styleUrls: ['./audit-perform.component.scss']
 })
 export class AuditPerformComponent {
+  @ViewChild('auditeesDropdown', { static: false }) auditeesDropdown!: ElementRef;
   searchQuery: string = '';
-  // isStandardDropdownOpen: boolean = false;
-  isAuditeeDropdownOpen: boolean = false;
-  // standardDropdownOptions = ['options1', 'option2', 'option3'];
-  auditeeDropdownOptions: any;
-  // standardSelectedOption: string = '';
+  auditees: any;
+  subAuditAuditees: any;
   @ViewChildren('detailsContent') detailsContentElements!: QueryList<ElementRef>;
-  // @ViewChild('standardDropdown') standardDropdown: ElementRef | undefined;
   @ViewChild('auditeeDropdown') auditeeDropdown: ElementRef | undefined;
   auditList: any;
-  auditeeSelectedValue: any = [];
+  auditeeSelectedValue: any;
   fromDate: any;
   toDate: any;
   utcToday: any;
   utcTomorrow: any;
+  selectedAuditeesOptions: any;
+  isAuditeesOptionsOpen!: boolean[];
+  isAuditeesDropdownOpened!: boolean[];
+  selectedAuditees: any = [];
+  selectedAuditeesEmail: any;
 
-  constructor(private renderer: Renderer2, private audirService: AudirService, private datePipe: DatePipe) {
+  constructor(private renderer: Renderer2, private cdr: ChangeDetectorRef, private audirService: AudirService, private datePipe: DatePipe) {
     this.resetDateFilter();
   }
 
@@ -61,18 +63,65 @@ export class AuditPerformComponent {
   openSubAudits(index: any) {
     this.auditList[index].isSubAuditsOpened = !this.auditList[index].isSubAuditsOpened;
     if (this.auditList[index].isSubAuditsOpened) {
+      this.subAuditAuditees = Array.from(this.auditList[index].sub_audits, (_) => ({
+        auditees: this.auditees
+      }));
       this.auditList[index].sub_audits = this.auditList[index].sub_audits.map((obj: any) => {
         obj.lineHeight = 0;
         return obj;
       });
-      this.auditeeSelectedValue = Array.from({ length: this.auditList[index].sub_audits.length }, (_) => ({
-        selectedValue: ''
-      }));
       this.updateLineHeights(index);
+      this.setAuditeeValues(index);
     }
   }
-  showQuestions() {
 
+  setAuditeeValues(auditIndex: any) {
+    if (this.auditList[auditIndex] && this.auditList[auditIndex].sub_audits.length > 0) {
+      this.selectedAuditees = Array.from({ length: this.auditList[auditIndex].sub_audits.length }, () => []);
+      this.selectedAuditeesOptions = Array.from({ length: this.auditList[auditIndex].sub_audits.length }, () => '');
+      this.selectedAuditeesEmail = Array.from({ length: this.auditList[auditIndex].sub_audits.length }, () => '');
+      this.isAuditeesOptionsOpen = Array.from({ length: this.auditList[auditIndex].sub_audits.length }, () => false);
+      this.isAuditeesDropdownOpened = Array.from({ length: this.auditList[auditIndex].sub_audits.length }, () => false);
+      this.auditList[auditIndex].sub_audits.forEach((subAudit: any, subAuditIndex: number) => {
+        this.subAuditAuditees[subAuditIndex].auditees = this.selectedOptionValuesChecked(this.subAuditAuditees[subAuditIndex].auditees, subAudit.auditees);
+        this.selectedAuditees[subAuditIndex] = this.selectedOptionNames(subAudit.auditees);
+        this.selectedAuditeesOptions[subAuditIndex] = this.selectedAuditees[subAuditIndex].length > 0 ? this.selectedAuditees[subAuditIndex].join(', ') : 'Select Auditee..';
+        this.selectedAuditeesEmail[subAuditIndex] = this.selectedOptionEmails(subAudit.auditees);
+      });
+    }
+  }
+
+  selectedOptionNames(options: any) {
+    if (options)
+      return (options.map((options: any) => options.name));
+    else {
+      return [];
+    }
+  }
+
+  selectedOptionValuesChecked(allValues: any, selectedValues: any) {
+    this.setCheckedOption(allValues)
+    allValues.forEach((user: any) => {
+      if (selectedValues.some((selectedUser: any) => selectedUser.email === user.email)) {
+        user.checked = true;
+      }
+    });
+    return allValues;
+  }
+
+  selectedOptionEmails(options: any) {
+    if (options)
+      return (options.map((options: any) => options.email));
+    else {
+      return [];
+    }
+  }
+
+  setCheckedOption(optionsList: any) {
+    return optionsList.map((objectValue: any) => {
+      objectValue.checked = false;
+      return objectValue;
+    });
   }
 
   updateLineHeights(auditIndex: any) {
@@ -101,30 +150,13 @@ export class AuditPerformComponent {
     this.searchQuery = '';
   }
 
-  // onStandardOptionChange(event: Event) {
-  //   const target = event.target as HTMLSelectElement;
-  //   this.standardSelectedOption = target.value;
-  // }
-
-  // onStandardDropdownClick(): void {
-  //   this.isStandardDropdownOpen = !this.isStandardDropdownOpen;
-  // }
-
-  onAuditeeDropdownClick() {
-    this.isAuditeeDropdownOpen = !this.isAuditeeDropdownOpen;
-  }
-
-  onAuditeeOptionChange(sub_audit: any, index: number) {
-    this.updatePlanWithNewAssignee(sub_audit, index);
-  }
-
   updatePlanWithNewAssignee(sub_audit: any, index: number) {
     const updatedAuditPlan: any = {
       'audit_id': sub_audit.audit_id,
       'start_date': sub_audit.start_date,
       'end_date': sub_audit.end_date,
-      'auditors': sub_audit.auditors,
-      'auditees': [{ email: this.auditeeSelectedValue[index].selectedValue.email, name: this.auditeeSelectedValue[index].selectedValue.Name }],
+      'auditors': sub_audit.auditors.map((auditor: any) => auditor.email),
+      'auditees': this.selectedAuditeesEmail[index],
       'city': sub_audit.city,
       'country': sub_audit.country,
       'audit_type': sub_audit.audit_type
@@ -141,22 +173,11 @@ export class AuditPerformComponent {
     });
   }
 
-  ngAfterViewInit() {
-    this.renderer.listen('document', 'click', (event: Event) => {
-      // if (this.standardDropdown && !this.standardDropdown.nativeElement.contains(event.target)) {
-      //   this.isStandardDropdownOpen = false;
-      // }
-      if (this.auditeeDropdown && !this.auditeeDropdown.nativeElement.contains(event.target)) {
-        this.isAuditeeDropdownOpen = false;
-      }
-    });
-  }
-
   getPlanItems() {
     const email = localStorage.getItem('user')?.toString() || '';
     this.audirService.getPlanItems(email).subscribe((items: any) => {
       if (items) {
-        this.auditeeDropdownOptions = items.users.auditees;
+        this.auditees = items.users.auditees;
       }
     }, (error: any) => {
       console.error('Error for getting plans:', error);
@@ -181,4 +202,51 @@ export class AuditPerformComponent {
     this.toDate = this.utcTomorrow.toISOString().substring(0, 10);
     this.getAuditLists(this.fromDate, this.toDate);
   }
+
+  showAuditors(auditorOptions: any) {
+    if (auditorOptions) {
+      return ((auditorOptions.map((auditor: any) => auditor.name)).join(', '));
+    }
+    return
+  }
+
+  auditeesToggleDropdown(event: any, index: any) {
+    event.stopPropagation();
+    this.isAuditeesOptionsOpen = this.isAuditeesOptionsOpen.map((open: any, i: any) => i === index ? !open : false);
+    if (!this.isAuditeesDropdownOpened[index]) {
+      this.isAuditeesDropdownOpened[index] = true;
+    }
+    else {
+      this.isAuditeesDropdownOpened[index] = false;
+    }
+
+  }
+
+  onCheckboxClick(event: Event) {
+    event.stopPropagation();
+  }
+
+  onAuditeeSelectionChange(event: Event, subAuditIndex: any, auditeesIndex: any, auditee: any) {
+    const checkbox = event.target as HTMLInputElement;
+    if (!this.selectedAuditees[subAuditIndex].includes(checkbox.value)) {
+      if (checkbox.checked) {
+        this.selectedAuditees[subAuditIndex].push(checkbox.value);
+        this.selectedAuditeesEmail[subAuditIndex].push(auditee.email);
+        this.subAuditAuditees[subAuditIndex].auditees[auditeesIndex].checked = true;
+      }
+    }
+    else {
+      this.selectedAuditees[subAuditIndex] = this.selectedAuditees[subAuditIndex].filter((option: any) => option !== checkbox.value);
+      this.selectedAuditeesEmail[subAuditIndex] = this.selectedAuditeesEmail[subAuditIndex].filter((option: any) => option !== auditee.email);
+      this.subAuditAuditees[subAuditIndex].auditees[auditeesIndex].checked = false;
+    }
+    this.selectedAuditeesOptions[subAuditIndex] = this.selectedAuditees[subAuditIndex].length > 0 ? this.selectedAuditees[subAuditIndex].join(', ') : 'Select Auditee..';
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    this.isAuditeesDropdownOpened = this.isAuditeesDropdownOpened?.map(() => false);
+    this.isAuditeesOptionsOpen = this.isAuditeesOptionsOpen?.map(() => false);
+  }
+
 }

@@ -76,6 +76,7 @@
                         font-size: 16px;
                         background-color: #1D2431;
                         border: 1px #1D2431 solid;
+                        border-radius: 6px;
                         color: #fff;
                         outline: none;
                     }
@@ -163,6 +164,20 @@
                     gap: 10px;
                 }
 
+                .finding-category-and-clause-section .delete-icon {
+                    svg {
+                        height: 22px;
+                        width: 22px;
+                        cursor: pointer;
+                        margin-top: 36px;
+                        margin-left: 40px;
+                    }
+
+                    svg:hover {
+                        fill: #FDE714
+                    }
+                }
+
                 .upload-evidence,
                 .link,
                 .finding-category,
@@ -183,21 +198,41 @@
                     line-height: 100%
                 }
 
-                .upload-evidence-btn button {
-                    background-color: #2C2C2C;
-                    font-size: 16px;
-                    line-height: 100%;
-                    color: #F5F5F5;
-                    height: 44px;
-                    width: 200px;
-                    border-radius: 6px;
-                    border: 1px solid #2C2C2C;
-                }
 
-                .upload-evidence-btn button:hover {
-                    background-color: #FDE714;
-                    color: #2C2C2C;
-                    border: 1px solid #FDE714;
+
+                .upload-evidence-btn {
+
+                    .upload {
+                        height: 44px;
+                        width: 200px;
+                        border-radius: 6px;
+                        color: #F5F5F5;
+                        background-color: #1D2431;
+                        border: 1px solid #2C2C2C;
+                        font-size: 16px;
+                        font-weight: 400;
+                        text-align: center;
+                        cursor: pointer;
+                        display: inline-block;
+                        padding: 12px 6px 10px 6px;
+                        text-align: center;
+                        transition: background 0.3s ease;
+                        line-height: normal;
+                    }
+
+                    .upload:hover {
+                        border-color: #FDE714;
+                        background-color: #FDE714;
+                        color: #2C2C2C;
+                    }
+
+                    p {
+                        margin: 6px 0;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        max-width: 200px;
+                    }
                 }
 
                 .link .link-input input,
@@ -310,6 +345,14 @@
             gap: 10px;
             margin-left: auto;
 
+            button:disabled {
+                cursor: not-allowed;
+                background-color: #fff;
+                color: #cccccc;
+                border-color: #cccccc;
+                outline: none;
+            }
+
             .cancel,
             .save {
                 width: 200px;
@@ -326,7 +369,7 @@
             }
 
             .cancel:hover,
-            .save:hover {
+            .save:hover:not(:disabled) {
                 background-color: #FDE714;
                 color: #2C2C2C;
                 border-color: #FDE714;

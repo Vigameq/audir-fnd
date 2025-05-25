@@ -62,6 +62,7 @@ export class TemplatesComponent {
   openImportTemplateDialog(): void {
     this.importVisibility();
     const dialogRef = this.dialog.open(ImportTemplateDialogComponent, {
+      disableClose: true,
       width: '654px',
       height: '408px',
       data: { id: 'GG196678' }

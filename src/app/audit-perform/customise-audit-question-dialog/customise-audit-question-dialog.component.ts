@@ -10,31 +10,42 @@ import { AudirService } from 'src/services/audir-services.service';
 })
 export class CustomiseAuditQuestionDialogComponent {
   @ViewChild('findingsCategoryDropdown') findingsCategoryDropdown: ElementRef | undefined;
-  findingCategorySelectedOption: string = '';
+  findingCategorySelectedOption: any = [''];
   findingsCount: number = 1;
   totalFindings!: any;
-  isAuditor = true;
-  functionalAuditForQuestions: any =
+  isAuditor!: boolean;
+  isSaved = false;
+  evidenceFile: File | undefined;
+  uploadEvidenceLabel = 'No file choosen..';
+  noErrors!: boolean;
+  questionData: any;
+  deleteText = 'Delete';
+  isAuditFindingsPresent = false;
+  auditQuestionData: any =
     {
+      audit_id: '',
       questionNumber: '',
-      questionText: '',
-      auditorNote: '',
-      auditeeResponse: {
-        response: '',
-        evidence: '',
+      question: '',
+      template: '',
+      template_type: '',
+      auditor_notes: '',
+      auditeeInfo: {
+        auditee_response: '',
+        attach_evidence: {},
         link: ''
       },
-      auditFinding: {
-        findingsResponse: '',
-        findingCategory: '',
-        clause: ''
-      }
+      auditFindingsInfo: [{
+        audit_finding: '',
+        finding_category: '',
+        closure_reference: ''
+      }],
+      email: ''
     };
   auditNoteValue: string = '';
   auditeeResponseValue: string = '';
-  auditFindingsValue: string = '';
+  auditFindingsValue: any = [''];
   linkInput: string = '';
-  clauseInput: string = '';
+  clauseInput: any = [''];
   isfindingCategoryDropdownOpen: boolean = false;
   auditInfo!: any;
   findingCategoryOptions = [{
@@ -47,54 +58,43 @@ export class CustomiseAuditQuestionDialogComponent {
     name: 'option3'
   }];
 
-  progressData = [
-    {
-      label: 'Auditor Note',
-      auditorName: 'Krishna Achar',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      date: '21/05/2024',
-      lineHeight: 0,
-      color: ''
-    },
-    {
-      label: 'Auditee Response',
-      auditorName: 'Rajesh Rao',
-      type: 'Purchase',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      date: '27/05/2024',
-      lineHeight: 0,
-      color: ''
-    },
-    {
-      label: 'NC Closed',
-      auditorName: 'Krishna Achar',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      date: '28/05/2024',
-      lineHeight: 0,
-      color: ''
-    }
-  ];
-
-  constructor(private dialog: MatDialog, private renderer: Renderer2,
+  constructor(private dialog: MatDialog, private renderer: Renderer2, private audirService: AudirService,
     public dialogRef: MatDialogRef<CustomiseAuditQuestionDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private audirService: AudirService,) {
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+    this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any)).role === 'Auditor');
     this.isAuditor === true ? (this.totalFindings = new Array(this.findingsCount)) : (this.totalFindings = new Array(0));
+    this.auditQuestionData.questionNumber = 'Question' + this.data.index;
+    this.auditQuestionData.question = this.data.questionText;
+    this.auditInfo = this.data.auditInfo;
+    this.setQuestionData();
   }
 
   ngOnInit(): void {
-    this.functionalAuditForQuestions.questionNumber = 'Question' + this.data.index;
-    this.functionalAuditForQuestions.questionText = this.data.questionText;
-    this.getPlanAudit(this.data.auditId);
+    const payload = {
+      audit_id: this.auditQuestionData.audit_id,
+      template: this.auditQuestionData.template,
+      template_type: this.auditQuestionData.template_type,
+      question: this.data.questionText,
+      email: this.auditQuestionData.email
+    };
+    this.getQuestionData(payload);
   }
 
-  getPlanAudit(auditId: any) {
-    this.audirService.getAuditPlan(auditId).subscribe((audit: any) => {
-      if (audit) {
-        this.auditInfo = audit.audit_data;
+  setQuestionData() {
+    this.auditQuestionData.audit_id = this.auditInfo.audit_id;
+    this.auditQuestionData.template = this.auditInfo.function_template[0];
+    this.auditQuestionData.template_type = 'function_template';
+    this.auditQuestionData.email = localStorage.getItem('user')?.toString() || '';
+  }
+
+  getQuestionData(payload: any) {
+    this.audirService.getQuestionData(payload).subscribe((response: any) => {
+      if (response) {
+        this.questionData = response;
       }
     }, (error: any) => {
-      console.error('Error for getting audit plan:', error);
+      this.noErrors = false;
+      console.error('Error saving audit findings:', error);
     });
   }
 
@@ -103,28 +103,27 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   onAuditNoteChange() {
-    this.functionalAuditForQuestions.auditorNote = this.auditNoteValue;
-  }
-  onAuditeeResponseChange() {
-    this.functionalAuditForQuestions.auditorNote = this.auditNoteValue;
-  }
-  onAuditFindingsChange() {
-    this.functionalAuditForQuestions.auditorNote = this.auditNoteValue;
+    this.auditQuestionData.auditor_notes = this.auditNoteValue;
   }
 
-  onFindingsOptionChange(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    console.log("Selected Option: ", this.findingCategorySelectedOption, target);
-    this.findingCategorySelectedOption = target.value;
+  onAuditeeResponseChange() {
+    this.auditQuestionData.auditeeInfo.auditee_response = this.auditeeResponseValue;
   }
 
   onLinkInputChange() {
-
+    this.auditQuestionData.auditeeInfo.link = this.linkInput;
   }
 
+  onAuditFindingsChange(index: number) {
+    this.auditQuestionData.auditFindingsInfo[index].audit_finding = this.auditFindingsValue[index];
+  }
 
-  onClauseInputChange() {
+  onFindingsOptionChange(event: Event, index: number) {
+    this.auditQuestionData.auditFindingsInfo[index].finding_category = this.findingCategorySelectedOption[index];
+  }
 
+  onClauseInputChange(index: number) {
+    this.auditQuestionData.auditFindingsInfo[index].closure_reference = this.clauseInput[index];
   }
 
   ngAfterViewInit() {
@@ -141,18 +140,160 @@ export class CustomiseAuditQuestionDialogComponent {
 
   addFindings() {
     this.totalFindings = new Array(++this.findingsCount);
+    this.auditQuestionData.auditFindingsInfo.push({
+      audit_finding: '',
+      finding_category: '',
+      closure_reference: ''
+    });
+    this.auditFindingsValue.push('');
+    this.findingCategorySelectedOption.push('');
+    this.clauseInput.push('');
   }
 
   openResponseHistory() {
+    const auditResponseHistory: any = this.questionData?.history;
+    auditResponseHistory.forEach((response: any) => {
+      response.color = '';
+      response.lineHeight = 0;
+    });
     const dialogReference = this.dialog.open(AuditFunctionalQuestionProgressDialogComponent, {
+      disableClose: true,
       width: 'auto',
       position: { right: '0', top: '0' },
       panelClass: 'question-progress-dialog-container',
-      data: { auditorInfo: this.auditInfo, progressData: this.progressData }
+      data: { auditQuestionData: this.auditQuestionData, auditResponseHistory: auditResponseHistory }
     });
 
     dialogReference.afterClosed().subscribe((result: any) => {
       console.log(`Dialog result: ${result}`);
     });
+  }
+
+  deleteFindings(index: number) {
+    this.totalFindings.splice(index, 1);
+    this.auditQuestionData.auditFindingsInfo.splice(index, 1);
+    this.auditFindingsValue.splice(index, 1);
+    this.findingCategorySelectedOption.splice(index, 1);
+    this.clauseInput.splice(index, 1);
+    --this.findingsCount;
+  }
+
+  onSave() {
+    this.isSaved = true;
+    this.noErrors = true;
+    if (this.isAuditor) {
+      if (this.auditNoteValue) {
+        this.saveAuditorNotes();
+      }
+      if (this.checkIfAuditFindingPresent(this.auditFindingsValue, this.findingCategorySelectedOption, this.clauseInput)) {
+        this.saveAuditFindings();
+      }
+    }
+    if (this.evidenceFile) {
+      this.saveAuditeeResponse();
+    }
+    if (this.noErrors) {
+      this.audirService.showSuccess('Response saved successfully');
+      this.dialogRef.close('saved');
+    }
+    this.isSaved = false;
+  }
+
+  checkResponseAvailability() {
+    return (this.checkIfAuditFindingPresent(this.auditFindingsValue, this.findingCategorySelectedOption, this.clauseInput)
+      || this.auditNoteValue !== '' || (this.evidenceFile && (this.auditeeResponseValue !== '' || this.linkInput !== '')));
+  }
+
+  checkIfAuditFindingPresent(auditFindingsValue: any, findingCategorySelectedOption: any, clauseInput: any) {
+    return (this.checkStringArray(auditFindingsValue) || this.checkStringArray(findingCategorySelectedOption) || this.checkStringArray(clauseInput));
+  }
+
+  checkStringArray(list: any) {
+    if (list) {
+      return list?.some((item: any) => item.trim() !== '');
+    }
+    return false;
+  }
+
+  saveAuditorNotes() {
+    const saveAuditorNotesPayload: any = {
+      audit_id: this.auditQuestionData.audit_id,
+      template: this.auditQuestionData.template,
+      template_type: this.auditQuestionData.template_type,
+      question: this.auditQuestionData.question,
+      auditor_notes: this.auditQuestionData.auditor_notes,
+      email: this.auditQuestionData.email
+    };
+    this.audirService.saveAuditorNotes(saveAuditorNotesPayload).subscribe((response: any) => {
+      if (response) {
+        console.log(response.msg);
+      }
+    }, (error: any) => {
+      this.noErrors = false;
+      console.error('Error saving auditor note response:', error);
+    });
+  }
+
+  saveAuditFindings() {
+    for (let index = 0; index < this.findingsCount; index++) {
+      const saveAuditFinding: any = {
+        audit_id: this.auditQuestionData.audit_id,
+        template: this.auditQuestionData.template,
+        template_type: this.auditQuestionData.template_type,
+        question: this.auditQuestionData.question,
+        audit_finding: this.auditQuestionData.auditFindingsInfo[index].audit_finding,
+        finding_category: this.auditQuestionData.auditFindingsInfo[index].finding_category,
+        closure_reference: this.auditQuestionData.auditFindingsInfo[index].closure_reference,
+        email: this.auditQuestionData.email
+      };
+      this.audirService.saveAuditFinding(saveAuditFinding).subscribe((response: any) => {
+        if (response) {
+          console.log(response.msg);
+        }
+      }, (error: any) => {
+        this.noErrors = false;
+        console.error('Error saving audit findings:', error);
+      });
+      if (!this.noErrors) {
+        break;
+      }
+    };
+  }
+
+  saveAuditeeResponse() {
+    const saveAuditeeResponsePayload = new FormData();
+    saveAuditeeResponsePayload.append('audit_id', this.auditQuestionData.audit_id);
+    saveAuditeeResponsePayload.append('template', this.auditQuestionData.template);
+    saveAuditeeResponsePayload.append('template_type', this.auditQuestionData.template_type);
+    saveAuditeeResponsePayload.append('question', this.auditQuestionData.question);
+    saveAuditeeResponsePayload.append('email', this.auditQuestionData.email);
+    saveAuditeeResponsePayload.append('auditee_response', this.auditQuestionData.auditeeInfo.auditee_response);
+    saveAuditeeResponsePayload.append('link', this.auditQuestionData.auditeeInfo.link);
+    saveAuditeeResponsePayload.append('attach_evidence', this.auditQuestionData.auditeeInfo.attach_evidence);
+    this.audirService.saveAuditeeResponse(saveAuditeeResponsePayload as any).subscribe((response: any) => {
+      if (response) {
+        console.log(response.msg);
+      }
+    }, (error: any) => {
+      this.noErrors = false;
+      console.error('Error saving auditee response:', error);
+    });
+  }
+
+  uploadEvidence(event: any) {
+    this.evidenceFile = event.target.files[0];
+    if (!this.evidenceFile) {
+      this.audirService.showError('Uploading PDF failed');
+      return;
+    }
+    if (this.evidenceFile.type !== 'application/pdf') {
+      this.audirService.showError('Only PDF file is allowed');
+      console.log('Upload only PDF file');
+      return;
+    }
+    this.uploadEvidenceLabel = this.evidenceFile.name;
+    this.auditQuestionData.auditeeInfo.attach_evidence = this.evidenceFile;
+    this.audirService.showSuccess('Upload Evidence Successful');
+    console.log('PDF file uploaded successfully.');
   }
 }

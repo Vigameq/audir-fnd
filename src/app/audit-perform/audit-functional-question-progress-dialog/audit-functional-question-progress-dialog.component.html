@@ -11,32 +11,32 @@
     <mat-dialog-content class="content-section">
         <div class="content">
             <div class="question-details">
-                <span class="id">{{data.auditorInfo.id}}</span>
+                <span class="id">{{data.auditQuestionData.audit_id}}</span>
                 <span class="vertical-bar">|</span>
-                <span class="template-name">{{data.auditorInfo.standardType}}</span>
+                <span class="template-name">{{data.auditQuestionData.template}}</span>
                 <span class="vertical-bar">|</span>
-                <span class="function-name">{{data.auditorInfo.functionType}}</span>
+                <span class="function-name">{{data.auditQuestionData.template_type}}</span>
             </div>
             <div class="question-status">
                 <div class="progress-container">
                     <div class="progress-tree">
-                        <div *ngFor="let elementStatus of statusData; let i = index" class="progress-node">
+                        <div *ngFor="let elementStatus of auditResponseHistory; let i = index" class="progress-node">
                             <div class="date-dot-section">
-                                <div class="date">{{ elementStatus.date }}</div>
+                                <div class="date">{{ elementStatus.updated_at | date:'dd/MM/yyyy' }}</div>
                                 <div class="dot" [ngStyle]="{'background-color': elementStatus.color}"></div>
-                                <div class="line" *ngIf="i !== statusData.length - 1"
-                                    [ngStyle]="{'height.px': statusData[i].lineHeight}"> </div>
+                                <div class="line" *ngIf="i !== auditResponseHistory.length - 1"
+                                    [ngStyle]="{'height.px': auditResponseHistory[i].lineHeight}"> </div>
                             </div>
                             <div class="status-details" #statusContent>
-                                <div class="audit-label">{{elementStatus.label}}</div>
+                                <div class="audit-label"><span>{{elementStatus.type}}</span></div>
                                 <div class="auditor-and-type">
-                                    <span class="auditor">{{elementStatus.auditorName}}</span>
-                                    <span class="type" *ngIf="elementStatus.label === 'Auditee Response'"> |
-                                        {{elementStatus.type}}</span>
+                                    <span class="auditor">{{elementStatus.updated_by}}</span>
+                                    <!-- <span class="type" *ngIf="elementStatus.type === 'Auditee Response'"> |
+                                        {{elementStatus.type}}</span> -->
                                 </div>
-                                <div class="audit-description">{{elementStatus.description}}</div>
-                                <div class="view-img-btn" *ngIf="elementStatus.label === 'Auditor Note'">
-                                    <button><span>View image</span></button>
+                                <div class="audit-description"><span>{{elementStatus.content}}</span></div>
+                                <div class="view-img-btn" *ngIf="elementStatus.type === 'auditee_response'">
+                                    <button (click)="downloadEvidence(elementStatus)"><span>View image</span></button>
                                 </div>
                             </div>
                         </div>

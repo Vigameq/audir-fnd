@@ -44,7 +44,7 @@ export class SpecificFunctionAuditInfoComponent {
   getAuditPlanCompletionPercentage(auditId: any) {
     this.audirService.getAuditCompletionPercentage(auditId).subscribe((response: any) => {
       if (response) {
-        this.auditCompletionPercentage = response.completion_percent;
+        this.auditCompletionPercentage = parseFloat((response.completion_percent).toFixed(2));
       } else {
         console.error('Unable to get audit completion percentage');
       }
@@ -65,13 +65,14 @@ export class SpecificFunctionAuditInfoComponent {
 
   questionInfo(index: number) {
     const dialogRef = this.dialog.open(CustomiseAuditQuestionDialogComponent, {
+      disableClose: true,
       width: 'auto',
       position: { right: '0', top: '0' },
       panelClass: 'customize-question-dialog-container',
       data: {
         index: index + 1,
         questionText: this.allFunctionalQuestions[index],
-        auditId: this.auditId
+        auditInfo: this.auditInfo
       }
     });
 
@@ -82,5 +83,12 @@ export class SpecificFunctionAuditInfoComponent {
 
   back() {
     this.location.back();
+  }
+
+  showAllOptionsByName(options: any) {
+    if (options) {
+      return ((options.map((option: any) => option.name)).join(', '));
+    }
+    return
   }
 }

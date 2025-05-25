@@ -11,8 +11,8 @@
     <mat-dialog-content class="content-section">
         <div class="content">
             <div class="question-number-and-text">
-                <div class="question-number">{{functionalAuditForQuestions.questionNumber}}</div>
-                <div class="question-text">{{functionalAuditForQuestions.questionText}}</div>
+                <div class="question-number">{{auditQuestionData.questionNumber}}</div>
+                <div class="question-text">{{auditQuestionData.question}}</div>
             </div>
             <div class="audit-section">
                 <div class="res-hist-btn"><button (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
@@ -24,7 +24,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="auditee-response" *ngIf="!isAuditor">
+                <div class="auditee-response">
                     <div class="auditee-response-label"><span>Auditee Response</span></div>
                     <div class="auditee-response-fields-section">
                         <div class="auditee-response-textarea"><textarea id="auditee-response-textarea" rows="4"
@@ -33,12 +33,19 @@
                         <div class="upload-evidence-and-link-section">
                             <div class="upload-evidence">
                                 <div class="upload-evidence-label"><span>Attach Evidence</span></div>
-                                <div class="upload-evidence-btn"><button>Upload</button></div>
+                                <div class="upload-evidence-btn">
+                                    <label for="fileUpload" class="upload">
+                                        Upload
+                                        <input type="file" id="fileUpload" accept="application/pdf"
+                                            (change)="uploadEvidence($event)" hidden>
+                                    </label>
+                                    <p [matTooltip]="uploadEvidenceLabel">{{uploadEvidenceLabel}}</p>
+                                </div>
                             </div>
                             <div class="link">
                                 <div class="link-label"><span>Link</span></div>
-                                <div class="link-input"> <input type="text" [(ngModel)]="linkInput" placeholder=""
-                                        (input)="onClauseInputChange()" class="link-input" />
+                                <div class="link-input"><input type="url" [(ngModel)]="linkInput" placeholder="link..."
+                                        (input)="onLinkInputChange()" class="link-input" />
                                 </div>
                             </div>
                         </div>
@@ -50,8 +57,8 @@
                         <div class="audit-findings-fields-section">
                             <div class="audit-findings-textarea">
                                 <textarea id="audit-findings-textarea" rows="4" name="auditFindings"
-                                    [(ngModel)]="auditFindingsValue" placeholder=""
-                                    (input)="onAuditFindingsChange()"></textarea>
+                                    [(ngModel)]="auditFindingsValue[i]" placeholder=""
+                                    (input)="onAuditFindingsChange(i)"></textarea>
                             </div>
                             <div class="finding-category-and-clause-section">
                                 <div class="finding-category">
@@ -60,8 +67,8 @@
                                         <div class="finding-category-dropdown-section"
                                             (click)="onFindingCategoryDropdownClick()" #findingsCategoryDropdown>
                                             <select class="finding-category-dropdown-select"
-                                                (change)="onFindingsOptionChange($event)"
-                                                [(ngModel)]="findingCategorySelectedOption">
+                                                (change)="onFindingsOptionChange($event,i)"
+                                                [(ngModel)]="findingCategorySelectedOption[i]">
                                                 <option value="" disabled selected>Select</option>
                                                 <option *ngFor="let findingCategory of findingCategoryOptions"
                                                     [value]="findingCategory.name">
@@ -77,9 +84,19 @@
                                 </div>
                                 <div class="clause">
                                     <div class="clause-label"><span>Clause / Reference</span></div>
-                                    <div class="clause-input"> <input type="text" [(ngModel)]="clauseInput"
-                                            placeholder="" (input)="onClauseInputChange()" class="clause-input" />
+                                    <div class="clause-input"> <input type="text" [(ngModel)]="clauseInput[i]"
+                                            placeholder="" (input)="onClauseInputChange(i)" class="clause-input" />
                                     </div>
+                                </div>
+                                <div *ngIf="totalFindings.length!==1" class="delete-icon">
+                                    <svg width="22px" height="22px" viewBox="0 0 24 24" (click)="deleteFindings(i)" [matTooltip]="deleteText"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g>
+                                            <path fill="none" d="M0 0h24v24H0z" />
+                                            <path
+                                                d="M7 4V2h10v2h5v2h-2v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6H2V4h5zM6 6v14h12V6H6zm3 3h2v8H9V9zm4 0h2v8h-2V9z" />
+                                        </g>
+                                    </svg>
                                 </div>
                             </div>
                         </div>
@@ -100,7 +117,7 @@
         </div>
         <div class="cancel-save-btns">
             <button class="cancel" mat-dialog-close>Cancel</button>
-            <button class="save">Save</button>
+            <button class="save" [disabled]="isSaved || !checkResponseAvailability()" (click)="onSave()">Save</button>
         </div>
     </mat-dialog-actions>
 </div>

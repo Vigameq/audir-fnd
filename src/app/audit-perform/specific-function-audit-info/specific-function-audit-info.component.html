@@ -11,47 +11,49 @@
         <div class="audit-info-section">
             <div class="left-section">
                 <div class="audit-info-label"><span>Audit Information</span></div>
-                <div class="audit-title"><span>{{auditInfo.audit_title}}</span></div>
+                <div class="audit-title"><span>{{auditInfo?.audit_title}}</span></div>
                 <div class="function-details">
                     <div class="functions">
-                        <span>{{auditInfo.functions}}</span>
+                        <span>{{auditInfo?.functions}}</span>
                     </div>
                     <!-- <div class="functions">
-                        <span>{{auditInfo.functions}}</span>
+                        <span>{{auditInfo?.functions}}</span>
                     </div> -->
                 </div>
                 <div class="templates-location-details">
-                    <div class="templates-details" *ngIf="auditInfo.function_template[0] || auditInfo.template[0]">
-                        <span>{{auditInfo.function_template[0]}}</span>
+                    <div class="templates-details" *ngIf="auditInfo?.function_template[0] || auditInfo?.template[0]">
+                        <span>{{auditInfo?.function_template[0]}}</span>
                         <span class="vertical-bar"
-                            *ngIf="auditInfo.function_template[0] && auditInfo.template[0]">|</span>
-                        <span>{{auditInfo.template[0]}}
+                            *ngIf="auditInfo?.function_template[0] && auditInfo?.template[0]">|</span>
+                        <span>{{auditInfo?.template[0]}}
                         </span>
                     </div>
-                    <div class="location-details" *ngIf="auditInfo.city || auditInfo.country">
-                        <span>{{auditInfo.city}}</span>
-                        <span class="vertical-bar" *ngIf="auditInfo.city && auditInfo.country">|</span>
-                        <span>{{auditInfo.country}}</span>
+                    <div class="location-details" *ngIf="auditInfo?.city || auditInfo?.country">
+                        <span>{{auditInfo?.city}}</span>
+                        <span class="vertical-bar" *ngIf="auditInfo?.city && auditInfo?.country">|</span>
+                        <span>{{auditInfo?.country}}</span>
                     </div>
                 </div>
             </div>
             <div class="right-section">
                 <div class="duration-details">
                     <div class="date-details">
-                        <span>{{auditInfo.start_date | date:'dd/MM/yyyy':'UTC'}}</span>
+                        <span>{{auditInfo?.start_date | date:'dd/MM/yyyy':'UTC'}}</span>
                         <span class="hyphen">-</span>
-                        <span>{{auditInfo.end_date | date:'dd/MM/yyyy':'UTC'}}
+                        <span>{{auditInfo?.end_date | date:'dd/MM/yyyy':'UTC'}}
                         </span>
                     </div>
                     <div class="time-details">
-                        <span class="start-time">{{auditInfo.start_date | date:'hh:mm a':'UTC'}}</span>
-                        <span class="end-time">{{auditInfo.end_date | date:'hh:mm a':'UTC'}}
+                        <span class="start-time">{{auditInfo?.start_date | date:'hh:mm a':'UTC'}}</span>
+                        <span class="end-time">{{auditInfo?.end_date | date:'hh:mm a':'UTC'}}
                         </span>
                     </div>
                 </div>
 
-                <div class="lead-auditor-label"><span>Lead Auditor : {{auditInfo.auditors[0].name}}</span></div>
-                <div class="auditee-label"><span>Auditee : {{auditInfo.auditees[0].name}}</span></div>
+                <div class="auditor-label"><span>Auditor : </span><span
+                        class="auditors-value" [matTooltip]="showAllOptionsByName(auditInfo?.auditors)">{{showAllOptionsByName(auditInfo?.auditors)}}</span></div>
+                <div class="auditee-label"><span>Auditee : </span><span
+                        class="auditees-value" [matTooltip]="showAllOptionsByName(auditInfo?.auditees)">{{showAllOptionsByName(auditInfo?.auditees)}}</span></div>
                 <!-- <div class="auditor-details">
                     <span>{{auditorInfo.auditorName}}</span>
                     <span class="vertical-bar">|</span>
@@ -61,7 +63,7 @@
         </div>
         <div class="audit-scope">
             <div class="audit-scope-label"><span>Audit scope</span></div>
-            <div class="audit-scope-info"><span>{{auditInfo.audit_scope}}</span></div>
+            <div class="audit-scope-info"><span>{{auditInfo?.audit_scope}}</span></div>
         </div>
         <div class="progress-percentage">
             <div class="progress-bar">
