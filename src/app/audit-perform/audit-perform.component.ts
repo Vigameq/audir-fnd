@@ -11,6 +11,7 @@ import { AudirService } from 'src/services/audir-services.service';
 export class AuditPerformComponent {
   @ViewChild('auditeesDropdown', { static: false }) auditeesDropdown!: ElementRef;
   searchQuery: string = '';
+  updateAuditee='Update Auditee';
   auditees: any;
   subAuditAuditees: any;
   @ViewChildren('detailsContent') detailsContentElements!: QueryList<ElementRef>;
