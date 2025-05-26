@@ -279,13 +279,15 @@ export class AuditPlanComponent {
 
   openEditPlanDialog(planDetails: any): void {
     const dialogRef = this.dialog.open(EditPlanDialogComponent, {
+      autoFocus: false,
       disableClose: true,
       width: '654px',
       height: '472px',
       data: {
         'planDetails': planDetails,
         'auditees': this.auditees,
-        'auditors': this.auditors
+        'auditors': this.auditors,
+        'parent_audits': this.parent_audits
       }
     });
 

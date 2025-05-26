@@ -357,8 +357,20 @@
                 cursor: pointer;
             }
 
-            .svg-icon{
+            .svg-icon {
                 cursor: pointer;
+
+                svg:hover {
+                    path {
+                        fill: #FFEA00;
+                    }
+                }
+            }
+
+            .disabled {
+                pointer-events: none;
+                opacity: 0.5;
+                cursor: not-allowed;
             }
         }
     }

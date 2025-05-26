@@ -91,4 +91,20 @@ export class SpecificFunctionAuditInfoComponent {
     }
     return
   }
+
+  onsubmit() {
+    const payload = {
+      audit_id: this.auditId.audit_id,
+      email: localStorage.getItem('user')?.toString() || ''
+    }
+    this.audirService.submitAudit(payload).subscribe((audit: any) => {
+      if (audit) {
+        this.audirService.showSuccess('Audit submitted successfully');
+        console.log('Audit submitted successfully');
+      }
+    }, (error: any) => {
+      this.audirService.showError('Audit submission failed');
+      console.error('Error for audit submission:', error);
+    });
+  }
 }

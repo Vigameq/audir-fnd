@@ -7,20 +7,6 @@
                 &#10006;
             </button>
         </div>
-        <!-- <div class="dropdown-section">
-            <div class="standard-dropdown-section" (click)="onStandardDropdownClick()" #standardDropdown>
-                <select class="standard-dropdown-select" (change)="onStandardOptionChange($event)"
-                    [(ngModel)]="standardSelectedOption">
-                    <option value="" disabled selected>Select Standards</option>
-                    <option *ngFor="let standardOption of standardDropdownOptions" [value]="standardOption">
-                        {{ standardOption }}
-                    </option>
-                </select>
-                <div class="dropdown-arrow">
-                    <app-dropdown-arrow-icons [isOpen]="isStandardDropdownOpen"></app-dropdown-arrow-icons>
-                </div>
-            </div>
-        </div> -->
         <div class="date-filter-and-reset">
             <div class="from-date">
                 <mat-form-field appearance="fill" class="custom-date-picker">
@@ -183,7 +169,7 @@
                                     [isOpen]="isAuditeesDropdownOpened[j]"></app-dropdown-arrow-icons>
                             </div>
                         </div>
-                        <div class="svg-icon">
+                        <div class="svg-icon" [class.disabled]="isSvgDisabled">
                             <svg width="20px" height="20px" viewBox="0 0 24 24"
                                 id="meteor-icon-kit__regular-check-circle" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" (click)="updatePlanWithNewAssignee(sub_audit,j)">
@@ -205,6 +191,6 @@
         </div>
     </div>
     <div class="no-audit-data" *ngIf="auditList?.length === 0">
-        <span>No audit information is available in the selected date range</span>
+        <span>No audits are available in the selected date range</span>
     </div>
 </div>

@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, ElementRef, HostListener, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -6,7 +7,8 @@ import { AudirService } from 'src/services/audir-services.service';
 @Component({
   selector: 'app-edit-plan-dialog',
   templateUrl: './edit-plan-dialog.component.html',
-  styleUrls: ['./edit-plan-dialog.component.scss']
+  styleUrls: ['./edit-plan-dialog.component.scss'],
+  providers: [DatePipe],
 })
 export class EditPlanDialogComponent {
   @ViewChild('auditorsDropdown', { static: false }) auditorsDropdown!: ElementRef;
@@ -29,7 +31,11 @@ export class EditPlanDialogComponent {
   });
   auditees: any[] = [];
   auditors: any[] = [];
-  constructor(private audirService: AudirService, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<EditPlanDialogComponent>) { }
+  parent_audits_details!: any;
+  minDateTime!: any;
+  maxDateTime!: any;
+
+  constructor(private datePipe: DatePipe, private audirService: AudirService, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<EditPlanDialogComponent>) { }
 
   ngOnInit(): void {
     this.editPlanForm = this.fb.group({
@@ -39,10 +45,13 @@ export class EditPlanDialogComponent {
     this.planDetails = this.data.planDetails;
     this.auditees = this.data.auditees;
     this.auditors = this.data.auditors;
-    this.setPlanFormValues();
+    this.setPlanValues();
   }
 
-  setPlanFormValues() {
+  setPlanValues() {
+    this.parent_audits_details = this.getParentAuditDetails(this.data.parent_audits, this.planDetails.link_audit);
+    this.maxDateTime = this.datePipe.transform(this.parent_audits_details.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
+    this.minDateTime = this.datePipe.transform(this.parent_audits_details.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
     this.editPlanForm.setValue({
       startDateTimeValue: (new Date(this.planDetails.start_date)).toISOString().slice(0, 16),
       endDateTimeValue: (new Date(this.planDetails.end_date)).toISOString().slice(0, 16)
@@ -55,6 +64,10 @@ export class EditPlanDialogComponent {
     this.selectedAuditeesOptions = this.selectedAuditees.length > 0 ? this.selectedAuditees.join(', ') : 'Select Auditee..';
     this.selectedAuditorsEmail = this.selectedOptionEmails(this.planDetails.auditors);
     this.selectedAuditeesEmail = this.selectedOptionEmails(this.planDetails.auditees);
+  }
+
+  getParentAuditDetails(parent_audits: any, link_audit: any) {
+    return parent_audits.find((parent_audit: any) => parent_audit.title === link_audit);
   }
 
   selectedOptionNames(options: any) {

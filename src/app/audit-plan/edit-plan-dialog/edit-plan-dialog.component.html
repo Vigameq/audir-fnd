@@ -15,7 +15,8 @@
                             <div class="left-section">
                                 <div class="start-date-time">
                                     <input type="datetime-local" id="start-date-time" class="form-control"
-                                        formControlName="startDateTimeValue" name="startDateTime" required />
+                                        formControlName="startDateTimeValue" name="startDateTime" required
+                                        [min]="minDateTime" [max]="maxDateTime" />
                                 </div>
                                 <!-- <div class="audit-type">
                                     <input id="audit-type" class="audit-type-input" formControlName="auditTypeValue" placeholder="Audit Type"
@@ -53,7 +54,7 @@
                                 <div class="end-date-time">
                                     <input type="datetime-local" id="end-date-time" class="form-control"
                                         placeholder="End Date" formControlName="endDateTimeValue" name="endDateTime"
-                                        required />
+                                        [min]="minDateTime" [max]="maxDateTime" required />
                                 </div>
                                 <!-- <div class="sub-audit-type">
                                     <input id="sub-audit-type" class="sub-audit-type-input" placeholder="Sub-Audit Type"

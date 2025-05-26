@@ -101,6 +101,9 @@ export class AudirService {
     return this.http.post<any>('/audire/api/getAuditQuestions', payload);
   }
 
+  submitAudit(payload: any) {
+    return this.http.post<any>('/audire/api/submitAudit', payload);
+  }
 
   getData(): any {
     return this.http.get('/assets/json/data.json');

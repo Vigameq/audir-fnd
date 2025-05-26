@@ -15,7 +15,8 @@ export class AuditPerformComponent {
   subAuditAuditees: any;
   @ViewChildren('detailsContent') detailsContentElements!: QueryList<ElementRef>;
   @ViewChild('auditeeDropdown') auditeeDropdown: ElementRef | undefined;
-  auditList: any;
+  auditList!: any;
+  CompleteAuditList!: any;
   auditeeSelectedValue: any;
   fromDate: any;
   toDate: any;
@@ -26,6 +27,7 @@ export class AuditPerformComponent {
   isAuditeesDropdownOpened!: boolean[];
   selectedAuditees: any = [];
   selectedAuditeesEmail: any;
+  isSvgDisabled = true;
 
   constructor(private renderer: Renderer2, private cdr: ChangeDetectorRef, private audirService: AudirService, private datePipe: DatePipe) {
     this.resetDateFilter();
@@ -48,7 +50,8 @@ export class AuditPerformComponent {
 
     this.audirService.getAuditLists(payload).subscribe((response: any) => {
       if (response) {
-        this.auditList = response.audit_data;
+        this.CompleteAuditList = response.audit_data;
+        this.auditList = this.CompleteAuditList;
       }
     }, (error: any) => {
       console.error('Error for getting audits:', error);
@@ -63,7 +66,7 @@ export class AuditPerformComponent {
   openSubAudits(index: any) {
     this.auditList[index].isSubAuditsOpened = !this.auditList[index].isSubAuditsOpened;
     if (this.auditList[index].isSubAuditsOpened) {
-      this.subAuditAuditees = Array.from(this.auditList[index].sub_audits, (_) => ({
+      this.subAuditAuditees = Array.from({ length: this.auditList[index].sub_audits.length }, (_) => ({
         auditees: this.auditees
       }));
       this.auditList[index].sub_audits = this.auditList[index].sub_audits.map((obj: any) => {
@@ -83,7 +86,8 @@ export class AuditPerformComponent {
       this.isAuditeesOptionsOpen = Array.from({ length: this.auditList[auditIndex].sub_audits.length }, () => false);
       this.isAuditeesDropdownOpened = Array.from({ length: this.auditList[auditIndex].sub_audits.length }, () => false);
       this.auditList[auditIndex].sub_audits.forEach((subAudit: any, subAuditIndex: number) => {
-        this.subAuditAuditees[subAuditIndex].auditees = this.selectedOptionValuesChecked(this.subAuditAuditees[subAuditIndex].auditees, subAudit.auditees);
+        this.subAuditAuditees[subAuditIndex].auditees = this.setCheckedOption(this.subAuditAuditees[subAuditIndex].auditees);
+        this.selectedOptionValuesChecked(subAudit.auditees, subAuditIndex);
         this.selectedAuditees[subAuditIndex] = this.selectedOptionNames(subAudit.auditees);
         this.selectedAuditeesOptions[subAuditIndex] = this.selectedAuditees[subAuditIndex].length > 0 ? this.selectedAuditees[subAuditIndex].join(', ') : 'Select Auditee..';
         this.selectedAuditeesEmail[subAuditIndex] = this.selectedOptionEmails(subAudit.auditees);
@@ -99,14 +103,15 @@ export class AuditPerformComponent {
     }
   }
 
-  selectedOptionValuesChecked(allValues: any, selectedValues: any) {
-    this.setCheckedOption(allValues)
-    allValues.forEach((user: any) => {
-      if (selectedValues.some((selectedUser: any) => selectedUser.email === user.email)) {
-        user.checked = true;
+  selectedOptionValuesChecked(selectedValues: any, subAuditIndex: any) {
+    this.subAuditAuditees[subAuditIndex].auditees.forEach((user: any, index: any) => {
+      if (selectedValues.find((selectedUser: any) => selectedUser.email === user.email)) {
+        this.subAuditAuditees[subAuditIndex].auditees[index] = {
+          ...this.subAuditAuditees[subAuditIndex].auditees[index],
+          checked: true
+        };
       }
     });
-    return allValues;
   }
 
   selectedOptionEmails(options: any) {
@@ -143,11 +148,18 @@ export class AuditPerformComponent {
   }
 
   onSearch() {
-    console.log('Search query:', this.searchQuery);
+    if (this.searchQuery !== '') {
+      this.auditList = this.CompleteAuditList.filter((audit: any) =>
+        audit.audit_title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    } else {
+      this.auditList = this.CompleteAuditList;
+    }
   }
 
   clearSearch() {
     this.searchQuery = '';
+    this.auditList = this.CompleteAuditList;
   }
 
   updatePlanWithNewAssignee(sub_audit: any, index: number) {
@@ -163,6 +175,7 @@ export class AuditPerformComponent {
     };
     this.audirService.updateAuditPlan(updatedAuditPlan).subscribe((response: any) => {
       if (response) {
+        this.isSvgDisabled = true;
         this.audirService.showSuccess(response.message);
       } else {
         this.audirService.showError('Failed to update audit plan');
@@ -228,17 +241,24 @@ export class AuditPerformComponent {
 
   onAuditeeSelectionChange(event: Event, subAuditIndex: any, auditeesIndex: any, auditee: any) {
     const checkbox = event.target as HTMLInputElement;
+    this.isSvgDisabled = false;
     if (!this.selectedAuditees[subAuditIndex].includes(checkbox.value)) {
       if (checkbox.checked) {
         this.selectedAuditees[subAuditIndex].push(checkbox.value);
         this.selectedAuditeesEmail[subAuditIndex].push(auditee.email);
-        this.subAuditAuditees[subAuditIndex].auditees[auditeesIndex].checked = true;
+        this.subAuditAuditees[subAuditIndex].auditees[auditeesIndex] = {
+          ...this.subAuditAuditees[subAuditIndex].auditees[auditeesIndex],
+          checked: true
+        };
       }
     }
     else {
       this.selectedAuditees[subAuditIndex] = this.selectedAuditees[subAuditIndex].filter((option: any) => option !== checkbox.value);
       this.selectedAuditeesEmail[subAuditIndex] = this.selectedAuditeesEmail[subAuditIndex].filter((option: any) => option !== auditee.email);
-      this.subAuditAuditees[subAuditIndex].auditees[auditeesIndex].checked = false;
+      this.subAuditAuditees[subAuditIndex].auditees[auditeesIndex] = {
+        ...this.subAuditAuditees[subAuditIndex].auditees[auditeesIndex],
+        checked: false
+      };
     }
     this.selectedAuditeesOptions[subAuditIndex] = this.selectedAuditees[subAuditIndex].length > 0 ? this.selectedAuditees[subAuditIndex].join(', ') : 'Select Auditee..';
   }
