@@ -28,7 +28,7 @@
                                     [ngStyle]="{'height.px': auditResponseHistory[i].lineHeight}"> </div>
                             </div>
                             <div class="status-details" #statusContent>
-                                <div class="audit-label"><span>{{elementStatus.type}}</span></div>
+                                <div class="audit-label"><span>{{elementStatus.type | pascalCase}}</span></div>
                                 <div class="auditor-and-type">
                                     <span class="auditor">{{elementStatus.updated_by}}</span>
                                     <!-- <span class="type" *ngIf="elementStatus.type === 'Auditee Response'"> |

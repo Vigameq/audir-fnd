@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { AudirService } from 'src/services/audir-services.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { AudirService } from 'src/services/audir-services.service';
 export class AuditPerformComponent {
   @ViewChild('auditeesDropdown', { static: false }) auditeesDropdown!: ElementRef;
   searchQuery: string = '';
-  updateAuditee='Update Auditee';
+  updateAuditee = 'Update Auditee';
   auditees: any;
   subAuditAuditees: any;
   @ViewChildren('detailsContent') detailsContentElements!: QueryList<ElementRef>;
@@ -64,12 +65,30 @@ export class AuditPerformComponent {
     });
   }
 
-  openSubAudits(index: any) {
+  openSubAudits(subAudits: any, index: any) {
     this.auditList[index].isSubAuditsOpened = !this.auditList[index].isSubAuditsOpened;
     if (this.auditList[index].isSubAuditsOpened) {
       this.subAuditAuditees = Array.from({ length: this.auditList[index].sub_audits.length }, (_) => ({
         auditees: this.auditees
       }));
+      const auditIds = subAudits.map((item: { audit_id: any; }) => ({ audit_id: item.audit_id }));
+      const requests = auditIds.map((id: any) =>
+        this.audirService.getAuditCompletionPercentage(id)
+      );
+      forkJoin(requests).subscribe({
+        next: (responses: any) => {
+          this.auditList[index].sub_audits.forEach((audit: any) => {
+            responses.forEach((res: any) => {
+              if (audit.audit_id === res.audit_id) {
+                audit["completion_percent"] = res.completion_percent;
+              }
+            })
+          })
+        },
+        error: (err) => {
+          console.error('Error fetching audit data', err);
+        }
+      });
       this.auditList[index].sub_audits = this.auditList[index].sub_audits.map((obj: any) => {
         obj.lineHeight = 0;
         return obj;

@@ -10,14 +10,15 @@ import { AudirService } from 'src/services/audir-services.service';
 export class AuditFunctionalQuestionProgressDialogComponent {
   @ViewChildren('statusContent') statusContentElements!: QueryList<ElementRef>;
   auditResponseHistory: any[] = [];
+  //colors : string[] = ["#dd0000", "#5500dd", "#00b4dd", "#00dd63", "#ddd600", "#dd9900", "#00bedd", "#dd00d6", "#00ddb4", "#9200dd"]
 
   constructor(private cdr: ChangeDetectorRef, public dialogRef: MatDialogRef<AuditFunctionalQuestionProgressDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private audirService: AudirService) { }
 
   ngOnInit(): void {
     this.auditResponseHistory = this.data.auditResponseHistory;
-    this.auditResponseHistory.forEach(auditStatusElement => {
-      auditStatusElement.color = this.getRandomColorForDots();
+    this.auditResponseHistory.forEach((auditStatusElement,i) => {
+      auditStatusElement.color = this.getRandomColorForDots();//this.colors[i];
     });
   }
 

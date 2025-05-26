@@ -67,8 +67,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="audit-progress-details">
-                    <div class="audit-progress-label">
+                <!-- <div class="audit-progress-details">
+                     <div class="audit-progress-label">
                         <span>Audit Progress</span>
                     </div>
                     <div class="progress-percentage">
@@ -79,11 +79,11 @@
                         <div class="percentage"><span>{{auditPerformItem.percentage}}%</span></div>
                     </div>
                     <div class="auditor-details">
-                        <span>{{auditPerformItem.lead_auditor}}</span>
-                        <!-- <span class="vertical-bar">|</span>
-                        <span>{{auditPerformItem.auditCompany}}</span> -->
+                        <span>{{auditPerformItem.auditors[0]?.name}}</span>
+                        <span class="vertical-bar">|</span>
+                        <span>{{auditPerformItem.auditCompany}}</span>
                     </div>
-                </div>
+                </div> -->
                 <!-- <div class="delete-icon">
                     <svg width="22px" height="22px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <g>
@@ -93,7 +93,7 @@
                         </g>
                     </svg>
                 </div> -->
-                <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0" (click)="openSubAudits(i)">
+                <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0" (click)="openSubAudits(auditPerformItem.sub_audits,i)">
                     <span>{{auditPerformItem.sub_audits.length}}</span>
                 </div>
             </div>
@@ -139,11 +139,11 @@
                             </div>
                             <div class="progress-percentage">
                                 <div class="progress-bar">
-                                    <div class="progress-percentage"
-                                        [ngStyle]="{ 'width': auditPerformItem.percentage + '%' }">
+                                    <div class="progress-percent"
+                                        [ngStyle]="{ 'width': sub_audit.completion_percent + '%' }">
                                     </div>
                                 </div>
-                                <div class="percentage"><span>{{sub_audit.percentage}}%</span></div>
+                                <div class="percentage"><span>{{sub_audit.completion_percent}}%</span></div>
                             </div>
                             <div class="auditor-details" [matTooltip]="showAuditors(sub_audit.auditors)">
                                 <span>{{showAuditors(sub_audit.auditors)}}</span>
