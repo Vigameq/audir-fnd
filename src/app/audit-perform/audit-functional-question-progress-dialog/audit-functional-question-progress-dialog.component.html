@@ -30,7 +30,7 @@
                             <div class="status-details" #statusContent>
                                 <div class="audit-label"><span>{{elementStatus.type | pascalCase}}</span></div>
                                 <div class="auditor-and-type">
-                                    <span class="auditor">{{elementStatus.updated_by}}</span>
+                                    <span class="auditor">{{elementStatus.updated_by.name}}</span>
                                     <!-- <span class="type" *ngIf="elementStatus.type === 'Auditee Response'"> |
                                         {{elementStatus.type}}</span> -->
                                 </div>
