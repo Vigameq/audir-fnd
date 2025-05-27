@@ -18,7 +18,13 @@ export class AuditFunctionalQuestionProgressDialogComponent {
   ngOnInit(): void {
     this.auditResponseHistory = this.data.auditResponseHistory;
     this.auditResponseHistory.forEach((auditStatusElement,i) => {
-      auditStatusElement.color = this.getRandomColorForDots();//this.colors[i];
+      if(auditStatusElement.type === "auditee_response"){
+          auditStatusElement.color = "#3a93df"
+      }else if(auditStatusElement.type === "audit_findings"){
+          auditStatusElement.color = "#ff852e"
+      }else{
+          auditStatusElement.color = "#a6bf1e"
+      }      
     });
   }
 

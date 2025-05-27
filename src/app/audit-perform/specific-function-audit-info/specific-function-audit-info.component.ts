@@ -68,7 +68,7 @@ export class SpecificFunctionAuditInfoComponent {
   questionInfo(index: number) {
     const dialogRef = this.dialog.open(CustomiseAuditQuestionDialogComponent, {
       disableClose: true,
-      width: 'auto',
+      width: '1300px',
       position: { right: '0', top: '0' },
       panelClass: 'customize-question-dialog-container',
       data: {

@@ -13,9 +13,9 @@
             <div class="question-details">
                 <span class="id">{{data.auditQuestionData.audit_id}}</span>
                 <span class="vertical-bar">|</span>
-                <span class="child-audit-title">{{data.auditInfo.audit_title}}</span>
+                <span class="child-audit-title">{{data.auditInfo.link_audit}}</span>
                 <span class="vertical-bar">|</span>
-                <span class="parent-audit-title">{{data.auditInfo.link_audit}}</span>
+                <span class="parent-audit-title">{{data.auditInfo.audit_title}}</span>
             </div>
             <div class="question-status">
                 <div class="progress-container">
@@ -34,9 +34,17 @@
                                     <!-- <span class="type" *ngIf="elementStatus.type === 'Auditee Response'"> |
                                         {{elementStatus.type}}</span> -->
                                 </div>
-                                <div class="audit-description"><span>{{elementStatus.content}}</span></div>
-                                <div class="view-img-btn" *ngIf="elementStatus.type === 'auditee_response'">
-                                    <button (click)="downloadEvidence(elementStatus)"><span>View image</span></button>
+                                <div style="margin: 10px 0;">
+                                    <div class="audit-description"><span>{{elementStatus.content}}</span></div>
+                                    <div class="audit-description" *ngIf="elementStatus.type === 'auditee_response'"><span>{{elementStatus.link}}</span>
+                                    </div>
+                                    <div class="view-img-btn" *ngIf="elementStatus.type === 'auditee_response'">
+                                        <button (click)="downloadEvidence(elementStatus)"><span>View file</span></button>
+                                    </div>
+                                    <div class="audit-description" *ngIf="elementStatus.type === 'audit_findings'">
+                                        <span>{{elementStatus.category}}</span></div>
+                                    <div class="audit-description" *ngIf="elementStatus.type === 'audit_findings'">
+                                        <span>{{elementStatus.closure_reference}}</span></div>
                                 </div>
                             </div>
                         </div>

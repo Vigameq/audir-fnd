@@ -1,7 +1,7 @@
 <div class="audit-perfom">
     <div class="search-date-filter-section">
         <div class="audit-perform-search-bar">
-            <input type="text" [(ngModel)]="searchQuery" placeholder="Search by code" (input)="onSearch()"
+            <input type="text" [(ngModel)]="searchQuery" placeholder="Search" (input)="onSearch()"
                 class="audit-perform-search-input" />
             <button *ngIf="searchQuery" (click)="clearSearch()" class="clear-btn">
                 &#10006;
@@ -150,7 +150,7 @@
                             </div>
                         </div>
                         <div class="auditees">
-                            <label for="auditeeDropdown" class="auditee-label">Auditee</label>
+                            <label for="auditeeDropdown" class="auditee-label">Auditees</label>
                             <div class="dropbtn" [matTooltip]="selectedAuditeesOptions[j]"
                                 (click)="auditeesToggleDropdown($event,j)">
                                 <span>{{selectedAuditeesOptions[j]}}</span>
@@ -191,6 +191,6 @@
         </div>
     </div>
     <div class="no-audit-data" *ngIf="auditList?.length === 0">
-        <span>No audits are available in the selected date range</span>
+        <span>No audits are available.</span>
     </div>
 </div>
