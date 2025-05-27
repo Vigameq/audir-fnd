@@ -1,0 +1,102 @@
+<div class="edit-Plan-dialog">
+    <mat-dialog-content class="mat-dialog-content">
+        <div class="content">
+            <div class="edit-header">
+                <span>Edit Audit</span>
+                <img src="../assets/images/Vector.png" alt="Edit" id="edit-icon" />
+            </div>
+            <div class="plan-id">
+                <span>{{planDetails.audit_title}}</span>
+            </div>
+            <div class="form-container">
+                <form [formGroup]="editPlanForm" (ngSubmit)="onSaveChanges()">
+                    <div class="edit-section">
+                        <div class="edit-fields">
+                            <div class="left-section">
+                                <div class="start-date-time">
+                                    <input type="datetime-local" id="start-date-time" class="form-control"
+                                        formControlName="startDateTimeValue" name="startDateTime" required
+                                        [min]="minDateTime" [max]="maxDateTime" />
+                                </div>
+                                <!-- <div class="audit-type">
+                                    <input id="audit-type" class="audit-type-input" formControlName="auditTypeValue" placeholder="Audit Type"
+                                        name="auditType" />
+                                </div> -->
+                                <div class="auditees">
+                                    <div class="dropbtn" [matTooltip]="selectedAuditeesOptions"
+                                        (click)="auditeesToggleDropdown($event)">
+                                        <span>{{selectedAuditeesOptions}}</span>
+                                    </div>
+                                    <div *ngIf="isAuditeesOptionsOpen" class="dropdown-content" #auditeesDropdown>
+                                        <label *ngFor="let auditee of auditees; let i = index"
+                                            (click)="onCheckboxClick($event)">
+                                            <input type="checkbox" [value]="auditee.Name" class="checkbox-input"
+                                                (change)="onAuditeeSelectionChange($event,i,auditee)"
+                                                [checked]="auditees[i].checked" />
+                                            <span class="auditee-value">{{ auditee.Name }}</span>
+                                        </label>
+                                    </div>
+                                    <div class="dropdown-arrow">
+                                        <app-dropdown-arrow-icons
+                                            [isOpen]="isAuditeesOptionsOpen"></app-dropdown-arrow-icons>
+                                    </div>
+                                </div>
+                                <!-- <div class="city">
+                                    <select id="city-name" class="dropdown-select" formControlName="cityNameValue"
+                                        name="cityName" required>
+                                        <option value="" disabled selected>City</option>
+                                        <option *ngFor="let cityOption of cities" [value]="cityOption">
+                                            {{ cityOption}}</option>
+                                    </select>
+                                </div> -->
+                            </div>
+                            <div class="right-section">
+                                <div class="end-date-time">
+                                    <input type="datetime-local" id="end-date-time" class="form-control"
+                                        placeholder="End Date" formControlName="endDateTimeValue" name="endDateTime"
+                                        [min]="minDateTime" [max]="maxDateTime" required />
+                                </div>
+                                <!-- <div class="sub-audit-type">
+                                    <input id="sub-audit-type" class="sub-audit-type-input" placeholder="Sub-Audit Type"
+                                        formControlName="subAuditTypeValue" name="subAuditType" />
+                                </div> -->
+                                <div class="auditors">
+                                    <div class="dropbtn" [matTooltip]="selectedAuditorOptions"
+                                        (click)="auditorToggleDropdown($event)">
+                                        <span>{{selectedAuditorOptions}}</span>
+                                    </div>
+                                    <div *ngIf="isAuditorOptionsOpen" class="dropdown-content" #auditorsDropdown>
+                                        <label *ngFor="let auditor of auditors; let i = index"
+                                            (click)="onCheckboxClick($event)">
+                                            <input type="checkbox" [value]="auditor.Name" class="checkbox-input"
+                                                (change)="onAuditorSelectionChange($event,i,auditor)"
+                                                [checked]="auditors[i].checked" />
+                                            <span class="auditor-value">{{ auditor.Name }}</span>
+                                        </label>
+                                    </div>
+                                    <div class="dropdown-arrow">
+                                        <app-dropdown-arrow-icons
+                                            [isOpen]="isAuditorOptionsOpen"></app-dropdown-arrow-icons>
+                                    </div>
+                                </div>
+                                <!-- <div class="country">
+                                    <select id="country-name" class="dropdown-select" formControlName="countryNameValue"
+                                        name="countryName" required>
+                                        <option value="" disabled selected>Country</option>
+                                        <option *ngFor="let countryOption of countries" [value]="countryOption">
+                                            {{ countryOption }}
+                                        </option>
+                                    </select>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="action-butons">
+                            <button mat-dialog-close class="cancel" (click)="onClose()"><span>Cancel</span></button>
+                            <button class="save-changes" (click)="onSuccess()"><span>Save Changes</span></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </mat-dialog-content>
+</div>

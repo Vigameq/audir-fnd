@@ -1,0 +1,17 @@
+<div class="container-data" *ngIf="isAuthenticated() else loginMessage">
+  <div class="navigation-sidebar">
+    <app-sidebar (headerName)="getHeaderName($event)"></app-sidebar>
+  </div>
+  <div class="main-content">
+    <div class="header-content">
+      <app-header [displayHeaderName]="receivedHeaderName"></app-header>
+    </div>
+    <div class="data-content-section">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
+<ng-template #loginMessage>
+  <app-login></app-login>
+</ng-template>

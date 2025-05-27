@@ -1,0 +1,206 @@
+.edit-Plan-dialog {
+    padding: 20px 20px 40px;
+    min-height: 472px;
+    z-index: 1000;
+
+    .mat-dialog-content {
+        padding: 0px;
+        font-family: 'Apple SD Gothic Neo', sans-serif;
+        min-height: 412px;
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+
+            .edit-header {
+                font-size: 22px;
+                font-weight: 500;
+                color: #4E4E4E;
+                line-height: 100%;
+                padding: 30px 20px 0px;
+
+                span {
+                    padding: 10px 15px 0 0;
+                }
+
+                img {
+                    margin-bottom: 6px;
+                }
+            }
+
+            .plan-id {
+                font-size: 28px;
+                font-weight: 700;
+                line-height: 100%;
+                padding: 10px 20px;
+                height: 72px;
+                color: #575757;
+            }
+
+            .edit-section {
+                background-color: #FAFAFA;
+                border-radius: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                padding: 30px 30px 10px;
+
+                .edit-fields {
+                    flex: 8;
+                    display: flex;
+                    flex-direction: row;
+                    gap: 30px;
+
+                    .left-section,
+                    .right-section {
+                        display: flex;
+                        flex-direction: column;
+                        flex: 1;
+                        gap: 20px;
+
+                        .end-date-time,
+                        .start-date-time {
+
+                            input,
+                            select {
+                                min-width: 262px;
+                                min-height: 46px;
+                                border-radius: 20px;
+                                border: none;
+                                outline: none;
+                                padding: 6px 12px;
+                                appearance: none;
+                            }
+
+                            input:hover,
+                            select:hover {
+                                border: 1px solid #FDE714;
+                            }
+
+                            input::placeholder {
+                                color: #1D2431;
+                            }
+                        }
+
+                        .auditors,
+                        .auditees {
+                            position: relative;
+                            flex: 1;
+
+                            .dropbtn {
+                                background-color: #ffffff;
+                                color: #000000;
+                                padding: 6px 30px 6px 12px;
+                                cursor: pointer;
+                                border-radius: 20px;
+                                margin: 0 0 10px;
+                                display: flex;
+                                align-items: center;
+                                min-height: 46px;
+                                min-width: 262px;
+                                border: none;
+                                outline: none;
+                                appearance: none;
+
+                                span {
+                                    overflow: hidden;
+                                    white-space: nowrap;
+                                    text-overflow: ellipsis;
+                                    max-width: 194px;
+                                }
+                            }
+
+                            .dropbtn:hover {
+                                border: 1px solid #FDE714;
+                            }
+
+                            .auditeeDropdown,
+                            .auditorDropdown {
+                                margin-bottom: 10px;
+                            }
+
+                            .dropdown-content {
+                                display: grid;
+                                position: absolute;
+                                background-color: #ffffff;
+                                min-width: 160px;
+                                /* box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); */
+                                padding: 10px;
+                                z-index: 1100;
+                                border-radius: 20px;
+                                border: 1px solid #dbdbdb;
+                                width: 100%;
+                                top: 48px;
+                                max-height: 104px;
+                                overflow-y: auto;
+
+                                .auditor-value,
+                                .auditee-value {
+                                    margin-left: 15px !important;
+                                }
+                            }
+
+                            .dropdown-arrow {
+                                position: absolute;
+                                top: 40%;
+                                transform: translateY(-50%);
+                                pointer-events: none;
+                                right: 18px;
+                            }
+                        }
+
+                    }
+                }
+
+                .action-butons {
+                    flex: 2;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    gap: 20px;
+
+                    .cancel,
+                    .save-changes {
+                        font-size: 16px;
+                        font-weight: 400;
+                        height: 46px;
+                        min-width: 148px;
+                        border-radius: 6px;
+                        border: 1px solid #1D2431;
+                    }
+
+                    .cancel {
+                        background-color: #FFFFFF;
+
+                        span {
+                            color: #1D2431;
+                        }
+                    }
+
+                    .save-changes {
+                        background-color: #1D2431;
+
+                        span {
+                            color: #FFFFFF;
+                        }
+                    }
+
+                    button:hover {
+                        border-color: #FDE714;
+                    }
+
+                    .save-changes:hover {
+                        background-color: #FDE714;
+
+                        span {
+                            color: #1D2431;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+}

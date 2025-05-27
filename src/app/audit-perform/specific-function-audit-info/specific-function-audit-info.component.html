@@ -1,0 +1,91 @@
+<div class="function-audit-info-container">
+    <div class="parent-navigation-icon">
+        <svg (click)="back()" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M20 40C8.95161 40 0 31.0484 0 20C0 8.95161 8.95161 0 20 0C31.0484 0 40 8.95161 40 20C40 31.0484 31.0484 40 20 40ZM29.3548 16.4516H20V10.7339C20 9.87097 18.9516 9.43548 18.3468 10.0484L9.12903 19.3145C8.75 19.6935 8.75 20.2984 9.12903 20.6774L18.3468 29.9435C18.9597 30.5564 20 30.121 20 29.2581V23.5484H29.3548C29.8871 23.5484 30.3226 23.1129 30.3226 22.5806V17.4194C30.3226 16.8871 29.8871 16.4516 29.3548 16.4516Z"
+                fill="black" />
+        </svg>
+    </div>
+    <div class="function-audit-info">
+        <!-- <div class="header-label"><span>Audit Perform</span></div> -->
+        <div class="audit-info-section">
+            <div class="left-section">
+                <div class="audit-info-label"><span>Audit Information</span></div>
+                <div class="audit-title"><span>{{auditInfo?.audit_title}}</span></div>
+                <div class="function-details">
+                    <div class="functions">
+                        <span>{{auditInfo?.functions}}</span>
+                    </div>
+                    <!-- <div class="functions">
+                        <span>{{auditInfo?.functions}}</span>
+                    </div> -->
+                </div>
+                <div class="templates-location-details">
+                    <div class="templates-details" *ngIf="auditInfo?.function_template[0] || auditInfo?.template[0]">
+                        <span>{{auditInfo?.function_template[0]}}</span>
+                        <span class="vertical-bar"
+                            *ngIf="auditInfo?.function_template[0] && auditInfo?.template[0]">|</span>
+                        <span>{{auditInfo?.template[0]}}
+                        </span>
+                    </div>
+                    <div class="location-details" *ngIf="auditInfo?.city || auditInfo?.country">
+                        <span>{{auditInfo?.city}}</span>
+                        <span class="vertical-bar" *ngIf="auditInfo?.city && auditInfo?.country">|</span>
+                        <span>{{auditInfo?.country}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="right-section">
+                <div class="duration-details">
+                    <div class="date-details">
+                        <span>{{auditInfo?.start_date | date:'dd/MM/yyyy':'UTC'}}</span>
+                        <span class="hyphen">-</span>
+                        <span>{{auditInfo?.end_date | date:'dd/MM/yyyy':'UTC'}}
+                        </span>
+                    </div>
+                    <div class="time-details">
+                        <span class="start-time">{{auditInfo?.start_date | date:'hh:mm a':'UTC'}}</span>
+                        <span class="end-time">{{auditInfo?.end_date | date:'hh:mm a':'UTC'}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="auditor-label"><span>Auditor : </span><span
+                        class="auditors-value" [matTooltip]="showAllOptionsByName(auditInfo?.auditors)">{{showAllOptionsByName(auditInfo?.auditors)}}</span></div>
+                <div class="auditee-label"><span>Auditee : </span><span
+                        class="auditees-value" [matTooltip]="showAllOptionsByName(auditInfo?.auditees)">{{showAllOptionsByName(auditInfo?.auditees)}}</span></div>
+                <!-- <div class="auditor-details">
+                    <span>{{auditorInfo.auditorName}}</span>
+                    <span class="vertical-bar">|</span>
+                    <span>{{auditorInfo.auditCompaey}}</span>
+                </div> -->
+            </div>
+        </div>
+        <div class="audit-scope">
+            <div class="audit-scope-label"><span>Audit scope</span></div>
+            <div class="audit-scope-info"><span>{{auditInfo?.audit_scope}}</span></div>
+        </div>
+        <div class="progress-percentage">
+            <div class="progress-bar">
+                <div class="progress-percentage" [ngStyle]="{ 'width': auditCompletionPercentage + '%' }">
+                </div>
+            </div>
+            <div class="percentage"><span>{{auditCompletionPercentage}}% complete</span></div>
+        </div>
+    </div>
+    <div class="functional-template-question-section">
+        <div *ngFor="let question of allFunctionalQuestions; let i = index" class="questions-section"
+            (click)="questionInfo(i)">
+            <div class="question-number-and-text">
+                <div class="question-number"><span>Question {{i+1}}</span></div>
+                <div class="question-text">
+                    <span>{{question}}</span>
+                </div>
+            </div>
+            <!-- <div class="status" (click)="customizeQuestion(i)"><span>{{question.status}}</span></div> -->
+        </div>
+    </div>
+    <div class="submit-btn">
+        <button class="submit" (click)="openSubmitConfirmationDialog()">Submit</button>
+    </div>
+</div>

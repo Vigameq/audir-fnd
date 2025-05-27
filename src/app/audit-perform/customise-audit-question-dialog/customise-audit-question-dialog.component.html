@@ -1,0 +1,124 @@
+<div class="customise-audit-question-container">
+    <mat-dialog-title class="title-section">
+        <div class="close-icon" mat-dialog-close>
+            <svg width="14" height="14" viewBox="0 0 19 21" fill="#515151" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M0.672734 20.77L7.18273 10.24L1.09273 0.189998H5.20273L9.79273 7.75H9.91273L14.1427 0.189998H17.8927L11.9227 10.21L18.2827 20.77H14.1727L9.34273 12.76H9.25274L4.39273 20.77H0.672734Z"
+                    fill="" />
+            </svg>
+        </div>
+    </mat-dialog-title>
+    <mat-dialog-content class="content-section">
+        <div class="content">
+            <div class="question-number-and-text">
+                <div class="question-number"><span>{{auditQuestionData.questionNumber}}</span></div>
+                <div class="question-text"><span>{{auditQuestionData.question}}</span></div>
+            </div>
+            <div class="audit-section">
+                <div class="res-hist-btn"><button [disabled]="questionData?.history.length == 0" (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
+                <div class="auditor-note" *ngIf="isAuditor">
+                    <div class="auditor-note-label"><span>Auditor Note</span></div>
+                    <div class="auditor-note-fields-section">
+                        <div class="audit-note-textarea"><textarea id="audit-note-textarea" rows="4" name="auditNote"
+                                [(ngModel)]="auditNoteValue" placeholder="" (input)="onAuditNoteChange()"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="auditee-response">
+                    <div class="auditee-response-label"><span>Auditee Response</span></div>
+                    <div class="auditee-response-fields-section">
+                        <div class="auditee-response-textarea"><textarea id="auditee-response-textarea" rows="4"
+                                name="auditeeResponse" [(ngModel)]="auditeeResponseValue" placeholder=""
+                                (input)="onAuditeeResponseChange()"></textarea></div>
+                        <div class="upload-evidence-and-link-section">
+                            <div class="upload-evidence">
+                                <div class="upload-evidence-label"><span>Attach Evidence</span><span *ngIf="(auditeeResponseValue !=='') || linkInput !== ''"
+                                        class="asterisk">*</span></div>
+                                <div class="upload-evidence-btn">
+                                    <label for="fileUpload" class="upload">
+                                        Upload
+                                        <input type="file" id="fileUpload" accept="application/pdf"
+                                            (change)="uploadEvidence($event)" hidden>
+                                    </label>
+                                    <p [matTooltip]="uploadEvidenceLabel">{{uploadEvidenceLabel}}</p>
+                                </div>
+                            </div>
+                            <div class="link">
+                                <div class="link-label"><span>Link</span></div>
+                                <div class="link-input"><input type="url" [(ngModel)]="linkInput" 
+                                        (input)="onLinkInputChange()" class="link-input" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngFor="let itemcount of totalFindings; let i = index">
+                    <div [id]="'audit-findings-' + i" class="audit-findings" *ngIf="isAuditor">
+                        <div class="audit-findings-label"><span>Audit Finding</span></div>
+                        <div class="audit-findings-fields-section">
+                            <div class="audit-findings-textarea">
+                                <textarea id="audit-findings-textarea" rows="4" name="auditFindings"
+                                    [(ngModel)]="auditFindingsValue[i]" placeholder=""
+                                    (input)="onAuditFindingsChange(i)"></textarea>
+                            </div>
+                            <div class="finding-category-and-clause-section">
+                                <div class="finding-category">
+                                    <div class="finding-category-label"><span>Finding Category</span></div>
+                                    <div class="dropdown-section">
+                                        <div class="finding-category-dropdown-section"
+                                            (click)="onFindingCategoryDropdownClick()" #findingsCategoryDropdown>
+                                            <select class="finding-category-dropdown-select"
+                                                (change)="onFindingsOptionChange($event,i)"
+                                                [(ngModel)]="findingCategorySelectedOption[i]">
+                                                <option value="" disabled selected>Select</option>
+                                                <option *ngFor="let findingCategory of findingCategoryOptions"
+                                                    [value]="findingCategory.name">
+                                                    {{ findingCategory.name }}
+                                                </option>
+                                            </select>
+                                            <div class="dropdown-arrow">
+                                                <app-dropdown-arrow-icons
+                                                    [isOpen]="isfindingCategoryDropdownOpen"></app-dropdown-arrow-icons>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clause">
+                                    <div class="clause-label"><span>Clause / Reference</span></div>
+                                    <div class="clause-input"> <input type="text" [(ngModel)]="clauseInput[i]"
+                                            placeholder="" (input)="onClauseInputChange(i)" class="clause-input" />
+                                    </div>
+                                </div>
+                                <div *ngIf="totalFindings.length!==1" class="delete-icon">
+                                    <svg width="22px" height="22px" viewBox="0 0 24 24" (click)="deleteFindings(i)"
+                                        [matTooltip]="deleteText" xmlns="http://www.w3.org/2000/svg">
+                                        <g>
+                                            <path fill="none" d="M0 0h24v24H0z" />
+                                            <path
+                                                d="M7 4V2h10v2h5v2h-2v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6H2V4h5zM6 6v14h12V6H6zm3 3h2v8H9V9zm4 0h2v8h-2V9z" />
+                                        </g>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions class="action-btns">
+        <div class="addAuditFinding" (click)="addFindings()" *ngIf="isAuditor">
+            <button [class.disabled]="checkFindingsLengthInRange()" [disabled]="checkFindingsLengthInRange()">
+                <svg width="24" height="24" viewBox="0 0 21 21" fill="" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M3.45895 8.21V5.186H0.578953V3.26H3.45895V0.289999H5.56495V3.26H8.42695V5.186H5.56495V8.21H3.45895Z"
+                        fill="" />
+                </svg><span>Add Audit Finding</span>
+            </button>
+        </div>
+        <div class="cancel-save-btns">
+            <button class="cancel" mat-dialog-close>Cancel</button>
+            <button class="save" [disabled]="isSaved || !checkResponseAvailability()" (click)="onSave()">Save</button>
+        </div>
+    </mat-dialog-actions>
+</div>

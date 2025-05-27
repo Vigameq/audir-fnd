@@ -1,0 +1,16 @@
+<div class="header">
+    <div class="header-name">
+        <span>{{displayHeaderName}}</span>
+    </div>
+    <div class="notification-profile">
+        <app-notifications></app-notifications>
+        <div class="dropdown-section"  (click)="onDropdownClick()" #dropdown>
+            <select class="profile-dropdown-select" (change)="onOptionChange($event)" [(ngModel)]="selectedOption">
+                <option *ngFor="let option of profileDropdownOptions" [value]="option">{{ option }}</option>
+            </select>
+            <div class="dropdown-arrow">
+                <app-dropdown-arrow-icons [isOpen]="isOpen"></app-dropdown-arrow-icons>
+            </div>
+        </div>
+    </div>
+</div>

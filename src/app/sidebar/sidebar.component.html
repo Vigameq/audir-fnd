@@ -1,0 +1,11 @@
+<div class="sidebar">
+  <img src="assets/images/auditLogo.png" alt="Logo" id="logo" />
+  <ul class="nav-list">
+    <li routerLinkActive="active" *ngFor="let item of navItems">
+      <a [routerLink]="item.path" (click)="sendDataToAppComponent(item.header)">
+        <img [src]="item.src" [alt]="item.label" class="icons" />
+        <span>{{ item.label }}</span>
+      </a>
+    </li>
+  </ul>
+</div>
