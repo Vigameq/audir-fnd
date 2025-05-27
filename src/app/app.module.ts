@@ -35,6 +35,7 @@ import { CustomiseAuditQuestionDialogComponent } from './audit-perform/customise
 import { AuditFunctionalQuestionProgressDialogComponent } from './audit-perform/audit-functional-question-progress-dialog/audit-functional-question-progress-dialog.component';
 import { NotificationsComponent } from './header/notifications/notifications.component';
 import { PascalCasePipe } from './custom-pipes/pascal-case.pipe';
+import { SubmitConfirmationDialogComponent } from './audit-perform/submit-confirmation-dialog/submit-confirmation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { PascalCasePipe } from './custom-pipes/pascal-case.pipe';
     CustomiseAuditQuestionDialogComponent,
     AuditFunctionalQuestionProgressDialogComponent,
     NotificationsComponent,
-    PascalCasePipe
+    PascalCasePipe,
+    SubmitConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,

@@ -47,7 +47,7 @@ export class AuditPerformComponent {
         from: fromDate,
         to: toDate
       },
-      status_filter: ["completed", "created", "inprogress", "submitted"]
+      status_filter: ["created", "inprogress"]
     };
 
     this.audirService.getAuditLists(payload).subscribe((response: any) => {

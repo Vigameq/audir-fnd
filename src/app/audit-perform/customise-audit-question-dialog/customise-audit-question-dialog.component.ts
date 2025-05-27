@@ -49,13 +49,22 @@ export class CustomiseAuditQuestionDialogComponent {
   isfindingCategoryDropdownOpen: boolean = false;
   auditInfo!: any;
   findingCategoryOptions = [{
-    name: 'option1'
+    name: 'Noteworthy Effort'
   },
   {
-    name: 'option2'
+    name: 'Major Non-Conformance'
   },
   {
-    name: 'option3'
+    name: 'Minor Non-Conformance'
+  },
+  {
+    name: 'Observation'
+  },
+  {
+    name: 'Opportunity for Improvement'
+  },
+  {
+    name: 'Conformance'
   }];
 
   constructor(private dialog: MatDialog, private renderer: Renderer2, private audirService: AudirService,
@@ -161,7 +170,7 @@ export class CustomiseAuditQuestionDialogComponent {
       width: 'auto',
       position: { right: '0', top: '0' },
       panelClass: 'question-progress-dialog-container',
-      data: { auditQuestionData: this.auditQuestionData, auditResponseHistory: auditResponseHistory }
+      data: { auditQuestionData: this.auditQuestionData, auditResponseHistory: auditResponseHistory, auditInfo: this.auditInfo }
     });
 
     dialogReference.afterClosed().subscribe((result: any) => {
@@ -295,5 +304,9 @@ export class CustomiseAuditQuestionDialogComponent {
     this.auditQuestionData.auditeeInfo.attach_evidence = this.evidenceFile;
     this.audirService.showSuccess('Upload Evidence Successful');
     console.log('PDF file uploaded successfully.');
+  }
+
+  checkFindingsLengthInRange() {
+    return this.totalFindings.length >= 10
   }
 }

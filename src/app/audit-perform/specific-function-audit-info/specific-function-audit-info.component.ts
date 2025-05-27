@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CustomiseAuditQuestionDialogComponent } from '../customise-audit-question-dialog/customise-audit-question-dialog.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AudirService } from 'src/services/audir-services.service';
 import { Location } from "@angular/common";
+import { SubmitConfirmationDialogComponent } from '../submit-confirmation-dialog/submit-confirmation-dialog.component';
 @Component({
   selector: 'app-specific-function-audit-info',
   templateUrl: './specific-function-audit-info.component.html',
@@ -19,6 +20,7 @@ export class SpecificFunctionAuditInfoComponent {
   constructor(private dialog: MatDialog,
     private route: ActivatedRoute,
     private audirService: AudirService,
+    private router: Router,
     private location: Location) {
     this.route.paramMap.subscribe(params => {
       this.auditId = { "audit_id": params.get('id') };
@@ -101,10 +103,26 @@ export class SpecificFunctionAuditInfoComponent {
       if (audit) {
         this.audirService.showSuccess('Audit submitted successfully');
         console.log('Audit submitted successfully');
+        this.navigateToAuditPerform();
       }
     }, (error: any) => {
       this.audirService.showError('Audit submission failed');
       console.error('Error for audit submission:', error);
     });
+  }
+
+  openSubmitConfirmationDialog(): void {
+    const dialogRef = this.dialog.open(SubmitConfirmationDialogComponent, {
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.onsubmit();
+      }
+    });
+  }
+  public navigateToAuditPerform() {
+    localStorage.setItem('header', 'Audit Perform');
+    this.router.navigate(['/auditPerform']);
   }
 }

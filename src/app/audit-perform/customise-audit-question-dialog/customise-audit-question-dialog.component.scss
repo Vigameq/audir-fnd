@@ -200,7 +200,12 @@
                     line-height: 100%
                 }
 
-
+                .upload-evidence-label {
+                    .asterisk {
+                        color: #ff0000;
+                        padding-left: 4px;
+                    }
+                }
 
                 .upload-evidence-btn {
 

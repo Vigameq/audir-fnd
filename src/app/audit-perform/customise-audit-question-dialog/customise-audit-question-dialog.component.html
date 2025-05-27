@@ -32,7 +32,8 @@
                                 (input)="onAuditeeResponseChange()"></textarea></div>
                         <div class="upload-evidence-and-link-section">
                             <div class="upload-evidence">
-                                <div class="upload-evidence-label"><span>Attach Evidence</span></div>
+                                <div class="upload-evidence-label"><span>Attach Evidence</span><span *ngIf="(auditeeResponseValue !=='') || linkInput !== ''"
+                                        class="asterisk">*</span></div>
                                 <div class="upload-evidence-btn">
                                     <label for="fileUpload" class="upload">
                                         Upload
@@ -89,8 +90,8 @@
                                     </div>
                                 </div>
                                 <div *ngIf="totalFindings.length!==1" class="delete-icon">
-                                    <svg width="22px" height="22px" viewBox="0 0 24 24" (click)="deleteFindings(i)" [matTooltip]="deleteText"
-                                        xmlns="http://www.w3.org/2000/svg">
+                                    <svg width="22px" height="22px" viewBox="0 0 24 24" (click)="deleteFindings(i)"
+                                        [matTooltip]="deleteText" xmlns="http://www.w3.org/2000/svg">
                                         <g>
                                             <path fill="none" d="M0 0h24v24H0z" />
                                             <path
@@ -107,7 +108,7 @@
     </mat-dialog-content>
     <mat-dialog-actions class="action-btns">
         <div class="addAuditFinding" (click)="addFindings()" *ngIf="isAuditor">
-            <button [class.disabled]="totalFindings.length >= 10" [disabled]="totalFindings.length >= 10">
+            <button [class.disabled]="checkFindingsLengthInRange()" [disabled]="checkFindingsLengthInRange()">
                 <svg width="24" height="24" viewBox="0 0 21 21" fill="" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M3.45895 8.21V5.186H0.578953V3.26H3.45895V0.289999H5.56495V3.26H8.42695V5.186H5.56495V8.21H3.45895Z"
