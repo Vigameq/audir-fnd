@@ -1,0 +1,17 @@
+{
+  "/audir/*": {
+    "target": "https://157.245.108.44",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/s3": {
+    "target": "https://audire-vault.s3.amazonaws.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/s3": ""
+    }
+  }
+}

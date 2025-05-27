@@ -1,0 +1,148 @@
+.import-create-template {
+    font-family: 'Apple SD Gothic Neo', sans-serif;
+    min-height: 408px;
+
+    .header-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 30px;
+
+        .header {
+            font-weight: 700;
+            font-size: 32px;
+            line-height: 100%;
+            color: #575757;
+        }
+
+        .close-icon {
+            cursor: pointer;
+        }
+    }
+
+    .import-dialog-content .import-steps {
+        display: flex;
+        height: 216px;
+        flex-direction: column;
+        gap: 20px;
+        font-family: 'Apple SD Gothic Neo', sans-serif;
+
+
+        .download-template,
+        .fill-template,
+        .upload-template,
+        .template-name {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            align-items: center;
+
+            .text {
+                flex: 2;
+                padding-left: 38px;
+
+                span {
+                    font-size: 16px;
+                    font-weight: 400;
+                    color: #515151;
+                    line-height: 100%;
+                }
+            }
+
+            .button {
+                flex: 1;
+
+                button.disabled {
+                    background-color: #cccccc !important;
+                    cursor: not-allowed !important;
+                    opacity: 0.6;
+                    color: #333333;
+                    border-color: #cccccc;
+                }
+
+                button,
+                .upload-btn,
+                input {
+                    height: 36px;
+                    width: 164px;
+                    border-radius: 30px;
+                    color: #FFFFFF;
+                    background-color: #1D2431;
+                    border: 1px solid #1D2431;
+                    font-size: 14px;
+                    font-weight: 400;
+                    line-height: 100%;
+                    text-align: center;
+                    cursor: pointer;
+                }
+
+                input {
+                    text-align: left;
+                    color: #1D2431;
+                    cursor: text;
+                    outline: none;
+                    padding: 0 20px;
+                    background-color: #FFFFFF;
+                }
+
+                input:hover {
+                    border-color: #FDE714;
+                }
+
+                button:hover,
+                .upload-btn:hover {
+                    border-color: #FDE714;
+                    background-color: #FDE714;
+                    color: #1D2431;
+                }
+
+                .upload-btn {
+                    display: inline-block;
+                    padding: 10px 6px;
+                    text-align: center;
+                    transition: background 0.3s ease;
+                }
+            }
+        }
+
+        .download-template .button button {
+            background-color: #FFFFFF;
+            color: #1D2431;
+        }
+
+        .svg-icon {
+            min-width: 20px;
+        }
+
+
+    }
+
+    .mat-dialog-actions-section {
+        padding: 2px 30px 20px;
+
+        button {
+            font-family: 'Apple SD Gothic Neo', sans-serif;
+            height: 36px;
+            width: 164px;
+            border-radius: 30px;
+            border: 1px solid #000000;
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+
+        button:hover {
+            border-color: #FDE714;
+            background-color: #FDE714;
+            color: #000000;
+        }
+
+        button.disabled {
+            background-color: #cccccc !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
+            color: #333333;
+            border-color: #cccccc;
+        }
+    }
+}

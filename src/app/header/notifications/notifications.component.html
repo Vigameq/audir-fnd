@@ -1,0 +1,27 @@
+<div class="notification-icon" #notificationItem>
+    <svg width="25" height="25" class="notification-bell-icon" viewBox="0 0 25 30" fill="none"
+        (click)="onNotificationIconClick()" xmlns="http://www.w3.org/2000/svg">
+        <path
+            d="M0.166748 25.5V22.5H3.25008V12C3.25008 9.925 3.89244 8.0875 5.17717 6.4875C6.46189 4.8625 8.13203 3.8 10.1876 3.3V2.25C10.1876 1.625 10.406 1.1 10.8428 0.674998C11.3053 0.224999 11.8577 0 12.5001 0C13.1424 0 13.682 0.224999 14.1188 0.674998C14.5813 1.1 14.8126 1.625 14.8126 2.25V3.3C16.8681 3.8 18.5383 4.8625 19.823 6.4875C21.1077 8.0875 21.7501 9.925 21.7501 12V22.5H24.8334V25.5H0.166748ZM12.5001 30C11.6522 30 10.9199 29.7125 10.3032 29.1375C9.71224 28.5375 9.41675 27.825 9.41675 27H15.5834C15.5834 27.825 15.2751 28.5375 14.6584 29.1375C14.0674 29.7125 13.348 30 12.5001 30ZM6.33342 22.5H18.6667V12C18.6667 10.35 18.0629 8.9375 16.8553 7.7625C15.6477 6.5875 14.1959 6 12.5001 6C10.8042 6 9.35251 6.5875 8.14487 7.7625C6.93723 8.9375 6.33342 10.35 6.33342 12V22.5Z"
+            fill="#1D1B20" />
+    </svg>
+    <span *ngIf="unreadCount > 0" class="badge" [ngClass]="{
+      'badge-s': unreadCount < 10,
+      'badge-m': unreadCount >= 10 && unreadCount < 100,
+      'badge-l': unreadCount >= 100
+    }">{{ unreadCount }}</span>
+</div>
+<div *ngIf="showNotifications" class="notifications">
+    <div class="notification-header"><span>Notifications</span></div>
+    <div class="notification-list">
+        <div *ngIf="notifications.length === 0" class="empty-notification-message">
+            No notifications
+        </div>
+        <div *ngFor="let notification of notifications" [class.unread-notification]="!notification.is_read"
+            class="notification-item" (click)="onNotificationRead(notification)">
+            <div class="notification-message">{{ notification.message }}</div>
+            <div class="notification-timestamp">{{ getNotificationTime(notification.created_at) }}</div>
+        </div>
+    </div>
+    <!-- <div><span>Last 7 months notifications</span></div> -->
+</div>
