@@ -13,7 +13,7 @@ export class NotificationsService {
 
   getNotifications(email: string): Observable<NotificationItem[]> {
     const payload = {
-      'email': 'user1@gmail.com'
+      'email': email
     };
     return this.http.post<any>('/audire/api/getNotifications', payload);
   }

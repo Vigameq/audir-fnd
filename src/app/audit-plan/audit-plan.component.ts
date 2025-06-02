@@ -261,6 +261,7 @@ export class AuditPlanComponent {
   openImportPlanDialog(): void {
     this.importVisibility();
     const dialogRef = this.dialog.open(ImportCreatePlanDialogComponent, {
+      disableClose: true,
       width: '654px',
       height: '464px',
       data: { id: 'GG196678' }
@@ -278,12 +279,15 @@ export class AuditPlanComponent {
 
   openEditPlanDialog(planDetails: any): void {
     const dialogRef = this.dialog.open(EditPlanDialogComponent, {
+      autoFocus: false,
+      disableClose: true,
       width: '654px',
       height: '472px',
       data: {
         'planDetails': planDetails,
         'auditees': this.auditees,
-        'auditors': this.auditors
+        'auditors': this.auditors,
+        'parent_audits': this.parent_audits
       }
     });
 
@@ -304,6 +308,7 @@ export class AuditPlanComponent {
 
   openSuccessDialog(audit_title: string) {
     const dialogRef = this.dialog.open(AuditPlanSuccessPopupComponent, {
+      disableClose: true,
       width: '500px',
       height: '480px',
       data: { id: audit_title }

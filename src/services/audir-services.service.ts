@@ -39,12 +39,34 @@ export class AudirService {
     return this.http.post('/audire/api/listChildAudits', emailDateDetails);
   }
 
+  getQuestionData(payload: any) {
+    return this.http.post('/audire/api/getQuestionData', payload);
+  }
+
+  saveAuditFinding(payload: any) {
+    return this.http.post('/audire/api/saveAuditFinding', payload);
+  }
+
+  saveAuditeeResponse(payload: any) {
+    return this.http.post('/audire/api/saveAuditeeResponse', payload);
+  }
+
+  saveAuditorNotes(payload: any) {
+    return this.http.post('/audire/api/saveAuditorNotes', payload);
+  }
+
   updateAuditPlan(updatedAuditDetails: any) {
     return this.http.post('/audire/api/updateAuditPlan', updatedAuditDetails);
   }
 
   getAuditCompletionPercentage(audit_id: any) {
     return this.http.post('/audire/api/getAuditCompletionPercent', audit_id);
+  }
+
+  getEvidence(audit_id: any, evidenceFileName: any) {
+    return this.http.get<any>('/audire/api/questionDataFile/' + audit_id + '/' + evidenceFileName, {
+      responseType: 'arraybuffer' as 'json'
+    });
   }
 
   downloadPlanTemplate(): Observable<ArrayBuffer> {
@@ -79,6 +101,9 @@ export class AudirService {
     return this.http.post<any>('/audire/api/getAuditQuestions', payload);
   }
 
+  submitAudit(payload: any) {
+    return this.http.post<any>('/audire/api/submitAudit', payload);
+  }
 
   getData(): any {
     return this.http.get('/assets/json/data.json');

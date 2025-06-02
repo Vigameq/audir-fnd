@@ -1,6 +1,7 @@
 .edit-Plan-dialog {
     padding: 20px 20px 40px;
     min-height: 472px;
+    z-index: 1000;
 
     .mat-dialog-content {
         padding: 0px;
@@ -59,24 +60,95 @@
                         flex: 1;
                         gap: 20px;
 
-                        input,
-                        select {
-                            min-width: 262px;
-                            min-height: 46px;
-                            border-radius: 20px;
-                            border: none;
-                            outline: none;
-                            padding: 6px 12px;
-                            appearance: none;
+                        .end-date-time,
+                        .start-date-time {
+
+                            input,
+                            select {
+                                min-width: 262px;
+                                min-height: 46px;
+                                border-radius: 20px;
+                                border: none;
+                                outline: none;
+                                padding: 6px 12px;
+                                appearance: none;
+                            }
+
+                            input:hover,
+                            select:hover {
+                                border: 1px solid #FDE714;
+                            }
+
+                            input::placeholder {
+                                color: #1D2431;
+                            }
                         }
 
-                        input:hover,
-                        select:hover {
-                            border: 1px solid #FDE714;
-                        }
+                        .auditors,
+                        .auditees {
+                            position: relative;
+                            flex: 1;
 
-                        input::placeholder {
-                            color: #1D2431;
+                            .dropbtn {
+                                background-color: #ffffff;
+                                color: #000000;
+                                padding: 6px 30px 6px 12px;
+                                cursor: pointer;
+                                border-radius: 20px;
+                                margin: 0 0 10px;
+                                display: flex;
+                                align-items: center;
+                                min-height: 46px;
+                                min-width: 262px;
+                                border: none;
+                                outline: none;
+                                appearance: none;
+
+                                span {
+                                    overflow: hidden;
+                                    white-space: nowrap;
+                                    text-overflow: ellipsis;
+                                    max-width: 194px;
+                                }
+                            }
+
+                            .dropbtn:hover {
+                                border: 1px solid #FDE714;
+                            }
+
+                            .auditeeDropdown,
+                            .auditorDropdown {
+                                margin-bottom: 10px;
+                            }
+
+                            .dropdown-content {
+                                display: grid;
+                                position: absolute;
+                                background-color: #ffffff;
+                                min-width: 160px;
+                                /* box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); */
+                                padding: 10px;
+                                z-index: 1100;
+                                border-radius: 20px;
+                                border: 1px solid #dbdbdb;
+                                width: 100%;
+                                top: 48px;
+                                max-height: 104px;
+                                overflow-y: auto;
+
+                                .auditor-value,
+                                .auditee-value {
+                                    margin-left: 15px !important;
+                                }
+                            }
+
+                            .dropdown-arrow {
+                                position: absolute;
+                                top: 40%;
+                                transform: translateY(-50%);
+                                pointer-events: none;
+                                right: 18px;
+                            }
                         }
 
                     }

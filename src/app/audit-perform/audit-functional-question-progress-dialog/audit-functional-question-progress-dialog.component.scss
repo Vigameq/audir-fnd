@@ -43,12 +43,14 @@
             flex-direction: column;
             line-height: 100%;
             gap: 6px;
-
+            .question-details{
+                margin: 10px 0;
+            }
             .id,
-            .template-name,
-            .function-name {
-                font-size: 12px;
-                font-weight: 400;
+            .child-audit-title,
+            .parent-audit-title {
+                font-size: 16px;
+                font-weight: 600;
                 line-height: 100%;
                 color: #515151;
                 letter-spacing: 0px;
@@ -75,7 +77,7 @@
                 align-items: flex-start;
                 position: relative;
                 margin-bottom: 10px;
-                gap: 18px;
+                gap: 25px;
             }
 
             .date {
@@ -110,11 +112,15 @@
                 padding-top: 12px;
 
                 .audit-label {
-                    line-height: 100%;
-                    font-size: 16px;
-                    font-weight: 700;
-                    letter-spacing: 0;
-                    padding-bottom: 2px;
+                    margin-bottom: 2px;
+
+                    span {
+                        line-height: 100%;
+                        font-size: 15px;
+                        font-weight: 700;
+                        letter-spacing: 0;
+                        color: #4E4E4E;
+                    }
                 }
 
                 .auditor-and-type,
@@ -123,19 +129,24 @@
                     font-weight: 400;
                     line-height: 100%;
                     letter-spacing: 0;
+                    padding: 5px 0;
                 }
 
                 .audit-description {
-                    padding: 10px 0;
+                    padding: 5px 0;
+
+                    span {
+                        color: #000000;
+                    }
                 }
 
                 .view-img-btn {
-                    padding: 10px 0;
+                    padding: 5px 0;
 
                     button {
                         background-color: #FDE714;
                         border-radius: 30px;
-                        width: 92px;
+                        width: 80px;
                         height: 30px;
                         border: none;
                         outline: none;
@@ -146,7 +157,7 @@
                         span {
                             color: #4E4E4E;
                             font-weight: 400;
-                            font-size: 14px;
+                            font-size: 12px;
                             line-height: 100%;
                             letter-spacing: 0;
                         }

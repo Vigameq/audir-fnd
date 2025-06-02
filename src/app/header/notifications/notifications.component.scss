@@ -5,8 +5,12 @@
       color: #1D2431;
       transition: 0.2s ease-in-out;
 
-      svg {
+      .notification-bell-icon {
+          width: 25px;
+          height: 25px;
+          display: block;
           cursor: pointer;
+
       }
 
       svg:hover {
@@ -14,26 +18,32 @@
               fill: #FDE714;
           }
       }
+
+      .badge {
+          position: absolute;
+          top: 2px;
+          font-size: 11px;
+          padding: 2px 6px;
+          border-radius: 999px;
+          background: #FDE714;
+          color: #1D2431;
+          font-weight: 600;
+      }
+
+      .badge-s {
+          right: 18px;
+      }
+
+      .badge-m {
+          right: 12px;
+      }
+
+      .badge-l {
+          right: 6px;
+      }
   }
 
-  .notification-bell-icon {
-      width: 25px;
-      height: 25px;
-      display: block;
-  }
-
-  .badge {
-      position: absolute;
-      top: 2px;
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #FDE714;
-      color: #1D2431;
-      font-weight: 600;
-  }
-
-  .notification-list {
+  .notifications {
       position: absolute;
       top: 102px;
       right: 54px;
@@ -42,62 +52,64 @@
       color: #1D2431;
       border: 1px solid #e0e0e0;
       border-radius: 8px;
-      padding: 12px;
-      max-height: 400px;
-      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
       animation: fadeIn 0.2s ease-in-out;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       z-index: 1000;
-  }
+      overflow: hidden;
 
-  .notification-item {
-      background-color: #f9f9f9;
-      border-radius: 8px;
-      border-left: 4px solid #575757;
-      padding: 10px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s ease-in-out;
-  }
+      .notification-header {
+          font-size: 18px;
+          font-weight: 500;
+          padding: 12px;
+      }
 
-  .notification-message {
-      font-weight: 400;
-  }
+      .notification-list {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          max-height: 400px;
+          overflow-y: auto;
+          padding: 12px;
 
-  .notification-timestamp {
-      font-size: 12px;
-      color: #575757;
-  }
 
-  .empty-notification-message {
-      text-align: center;
-      color: #575757;
-      font-style: italic;
-      padding: 20px 10px;
-  }
+          .notification-item {
+              background-color: #f9f9f9;
+              border-radius: 8px;
+              border-left: 4px solid #575757;
+              padding: 10px 14px;
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+              font-size: 14px;
+              cursor: pointer;
+              transition: background-color 0.2s ease-in-out;
 
-  .unread-notification {
-      background-color: #f7f9cf;
-      border-left: 4px solid #FDE714;
-      font-weight: 600;
-  }
+              .notification-message {
+                  font-weight: 400;
+              }
 
-  .badge-s {
-      right: 18px;
-  }
+              .notification-timestamp {
+                  font-size: 12px;
+                  color: #575757;
+              }
 
-  .badge-m {
-      right: 12px;
-  }
+              .empty-notification-message {
+                  text-align: center;
+                  color: #575757;
+                  font-style: italic;
+                  padding: 20px 10px;
+              }
+          }
 
-  .badge-l {
-      right: 6px;
+          .unread-notification {
+              background-color: #f7f9cf;
+              border-left: 4px solid #FDE714;
+              font-weight: 600;
+          }
+      }
+
   }
 
   @keyframes fadeIn {

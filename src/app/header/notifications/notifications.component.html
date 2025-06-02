@@ -11,13 +11,17 @@
       'badge-l': unreadCount >= 100
     }">{{ unreadCount }}</span>
 </div>
-<div *ngIf="showNotifications" class="notification-list">
-    <div *ngIf="notifications.length === 0" class="empty-notification-message">
-        No notifications
+<div *ngIf="showNotifications" class="notifications">
+    <div class="notification-header"><span>Notifications</span></div>
+    <div class="notification-list">
+        <div *ngIf="notifications.length === 0" class="empty-notification-message">
+            No notifications
+        </div>
+        <div *ngFor="let notification of notifications" [class.unread-notification]="!notification.is_read"
+            class="notification-item" (click)="onNotificationRead(notification)">
+            <div class="notification-message">{{ notification.message }}</div>
+            <div class="notification-timestamp">{{ getNotificationTime(notification.created_at) }}</div>
+        </div>
     </div>
-    <div *ngFor="let notification of notifications" [class.unread-notification]="!notification.is_read"
-        class="notification-item" (click)="onNotificationRead(notification)">
-        <div class="notification-message">{{ notification.message }}</div>
-        <div class="notification-timestamp">{{ getNotificationTime(notification.created_at) }}</div>
-    </div>
+    <!-- <div><span>Last 7 months notifications</span></div> -->
 </div>

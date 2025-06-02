@@ -207,8 +207,8 @@
                         <div class="title-and-auditor">
                             <div class="title"><span>{{plan.audit_title}}</span></div>
                             <div class="auditor">
-                                <span *ngIf="plan.auditors.length===1">{{plan.auditors[0]}}</span>
-                                <span *ngIf="plan.auditors.length>1">{{plan.auditors[0]}} and more</span>
+                                <span *ngIf="plan.auditors.length===1">{{plan.auditors[0].name}}</span>
+                                <span *ngIf="plan.auditors.length>1">{{plan.auditors[0].name}} and more</span>
                             </div>
                         </div>
                     </div>

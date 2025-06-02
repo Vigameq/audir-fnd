@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CustomiseAuditQuestionDialogComponent } from '../customise-audit-question-dialog/customise-audit-question-dialog.component';
-import { AuditFunctionalQuestionProgressDialogComponent } from '../audit-functional-question-progress-dialog/audit-functional-question-progress-dialog.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AudirService } from 'src/services/audir-services.service';
 import { Location } from "@angular/common";
-
+import { SubmitConfirmationDialogComponent } from '../submit-confirmation-dialog/submit-confirmation-dialog.component';
 @Component({
   selector: 'app-specific-function-audit-info',
   templateUrl: './specific-function-audit-info.component.html',
@@ -13,40 +12,15 @@ import { Location } from "@angular/common";
 })
 export class SpecificFunctionAuditInfoComponent {
 
-  progressData = [
-    {
-      label: 'Auditor Note',
-      auditorName: 'Krishna Achar',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      date: '21/05/2024',
-      lineHeight: 0,
-      color: ''
-    },
-    {
-      label: 'Auditee Response',
-      auditorName: 'Rajesh Rao',
-      type: 'Purchase',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      date: '27/05/2024',
-      lineHeight: 0,
-      color: ''
-    },
-    {
-      label: 'NC Closed',
-      auditorName: 'Krishna Achar',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      date: '28/05/2024',
-      lineHeight: 0,
-      color: ''
-    }
-  ];
   allFunctionalQuestions!: any[];
-  auditCompletionPercentage!:any;
+  auditCompletionPercentage!: any;
   auditInfo: any;
   auditId: any;
+
   constructor(private dialog: MatDialog,
     private route: ActivatedRoute,
     private audirService: AudirService,
+    private router: Router,
     private location: Location) {
     this.route.paramMap.subscribe(params => {
       this.auditId = { "audit_id": params.get('id') };
@@ -69,10 +43,10 @@ export class SpecificFunctionAuditInfoComponent {
     });
   }
 
-  getAuditPlanCompletionPercentage(auditId:any){
+  getAuditPlanCompletionPercentage(auditId: any) {
     this.audirService.getAuditCompletionPercentage(auditId).subscribe((response: any) => {
       if (response) {
-        this.auditCompletionPercentage= response.completion_percent;
+        this.auditCompletionPercentage = parseFloat((response.completion_percent).toFixed(2));
       } else {
         console.error('Unable to get audit completion percentage');
       }
@@ -93,27 +67,15 @@ export class SpecificFunctionAuditInfoComponent {
 
   questionInfo(index: number) {
     const dialogRef = this.dialog.open(CustomiseAuditQuestionDialogComponent, {
-      width: 'auto',
+      disableClose: true,
+      width: '1300px',
       position: { right: '0', top: '0' },
       panelClass: 'customize-question-dialog-container',
       data: {
-        index:index+1,
+        index: index + 1,
         questionText: this.allFunctionalQuestions[index],
-        auditId: this.auditId
+        auditInfo: this.auditInfo
       }
-    });
-
-    dialogRef.afterClosed().subscribe((result: any) => {
-      console.log(`Dialog result: ${result}`);
-    });
-  }
-
-  questionProgressData() {
-    const dialogRef = this.dialog.open(AuditFunctionalQuestionProgressDialogComponent, {
-      width: 'auto',
-      position: { right: '0', top: '0' },
-      panelClass: 'question-progress-dialog-container',
-      data: { auditorInfo: this.auditInfo, progressData: this.progressData }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
@@ -123,5 +85,44 @@ export class SpecificFunctionAuditInfoComponent {
 
   back() {
     this.location.back();
+  }
+
+  showAllOptionsByName(options: any) {
+    if (options) {
+      return ((options.map((option: any) => option.name)).join(', '));
+    }
+    return
+  }
+
+  onsubmit() {
+    const payload = {
+      audit_id: this.auditId.audit_id,
+      email: localStorage.getItem('user')?.toString() || ''
+    }
+    this.audirService.submitAudit(payload).subscribe((audit: any) => {
+      if (audit) {
+        this.audirService.showSuccess('Audit submitted successfully');
+        console.log('Audit submitted successfully');
+        this.navigateToAuditPerform();
+      }
+    }, (error: any) => {
+      this.audirService.showError('Audit submission failed');
+      console.error('Error for audit submission:', error);
+    });
+  }
+
+  openSubmitConfirmationDialog(): void {
+    const dialogRef = this.dialog.open(SubmitConfirmationDialogComponent, {
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.onsubmit();
+      }
+    });
+  }
+  public navigateToAuditPerform() {
+    localStorage.setItem('header', 'Audit Perform');
+    this.router.navigate(['/auditPerform']);
   }
 }
