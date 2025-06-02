@@ -16,9 +16,10 @@
             <p>Hello! Welcome Back, Please use</p>
             <p>the credentials provided to login.</p>
         </div>
-        <input type="text" placeholder="Email" [(ngModel)]="email" name="email" />
+        <input type="text" (keyup.enter)="onSubmit()" placeholder="Email" [(ngModel)]="email" name="email" />
         <br><br>
-        <input type="password" placeholder="Password" [(ngModel)]="password" name="password" />
+        <input type="password" (keyup.enter)="onSubmit()" placeholder="Password" [(ngModel)]="password"
+            name="password" />
         <br><br>
         <button class="rounded-button" (click)="onSubmit()">Let's Start!</button>
         <br><br>

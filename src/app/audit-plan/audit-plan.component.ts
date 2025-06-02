@@ -9,6 +9,7 @@ import { ImportCreatePlanDialogComponent } from './import-create-plan-dialog/imp
 import { EditPlanDialogComponent } from './edit-plan-dialog/edit-plan-dialog.component';
 import { DatePipe } from '@angular/common';
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
+import { NotificationsService } from '../header/notifications/notifications.service';
 
 @Component({
   selector: 'app-audit-plan',
@@ -77,8 +78,11 @@ export class AuditPlanComponent {
   isCountryDropdownOpen = false;
   startDate: any;
   userEmail: string = '';
+  minDateTime: any;
+  maxDateTime: any;
 
-  constructor(private datePipe: DatePipe, private formBuilder: FormBuilder, private audirService: AudirService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(private datePipe: DatePipe, private formBuilder: FormBuilder, private audirService: AudirService, private notificationsService: NotificationsService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
+    this.setMaxMinDateTime();
   }
 
   async ngOnInit(): Promise<void> {
@@ -109,6 +113,11 @@ export class AuditPlanComponent {
     });
     this.getPlanItems();
     await this.getAllChildAuditPlan();
+  }
+
+  setMaxMinDateTime() {
+    this.minDateTime = '0000-12-31T00:00:00';
+    this.maxDateTime = '9999-12-31T23:59:59';
   }
 
   getPlanItems() {
@@ -176,7 +185,7 @@ export class AuditPlanComponent {
   onSubmit() {
     if (this.auditPlanForm) {
       const plan: Audit = {
-        link_audit: this.auditPlanForm.value?.parentAudit ? this.auditPlanForm.value?.parentAudit : null,
+        link_audit: this.auditPlanForm.value?.parentAudit ? this.auditPlanForm.value?.parentAudit.title : null,
         audit_title: this.auditPlanForm.value?.auditTitle,
         functions: this.auditPlanForm.value?.functions,
         template: this.selectedTemplate,
@@ -199,7 +208,6 @@ export class AuditPlanComponent {
             this.openSuccessDialog(plan.audit_title);
           } else {
             this.audirService.showError('Failed to create audit plan');
-
           }
         }, (error: any) => {
           this.audirService.showError('Failed to create audit plan');
@@ -247,11 +255,13 @@ export class AuditPlanComponent {
     this.selectedTemplateOptions = 'Select templates..';
     this.selectedAuditorOptions = 'Select Auditors..';
     this.selectedAuditeesOptions = 'Select Auditees..';
+    this.setMaxMinDateTime();
   }
 
   openImportPlanDialog(): void {
     this.importVisibility();
     const dialogRef = this.dialog.open(ImportCreatePlanDialogComponent, {
+      disableClose: true,
       width: '654px',
       height: '464px',
       data: { id: 'GG196678' }
@@ -259,6 +269,7 @@ export class AuditPlanComponent {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       this.router.navigate(['/auditPlan']);
+      this.refreshNotifications();
       this.importVisibility();
       this.getPlanItems();
       this.changeDetectorRef.detectChanges();
@@ -268,12 +279,15 @@ export class AuditPlanComponent {
 
   openEditPlanDialog(planDetails: any): void {
     const dialogRef = this.dialog.open(EditPlanDialogComponent, {
+      autoFocus: false,
+      disableClose: true,
       width: '654px',
       height: '472px',
       data: {
         'planDetails': planDetails,
         'auditees': this.auditees,
-        'auditors': this.auditors
+        'auditors': this.auditors,
+        'parent_audits': this.parent_audits
       }
     });
 
@@ -281,6 +295,7 @@ export class AuditPlanComponent {
       if (result === 'success') {
         await this.getAllChildAuditPlan();
         this.router.navigate(['/auditPlan']);
+        this.refreshNotifications();
         this.changeDetectorRef.detectChanges();
       }
       console.log(`Dialog result: ${result}`);
@@ -293,6 +308,7 @@ export class AuditPlanComponent {
 
   openSuccessDialog(audit_title: string) {
     const dialogRef = this.dialog.open(AuditPlanSuccessPopupComponent, {
+      disableClose: true,
       width: '500px',
       height: '480px',
       data: { id: audit_title }
@@ -300,9 +316,15 @@ export class AuditPlanComponent {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       this.router.navigate(['/auditPlan']);
+      this.refreshNotifications();
+      this.setMaxMinDateTime();
       this.getPlanItems();
       console.log(`Dialog result: ${result}`);
     });
+  }
+
+  refreshNotifications() {
+    this.notificationsService.triggerRefresh();
   }
 
   templateToggleDropdown(event: any) {
@@ -467,6 +489,13 @@ export class AuditPlanComponent {
       this.auditPlanForm.get('endDateTime')?.setValue(this.startDate);
     }
     this.auditPlanForm.get('endDateTime')?.enable();
+  }
+
+  onParentAuditChange() {
+    this.auditPlanForm.get('startDateTime')?.setValue('');
+    this.auditPlanForm.get('endDateTime')?.setValue('');
+    this.maxDateTime = this.datePipe.transform(this.auditPlanForm.value.parentAudit.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
+    this.minDateTime = this.datePipe.transform(this.auditPlanForm.value.parentAudit.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
   }
 
   ngOnDestroy(): void {

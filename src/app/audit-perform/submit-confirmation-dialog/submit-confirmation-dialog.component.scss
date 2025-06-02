@@ -1,0 +1,35 @@
+.submit-confirmation-container {
+    h1 {
+        font-family: 'Apple SD Gothic Neo', sans-serif;
+    }
+
+    .content p {
+        font-family: 'Apple SD Gothic Neo', sans-serif;
+    }
+
+    .action-buttons {
+        padding-bottom: 16px;
+
+        .cancel,
+        .submit {
+            font-family: 'Apple SD Gothic Neo', sans-serif;
+            border: 1px solid #2C2C2C;
+            color: #1E1E1E;
+            background-color: #fff;
+            width: 90px;
+            height: 40px;
+            border-radius: 6px;
+            margin: 0 10px;
+        }
+
+        .submit {
+            background-color: #1D2431;
+            color: #fff;
+        }
+        .cancel:hover,.submit:hover{
+            background-color: #FDE714;
+            color: black;
+            border: 1px solid #FDE714;
+        }
+    }
+}

@@ -15,19 +15,31 @@
                             <div class="left-section">
                                 <div class="start-date-time">
                                     <input type="datetime-local" id="start-date-time" class="form-control"
-                                        formControlName="startDateTimeValue" name="startDateTime" required />
+                                        formControlName="startDateTimeValue" name="startDateTime" required
+                                        [min]="minDateTime" [max]="maxDateTime" />
                                 </div>
                                 <!-- <div class="audit-type">
                                     <input id="audit-type" class="audit-type-input" formControlName="auditTypeValue" placeholder="Audit Type"
                                         name="auditType" />
                                 </div> -->
-                                <div class="assignTo">
-                                    <select id="assignTo" class="dropdown-select" formControlName="assignToValue"
-                                        name="assignTo" required>
-                                        <option [value]="editPlanForm.value.assignToValue" disabled selected>{{editPlanForm.value.assignToValue}}</option>
-                                        <option *ngFor="let auditee of auditees" [value]="auditee.Name">
-                                            {{ auditee.Name }}</option>
-                                    </select>
+                                <div class="auditees">
+                                    <div class="dropbtn" [matTooltip]="selectedAuditeesOptions"
+                                        (click)="auditeesToggleDropdown($event)">
+                                        <span>{{selectedAuditeesOptions}}</span>
+                                    </div>
+                                    <div *ngIf="isAuditeesOptionsOpen" class="dropdown-content" #auditeesDropdown>
+                                        <label *ngFor="let auditee of auditees; let i = index"
+                                            (click)="onCheckboxClick($event)">
+                                            <input type="checkbox" [value]="auditee.Name" class="checkbox-input"
+                                                (change)="onAuditeeSelectionChange($event,i,auditee)"
+                                                [checked]="auditees[i].checked" />
+                                            <span class="auditee-value">{{ auditee.Name }}</span>
+                                        </label>
+                                    </div>
+                                    <div class="dropdown-arrow">
+                                        <app-dropdown-arrow-icons
+                                            [isOpen]="isAuditeesOptionsOpen"></app-dropdown-arrow-icons>
+                                    </div>
                                 </div>
                                 <!-- <div class="city">
                                     <select id="city-name" class="dropdown-select" formControlName="cityNameValue"
@@ -42,20 +54,30 @@
                                 <div class="end-date-time">
                                     <input type="datetime-local" id="end-date-time" class="form-control"
                                         placeholder="End Date" formControlName="endDateTimeValue" name="endDateTime"
-                                        required />
+                                        [min]="minDateTime" [max]="maxDateTime" required />
                                 </div>
                                 <!-- <div class="sub-audit-type">
                                     <input id="sub-audit-type" class="sub-audit-type-input" placeholder="Sub-Audit Type"
                                         formControlName="subAuditTypeValue" name="subAuditType" />
                                 </div> -->
-                                <div class="leadAuditor">
-                                    <select id="leadAuditor" class="dropdown-select" formControlName="leadAuditorValue"
-                                        name="leadAuditor" required>
-                                        <option [value]="editPlanForm.value.leadAuditorValue" disabled selected>{{editPlanForm.value.leadAuditorValue}}
-                                        </option>
-                                        <option *ngFor="let auditor of auditors" [value]="auditor.Name">
-                                            {{ auditor.Name }}</option>
-                                    </select>
+                                <div class="auditors">
+                                    <div class="dropbtn" [matTooltip]="selectedAuditorOptions"
+                                        (click)="auditorToggleDropdown($event)">
+                                        <span>{{selectedAuditorOptions}}</span>
+                                    </div>
+                                    <div *ngIf="isAuditorOptionsOpen" class="dropdown-content" #auditorsDropdown>
+                                        <label *ngFor="let auditor of auditors; let i = index"
+                                            (click)="onCheckboxClick($event)">
+                                            <input type="checkbox" [value]="auditor.Name" class="checkbox-input"
+                                                (change)="onAuditorSelectionChange($event,i,auditor)"
+                                                [checked]="auditors[i].checked" />
+                                            <span class="auditor-value">{{ auditor.Name }}</span>
+                                        </label>
+                                    </div>
+                                    <div class="dropdown-arrow">
+                                        <app-dropdown-arrow-icons
+                                            [isOpen]="isAuditorOptionsOpen"></app-dropdown-arrow-icons>
+                                    </div>
                                 </div>
                                 <!-- <div class="country">
                                     <select id="country-name" class="dropdown-select" formControlName="countryNameValue"
