@@ -171,8 +171,8 @@
                                             accept="application/pdf" (change)="uploadCorrectiveStatusEvidence($event)"
                                             hidden>
                                     </label>
-                                    <p [matTooltip]="uploadCorrectiveActionStatusFile">
-                                        {{uploadCorrectiveActionStatusFile}}
+                                    <p [matTooltip]="uploadCorrectiveActionStatusFileName">
+                                        {{uploadCorrectiveActionStatusFileName}}
                                     </p>
                                 </div>
                             </div>
@@ -185,7 +185,7 @@
     <mat-dialog-actions class="action-btns">
         <div class="cancel-save-btns">
             <button class="cancel" mat-dialog-close>Cancel</button>
-            <button class="save" [disabled]="!noErrors || !checkResponseAvailability()" (click)="onSave()">Save</button>
+            <button class="save" [disabled]="!noErrors || !checkResponseAvailability() || isExisting" (click)="onSave()">Save</button>
         </div>
     </mat-dialog-actions>
 </div>

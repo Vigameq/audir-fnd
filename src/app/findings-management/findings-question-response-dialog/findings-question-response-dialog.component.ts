@@ -18,11 +18,12 @@ export class FindingsQuestionResponseDialogComponent {
   correctiveStatusEvidenceFile: File | undefined;
   uploadCorrectionsEvidenceText = 'No file choosen...';
   uploadRootCauseResponseFileText = 'No file choosen...';
-  uploadCorrectiveActionStatusFile = 'No file choosen...';
+  uploadCorrectiveActionStatusFileName = 'No file choosen...';
   isCorrectionsChanged: boolean = false;
   isRootCauseChanged: boolean = false;
   isCorrectivePlanChanged: boolean = false;
   noErrors: boolean = true;
+  isExisting: boolean = true;
   questionData: any;
   auditQuestionData: any =
     {
@@ -108,7 +109,7 @@ export class FindingsQuestionResponseDialogComponent {
   fillExistingResponses() {
     this.uploadCorrectionsEvidenceText = this.questionData.nc_correction[0] ? this.questionData.nc_correction[0].attach_evidence : '';
     this.uploadRootCauseResponseFileText = this.questionData.nc_root_cause[0] ? this.questionData.nc_root_cause[0].attach_evidence : '';
-    this.uploadCorrectiveActionStatusFile = this.questionData.nc_corrective_action_plan[0] ? this.questionData.nc_corrective_action_plan[0].attach_evidence : '';
+    this.uploadCorrectiveActionStatusFileName = this.questionData.nc_corrective_action_plan[0] ? this.questionData.nc_corrective_action_plan[0].attach_evidence : '';
     this.correctionsNoteValue = this.questionData.nc_correction[0] ? this.questionData.nc_correction[0].notes : '';
     this.correctionsLinkInput = this.questionData.nc_correction[0] ? this.questionData.nc_correction[0].link : '';
     this.correctionPlannedCompletionDateValue = this.questionData.nc_correction[0] ? this.questionData.nc_correction[0].planned_completion_date : '';
@@ -133,30 +134,43 @@ export class FindingsQuestionResponseDialogComponent {
     this.onRootCauseLinkInputChange();
     this.onCorrectionPlannedCompletionDateChange();
     this.onCorrectionActualCompletionDateChange();
-    //this.attachExistingEvidence();
+    this.attachExistingEvidence();
   }
 
-  // attachExistingEvidence() {
-  //   this.correctionsEvidenceFile=this.downloadFileEvidence(this.uploadCorrectionsEvidenceText);
-  // }
+  attachExistingEvidence() {
+    this.downloadFileEvidence(this.uploadRootCauseResponseFileText, 'nc_root_cause');
+    this.downloadFileEvidence(this.uploadCorrectionsEvidenceText, 'nc_correction');
+    this.downloadFileEvidence(this.uploadCorrectiveActionStatusFileName, 'nc_corrective_action_plan');
+    this.isExisting = true;
+  }
 
-  // downloadFileEvidence(attach_evidence_file_Name: any) {
-  //   let blobData: any;
-  //   this.audirService.getNCEvidence(this.auditQuestionData.audit_id, attach_evidence_file_Name).subscribe((response: any) => {
-  //     if (response) {
-  //       blobData = new Blob([response], { type: 'application/pdf' });
-  //     }
-  //   }, (error: any) => {
-  //     console.error('Error downloading evidence file:', error);
-  //   });
-  //   return blobData;
-  // }
-
-  // downloadRootCauseFileEvidence() {
-  // }
-
-  // downloadCorrectiveFileEvidence() {
-  // }
+  downloadFileEvidence(attach_evidence_file_Name: any, responseType: any) {
+    if (attach_evidence_file_Name !== '') {
+      this.audirService.getNCEvidence(this.auditQuestionData.audit_id, attach_evidence_file_Name, responseType).subscribe((response: any) => {
+        if (response) {
+          const lastModifiedDate = new Date();
+          const file = new File([response], attach_evidence_file_Name, {
+            type: "application/pdf",
+            lastModified: lastModifiedDate.getTime()
+          });
+          if (responseType === 'nc_root_cause') {
+            this.rootCauseEvidenceFile = file;
+            this.auditQuestionData.nc_root_cause.attach_evidence = this.rootCauseEvidenceFile;
+          }
+          else if (responseType === 'nc_correction') {
+            this.correctionsEvidenceFile = file;
+            this.auditQuestionData.nc_correction.attach_evidence = this.correctionsEvidenceFile;
+          }
+          else if (responseType === 'nc_corrective_action_plan') {
+            this.correctiveStatusEvidenceFile = file;
+            this.auditQuestionData.nc_corrective_action_plan.attach_evidence = this.correctiveStatusEvidenceFile;
+          }
+        }
+      }, (error: any) => {
+        console.error('Error downloading evidence file:', error);
+      });
+    }
+  }
 
   setQuestionData() {
     this.auditQuestionData.audit_id = this.auditInfo.audit_id;
@@ -190,50 +204,62 @@ export class FindingsQuestionResponseDialogComponent {
   }
 
   onCorrectionNoteChange() {
+    this.isExisting = false;
     this.auditQuestionData.nc_correction.correctionsNote = this.correctionsNoteValue;
   }
 
   onCorrectivePlanNoteChange() {
+    this.isExisting = false;
     this.auditQuestionData.nc_corrective_action_plan.correctivePlanNote = this.correctivePlanNoteValue;
   }
 
   onCorrectivePlanOwnerIDChange() {
+    this.isExisting = false;
     this.auditQuestionData.nc_corrective_action_plan.owner_name_id = this.ownerIDValue;
   }
 
   onCorrectivePlannedDateChange() {
+    this.isExisting = false;
     this.auditQuestionData.nc_corrective_action_plan.planned_completion_date = this.correctivePlannedDateValue;
   }
 
   onCorrectiveActualDateChange() {
+    this.isExisting = false;
     this.auditQuestionData.nc_corrective_action_plan.actual_completion_date = this.correctiveActualDateValue;
   }
 
   onCorrectivePlanLinkInputChange() {
+    this.isExisting = false;
     this.auditQuestionData.nc_corrective_action_plan.link = this.correctivePlanLinkInput;
   }
 
   onCorrectivePlanActiveStatusOptionChange() {
+    this.isExisting = false;
     this.auditQuestionData.nc_corrective_action_plan.corrective_action_status = this.actionStatusSelectedOption;
   }
 
   onRootCauseResponseChange() {
+    this.isExisting = false;
     this.auditQuestionData.nc_root_cause.rootCauseNote = this.rootCauseNoteValue;
   }
 
   onCorrectionsLinkInputChange() {
+    this.isExisting = false;
     this.auditQuestionData.nc_correction.link = this.correctionsLinkInput;
   }
 
   onRootCauseLinkInputChange() {
+    this.isExisting = false;
     this.auditQuestionData.nc_root_cause.link = this.rootCauseLinkInput;
   }
 
   onCorrectionPlannedCompletionDateChange() {
+    this.isExisting = false;
     this.auditQuestionData.nc_correction.plannedCompletionDate = this.datePipe.transform(this.correctionPlannedCompletionDateValue, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
   }
 
   onCorrectionActualCompletionDateChange() {
+    this.isExisting = false;
     this.auditQuestionData.nc_correction.actualCompletionDate = this.datePipe.transform(this.correctionActualCompletionDateValue, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
   }
 
@@ -365,6 +391,7 @@ export class FindingsQuestionResponseDialogComponent {
       console.log('Upload only PDF file');
       return;
     }
+    this.isExisting = false;
     this.uploadCorrectionsEvidenceText = this.correctionsEvidenceFile.name;
     this.auditQuestionData.nc_correction.attach_evidence = this.correctionsEvidenceFile;
     this.audirService.showSuccess('Upload Evidence Successful');
@@ -382,6 +409,7 @@ export class FindingsQuestionResponseDialogComponent {
       console.log('Upload only PDF file');
       return;
     }
+    this.isExisting = false;
     this.uploadRootCauseResponseFileText = this.rootCauseEvidenceFile.name;
     this.auditQuestionData.nc_root_cause.attach_evidence = this.rootCauseEvidenceFile;
     this.audirService.showSuccess('Upload Evidence Successful');
@@ -399,7 +427,8 @@ export class FindingsQuestionResponseDialogComponent {
       console.log('Upload only PDF file');
       return;
     }
-    this.uploadCorrectiveActionStatusFile = this.correctiveStatusEvidenceFile.name;
+    this.isExisting = false;
+    this.uploadCorrectiveActionStatusFileName = this.correctiveStatusEvidenceFile.name;
     this.auditQuestionData.nc_corrective_action_plan.attach_evidence = this.correctiveStatusEvidenceFile;
     this.audirService.showSuccess('Upload Evidence Successful');
     console.log('PDF file uploaded successfully.');

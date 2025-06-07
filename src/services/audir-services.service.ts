@@ -85,8 +85,8 @@ export class AudirService {
     });
   }
 
-  getNCEvidence(audit_id: any, evidenceFileName: any) {
-    return this.http.get<any>('/audire/api/questionNCDataFile/' + audit_id + '/nc_root_cause/' + evidenceFileName, {
+  getNCEvidence(audit_id: any, evidenceFileName: any, responseTYpe: any) {
+    return this.http.get<any>('/audire/api/questionNCDataFile/' + audit_id + '/' + responseTYpe + '/' + evidenceFileName, {
       responseType: 'arraybuffer' as 'json'
     });
   }
