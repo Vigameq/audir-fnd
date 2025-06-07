@@ -43,6 +43,10 @@ export class AudirService {
     return this.http.post('/audire/api/getQuestionData', payload);
   }
 
+  getNCQuestionData(payload: any) {
+    return this.http.post('/audire/api/getNCQuestionData', payload);
+  }
+
   saveAuditFinding(payload: any) {
     return this.http.post('/audire/api/saveAuditFinding', payload);
   }
@@ -55,6 +59,18 @@ export class AudirService {
     return this.http.post('/audire/api/saveAuditorNotes', payload);
   }
 
+  saveCorrectionsResponse(payload: any) {
+    return this.http.post('/audire/api/saveNCCorrectionData', payload);
+  }
+
+  saveRootCauseResponse(payload: any) {
+    return this.http.post('/audire/api/saveNCRootCauseData', payload);
+  }
+
+  savesCorrectiveActionPlanResponse(payload: any) {
+    return this.http.post('/audire/api/saveNCCorrectiveActionPlanData', payload);
+  }
+
   updateAuditPlan(updatedAuditDetails: any) {
     return this.http.post('/audire/api/updateAuditPlan', updatedAuditDetails);
   }
@@ -65,6 +81,12 @@ export class AudirService {
 
   getEvidence(audit_id: any, evidenceFileName: any) {
     return this.http.get<any>('/audire/api/questionDataFile/' + audit_id + '/' + evidenceFileName, {
+      responseType: 'arraybuffer' as 'json'
+    });
+  }
+
+  getNCEvidence(audit_id: any, evidenceFileName: any) {
+    return this.http.get<any>('/audire/api/questionNCDataFile/' + audit_id + '/nc_root_cause/' + evidenceFileName, {
       responseType: 'arraybuffer' as 'json'
     });
   }
@@ -101,8 +123,18 @@ export class AudirService {
     return this.http.post<any>('/audire/api/getAuditQuestions', payload);
   }
 
+  getNCAuditQuestions(payload: any) {
+    return this.http.post<any>('/audire/api/getNCAuditQuestions', payload);
+  }
+
   submitAudit(payload: any) {
     return this.http.post<any>('/audire/api/submitAudit', payload);
+  }
+
+  /* services for audit findings */
+
+  getNCAuditLists(payload: any) {
+    return this.http.post<any>('/audire/api/listNCAudits', payload);
   }
 
   getData(): any {

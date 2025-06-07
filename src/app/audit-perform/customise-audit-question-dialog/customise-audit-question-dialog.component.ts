@@ -46,7 +46,7 @@ export class CustomiseAuditQuestionDialogComponent {
   auditFindingsValue: any = [''];
   linkInput: string = '';
   clauseInput: any = [''];
-  isfindingCategoryDropdownOpen: boolean = false;
+  isFindingCategoryDropdownOpen: boolean = false;
   auditInfo!: any;
   findingCategoryOptions = [{
     name: 'Noteworthy Effort'
@@ -138,13 +138,13 @@ export class CustomiseAuditQuestionDialogComponent {
   ngAfterViewInit() {
     this.renderer.listen('document', 'click', (event: Event) => {
       if (this.findingsCategoryDropdown && !this.findingsCategoryDropdown.nativeElement.contains(event.target)) {
-        this.isfindingCategoryDropdownOpen = false;
+        this.isFindingCategoryDropdownOpen = false;
       }
     });
   }
 
   onFindingCategoryDropdownClick(): void {
-    this.isfindingCategoryDropdownOpen = !this.isfindingCategoryDropdownOpen;
+    this.isFindingCategoryDropdownOpen = !this.isFindingCategoryDropdownOpen;
   }
 
   addFindings() {

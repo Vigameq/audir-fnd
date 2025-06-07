@@ -3,11 +3,11 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-auditor-remarks',
-  templateUrl: './auditor-remarks.component.html',
-  styleUrls: ['./auditor-remarks.component.scss']
+  selector: 'app-approval-remarks-dialog',
+  templateUrl: './approval-remarks-dialog.component.html',
+  styleUrls: ['./approval-remarks-dialog.component.scss']
 })
-export class AuditorRemarksComponent {
+export class ApprovalRemarksDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router) {
   }
   closeDialog() {

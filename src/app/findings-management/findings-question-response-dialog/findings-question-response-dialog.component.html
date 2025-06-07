@@ -1,0 +1,191 @@
+<div class="question-findings-response-container">
+    <mat-dialog-title class="title-section">
+        <div class="close-icon" mat-dialog-close>
+            <svg width="14" height="14" viewBox="0 0 19 21" fill="#515151" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M0.672734 20.77L7.18273 10.24L1.09273 0.189998H5.20273L9.79273 7.75H9.91273L14.1427 0.189998H17.8927L11.9227 10.21L18.2827 20.77H14.1727L9.34273 12.76H9.25274L4.39273 20.77H0.672734Z"
+                    fill="" />
+            </svg>
+        </div>
+    </mat-dialog-title>
+    <mat-dialog-content class="content-section">
+        <div class="content">
+            <div class="question-number-and-text">
+                <div class="question-number"><span>{{auditQuestionData.questionNumber}}</span></div>
+                <div class="question-text"><span>{{auditQuestionData.question}}</span></div>
+            </div>
+            <div class="audit-section">
+                <div class="res-hist-btn"><button [disabled]="questionData?.history.length === 0"
+                        (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
+                <div class="corrections-note">
+                    <div class="corrections-note-label"><span>Correction</span></div>
+                    <div class="corrections-note-fields-section">
+                        <div class="corrections-note-textarea"><textarea id="corrections-note-textarea" rows="4"
+                                name="correctionsNote" [(ngModel)]="correctionsNoteValue" placeholder="Enter Note..."
+                                (input)="onCorrectionNoteChange()"></textarea>
+                        </div>
+                        <div class="upload-correctons-evidence-and-link-section">
+                            <div class="upload-correctons-evidence">
+                                <div class="upload-correctons-evidence-label">
+                                    <span>Attach Evidence</span>
+                                    <span *ngIf="checkCorrectionsResponse()" class="asterisk">*</span>
+                                </div>
+                                <div class="upload-correctons-evidence-btn">
+                                    <label for="corrections-file-upload" class="upload">
+                                        Upload
+                                        <input type="file" id="corrections-file-upload" accept="application/pdf"
+                                            (change)="uploadCorrectionsEvidence($event)" hidden>
+                                    </label>
+                                    <p [matTooltip]="uploadCorrectionsEvidenceText">{{uploadCorrectionsEvidenceText}}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="link">
+                                <div class="link-label"><span>Link</span></div>
+                                <div class="link-input"><input type="url" [(ngModel)]="correctionsLinkInput"
+                                        (input)="onCorrectionsLinkInputChange()" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="planned-completion-and-actual-completion-date">
+                            <div class="planned-completion-date">
+                                <div class="planned-completion-date-label"><span>Planned completion Date</span></div>
+                                <input type="datetime-local" id="planned-completion-date-input"
+                                    [(ngModel)]="correctionPlannedCompletionDateValue"
+                                    class="planned-completion-date-input"
+                                    (change)="onCorrectionPlannedCompletionDateChange()" name="plannedCompletionDate"
+                                    required [min]="minDateTime" [max]="maxDateTime" />
+                            </div>
+                            <div class="actual-completion-date">
+                                <div class="actual-completion-date-label"><span>Actual completion Date</span></div>
+                                <input type="datetime-local" id="actual-completion-date-input"
+                                    [(ngModel)]="correctionActualCompletionDateValue"
+                                    class="actual-completion-date-input"
+                                    (change)="onCorrectionActualCompletionDateChange()" name="actualCompletionDate"
+                                    required [min]="minDateTime" [max]="maxDateTime" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="root-cause">
+                    <div class="root-cause-label"><span>Root Cause</span></div>
+                    <div class="root-cause-fields-section">
+                        <div class="root-cause-textarea"><textarea id="root-cause-textarea" rows="4"
+                                name="auditeeResponse" [(ngModel)]="rootCauseNoteValue" placeholder="Enter Note..."
+                                (input)="onRootCauseResponseChange()"></textarea></div>
+                        <div class="upload-root-cause-evidence-and-link-section">
+                            <div class="upload-root-cause-evidence">
+                                <div class="upload-root-cause-evidence-label">
+                                    <span>Attach Evidence</span>
+                                    <span *ngIf="checkRootCauseResponse()" class="asterisk">*</span>
+                                </div>
+                                <div class="upload-root-cause-evidence-btn">
+                                    <label for="root-cause-file-Upload" class="upload">
+                                        Upload
+                                        <input type="file" id="root-cause-file-Upload" accept="application/pdf"
+                                            (change)="uploadRootCauseEvidence($event)" hidden>
+                                    </label>
+                                    <p [matTooltip]="uploadRootCauseResponseFileText">
+                                        {{uploadRootCauseResponseFileText}}</p>
+                                </div>
+                            </div>
+                            <div class="link">
+                                <div class="link-label"><span>Link</span></div>
+                                <div class="link-input"><input type="url" [(ngModel)]="rootCauseLinkInput"
+                                        (input)="onRootCauseLinkInputChange()" class="link-input" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="corrective-action-plans">
+                    <div class="corrective-action-plans-label"><span>Corrective Action Plan</span></div>
+                    <div class="corrective-action-plans-fields-section">
+                        <div class="corrective-action-plans-textarea">
+                            <textarea id="corrective-action-plans-textarea" rows="4" name="auditFindings"
+                                placeholder="Enter Note..." [(ngModel)]="correctivePlanNoteValue"
+                                (input)="onCorrectivePlanNoteChange()"></textarea>
+                        </div>
+                        <div class="owner-name-section">
+                            <div class="owner-name">
+                                <div class="owner-name-label"><span>Owner Name / ID</span></div>
+                                <input type="text" id="owner-name-input" class="owner-name-input" name="ownerName"
+                                    [(ngModel)]="ownerIDValue" (input)="onCorrectivePlanOwnerIDChange()" />
+                            </div>
+                        </div>
+                        <div class="planned-completion-and-actual-completion-date">
+                            <div class="planned-completion-date">
+                                <div class="planned-completion-date-label"><span>Planned completion Date</span></div>
+                                <input type="datetime-local" id="planned-completion-date-input"
+                                    [(ngModel)]="correctivePlannedDateValue" (change)="onCorrectivePlannedDateChange()"
+                                    class="planned-completion-date-input" name="plannedCompletionDate" required
+                                    [min]="minDateTime" [max]="maxDateTime" />
+                            </div>
+                            <div class="actual-completion-date">
+                                <div class="actual-completion-date-label"><span>Actual completion Date</span></div>
+                                <input type="datetime-local" id="planned-completion-date-input"
+                                    [(ngModel)]="correctiveActualDateValue" (change)="onCorrectiveActualDateChange()"
+                                    class="planned-completion-date-input" name="actualCompletionDate" required
+                                    [min]="minDateTime" [max]="maxDateTime" />
+                            </div>
+                        </div>
+                        <div class="action-status-and-link-section">
+                            <div class="action-status">
+                                <div class="action-status-label"><span>Corrective Action Status</span></div>
+                                <div class="dropdown-section">
+                                    <div class="action-status-dropdown-section" (click)="onActionStatusDropdownClick()"
+                                        #correctiveActionStatusDropdown>
+                                        <select class="action-status-dropdown-select"
+                                            (change)="onCorrectivePlanActiveStatusOptionChange()"
+                                            [(ngModel)]="actionStatusSelectedOption">
+                                            <option value="" disabled selected>Select</option>
+                                            <option *ngFor="let actionStatusCategory of actionStatusCategoryOptions"
+                                                [value]="actionStatusCategory.name">
+                                                {{ actionStatusCategory.name }}
+                                            </option>
+                                        </select>
+                                        <div class="dropdown-arrow">
+                                            <app-dropdown-arrow-icons
+                                                [isOpen]="isActionStatusCategoryDropdownOpen"></app-dropdown-arrow-icons>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="link">
+                                <div class="link-label"><span>Link</span></div>
+                                <div class="link-input"><input type="text" placeholder=""
+                                        [(ngModel)]="correctivePlanLinkInput"
+                                        (input)="onCorrectivePlanLinkInputChange()" />
+                                </div>
+                            </div>
+                            <div class="upload-corrective-action-status-evidence">
+                                <div class="upload-corrective-action-status-evidence-label">
+                                    <span>Attach
+                                        Evidence</span>
+                                    <span *ngIf="checkCorrectivePlanResponse()" class="asterisk">*</span>
+                                </div>
+                                <div class="upload-corrective-action-status-evidence-btn">
+                                    <label for="corrective-action-status-file-upload" class="upload">
+                                        Upload
+                                        <input type="file" id="corrective-action-status-file-upload"
+                                            accept="application/pdf" (change)="uploadCorrectiveStatusEvidence($event)"
+                                            hidden>
+                                    </label>
+                                    <p [matTooltip]="uploadCorrectiveActionStatusFile">
+                                        {{uploadCorrectiveActionStatusFile}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions class="action-btns">
+        <div class="cancel-save-btns">
+            <button class="cancel" mat-dialog-close>Cancel</button>
+            <button class="save" [disabled]="!noErrors || !checkResponseAvailability()" (click)="onSave()">Save</button>
+        </div>
+    </mat-dialog-actions>
+</div>
