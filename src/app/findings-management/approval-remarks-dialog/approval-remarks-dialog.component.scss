@@ -1,0 +1,68 @@
+.auditor-remarks {
+    font-family: 'Apple SD Gothic Neo', sans-serif;
+    min-height: 360px;
+
+    .header-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 30px 30px 20px;
+
+        .header {
+            font-weight: 700;
+            font-size: 20px;
+            line-height: 100%;
+            color: #575757;
+        }
+
+        .close-icon {
+            cursor: pointer;
+        }
+    }
+
+    .auditor-remarks-content {
+        height: 208px;
+        padding: 0px 30px;
+
+        .auditor-remarks-textarea {
+            textarea {
+                border-radius: 20px;
+                min-height: 200px;
+                padding: 10px;
+                min-width: 574px;
+                font-size: 16px;
+                color: #000000;
+                border: 1px solid #4E4E4E;
+                outline: none;
+            }
+        }
+    }
+
+    .mat-dialog-actions-section {
+        padding: 10px 30px 20px;
+
+        button {
+            font-family: 'Apple SD Gothic Neo', sans-serif;
+            height: 46px;
+            width: 148px;
+            border-radius: 6px;
+            border: 1px solid #000000;
+            background-color: #000000;
+            color: #FFFFFF;
+            margin: 0 20px;
+        }
+
+        button:hover {
+            border-color: #FDE714;
+            background-color: #FDE714;
+            color: #000000;
+        }
+
+        .cancel {
+            background-color: #f13505;
+            color: #FFFFFF;
+            border: 1px solid #f13505;
+        }
+    }
+}
