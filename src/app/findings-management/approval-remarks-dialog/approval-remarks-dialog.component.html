@@ -3,16 +3,16 @@
         <div class="header">
             <span>Auditor Remarks</span>
         </div>
-        <div class="close-icon" (click)="closeDialog()" mat-dialog-close>
+        <div class="close-icon" mat-dialog-close>
             <img src="../assets/images/close.png" alt="close" id="close-icon" />
         </div>
     </div>
     <mat-dialog-content class="auditor-remarks-content">
-        <div class="auditor-remarks-textarea"> <textarea placeholder=""></textarea>
+        <div class="auditor-remarks-textarea"> <textarea placeholder="" [(ngModel)]="auditorRemarks"></textarea>
         </div>
     </mat-dialog-content>
     <mat-dialog-actions align="center" class="mat-dialog-actions-section">
-        <button mat-dialog-close class="cancel"><span>Reject</span></button>
-        <button class="save-changes"><span>Approval</span></button>
+        <button mat-dialog-close class="cancel" (click)="onReject()"><span>Reject</span></button>
+        <button class="save-changes" (click)="onApproval()"><span>Approve</span></button>
     </mat-dialog-actions>
 </div>

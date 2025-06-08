@@ -70,22 +70,13 @@ export class FindingsQuestionResponseDialogComponent {
   actionStatusSelectedOption: string = '';
   auditInfo!: any;
   actionStatusCategoryOptions = [{
-    name: 'Noteworthy Effort'
+    name: 'Planned'
   },
   {
-    name: 'Major Non-Conformance'
+    name: 'in progress'
   },
   {
-    name: 'Minor Non-Conformance'
-  },
-  {
-    name: 'Observation'
-  },
-  {
-    name: 'Opportunity for Improvement'
-  },
-  {
-    name: 'Conformance'
+    name: 'Complete'
   }];
   minDateTime!: any;
   maxDateTime!: any;

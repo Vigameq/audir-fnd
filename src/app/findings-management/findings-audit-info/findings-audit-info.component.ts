@@ -80,16 +80,18 @@ export class FindingsAuditInfoComponent {
     return
   }
 
-  onsubmit() {
+  onsubmit(data: any) {
     const payload = {
       audit_id: this.auditId.audit_id,
-      email: localStorage.getItem('user')?.toString() || ''
+      email: localStorage.getItem('user')?.toString() || '',
+      approval_status: data.approval_status,
+      auditor_remarks: data.auditor_remarks
     }
-    this.audirService.submitAudit(payload).subscribe((audit: any) => {
+    this.audirService.submitNCAudit(payload).subscribe((audit: any) => {
       if (audit) {
         this.audirService.showSuccess('Audit submitted successfully');
         console.log('Audit submitted successfully');
-        this.navigateToAuditPerform();
+        this.navigateToFindingsManagement();
       }
     }, (error: any) => {
       this.audirService.showError('Audit submission failed');
@@ -102,13 +104,13 @@ export class FindingsAuditInfoComponent {
       disableClose: true
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.onsubmit();
+      if (result && result?.approval_status != '') {
+        this.onsubmit(result);
       }
     });
   }
-  public navigateToAuditPerform() {
-    localStorage.setItem('header', 'Audit Perform');
-    this.router.navigate(['/auditPerform']);
+  public navigateToFindingsManagement() {
+    localStorage.setItem('header', 'Findings Management');
+    this.router.navigate(['/findingsManagement']);
   }
 }

@@ -79,8 +79,7 @@
                         </svg>
                     </div>
                 </div>
-                <div class="audit-count" *ngIf="findingsManagementItem.sub_audits.length>0"
-                    (click)="openSubAudits(findingsManagementItem.sub_audits,i)">
+                <div class="audit-count" *ngIf="findingsManagementItem.sub_audits.length>0" (click)="openSubAudits(i)">
                     <span>{{findingsManagementItem.sub_audits.length}}</span>
                 </div>
             </div>
@@ -152,7 +151,8 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div *ngIf="sub_audit.link_audit !== 'None'" class="download-findings-evidence" [matTooltip]="downloadEvidence">
+                            <div *ngIf="sub_audit.link_audit !== 'None'" class="download-findings-evidence"
+                                [matTooltip]="downloadEvidence">
                                 <svg width="40px" height="40px" viewBox="0 0 24 24" fill="#000000"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd"

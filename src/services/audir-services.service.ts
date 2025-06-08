@@ -131,6 +131,10 @@ export class AudirService {
     return this.http.post<any>('/audire/api/submitAudit', payload);
   }
 
+  submitNCAudit(payload: any) {
+    return this.http.post<any>('/audire/api/submitNC', payload);
+  }
+
   /* services for audit findings */
 
   getNCAuditLists(payload: any) {

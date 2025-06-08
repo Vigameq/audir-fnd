@@ -1,6 +1,5 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-approval-remarks-dialog',
@@ -8,9 +7,22 @@ import { Router } from '@angular/router';
   styleUrls: ['./approval-remarks-dialog.component.scss']
 })
 export class ApprovalRemarksDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router) {
+  auditorRemarks: string = '';
+  constructor(
+    public dialogRef: MatDialogRef<ApprovalRemarksDialogComponent>
+  ) { }
+
+  onApproval(): void {
+    this.dialogRef.close({
+      approval_status: 'approved',
+      auditor_remarks: this.auditorRemarks
+    });
   }
-  closeDialog() {
-    this.router.navigate(['/templates']);
+
+  onReject(): void {
+    this.dialogRef.close({
+      approval_status: 'rejected',
+      auditor_remarks: this.auditorRemarks
+    });
   }
 }
