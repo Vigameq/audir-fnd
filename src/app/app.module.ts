@@ -28,14 +28,17 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ImportCreatePlanDialogComponent } from './audit-plan/import-create-plan-dialog/import-create-plan-dialog.component';
 import { EditPlanDialogComponent } from './audit-plan/edit-plan-dialog/edit-plan-dialog.component';
 import { ToastrModule } from 'ngx-toastr';
-import { ImportTemplateDialogComponent } from './templates/Import-template-dialog/import-template-dialog/import-template-dialog.component';
-import { AuditorRemarksComponent } from './templates/Import-template-dialog/auditor-remarks/auditor-remarks.component';
 import { SpecificFunctionAuditInfoComponent } from './audit-perform/specific-function-audit-info/specific-function-audit-info.component';
 import { CustomiseAuditQuestionDialogComponent } from './audit-perform/customise-audit-question-dialog/customise-audit-question-dialog.component';
 import { AuditFunctionalQuestionProgressDialogComponent } from './audit-perform/audit-functional-question-progress-dialog/audit-functional-question-progress-dialog.component';
 import { NotificationsComponent } from './header/notifications/notifications.component';
 import { PascalCasePipe } from './custom-pipes/pascal-case.pipe';
 import { SubmitConfirmationDialogComponent } from './audit-perform/submit-confirmation-dialog/submit-confirmation-dialog.component';
+import { ImportTemplateDialogComponent } from './templates/Import-template-dialog/import-template-dialog.component';
+import { FindingsAuditInfoComponent } from './findings-management/findings-audit-info/findings-audit-info.component';
+import { FindingsQuestionResponseDialogComponent } from './findings-management/findings-question-response-dialog/findings-question-response-dialog.component';
+import { ApprovalRemarksDialogComponent } from './findings-management/approval-remarks-dialog/approval-remarks-dialog.component';
+import { FindingsAuditProgressDialogComponent } from './findings-management/findings-audit-progress-dialog/findings-audit-progress-dialog.component';
 
 @NgModule({
   declarations: [
@@ -55,13 +58,16 @@ import { SubmitConfirmationDialogComponent } from './audit-perform/submit-confir
     ImportCreatePlanDialogComponent,
     EditPlanDialogComponent,
     ImportTemplateDialogComponent,
-    AuditorRemarksComponent,
+    ApprovalRemarksDialogComponent,
     SpecificFunctionAuditInfoComponent,
     CustomiseAuditQuestionDialogComponent,
     AuditFunctionalQuestionProgressDialogComponent,
     NotificationsComponent,
     PascalCasePipe,
-    SubmitConfirmationDialogComponent
+    SubmitConfirmationDialogComponent,
+    FindingsAuditInfoComponent,
+    FindingsQuestionResponseDialogComponent,
+    FindingsAuditProgressDialogComponent
   ],
   imports: [
     BrowserModule,

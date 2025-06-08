@@ -1,4 +1,4 @@
-.audit-perfom {
+.audit-perform {
     max-width: 100%;
     margin: 16px 40px 0 44px;
     font-family: 'Apple SD Gothic Neo', sans-serif;
@@ -97,7 +97,7 @@
 
     }
 
-    .Audit-info-label {
+    .audit-info-label {
         margin-top: 30px;
         font-weight: 700;
         font-size: 22px;
@@ -124,7 +124,7 @@
             padding: 20px 40px 26px;
             gap: 20px;
 
-            .audit-perfom-details {
+            .audit-perform-details {
                 display: flex;
                 flex: 1;
                 flex-direction: column;
@@ -352,9 +352,15 @@
                 bottom: 20px;
             }
 
-            .show-question-svg {
+            .navigate-to-questions-svg {
                 margin-top: 38px;
                 cursor: pointer;
+
+                svg:hover {
+                    path {
+                        fill: #FFEA00;
+                    }
+                }
             }
 
             .svg-icon {
