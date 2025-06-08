@@ -45,6 +45,10 @@ export class AudirService {
     return this.http.post(`${environment.apiUrl}/api/getQuestionData`, payload);
   }
 
+  getNCQuestionData(payload: any) {
+    return this.http.post('/audire/api/getNCQuestionData', payload);
+  }
+
   saveAuditFinding(payload: any) {
     return this.http.post(`${environment.apiUrl}/api/saveAuditFinding`, payload);
   }
@@ -57,6 +61,18 @@ export class AudirService {
     return this.http.post(`${environment.apiUrl}/api/saveAuditorNotes`, payload);
   }
 
+  saveCorrectionsResponse(payload: any) {
+    return this.http.post('/audire/api/saveNCCorrectionData', payload);
+  }
+
+  saveRootCauseResponse(payload: any) {
+    return this.http.post('/audire/api/saveNCRootCauseData', payload);
+  }
+
+  savesCorrectiveActionPlanResponse(payload: any) {
+    return this.http.post('/audire/api/saveNCCorrectiveActionPlanData', payload);
+  }
+
   updateAuditPlan(updatedAuditDetails: any) {
     return this.http.post(`${environment.apiUrl}/api/updateAuditPlan`, updatedAuditDetails);
   }
@@ -67,6 +83,12 @@ export class AudirService {
 
   getEvidence(audit_id: any, evidenceFileName: any) {
     return this.http.get<any>(`${environment.apiUrl}/api/questionDataFile/` + audit_id + '/' + evidenceFileName, {
+      responseType: 'arraybuffer' as 'json'
+    });
+  }
+
+  getNCEvidence(audit_id: any, evidenceFileName: any, responseTYpe: any) {
+    return this.http.get<any>('/audire/api/questionNCDataFile/' + audit_id + '/' + responseTYpe + '/' + evidenceFileName, {
       responseType: 'arraybuffer' as 'json'
     });
   }
@@ -103,8 +125,22 @@ export class AudirService {
     return this.http.post<any>(`${environment.apiUrl}/api/getAuditQuestions`, payload);
   }
 
+  getNCAuditQuestions(payload: any) {
+    return this.http.post<any>('/audire/api/getNCAuditQuestions', payload);
+  }
+
   submitAudit(payload: any) {
     return this.http.post<any>(`${environment.apiUrl}/api/submitAudit`, payload);
+  }
+
+  submitNCAudit(payload: any) {
+    return this.http.post<any>('/audire/api/submitNC', payload);
+  }
+
+  /* services for audit findings */
+
+  getNCAuditLists(payload: any) {
+    return this.http.post<any>('/audire/api/listNCAudits', payload);
   }
 
   getData(): any {
