@@ -93,7 +93,8 @@
                         </g>
                     </svg>
                 </div> -->
-                <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0" (click)="openSubAudits(auditPerformItem.sub_audits,i)">
+                <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0"
+                    (click)="openSubAudits(auditPerformItem.sub_audits,i)">
                     <span>{{auditPerformItem.sub_audits.length}}</span>
                 </div>
             </div>
@@ -169,7 +170,8 @@
                                     [isOpen]="isAuditeesDropdownOpened[j]"></app-dropdown-arrow-icons>
                             </div>
                         </div>
-                        <div class="svg-icon" [class.disabled]="isSvgDisabled" [matTooltip]="updateAuditee" matTooltipPosition="above">
+                        <div class="svg-icon" [class.disabled]="isSvgDisabled" [matTooltip]="updateAuditee"
+                            matTooltipPosition="above">
                             <svg width="20px" height="20px" viewBox="0 0 24 24"
                                 id="meteor-icon-kit__regular-check-circle" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" (click)="updatePlanWithNewAssignee(sub_audit,j)">
