@@ -73,7 +73,7 @@ export class FindingsQuestionResponseDialogComponent {
     name: 'Planned'
   },
   {
-    name: 'in progress'
+    name: 'In progress'
   },
   {
     name: 'Complete'

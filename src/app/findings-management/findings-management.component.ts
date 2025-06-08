@@ -48,7 +48,7 @@ export class FindingsManagementComponent {
         from: fromDate,
         to: toDate
       },
-      status_filter: ["created", "inprogress", "submitted", "nc_inprogress"]
+      status_filter: ["created", "inprogress", "submitted", "nc_inprogress", "completed"]
     };
 
     this.audirService.getAuditLists(payload).subscribe((response: any) => {

@@ -49,15 +49,15 @@
                         </div>
                         <div class="planned-completion-and-actual-completion-date">
                             <div class="planned-completion-date">
-                                <div class="planned-completion-date-label"><span>Planned completion Date</span></div>
+                                <div class="planned-completion-date-label"><span>Planned completion date</span></div>
                                 <input type="datetime-local" id="planned-completion-date-input"
                                     [(ngModel)]="correctionPlannedCompletionDateValue"
                                     class="planned-completion-date-input"
                                     (change)="onCorrectionPlannedCompletionDateChange()" name="plannedCompletionDate"
-                                    required [min]="minDateTime" [max]="maxDateTime" />
+                                    required [min]="minDateTime"/>
                             </div>
                             <div class="actual-completion-date">
-                                <div class="actual-completion-date-label"><span>Actual completion Date</span></div>
+                                <div class="actual-completion-date-label"><span>Actual completion date</span></div>
                                 <input type="datetime-local" id="actual-completion-date-input"
                                     [(ngModel)]="correctionActualCompletionDateValue"
                                     class="actual-completion-date-input"
@@ -115,14 +115,14 @@
                         </div>
                         <div class="planned-completion-and-actual-completion-date">
                             <div class="planned-completion-date">
-                                <div class="planned-completion-date-label"><span>Planned completion Date</span></div>
+                                <div class="planned-completion-date-label"><span>Planned completion date</span></div>
                                 <input type="datetime-local" id="planned-completion-date-input"
                                     [(ngModel)]="correctivePlannedDateValue" (change)="onCorrectivePlannedDateChange()"
                                     class="planned-completion-date-input" name="plannedCompletionDate" required
-                                    [min]="minDateTime" [max]="maxDateTime" />
+                                    [min]="minDateTime" />
                             </div>
                             <div class="actual-completion-date">
-                                <div class="actual-completion-date-label"><span>Actual completion Date</span></div>
+                                <div class="actual-completion-date-label"><span>Actual completion date</span></div>
                                 <input type="datetime-local" id="planned-completion-date-input"
                                     [(ngModel)]="correctiveActualDateValue" (change)="onCorrectiveActualDateChange()"
                                     class="planned-completion-date-input" name="actualCompletionDate" required
