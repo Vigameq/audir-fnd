@@ -159,8 +159,17 @@ export class AuditPerformComponent {
 
   updateLineHeight(auditIndex: any, index: number, statusContent: HTMLElement) {
     const subAudit: any = this.auditList[auditIndex].sub_audits;
+    let newLineHeight: any;
     if (index <= subAudit.length) {
-      const newLineHeight = index === 0 ? statusContent.offsetHeight - 66 : statusContent.offsetHeight - 4;
+      if (this.auditList[auditIndex].sub_audits[index].city === '' || this.auditList[auditIndex].sub_audits[index].functions === '') {
+        newLineHeight = index === 0 ? statusContent.offsetHeight - 46 : statusContent.offsetHeight + 16;
+        if (this.auditList[auditIndex].sub_audits[index].functions === '') {
+          newLineHeight = index === 0 ? statusContent.offsetHeight - 26 : statusContent.offsetHeight + 36;
+        }
+      }
+      else {
+        newLineHeight = index === 0 ? statusContent.offsetHeight - 66 : statusContent.offsetHeight - 4;
+      }
       if (subAudit.lineHeight !== newLineHeight) {
         this.auditList[auditIndex].sub_audits[index].lineHeight = newLineHeight;
       }

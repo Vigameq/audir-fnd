@@ -20,7 +20,7 @@
                     <div class="auditor-note-label"><span>Auditor Note</span></div>
                     <div class="auditor-note-fields-section">
                         <div class="audit-note-textarea"><textarea id="audit-note-textarea" rows="4" name="auditNote"
-                                [(ngModel)]="auditNoteValue" placeholder="" (input)="onAuditNoteChange()"></textarea>
+                                [(ngModel)]="auditNoteValue" placeholder="Enter Note..." (input)="onAuditNoteChange()"></textarea>
                         </div>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
                     <div class="auditee-response-label"><span>Auditee Response</span></div>
                     <div class="auditee-response-fields-section">
                         <div class="auditee-response-textarea"><textarea id="auditee-response-textarea" rows="4"
-                                name="auditeeResponse" [(ngModel)]="auditeeResponseValue" placeholder=""
+                                name="auditeeResponse" [(ngModel)]="auditeeResponseValue" placeholder="Enter Note..."
                                 (input)="onAuditeeResponseChange()"></textarea></div>
                         <div class="upload-evidence-and-link-section">
                             <div class="upload-evidence">
@@ -58,7 +58,7 @@
                         <div class="audit-findings-fields-section">
                             <div class="audit-findings-textarea">
                                 <textarea id="audit-findings-textarea" rows="4" name="auditFindings"
-                                    [(ngModel)]="auditFindingsValue[i]" placeholder=""
+                                    [(ngModel)]="auditFindingsValue[i]" placeholder="Enter Note..."
                                     (input)="onAuditFindingsChange(i)"></textarea>
                             </div>
                             <div class="finding-category-and-clause-section">
@@ -78,7 +78,7 @@
                                             </select>
                                             <div class="dropdown-arrow">
                                                 <app-dropdown-arrow-icons
-                                                    [isOpen]="isfindingCategoryDropdownOpen"></app-dropdown-arrow-icons>
+                                                    [isOpen]="isFindingCategoryDropdownOpen"></app-dropdown-arrow-icons>
                                             </div>
                                         </div>
                                     </div>
@@ -113,7 +113,7 @@
                     <path
                         d="M3.45895 8.21V5.186H0.578953V3.26H3.45895V0.289999H5.56495V3.26H8.42695V5.186H5.56495V8.21H3.45895Z"
                         fill="" />
-                </svg><span>Add Audit Finding</span>
+                </svg><span>Add Audit Finding  </span> <span>[ {{totalFindings.length}}/10 ]</span>
             </button>
         </div>
         <div class="cancel-save-btns">

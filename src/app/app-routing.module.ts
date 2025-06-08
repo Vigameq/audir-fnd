@@ -11,6 +11,7 @@ import { UserManagementComponent } from './user-management/user-management.compo
 import { authGuard as AuthGuard } from './auth.guard';
 import { SpecificFunctionAuditInfoComponent } from './audit-perform/specific-function-audit-info/specific-function-audit-info.component';
 import { CustomiseAuditQuestionDialogComponent } from './audit-perform/customise-audit-question-dialog/customise-audit-question-dialog.component';
+import { FindingsAuditInfoComponent } from './findings-management/findings-audit-info/findings-audit-info.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -32,6 +33,10 @@ const routes: Routes = [
   },
   {
     path: 'findingsManagement', component: FindingsManagementComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'findingsManagement/:id', component: FindingsAuditInfoComponent,
     canActivate: [AuthGuard]
   },
   {

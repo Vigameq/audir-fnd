@@ -1,4 +1,4 @@
-<div class="audit-perfom">
+<div class="audit-perform">
     <div class="search-date-filter-section">
         <div class="audit-perform-search-bar">
             <input type="text" [(ngModel)]="searchQuery" placeholder="Search" (input)="onSearch()"
@@ -31,11 +31,11 @@
             </div>
         </div>
     </div>
-    <div class="Audit-info-label"><span>Audit Information</span></div>
+    <div class="audit-info-label"><span>Audit Information</span></div>
     <div class="audit-perform-container-section" *ngIf="auditList?.length > 0">
         <div *ngFor="let auditPerformItem of auditList; let i = index">
             <div class="audit-perform-container">
-                <div class="audit-perfom-details">
+                <div class="audit-perform-details">
                     <div class="plan-creation-id"><span>{{auditPerformItem.audit_title}}</span></div>
                     <div class="templates-location-details">
                         <div class="templates-details"
@@ -93,7 +93,8 @@
                         </g>
                     </svg>
                 </div> -->
-                <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0" (click)="openSubAudits(auditPerformItem.sub_audits,i)">
+                <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0"
+                    (click)="openSubAudits(auditPerformItem.sub_audits,i)">
                     <span>{{auditPerformItem.sub_audits.length}}</span>
                 </div>
             </div>
@@ -104,7 +105,7 @@
                         <div class="dot"></div>
                     </div>
                     <div class="sub-audit-perform-container" #detailsContent>
-                        <div class="audit-perfom-details">
+                        <div class="audit-perform-details">
                             <div class="plan-creation-id"><span>{{sub_audit.audit_title}}</span></div>
                             <div class="templates-location-details">
                                 <div class="templates-details">
@@ -169,7 +170,8 @@
                                     [isOpen]="isAuditeesDropdownOpened[j]"></app-dropdown-arrow-icons>
                             </div>
                         </div>
-                        <div class="svg-icon" [class.disabled]="isSvgDisabled" [matTooltip]="updateAuditee" matTooltipPosition="above">
+                        <div class="svg-icon" [class.disabled]="isSvgDisabled" [matTooltip]="updateAuditee"
+                            matTooltipPosition="above">
                             <svg width="20px" height="20px" viewBox="0 0 24 24"
                                 id="meteor-icon-kit__regular-check-circle" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" (click)="updatePlanWithNewAssignee(sub_audit,j)">
@@ -179,7 +181,7 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="show-question-svg" [routerLink]="[sub_audit.audit_id]">
+                    <div class="navigate-to-questions-svg" [routerLink]="[sub_audit.audit_id]">
                         <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M12.1094 0C18.7988 0 24.2188 5.41992 24.2188 12.1094C24.2188 18.7988 18.7988 24.2188 12.1094 24.2188C5.41992 24.2188 0 18.7988 0 12.1094C0 5.41992 5.41992 0 12.1094 0ZM6.44531 14.2578H12.1094V17.7197C12.1094 18.2422 12.7441 18.5059 13.1104 18.1348L18.6914 12.5244C18.9209 12.2949 18.9209 11.9287 18.6914 11.6992L13.1104 6.08398C12.7393 5.71289 12.1094 5.97656 12.1094 6.49902V9.96094H6.44531C6.12305 9.96094 5.85938 10.2246 5.85938 10.5469V13.6719C5.85938 13.9941 6.12305 14.2578 6.44531 14.2578Z"
