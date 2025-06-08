@@ -54,7 +54,7 @@
                                     [(ngModel)]="correctionPlannedCompletionDateValue"
                                     class="planned-completion-date-input"
                                     (change)="onCorrectionPlannedCompletionDateChange()" name="plannedCompletionDate"
-                                    required [min]="minDateTime"/>
+                                    required [min]="minDateTime" />
                             </div>
                             <div class="actual-completion-date">
                                 <div class="actual-completion-date-label"><span>Actual completion date</span></div>
@@ -185,7 +185,7 @@
     <mat-dialog-actions class="action-btns">
         <div class="cancel-save-btns">
             <button class="cancel" mat-dialog-close>Cancel</button>
-            <button class="save" [disabled]="!noErrors || !checkResponseAvailability() || isExisting" (click)="onSave()">Save</button>
+            <button class="save" [disabled]="!noErrors || !checkResponseAvailability()" (click)="onSave()">Save</button>
         </div>
     </mat-dialog-actions>
 </div>
