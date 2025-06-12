@@ -1,4 +1,4 @@
-<div class="audit-question-progress-container">
+<div class="audit-progress-container">
     <mat-dialog-title class="title-section">
         <div class="back-navigation-icon" (click)="closeResponseDialog()">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="" xmlns="http://www.w3.org/2000/svg">
@@ -31,24 +31,26 @@
                                 <div class="audit-label"><span>{{elementStatus.type | pascalCase}}</span></div>
                                 <div class="auditor-and-type">
                                     <span class="auditor">{{elementStatus.updated_by.name}}</span>
-                                    <!-- <span class="type" *ngIf="elementStatus.type === 'Auditee Response'"> |
-                                        {{elementStatus.type}}</span> -->
                                 </div>
-                                <div style="margin: 10px 0;">
-                                    <div class="audit-description"><span>{{elementStatus.content}}</span></div>
-                                    <div class="audit-description" *ngIf="elementStatus.type === 'auditee_response'">
+                                <div class="audit-question-response-details">
+                                    <div class="audit-description" *ngIf="elementStatus.notes !== ''">
+                                        <span>{{elementStatus.notes}}</span>
+                                    </div>
+                                    <div class="audit-description" *ngIf="elementStatus.link !== ''">
                                         <span>{{elementStatus.link}}</span>
                                     </div>
-                                    <div class="view-img-btn" *ngIf="elementStatus.type === 'auditee_response'">
+                                    <div class="view-img-btn">
                                         <button (click)="downloadEvidence(elementStatus)">
                                             <span>View evidence</span>
                                         </button>
                                     </div>
-                                    <div class="audit-description" *ngIf="elementStatus.type === 'audit_findings'">
-                                        <span>{{elementStatus.category}}</span>
+                                    <div class="audit-description"
+                                        *ngIf="elementStatus.type === 'nc_corrective_action_plan' && elementStatus.owner_name_id !== ''">
+                                        <span>{{elementStatus.owner_name_id}}</span>
                                     </div>
-                                    <div class="audit-description" *ngIf="elementStatus.type === 'audit_findings'">
-                                        <span>{{elementStatus.closure_reference}}</span>
+                                    <div class="audit-description"
+                                        *ngIf="elementStatus.type === 'nc_corrective_action_plan' && elementStatus.corrective_action_status !== ''">
+                                        <span>{{elementStatus.corrective_action_status}}</span>
                                     </div>
                                 </div>
                             </div>

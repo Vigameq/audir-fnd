@@ -1,0 +1,399 @@
+.findings-management {
+    max-width: 100%;
+    margin: 16px 40px 0 44px;
+    font-family: 'Apple SD Gothic Neo', sans-serif;
+
+    .search-date-filter-section {
+        width: 100%;
+        height: 127px;
+        display: flex;
+        background-color: #1D2431;
+        border-radius: 15px;
+        border: 1px #000000;
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+
+        .findings-management-search-bar {
+            position: relative;
+            height: 44px;
+            width: 100%;
+            margin: 20px;
+            font-size: 16px;
+            font-family: 'Apple SD Gothic Neo', sans-serif;
+
+
+            .findings-management-search-input {
+                width: 85%;
+                padding: 10px 30px 10px 20px;
+                font-size: 16px;
+                color: #000000;
+                border: 1px solid #D9D9D9;
+                border-radius: 24px;
+                outline: none;
+            }
+
+            .findings-management-search-input::placeholder {
+                color: #515151;
+            }
+
+
+            .findings-management-search-input:focus {
+                border-color: #FFEA00;
+            }
+
+            .clear-btn {
+                position: absolute;
+                right: 176px;
+                top: 52%;
+                transform: translateY(-50%);
+                background: transparent;
+                border: none;
+                font-size: 12px;
+                cursor: pointer;
+                color: #1D2431;
+            }
+
+            .clear-btn:hover {
+                color: #FFEA00;
+            }
+
+        }
+
+        .date-filter-and-reset {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            padding-right: 20px;
+            align-items: center;
+
+            .from-date,
+            .to-date {
+                margin-top: 20px;
+
+                .custom-date-picker {
+                    width: 190px;
+                }
+            }
+
+            .reset input {
+                cursor: pointer;
+                font-size: 16px;
+                color: #575757;
+                outline: none;
+                border: none;
+                border-radius: 6px;
+                padding: 6px;
+                width: 60px;
+            }
+
+            .reset input:active {
+                color: #000000;
+                background-color: #FFEA00;
+                border: 1px #FFEA00;
+            }
+        }
+
+    }
+
+    .audit-info-label {
+        margin-top: 30px;
+        font-weight: 700;
+        font-size: 22px;
+        color: #4E4E4E;
+        line-height: 100%;
+    }
+
+    .findings-management-container-section {
+        margin: 10px 0 30px 0;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+
+        .findings-management-container,
+        .sub-findings-management-container {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #1D2431;
+            border-radius: 20px;
+            padding: 20px 40px 26px;
+            gap: 20px;
+
+            .findings-management-details-and-download-icon {
+                display: flex;
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+
+                .download-findings-evidence {
+                    width: 40px;
+                    height: 40px;
+
+                    svg {
+                        cursor: pointer;
+                    }
+
+                    svg:hover {
+                        path {
+                            fill: #FFEA00;
+                        }
+                    }
+                }
+            }
+
+            .findings-management-details {
+                display: flex;
+                flex: 1;
+                flex-direction: column;
+                gap: 10px;
+
+                .plan-creation-id {
+                    display: flex;
+
+                    span {
+                        font-size: 20px;
+                        font-weight: 700;
+                        line-height: 100%;
+                        color: #515151;
+                    }
+                }
+
+                .templates-location-details {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2px;
+                    font-size: 18px;
+                    font-weight: 400;
+                    line-height: 100%;
+                    color: #515151;
+
+                    .templates-details {
+                        padding-bottom: 2px;
+                    }
+                }
+
+                .duration-details {
+                    font-size: 16px;
+                    font-weight: 400;
+                    line-height: 100%;
+                    color: #515151;
+
+                    .time-details {
+                        padding-top: 2px;
+
+                        .end-time {
+                            margin-left: 30px;
+                        }
+                    }
+                }
+            }
+
+            .audit-count {
+                min-width: 35px;
+                min-height: 35px;
+                position: absolute;
+                left: -18px;
+                border-radius: 50%;
+                top: 50%;
+                padding: 2px;
+                transform: translateY(-50%);
+                background-color: #000000;
+                border: 1px solid #000000;
+                font-size: 20px;
+                font-weight: 400;
+                line-height: 100%;
+                cursor: pointer;
+                color: #FFFFFF;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+
+        .vertical-bar,
+        .hyphen {
+            margin: 0 4px;
+        }
+
+        .sub-audit {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+
+            .sub-findings-management-container {
+                flex: 6;
+                margin-top: 30px;
+                padding: 20px;
+                gap: 10px;
+
+                .findings-management-details {
+                    flex: 4
+                }
+
+                .auditees-and-download-evidence {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 10px;
+                    flex: 2;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    .change-auditee-and-confirmation {
+                        display: flex;
+                        flex-direction: row;
+                        gap: 10px;
+                        justify-content: space-between;
+                        align-items: center;
+
+                        .auditees {
+                            position: relative;
+                            margin: 0 10px 22px 10px;
+
+                            .auditee-label {
+                                padding-left: 2px;
+                            }
+
+                            .dropbtn {
+                                background-color: #ffffff;
+                                color: #000000;
+                                padding: 6px 30px 6px 12px;
+                                cursor: pointer;
+                                border-radius: 6px;
+                                display: flex;
+                                align-items: center;
+                                height: 40px;
+                                width: 240px;
+                                border: 1px solid #D9D9D9;
+
+                                span {
+                                    overflow: hidden;
+                                    white-space: nowrap;
+                                    text-overflow: ellipsis;
+                                    max-width: 180px;
+                                }
+                            }
+
+                            .auditeeDropdown {
+                                margin-bottom: 10px;
+                            }
+
+                            .dropdown-content {
+                                display: grid;
+                                position: absolute;
+                                background-color: #ffffff;
+                                min-width: 160px;
+                                /* box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); */
+                                padding: 6px;
+                                z-index: 1100;
+                                border-radius: 6px;
+                                border: 1px solid #dbdbdb;
+                                width: 240px;
+                                top: 66px;
+                                max-height: 104px;
+                                overflow-y: auto;
+                                appearance: none;
+
+
+                                .auditee-value {
+                                    margin-left: 15px !important;
+                                }
+                            }
+
+                            .dropdown-arrow {
+                                position: absolute;
+                                top: 70%;
+                                transform: translateY(-50%);
+                                pointer-events: none;
+                                right: 12px;
+                            }
+                        }
+
+                        .svg-icon {
+                            cursor: pointer;
+
+                            svg:hover {
+                                path {
+                                    fill: #FFEA00;
+                                }
+                            }
+                        }
+
+                        .disabled {
+                            pointer-events: none;
+                            opacity: 0.5;
+                            cursor: not-allowed;
+                        }
+                    }
+
+                    .download-findings-evidence {
+                        width: 40px;
+                        height: 40px;
+
+                        svg {
+                            cursor: pointer;
+                        }
+
+                        svg:hover {
+                            path {
+                                fill: #FFEA00;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .tree-node {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 0 20px;
+            }
+
+            .dot {
+                position: relative;
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                top: 14px;
+                z-index: 1;
+                background-color: #000000;
+            }
+
+            .line {
+                width: 1px;
+                background-color: #000000;
+                position: absolute;
+                bottom: 20px;
+            }
+
+            .navigate-to-questions-svg {
+                margin-top: 38px;
+                cursor: pointer;
+
+                svg:hover {
+                    path {
+                        fill: #FFEA00;
+                    }
+                }
+            }
+        }
+    }
+
+    .no-audit-data {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 100%;
+        color: #515151;
+        padding-top: 20px;
+    }
+}

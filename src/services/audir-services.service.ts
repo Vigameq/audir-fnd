@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,20 +13,20 @@ export class AudirService {
 
   getPlanItems(email: string): Observable<any> {
     const emailId = { "eMail": email };
-    return this.http.post('/audire/api/planItems', emailId);
+    return this.http.post(`${environment.apiUrl}/api/planItems`, emailId);
   }
 
   createAuditPlan(auditPlan: any) {
-    return this.http.post('/audire/api/planAudit', auditPlan);
+    return this.http.post(`${environment.apiUrl}/api/planAudit`, auditPlan);
   }
 
   getAuditPlan(audit_id: any) {
-    return this.http.post('/audire/api/getAuditPlan', audit_id);
+    return this.http.post(`${environment.apiUrl}/api/getAuditPlan`, audit_id);
   }
 
   getTemplate(template_id: any) {
     const templateDetails = { "template_id": template_id };
-    return this.http.post('/audire/api/getTemplate', templateDetails);
+    return this.http.post(`${environment.apiUrl}/api/getTemplate`, templateDetails);
   }
 
   getAllChildPlans(email: any, date: any) {
@@ -36,73 +38,109 @@ export class AudirService {
       },
       "status_filter": ["completed", "created", "lead_auditor"]
     };
-    return this.http.post('/audire/api/listChildAudits', emailDateDetails);
+    return this.http.post(`${environment.apiUrl}/api/listChildAudits`, emailDateDetails);
   }
 
   getQuestionData(payload: any) {
-    return this.http.post('/audire/api/getQuestionData', payload);
+    return this.http.post(`${environment.apiUrl}/api/getQuestionData`, payload);
+  }
+
+  getNCQuestionData(payload: any) {
+    return this.http.post('/audire/api/getNCQuestionData', payload);
   }
 
   saveAuditFinding(payload: any) {
-    return this.http.post('/audire/api/saveAuditFinding', payload);
+    return this.http.post(`${environment.apiUrl}/api/saveAuditFinding`, payload);
   }
 
   saveAuditeeResponse(payload: any) {
-    return this.http.post('/audire/api/saveAuditeeResponse', payload);
+    return this.http.post(`${environment.apiUrl}/api/saveAuditeeResponse`, payload);
   }
 
   saveAuditorNotes(payload: any) {
-    return this.http.post('/audire/api/saveAuditorNotes', payload);
+    return this.http.post(`${environment.apiUrl}/api/saveAuditorNotes`, payload);
+  }
+
+  saveCorrectionsResponse(payload: any) {
+    return this.http.post('/audire/api/saveNCCorrectionData', payload);
+  }
+
+  saveRootCauseResponse(payload: any) {
+    return this.http.post('/audire/api/saveNCRootCauseData', payload);
+  }
+
+  savesCorrectiveActionPlanResponse(payload: any) {
+    return this.http.post('/audire/api/saveNCCorrectiveActionPlanData', payload);
   }
 
   updateAuditPlan(updatedAuditDetails: any) {
-    return this.http.post('/audire/api/updateAuditPlan', updatedAuditDetails);
+    return this.http.post(`${environment.apiUrl}/api/updateAuditPlan`, updatedAuditDetails);
   }
 
   getAuditCompletionPercentage(audit_id: any) {
-    return this.http.post('/audire/api/getAuditCompletionPercent', audit_id);
+    return this.http.post(`${environment.apiUrl}/api/getAuditCompletionPercent`, audit_id);
   }
 
   getEvidence(audit_id: any, evidenceFileName: any) {
-    return this.http.get<any>('/audire/api/questionDataFile/' + audit_id + '/' + evidenceFileName, {
+    return this.http.get<any>(`${environment.apiUrl}/api/questionDataFile/` + audit_id + '/' + evidenceFileName, {
+      responseType: 'arraybuffer' as 'json'
+    });
+  }
+
+  getNCEvidence(audit_id: any, evidenceFileName: any, responseTYpe: any) {
+    return this.http.get<any>('/audire/api/questionNCDataFile/' + audit_id + '/' + responseTYpe + '/' + evidenceFileName, {
       responseType: 'arraybuffer' as 'json'
     });
   }
 
   downloadPlanTemplate(): Observable<ArrayBuffer> {
-    return this.http.get<any>('/audire/api/downloadAuditPlan', {
+    return this.http.get<any>(`${environment.apiUrl}/api/downloadAuditPlan`, {
       responseType: 'arraybuffer' as 'json'
     });
   }
 
   downloadTemplate(): Observable<ArrayBuffer> {
-    return this.http.get<any>('/audire/api/downloadAuditTemplate', {
+    return this.http.get<any>(`${environment.apiUrl}/api/downloadAuditTemplate`, {
       responseType: 'arraybuffer' as 'json'
     });
   }
 
   uploadTemplate(formData: FormData): any {
-    return this.http.post<any>('/audire/api/uploadTemplate', formData);
+    return this.http.post<any>(`${environment.apiUrl}/api/uploadTemplate`, formData);
   }
   validatePlan(formData: FormData): any {
-    return this.http.post<any>('/audire/api/validateAuditPlan', formData);
+    return this.http.post<any>(`${environment.apiUrl}/api/validateAuditPlan`, formData);
   }
   createPlans(formData: FormData): any {
-    return this.http.post<any>('/audire/api/bulkAuditCreate', formData);
+    return this.http.post<any>(`${environment.apiUrl}/api/bulkAuditCreate`, formData);
   }
 
   /* services for Audit perform */
 
   getAuditLists(payload: any) {
-    return this.http.post<any>('/audire/api/listAudits', payload);
+    return this.http.post<any>(`${environment.apiUrl}/api/listAudits`, payload);
   }
 
   getAuditQuestions(payload: any) {
-    return this.http.post<any>('/audire/api/getAuditQuestions', payload);
+    return this.http.post<any>(`${environment.apiUrl}/api/getAuditQuestions`, payload);
+  }
+
+  getNCAuditQuestions(payload: any) {
+    return this.http.post<any>('/audire/api/getNCAuditQuestions', payload);
   }
 
   submitAudit(payload: any) {
-    return this.http.post<any>('/audire/api/submitAudit', payload);
+    return this.http.post<any>(`${environment.apiUrl}/api/submitAudit`, payload);
+  }
+
+  submitNCAudit(payload: any) {
+    return this.http.post<any>('/audire/api/submitNC', payload);
+  }
+
+  /* services for audit findings */
+
+  getNCAuditLists(payload: any) {
+    return this.http.post<any>('/audire/api/listNCAudits', payload);
   }
 
   getData(): any {

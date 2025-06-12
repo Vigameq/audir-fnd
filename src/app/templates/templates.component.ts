@@ -1,9 +1,8 @@
 import { ChangeDetectorRef, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { ImportTemplateDialogComponent } from './Import-template-dialog/import-template-dialog/import-template-dialog.component';
-// import { AuditorRemarksComponent } from './Import-template-dialog/auditor-remarks/auditor-remarks.component';
 import { AudirService } from 'src/services/audir-services.service';
+import { ImportTemplateDialogComponent } from './Import-template-dialog/import-template-dialog.component';
 
 @Component({
   selector: 'app-templates',
@@ -97,26 +96,6 @@ export class TemplatesComponent {
     }
   }
 
-  // editQuestion(index: number, type: string, questionText?: string) {
-  //   if (type === 'edit' || type === 'cancel') {
-  //     this.allQuestions[index].showEditIcon = type === 'edit' ? false : true;
-  //     this.editedQuestionText = questionText;
-  //     return;
-  //   }
-  //   this.allQuestions[index].showEditIcon = true;
-  //   this.allQuestions[index].questionText = this.editedQuestionText;
-  //   // const dialogRef = this.dialog.open(AuditorRemarksComponent, {
-  //   //   width: '634px',
-  //   //   height: '360px',
-  //   //   data: { id: 'GG196678' }
-  //   // });
-
-  //   // dialogRef.afterClosed().subscribe((result: any) => {
-  //   //   this.router.navigate(['/templates']);
-  //   //   console.log(`Dialog result: ${result}`);
-  //   // });
-  // }
-
   getTemplates() {
     const email = localStorage.getItem('user')?.toString() || '';
     const selectedTemplate: any = JSON.parse(localStorage.getItem("selectedTemplate") as any);
@@ -134,7 +113,4 @@ export class TemplatesComponent {
     })
   }
 
-  // deleteQuestion(index: number) {
-  //   this.allQuestions.splice(index, 1);
-  // }
 }

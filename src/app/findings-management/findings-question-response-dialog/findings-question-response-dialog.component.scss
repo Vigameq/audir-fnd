@@ -1,0 +1,349 @@
+.question-findings-response-container {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: 'Apple SD Gothic Neo', sans-serif;
+
+    .title-section {
+        padding: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        height: 56px;
+
+        .close-icon {
+            text-align: right;
+            cursor: pointer;
+            line-height: 100%;
+
+            svg:hover {
+                fill: #FDE714;
+            }
+        }
+    }
+
+    .content-section {
+        border-top: 2px solid #1D2431;
+        padding: 20px 40px;
+        font-family: 'Apple SD Gothic Neo', sans-serif;
+        overflow-y: auto;
+        height: calc(100% - 180px);
+        max-height: 100%;
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            line-height: 100%;
+            gap: 20px;
+
+            .question-number-and-text {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                line-height: 100%;
+
+                .question-number {
+                    line-height: 100%;
+                    font-size: 20px;
+                    font-weight: 700;
+                    color: #4E4E4E;
+                }
+
+                .question-text {
+                    line-height: 100%;
+                    font-size: 18px;
+                    font-weight: 500;
+                    color: #515151;
+                    max-width: 720px;
+                    word-wrap: break-word;
+                }
+            }
+
+            .audit-section {
+                display: flex;
+                flex-direction: column;
+                line-height: 100%;
+                gap: 20px;
+
+                .res-hist-btn {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-end;
+
+                    button:disabled:hover {
+                        background-color: #ccc;
+                        /* Light grey */
+                        color: #666;
+                        /* Darker text for contrast */
+                        cursor: not-allowed;
+                        border: 1px solid #aaa;
+                        opacity: 0.7;
+                    }
+
+                    button {
+                        width: 220px;
+                        height: 44px;
+                        line-height: 100%;
+                        font-size: 16px;
+                        background-color: #1D2431;
+                        border: 1px #1D2431 solid;
+                        border-radius: 6px;
+                        color: #fff;
+                        outline: none;
+                    }
+
+                    button:hover {
+                        background-color: #FDE714;
+                        color: #1D2431;
+                        border: 1px #FDE714 solid;
+                        outline: none;
+                    }
+                }
+
+                .corrections-note,
+                .root-cause,
+                .corrective-action-plans {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 20px;
+                    justify-content: space-between;
+                }
+
+                .corrections-note-label,
+                .root-cause-label,
+                .corrective-action-plans-label {
+                    flex: 1;
+                    font-size: 18px;
+                    font-weight: 700;
+                    line-height: 100%;
+                    color: #848484;
+                    padding-top: 2px;
+                }
+
+                .corrections-note-fields-section,
+                .root-cause-fields-section,
+                .corrective-action-plans-fields-section {
+                    flex: 5;
+                    border-radius: 6px;
+                    border: 1px solid #BABABA;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0;
+                }
+
+                .root-cause-textarea,
+                .corrective-action-plans-textarea {
+                    flex: 5;
+                }
+
+                #corrections-note-textarea,
+                #root-cause-textarea,
+                #corrective-action-plans-textarea {
+                    outline: none;
+                    width: calc(100% - 8px);
+                    border: none;
+                    background-color: #FFFFFF;
+                    padding: 6px;
+                    margin: 4px 4px 0;
+                    line-height: 100%;
+                    font-size: 16px;
+                    font-weight: 400;
+                    color: #515151;
+                    height: 97px;
+                }
+
+                .corrections-note-fields-section {
+                    min-height: 160px;
+                }
+
+                .root-cause-fields-section,
+                .corrective-action-plans-fields-section {
+                    min-height: 217px;
+                }
+
+                .upload-correctons-evidence-and-link-section,
+                .planned-completion-and-actual-completion-date,
+                .owner-name-section,
+                .upload-root-cause-evidence-and-link-section,
+                .action-status-and-link-section {
+                    border-top: 1px solid #BABABA;
+                    padding: 20px;
+                    flex: 4;
+                    display: flex;
+                    flex-direction: row;
+                    gap: 20px;
+                }
+
+                .corrective-action-plans .planned-completion-and-actual-completion-date {
+                    border: none;
+                }
+
+                .upload-correctons-evidence,
+                .upload-root-cause-evidence,
+                .upload-corrective-action-status-evidence,
+                .link,
+                .owner-name,
+                .planned-completion-date,
+                .actual-completion-date,
+                .action-status {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    flex: 1;
+                }
+
+                .upload-correctons-evidence-label,
+                .upload-root-cause-evidence-label,
+                .upload-corrective-action-status-evidence-label,
+                .link-label,
+                .action-status-label,
+                .owner-name-label,
+                .planned-completion-date-label,
+                .actual-completion-date-label {
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: #848484;
+                    line-height: 100%
+                }
+
+                .upload-correctons-evidence-label,
+                .upload-root-cause-evidence-label,
+                .upload-corrective-action-status-evidence-label {
+                    .asterisk {
+                        color: #ff0000;
+                        padding-left: 4px;
+                    }
+                }
+
+                .upload-correctons-evidence-btn,
+                .upload-root-cause-evidence-btn,
+                .upload-corrective-action-status-evidence-btn {
+
+                    .upload {
+                        height: 44px;
+                        width: 200px;
+                        border-radius: 6px;
+                        color: #F5F5F5;
+                        background-color: #1D2431;
+                        border: 1px solid #2C2C2C;
+                        font-size: 16px;
+                        font-weight: 400;
+                        text-align: center;
+                        cursor: pointer;
+                        display: inline-block;
+                        padding: 12px 6px 10px 6px;
+                        text-align: center;
+                        transition: background 0.3s ease;
+                        line-height: normal;
+                    }
+
+                    .upload:hover {
+                        border-color: #FDE714;
+                        background-color: #FDE714;
+                        color: #2C2C2C;
+                    }
+
+                    p {
+                        margin: 6px 0;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        max-width: 200px;
+                    }
+                }
+
+                .link .link-input input,
+                .owner-name input,
+                .planned-completion-date input,
+                .actual-completion-date input {
+                    width: 100%;
+                    color: #848484;
+                    height: 44px;
+                    border-radius: 6px;
+                    padding: 10px;
+                    border: 1px solid #BABABA;
+                }
+
+                .dropdown-section {
+                    position: relative;
+
+                    .action-status-dropdown-section {
+
+                        .action-status-dropdown-select {
+                            width: 263px;
+                            height: 44px;
+                            background-color: #FFFFFF;
+                            font-family: 'Apple SD Gothic Neo', sans-serif;
+                            border: 1px solid #dbdbdb;
+                            border-radius: 6px;
+                            font-size: 16px;
+                            padding: 10px 30px 10px 10px;
+                            appearance: none;
+                            cursor: pointer;
+                        }
+
+                        .dropdown-arrow {
+                            position: absolute;
+                            top: 48%;
+                            transform: translateY(-50%);
+                            pointer-events: none;
+                            left: 238px;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    .action-btns {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 34px 40px 40px;
+        margin: 6px 0 0;
+        position: sticky;
+        bottom: 0;
+        background-color: #fff;
+        height: 124px;
+
+        .cancel-save-btns {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            margin-left: auto;
+
+            button:disabled {
+                cursor: not-allowed;
+                background-color: #fff;
+                color: #cccccc;
+                border-color: #cccccc;
+                outline: none;
+            }
+
+            .cancel,
+            .save {
+                width: 200px;
+                height: 44px;
+                color: #1D2431;
+                border-radius: 6px;
+                border: 1px solid #2C2C2C;
+                background-color: #fff;
+            }
+
+            .save {
+                background-color: #2C2C2C;
+                color: #fff;
+            }
+
+            .cancel:hover,
+            .save:hover:not(:disabled) {
+                background-color: #FDE714;
+                color: #2C2C2C;
+                border-color: #FDE714;
+            }
+        }
+    }
+}
