@@ -221,8 +221,8 @@ export class FindingsManagementComponent {
 
   resetDateFilter() {
     const now = new Date();
-    this.utcToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+    this.utcToday = new Date(Date.UTC(now.getUTCFullYear() - 100, now.getUTCMonth(), now.getUTCDate()));
+    this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear() + 100, now.getUTCMonth(), now.getUTCDate()));
     this.fromDate = this.utcToday.toISOString().substring(0, 10);
     this.toDate = this.utcTomorrow.toISOString().substring(0, 10);
     this.getAuditLists(this.fromDate, this.toDate);
