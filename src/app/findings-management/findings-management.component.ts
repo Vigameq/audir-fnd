@@ -161,6 +161,7 @@ export class FindingsManagementComponent {
     this.audirService.getPlanItems(email).subscribe((items: any) => {
       if (items) {
         this.auditees = items.users.auditees;
+        this.getNCAuditLists(this.fromDate, this.toDate);
       }
     }, (error: any) => {
       console.error('Error for getting plans:', error);
@@ -179,8 +180,8 @@ export class FindingsManagementComponent {
 
   resetDateFilter() {
     const now = new Date();
-    this.utcToday = new Date(Date.UTC(now.getUTCFullYear() - 100, now.getUTCMonth(), now.getUTCDate()));
-    this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear() + 100, now.getUTCMonth(), now.getUTCDate()));
+    this.utcToday = new Date(Date.UTC(now.getUTCFullYear() - 10, now.getUTCMonth(), now.getUTCDate()));
+    this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear() + 10, now.getUTCMonth(), now.getUTCDate()));
     this.fromDate = this.utcToday.toISOString().substring(0, 10);
     this.toDate = this.utcTomorrow.toISOString().substring(0, 10);
     this.getNCAuditLists(this.fromDate, this.toDate);
