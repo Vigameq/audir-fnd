@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { AudirService } from 'src/services/audir-services.service';
+import { AudirService } from '../../services/audir-services.service';
 
 @Component({
   selector: 'app-findings-management',
