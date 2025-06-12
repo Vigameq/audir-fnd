@@ -12,7 +12,7 @@
             <form [formGroup]="auditPlanForm" (ngSubmit)="onSubmit()">
                 <div class="link-audit-row">
                     <div class="link-audit-label">
-                        <label for="parentAudit" class="form-label">Parent Audit</label>
+                        <label for="parentAudit" class="form-label">Parent Audit <span class="info">(select only if child audit to be created)</span></label>
                     </div>
                     <div class="link-audit-select">
                         <select id="parentAudit" class="dropdown-select" formControlName="parentAudit"
