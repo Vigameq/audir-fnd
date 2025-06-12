@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-import { environment } from 'src/environments/environment';
+import { environment } from '../environments/environment';
 
 
 @Injectable({
@@ -46,7 +46,7 @@ export class AudirService {
   }
 
   getNCQuestionData(payload: any) {
-    return this.http.post('/audire/api/getNCQuestionData', payload);
+    return this.http.post(`${environment.apiUrl}/api/getNCQuestionData`, payload);
   }
 
   saveAuditFinding(payload: any) {
@@ -62,15 +62,15 @@ export class AudirService {
   }
 
   saveCorrectionsResponse(payload: any) {
-    return this.http.post('/audire/api/saveNCCorrectionData', payload);
+    return this.http.post(`${environment.apiUrl}/api/saveNCCorrectionData`, payload);
   }
 
   saveRootCauseResponse(payload: any) {
-    return this.http.post('/audire/api/saveNCRootCauseData', payload);
+    return this.http.post(`${environment.apiUrl}/api/saveNCRootCauseData`, payload);
   }
 
   savesCorrectiveActionPlanResponse(payload: any) {
-    return this.http.post('/audire/api/saveNCCorrectiveActionPlanData', payload);
+    return this.http.post(`${environment.apiUrl}/api/saveNCCorrectiveActionPlanData`, payload);
   }
 
   updateAuditPlan(updatedAuditDetails: any) {
@@ -88,7 +88,7 @@ export class AudirService {
   }
 
   getNCEvidence(audit_id: any, evidenceFileName: any, responseTYpe: any) {
-    return this.http.get<any>('/audire/api/questionNCDataFile/' + audit_id + '/' + responseTYpe + '/' + evidenceFileName, {
+    return this.http.get<any>(`${environment.apiUrl}/api/questionNCDataFile/` + audit_id + '/' + responseTYpe + '/' + evidenceFileName, {
       responseType: 'arraybuffer' as 'json'
     });
   }
@@ -126,7 +126,7 @@ export class AudirService {
   }
 
   getNCAuditQuestions(payload: any) {
-    return this.http.post<any>('/audire/api/getNCAuditQuestions', payload);
+    return this.http.post<any>(`${environment.apiUrl}/api/getNCAuditQuestions`, payload);
   }
 
   submitAudit(payload: any) {
@@ -134,13 +134,13 @@ export class AudirService {
   }
 
   submitNCAudit(payload: any) {
-    return this.http.post<any>('/audire/api/submitNC', payload);
+    return this.http.post<any>(`${environment.apiUrl}/api/submitNC`, payload);
   }
 
   /* services for audit findings */
 
   getNCAuditLists(payload: any) {
-    return this.http.post<any>('/audire/api/listNCAudits', payload);
+    return this.http.post<any>(`${environment.apiUrl}/api/listNCAudits`, payload);
   }
 
   getData(): any {

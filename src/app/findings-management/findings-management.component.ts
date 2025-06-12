@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { AudirService } from 'src/services/audir-services.service';
+import { AudirService } from '../../services/audir-services.service';
 
 @Component({
   selector: 'app-findings-management',
@@ -15,7 +15,7 @@ export class FindingsManagementComponent {
   updateAuditee = 'Update Auditee';
   downloadEvidence = 'Download Evidence';
   auditees: any;
-  subAuditAuditees: any;
+  auditeesList: any;
   @ViewChildren('detailsContent') detailsContentElements!: QueryList<ElementRef>;
   @ViewChild('auditeeDropdown') auditeeDropdown: ElementRef | undefined;
   auditList!: any;
@@ -38,9 +38,10 @@ export class FindingsManagementComponent {
 
   ngOnInit() {
     this.getPlanItems();
+
   }
 
-  getAuditLists(fromDate: string, toDate: string) {
+  getNCAuditLists(fromDate: string, toDate: string) {
     const email = localStorage.getItem('user')?.toString() || '';
     var payload = {
       eMail: email,
@@ -48,52 +49,36 @@ export class FindingsManagementComponent {
         from: fromDate,
         to: toDate
       },
-      status_filter: ["created", "inprogress", "submitted", "nc_inprogress", "completed"]
+      status_filter: ["inprogress", "submitted", "nc_inprogress", "completed"]
     };
 
-    this.audirService.getAuditLists(payload).subscribe((response: any) => {
+    this.audirService.getNCAuditLists(payload).subscribe((response: any) => {
       if (response) {
         this.CompleteAuditList = response.audit_data;
         this.auditList = this.CompleteAuditList;
+        this.auditeesList = Array.from({ length: this.auditList.length }, (_) => ({
+          auditees: this.auditees
+        }));
+        this.setAuditeeValues();
       }
     }, (error: any) => {
       console.error('Error for getting audits:', error);
     });
-
-    this.auditList = this.auditList?.map((obj: any) => {
-      obj.isSubAuditsOpened = false;
-      return obj;
-    });
   }
 
-  openSubAudits(index: any) {
-    this.auditList[index].isSubAuditsOpened = !this.auditList[index].isSubAuditsOpened;
-    if (this.auditList[index].isSubAuditsOpened) {
-      this.subAuditAuditees = Array.from({ length: this.auditList[index].sub_audits.length }, (_) => ({
-        auditees: this.auditees
-      }));
-      this.auditList[index].sub_audits = this.auditList[index].sub_audits.map((obj: any) => {
-        obj.lineHeight = 0;
-        return obj;
-      });
-      this.updateLineHeights(index);
-      this.setAuditeeValues(index);
-    }
-  }
-
-  setAuditeeValues(auditIndex: any) {
-    if (this.auditList[auditIndex] && this.auditList[auditIndex].sub_audits.length > 0) {
-      this.selectedAuditees = Array.from({ length: this.auditList[auditIndex].sub_audits.length }, () => []);
-      this.selectedAuditeesOptions = Array.from({ length: this.auditList[auditIndex].sub_audits.length }, () => '');
-      this.selectedAuditeesEmail = Array.from({ length: this.auditList[auditIndex].sub_audits.length }, () => '');
-      this.isAuditeesOptionsOpen = Array.from({ length: this.auditList[auditIndex].sub_audits.length }, () => false);
-      this.isAuditeesDropdownOpened = Array.from({ length: this.auditList[auditIndex].sub_audits.length }, () => false);
-      this.auditList[auditIndex].sub_audits.forEach((subAudit: any, subAuditIndex: number) => {
-        this.subAuditAuditees[subAuditIndex].auditees = this.setCheckedOption(this.subAuditAuditees[subAuditIndex].auditees);
-        this.selectedOptionValuesChecked(subAudit.auditees, subAuditIndex);
-        this.selectedAuditees[subAuditIndex] = this.selectedOptionNames(subAudit.auditees);
-        this.selectedAuditeesOptions[subAuditIndex] = this.selectedAuditees[subAuditIndex].length > 0 ? this.selectedAuditees[subAuditIndex].join(', ') : 'Select Auditee..';
-        this.selectedAuditeesEmail[subAuditIndex] = this.selectedOptionEmails(subAudit.auditees);
+  setAuditeeValues() {
+    if (this.auditList && this.auditList.length > 0) {
+      this.selectedAuditees = Array.from({ length: this.auditList.length }, () => []);
+      this.selectedAuditeesOptions = Array.from({ length: this.auditList.length }, () => '');
+      this.selectedAuditeesEmail = Array.from({ length: this.auditList.length }, () => '');
+      this.isAuditeesOptionsOpen = Array.from({ length: this.auditList.length }, () => false);
+      this.isAuditeesDropdownOpened = Array.from({ length: this.auditList.length }, () => false);
+      this.auditList.forEach((audit: any, auditIndex: number) => {
+        this.auditeesList[auditIndex].auditees = this.setCheckedOption(this.auditeesList[auditIndex].auditees);
+        this.selectedOptionValuesChecked(audit.auditees, auditIndex);
+        this.selectedAuditees[auditIndex] = this.selectedOptionNames(audit.auditees);
+        this.selectedAuditeesOptions[auditIndex] = this.selectedAuditees[auditIndex].length > 0 ? this.selectedAuditees[auditIndex].join(', ') : 'Select Auditee..';
+        this.selectedAuditeesEmail[auditIndex] = this.selectedOptionEmails(audit.auditees);
       });
     }
   }
@@ -106,11 +91,11 @@ export class FindingsManagementComponent {
     }
   }
 
-  selectedOptionValuesChecked(selectedValues: any, subAuditIndex: any) {
-    this.subAuditAuditees[subAuditIndex].auditees.forEach((user: any, index: any) => {
+  selectedOptionValuesChecked(selectedValues: any, auditIndex: any) {
+    this.auditeesList[auditIndex].auditees.forEach((user: any, index: any) => {
       if (selectedValues.find((selectedUser: any) => selectedUser.email === user.email)) {
-        this.subAuditAuditees[subAuditIndex].auditees[index] = {
-          ...this.subAuditAuditees[subAuditIndex].auditees[index],
+        this.auditeesList[auditIndex].auditees[index] = {
+          ...this.auditeesList[auditIndex].auditees[index],
           checked: true
         };
       }
@@ -132,33 +117,6 @@ export class FindingsManagementComponent {
     });
   }
 
-  updateLineHeights(auditIndex: any) {
-    setTimeout(() => {
-      this.detailsContentElements.forEach((element, index) => {
-        this.updateLineHeight(auditIndex, index, element.nativeElement);
-      });
-    }, 100);
-  }
-
-  updateLineHeight(auditIndex: any, index: number, statusContent: HTMLElement) {
-    const subAudit: any = this.auditList[auditIndex].sub_audits;
-    let newLineHeight: any;
-    if (index <= subAudit.length) {
-      if (this.auditList[auditIndex].sub_audits[index].city === '' || this.auditList[auditIndex].sub_audits[index].functions === '') {
-        newLineHeight = index === 0 ? statusContent.offsetHeight - 46 : statusContent.offsetHeight + 16;
-        if (this.auditList[auditIndex].sub_audits[index].functions === '') {
-          newLineHeight = index === 0 ? statusContent.offsetHeight - 26 : statusContent.offsetHeight + 36;
-        }
-      }
-      else {
-        newLineHeight = index === 0 ? statusContent.offsetHeight - 66 : statusContent.offsetHeight - 4;
-      }
-      if (subAudit.lineHeight !== newLineHeight) {
-        this.auditList[auditIndex].sub_audits[index].lineHeight = newLineHeight;
-      }
-    }
-  }
-
   onSearch() {
     if (this.searchQuery !== '') {
       this.auditList = this.CompleteAuditList.filter((audit: any) =>
@@ -174,16 +132,16 @@ export class FindingsManagementComponent {
     this.auditList = this.CompleteAuditList;
   }
 
-  updatePlanWithNewAssignee(sub_audit: any, index: number) {
+  updatePlanWithNewAssignee(audit: any, index: number) {
     const updatedAuditPlan: any = {
-      'audit_id': sub_audit.audit_id,
-      'start_date': sub_audit.start_date,
-      'end_date': sub_audit.end_date,
-      'auditors': sub_audit.auditors.map((auditor: any) => auditor.email),
+      'audit_id': audit.audit_id,
+      'start_date': audit.start_date,
+      'end_date': audit.end_date,
+      'auditors': audit.auditors.map((auditor: any) => auditor.email),
       'auditees': this.selectedAuditeesEmail[index],
-      'city': sub_audit.city,
-      'country': sub_audit.country,
-      'audit_type': sub_audit.audit_type
+      'city': audit.city,
+      'country': audit.country,
+      'audit_type': audit.audit_type
     };
     this.audirService.updateAuditPlan(updatedAuditPlan).subscribe((response: any) => {
       if (response) {
@@ -203,6 +161,7 @@ export class FindingsManagementComponent {
     this.audirService.getPlanItems(email).subscribe((items: any) => {
       if (items) {
         this.auditees = items.users.auditees;
+        this.getNCAuditLists(this.fromDate, this.toDate);
       }
     }, (error: any) => {
       console.error('Error for getting plans:', error);
@@ -216,16 +175,16 @@ export class FindingsManagementComponent {
       this.toDate.setDate(this.toDate.getDate() + 1);
     }
     this.toDate = this.datePipe.transform(this.toDate, 'yyyy-MM-dd');
-    this.getAuditLists(this.fromDate, this.toDate);
+    this.getNCAuditLists(this.fromDate, this.toDate);
   }
 
   resetDateFilter() {
     const now = new Date();
-    this.utcToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+    this.utcToday = new Date(Date.UTC(now.getUTCFullYear() - 10, now.getUTCMonth(), now.getUTCDate()));
+    this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear() + 10, now.getUTCMonth(), now.getUTCDate()));
     this.fromDate = this.utcToday.toISOString().substring(0, 10);
     this.toDate = this.utcTomorrow.toISOString().substring(0, 10);
-    this.getAuditLists(this.fromDate, this.toDate);
+    this.getNCAuditLists(this.fromDate, this.toDate);
   }
 
   showAuditors(auditorOptions: any) {
@@ -251,28 +210,28 @@ export class FindingsManagementComponent {
     event.stopPropagation();
   }
 
-  onAuditeeSelectionChange(event: Event, subAuditIndex: any, auditeesIndex: any, auditee: any) {
+  onAuditeeSelectionChange(event: Event, auditIndex: any, auditeesIndex: any, auditee: any) {
     const checkbox = event.target as HTMLInputElement;
     this.isSvgDisabled = false;
-    if (!this.selectedAuditees[subAuditIndex].includes(checkbox.value)) {
+    if (!this.selectedAuditees[auditIndex].includes(checkbox.value)) {
       if (checkbox.checked) {
-        this.selectedAuditees[subAuditIndex].push(checkbox.value);
-        this.selectedAuditeesEmail[subAuditIndex].push(auditee.email);
-        this.subAuditAuditees[subAuditIndex].auditees[auditeesIndex] = {
-          ...this.subAuditAuditees[subAuditIndex].auditees[auditeesIndex],
+        this.selectedAuditees[auditIndex].push(checkbox.value);
+        this.selectedAuditeesEmail[auditIndex].push(auditee.email);
+        this.auditeesList[auditIndex].auditees[auditeesIndex] = {
+          ...this.auditeesList[auditIndex].auditees[auditeesIndex],
           checked: true
         };
       }
     }
     else {
-      this.selectedAuditees[subAuditIndex] = this.selectedAuditees[subAuditIndex].filter((option: any) => option !== checkbox.value);
-      this.selectedAuditeesEmail[subAuditIndex] = this.selectedAuditeesEmail[subAuditIndex].filter((option: any) => option !== auditee.email);
-      this.subAuditAuditees[subAuditIndex].auditees[auditeesIndex] = {
-        ...this.subAuditAuditees[subAuditIndex].auditees[auditeesIndex],
+      this.selectedAuditees[auditIndex] = this.selectedAuditees[auditIndex].filter((option: any) => option !== checkbox.value);
+      this.selectedAuditeesEmail[auditIndex] = this.selectedAuditeesEmail[auditIndex].filter((option: any) => option !== auditee.email);
+      this.auditeesList[auditIndex].auditees[auditeesIndex] = {
+        ...this.auditeesList[auditIndex].auditees[auditeesIndex],
         checked: false
       };
     }
-    this.selectedAuditeesOptions[subAuditIndex] = this.selectedAuditees[subAuditIndex].length > 0 ? this.selectedAuditees[subAuditIndex].join(', ') : 'Select Auditee..';
+    this.selectedAuditeesOptions[auditIndex] = this.selectedAuditees[auditIndex].length > 0 ? this.selectedAuditees[auditIndex].join(', ') : 'Select Auditee..';
   }
 
   @HostListener('document:click', ['$event'])
