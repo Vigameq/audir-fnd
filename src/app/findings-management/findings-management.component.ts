@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { AudirService } from 'src/services/audir-services.service';
+import { AudirService } from '../../services/audir-services.service';
 
 @Component({
   selector: 'app-findings-management',
@@ -179,8 +179,8 @@ export class FindingsManagementComponent {
 
   resetDateFilter() {
     const now = new Date();
-    this.utcToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+    this.utcToday = new Date(Date.UTC(now.getUTCFullYear() - 100, now.getUTCMonth(), now.getUTCDate()));
+    this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear() + 100, now.getUTCMonth(), now.getUTCDate()));
     this.fromDate = this.utcToday.toISOString().substring(0, 10);
     this.toDate = this.utcTomorrow.toISOString().substring(0, 10);
     this.getNCAuditLists(this.fromDate, this.toDate);
