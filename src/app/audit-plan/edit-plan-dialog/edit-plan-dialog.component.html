@@ -14,7 +14,7 @@
                         <div class="edit-fields">
                             <div class="left-section">
                                 <div class="start-date-time">
-                                    <input type="datetime-local" id="start-date-time" class="form-control"
+                                    <input type="datetime-local" id="start-date-time" class="form-control" onkeydown="return false;"
                                         formControlName="startDateTimeValue" name="startDateTime" required
                                         [min]="minDateTime" [max]="maxDateTime" />
                                 </div>
@@ -52,7 +52,7 @@
                             </div>
                             <div class="right-section">
                                 <div class="end-date-time">
-                                    <input type="datetime-local" id="end-date-time" class="form-control"
+                                    <input type="datetime-local" id="end-date-time" class="form-control" onkeydown="return false;"
                                         placeholder="End Date" formControlName="endDateTimeValue" name="endDateTime"
                                         [min]="minDateTime" [max]="maxDateTime" required />
                                 </div>

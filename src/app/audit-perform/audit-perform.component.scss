@@ -364,9 +364,10 @@
             }
 
             .svg-icon {
-                cursor: pointer;
 
                 svg:hover {
+                    cursor: pointer;
+
                     path {
                         fill: #FFEA00;
                     }

@@ -12,7 +12,7 @@
                 <mat-form-field appearance="fill" class="custom-date-picker">
                     <mat-label>From Date</mat-label>
                     <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" (dateChange)="onDateChange()"
-                        name="fromDate">
+                        name="fromDate" readonly>
                     <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
                     <mat-datepicker #fromPicker></mat-datepicker>
                 </mat-form-field>
@@ -21,122 +21,76 @@
                 <mat-form-field appearance="fill" class="custom-date-picker">
                     <mat-label>To Date</mat-label>
                     <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate" (dateChange)="onDateChange()"
-                        name="toDate" [min]="fromDate">
+                        name="toDate" [min]="fromDate" readonly>
                     <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
                     <mat-datepicker #toPicker></mat-datepicker>
                 </mat-form-field>
             </div>
             <div class="reset">
-                <input type="reset" (click)="resetDateFilter()">
+                <input type="reset" (click)="resetDateFilter(true)">
             </div>
         </div>
     </div>
     <div class="audit-info-label"><span>Audit Information</span></div>
     <div class="findings-management-container-section" *ngIf="auditList?.length > 0">
         <div *ngFor="let findingsManagementItem of auditList; let i = index">
-            <div class="findings-management-container">
-                <div class="findings-management-details-and-download-icon">
-                    <div class="findings-management-details">
-                        <div class="plan-creation-id"><span>{{findingsManagementItem.audit_title}}</span></div>
-                        <div class="templates-location-details">
-                            <div class="templates-details"
-                                *ngIf="findingsManagementItem.template[0] || findingsManagementItem.function_template[0]">
-                                <span>{{findingsManagementItem.template[0]}}</span>
-                                <span class="vertical-bar"
-                                    *ngIf="findingsManagementItem.template[0] && findingsManagementItem.function_template[0]">|</span>
-                                <span>{{findingsManagementItem.function_template[0]}}
-                                </span>
-                            </div>
-                            <div class="location-details"
-                                *ngIf="findingsManagementItem.country || findingsManagementItem.city">
-                                <span>{{findingsManagementItem.city}}</span>
-                                <span class="vertical-bar"
-                                    *ngIf="findingsManagementItem.country && findingsManagementItem.city">|</span>
-                                <span>{{findingsManagementItem.country}}</span>
-                            </div>
-                        </div>
-                        <div class="duration-details">
-                            <div class="date-details">
-                                <span>{{findingsManagementItem.start_date | date:'dd/MM/yyyy':'UTC'}}</span>
-                                <span class="hyphen">-</span>
-                                <span>{{findingsManagementItem.end_date | date:'dd/MM/yyyy':'UTC'}}
-                                </span>
-                            </div>
-                            <div class="time-details">
-                                <span class="start-time">{{findingsManagementItem.start_date | date:'hh:mm
-                                    a':'UTC'}}</span>
-                                <span class="end-time">{{findingsManagementItem.end_date | date:'hh:mm a':'UTC'}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div *ngIf="findingsManagementItem.link_audit !== 'None'" class="download-findings-evidence">
-                        <svg width="40px" height="40px" viewBox="0 0 24 24" fill="#000000"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12ZM12 6.25C12.4142 6.25 12.75 6.58579 12.75 7V12.1893L14.4697 10.4697C14.7626 10.1768 15.2374 10.1768 15.5303 10.4697C15.8232 10.7626 15.8232 11.2374 15.5303 11.5303L12.5303 14.5303C12.3897 14.671 12.1989 14.75 12 14.75C11.8011 14.75 11.6103 14.671 11.4697 14.5303L8.46967 11.5303C8.17678 11.2374 8.17678 10.7626 8.46967 10.4697C8.76256 10.1768 9.23744 10.1768 9.53033 10.4697L11.25 12.1893V7C11.25 6.58579 11.5858 6.25 12 6.25ZM8 16.25C7.58579 16.25 7.25 16.5858 7.25 17C7.25 17.4142 7.58579 17.75 8 17.75H16C16.4142 17.75 16.75 17.4142 16.75 17C16.75 16.5858 16.4142 16.25 16 16.25H8Z"
-                                fill="#1C274C" />
-                        </svg>
-                    </div>
-                </div>
-                <div class="audit-count" *ngIf="findingsManagementItem.sub_audits.length>0" (click)="openSubAudits(i)">
-                    <span>{{findingsManagementItem.sub_audits.length}}</span>
-                </div>
-            </div>
-            <div *ngIf="findingsManagementItem.sub_audits.length > 0 && findingsManagementItem.isSubAuditsOpened">
-                <div class="sub-audit" *ngFor="let sub_audit of findingsManagementItem.sub_audits; let j = index">
-                    <div class="tree-node">
-                        <div class="line" [ngStyle]="{'height.px': sub_audit.lineHeight}"></div>
-                        <div class="dot"></div>
-                    </div>
-                    <div class="sub-findings-management-container" #detailsContent>
+            <div class="findings-management-container-and-navigation">
+                <div class="findings-management-container">
+                    <div class="findings-management-details-and-download-report">
                         <div class="findings-management-details">
-                            <div class="plan-creation-id"><span>{{sub_audit.audit_title}}</span></div>
+                            <div class="plan-creation-id"><span>{{findingsManagementItem.audit_title}}</span></div>
                             <div class="templates-location-details">
-                                <div class="templates-details">
-                                    <span>{{sub_audit.functions}}
+                                <div class="templates-details"
+                                    *ngIf="findingsManagementItem.template[0] || findingsManagementItem.function_template[0]">
+                                    <span>{{findingsManagementItem.template[0]}}</span>
+                                    <span class="vertical-bar"
+                                        *ngIf="findingsManagementItem.template[0] && findingsManagementItem.function_template[0]">|</span>
+                                    <span>{{findingsManagementItem.function_template[0]}}
                                     </span>
                                 </div>
-                                <div class="location-details" *ngIf="sub_audit.country || sub_audit.city">
-                                    <span>{{sub_audit.city}}</span>
-                                    <span class="vertical-bar" *ngIf="sub_audit.country && sub_audit.city">|</span>
-                                    <span>{{sub_audit.country}}</span>
+                                <div class="location-details"
+                                    *ngIf="findingsManagementItem.country || findingsManagementItem.city">
+                                    <span>{{findingsManagementItem.city}}</span>
+                                    <span class="vertical-bar"
+                                        *ngIf="findingsManagementItem.country && findingsManagementItem.city">|</span>
+                                    <span>{{findingsManagementItem.country}}</span>
                                 </div>
                             </div>
                             <div class="duration-details">
                                 <div class="date-details">
-                                    <span>{{sub_audit.start_date | date:'dd/MM/yyyy':'UTC'}}</span>
+                                    <span>{{findingsManagementItem.start_date | date:'dd/MM/yyyy':'UTC'}}</span>
                                     <span class="hyphen">-</span>
-                                    <span>{{sub_audit.end_date | date:'dd/MM/yyyy':'UTC'}}
+                                    <span>{{findingsManagementItem.end_date | date:'dd/MM/yyyy':'UTC'}}
                                     </span>
                                 </div>
                                 <div class="time-details">
-                                    <span class="start-time">{{sub_audit.start_date | date:'hh:mm a':'UTC'}}</span>
-                                    <span class="end-time">{{sub_audit.end_date | date:'hh:mm a':'UTC'}}
+                                    <span class="start-time">{{findingsManagementItem.start_date | date:'hh:mm
+                                        a':'UTC'}}</span>
+                                    <span class="end-time">{{findingsManagementItem.end_date | date:'hh:mm a':'UTC'}}
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <div class="auditees-and-download-evidence">
+                        <div class="auditees-and-download-reports">
                             <div class="change-auditee-and-confirmation">
                                 <div class="auditees">
                                     <label for="auditeeDropdown" class="auditee-label">Auditees</label>
-                                    <div class="dropbtn" [matTooltip]="selectedAuditeesOptions[j]"
-                                        (click)="auditeesToggleDropdown($event,j)">
-                                        <span>{{selectedAuditeesOptions[j]}}</span>
+                                    <div class="dropbtn" [matTooltip]="selectedAuditeesOptions[i]"
+                                        (click)="auditeesToggleDropdown($event,i)">
+                                        <span>{{selectedAuditeesOptions[i]}}</span>
                                     </div>
-                                    <div *ngIf="isAuditeesOptionsOpen[j]" class="dropdown-content" #auditeeDropdown>
-                                        <label *ngFor="let auditee of subAuditAuditees[j].auditees; let k = index"
+                                    <div *ngIf="isAuditeesOptionsOpen[i]" class="dropdown-content" #auditeeDropdown>
+                                        <label *ngFor="let auditee of auditeesList[i].auditees; let k = index"
                                             (click)="onCheckboxClick($event)">
                                             <input type="checkbox" [value]="auditee.Name" class="checkbox-input"
-                                                (change)="onAuditeeSelectionChange($event,j,k,auditee)"
+                                                (change)="onAuditeeSelectionChange($event,i,k,auditee)"
                                                 [checked]="auditee.checked" />
                                             <span class="auditee-value">{{ auditee.Name }}</span>
                                         </label>
                                     </div>
                                     <div class="dropdown-arrow">
                                         <app-dropdown-arrow-icons
-                                            [isOpen]="isAuditeesDropdownOpened[j]"></app-dropdown-arrow-icons>
+                                            [isOpen]="isAuditeesDropdownOpened[i]"></app-dropdown-arrow-icons>
                                     </div>
                                 </div>
                                 <div class="svg-icon" [class.disabled]="isSvgDisabled" [matTooltip]="updateAuditee"
@@ -144,15 +98,14 @@
                                     <svg width="20px" height="20px" viewBox="0 0 24 24"
                                         id="meteor-icon-kit__regular-check-circle" fill="none"
                                         xmlns="http://www.w3.org/2000/svg"
-                                        (click)="updatePlanWithNewAssignee(sub_audit,j)">
+                                        (click)="updatePlanWithNewAssignee(findingsManagementItem,i)">
                                         <path fill-rule="evenodd" clip-rule="evenodd"
                                             d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12ZM12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM7.70711 12.2929L10 14.5858L16.2929 8.29289C16.6834 7.90237 17.3166 7.90237 17.7071 8.29289C18.0976 8.68342 18.0976 9.31658 17.7071 9.70711L10.7071 16.7071C10.3166 17.0976 9.68342 17.0976 9.29289 16.7071L6.29289 13.7071C5.90237 13.3166 5.90237 12.6834 6.29289 12.2929C6.68342 11.9024 7.31658 11.9024 7.70711 12.2929Z"
                                             fill="#1dd91d" />
                                     </svg>
                                 </div>
                             </div>
-                            <div *ngIf="sub_audit.link_audit !== 'None'" class="download-findings-evidence"
-                                [matTooltip]="downloadEvidence">
+                            <div *ngIf="findingsManagementItem.link_audit !== 'None'" class="download-findings-report">
                                 <svg width="40px" height="40px" viewBox="0 0 24 24" fill="#000000"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd"
@@ -162,13 +115,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="navigate-to-questions-svg" [routerLink]="[sub_audit.audit_id]">
-                        <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M12.1094 0C18.7988 0 24.2188 5.41992 24.2188 12.1094C24.2188 18.7988 18.7988 24.2188 12.1094 24.2188C5.41992 24.2188 0 18.7988 0 12.1094C0 5.41992 5.41992 0 12.1094 0ZM6.44531 14.2578H12.1094V17.7197C12.1094 18.2422 12.7441 18.5059 13.1104 18.1348L18.6914 12.5244C18.9209 12.2949 18.9209 11.9287 18.6914 11.6992L13.1104 6.08398C12.7393 5.71289 12.1094 5.97656 12.1094 6.49902V9.96094H6.44531C6.12305 9.96094 5.85938 10.2246 5.85938 10.5469V13.6719C5.85938 13.9941 6.12305 14.2578 6.44531 14.2578Z"
-                                fill="black" />
-                        </svg>
-                    </div>
+                </div>
+                <div class="navigate-to-questions-svg" [routerLink]="[findingsManagementItem.audit_id]">
+                    <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12.1094 0C18.7988 0 24.2188 5.41992 24.2188 12.1094C24.2188 18.7988 18.7988 24.2188 12.1094 24.2188C5.41992 24.2188 0 18.7988 0 12.1094C0 5.41992 5.41992 0 12.1094 0ZM6.44531 14.2578H12.1094V17.7197C12.1094 18.2422 12.7441 18.5059 13.1104 18.1348L18.6914 12.5244C18.9209 12.2949 18.9209 11.9287 18.6914 11.6992L13.1104 6.08398C12.7393 5.71289 12.1094 5.97656 12.1094 6.49902V9.96094H6.44531C6.12305 9.96094 5.85938 10.2246 5.85938 10.5469V13.6719C5.85938 13.9941 6.12305 14.2578 6.44531 14.2578Z"
+                            fill="black" />
+                    </svg>
                 </div>
             </div>
         </div>
