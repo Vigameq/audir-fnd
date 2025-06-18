@@ -74,15 +74,16 @@
                     <div class="start-date-time">
                         <label for="start-date-time" class="form-label">Start Date & Time<span
                                 class="asterisk">*</span></label>
-                        <input type="datetime-local" id="start-date-time" class="form-control"
+                        <input type="datetime-local" id="start-date-time" class="form-control" onkeydown="return false;"
                             (change)="onStartDateChange($event)" formControlName="startDateTime" name="startDateTime"
                             [min]="minDateTime" [max]="maxDateTime" required />
                     </div>
                     <div class="end-date-time">
                         <label for="end-date-time" class="form-label">End Date & Time<span
                                 class="asterisk">*</span></label>
-                        <input type="datetime-local" id="end-date-time" class="form-control" [min]="startDate" [max]="maxDateTime"
-                            formControlName="endDateTime" name="endDateTime" required />
+                        <input type="datetime-local" id="end-date-time" class="form-control" [min]="startDate"
+                            onkeydown="return false;" [max]="maxDateTime" formControlName="endDateTime"
+                            name="endDateTime" required />
                     </div>
                 </div>
                 <div class="auditees-auditors-row">

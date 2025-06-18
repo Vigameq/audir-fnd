@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, HostListener, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { AudirService } from 'src/services/audir-services.service';
 
@@ -31,7 +31,7 @@ export class AuditPerformComponent {
   selectedAuditeesEmail: any;
   isSvgDisabled = true;
 
-  constructor(private renderer: Renderer2, private cdr: ChangeDetectorRef, private audirService: AudirService, private datePipe: DatePipe) {
+  constructor(private audirService: AudirService, private datePipe: DatePipe) {
     this.resetDateFilter();
   }
 
@@ -233,16 +233,25 @@ export class AuditPerformComponent {
       this.toDate.setDate(this.toDate.getDate() + 1);
     }
     this.toDate = this.datePipe.transform(this.toDate, 'yyyy-MM-dd');
+    localStorage.setItem('performFromDate', this.fromDate);
+    localStorage.setItem('performToDate', this.toDate);
     this.getAuditLists(this.fromDate, this.toDate);
   }
 
-  resetDateFilter() {
-    const now = new Date();
-    this.utcToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
-    this.fromDate = this.utcToday.toISOString().substring(0, 10);
-    this.toDate = this.utcTomorrow.toISOString().substring(0, 10);
+  resetDateFilter(resetValue?: boolean) {
+    this.fromDate = localStorage.getItem('performFromDate');
+    this.toDate = localStorage.getItem('performToDate');
+    if (resetValue || this.fromDate === null || this.toDate === null || this.fromDate === undefined || this.toDate === undefined) {
+      const now = new Date();
+      this.utcToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+      this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+      this.fromDate = this.utcToday.toISOString().substring(0, 10);
+      this.toDate = this.utcTomorrow.toISOString().substring(0, 10);
+      localStorage.setItem('performFromDate', this.fromDate);
+      localStorage.setItem('performToDate', this.toDate);
+    }
     this.getAuditLists(this.fromDate, this.toDate);
+
   }
 
   showAuditors(auditorOptions: any) {

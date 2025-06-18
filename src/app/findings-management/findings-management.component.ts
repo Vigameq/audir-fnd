@@ -175,15 +175,23 @@ export class FindingsManagementComponent {
       this.toDate.setDate(this.toDate.getDate() + 1);
     }
     this.toDate = this.datePipe.transform(this.toDate, 'yyyy-MM-dd');
+    localStorage.setItem('findingsFromDate', this.fromDate);
+    localStorage.setItem('findingsToDate', this.toDate);
     this.getNCAuditLists(this.fromDate, this.toDate);
   }
 
-  resetDateFilter() {
-    const now = new Date();
-    this.utcToday = new Date(Date.UTC(now.getUTCFullYear() - 10, now.getUTCMonth(), now.getUTCDate()));
-    this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear() + 10, now.getUTCMonth(), now.getUTCDate()));
-    this.fromDate = this.utcToday.toISOString().substring(0, 10);
-    this.toDate = this.utcTomorrow.toISOString().substring(0, 10);
+  resetDateFilter(resetValue?: boolean) {
+    this.fromDate = localStorage.getItem('findingsFromDate');
+    this.toDate = localStorage.getItem('findingsToDate');
+    if (resetValue || this.fromDate === null || this.toDate === null || this.fromDate === undefined || this.toDate === undefined) {
+      const now = new Date();
+      this.utcToday = new Date(Date.UTC(now.getUTCFullYear() - 10, now.getUTCMonth(), now.getUTCDate()));
+      this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear() + 10, now.getUTCMonth(), now.getUTCDate()));
+      this.fromDate = this.utcToday.toISOString().substring(0, 10);
+      this.toDate = this.utcTomorrow.toISOString().substring(0, 10);
+      localStorage.setItem('findingsFromDate', this.fromDate);
+      localStorage.setItem('findingsToDate', this.toDate);
+    }
     this.getNCAuditLists(this.fromDate, this.toDate);
   }
 
