@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { NotificationItem } from './notifications.component';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
