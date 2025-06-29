@@ -38,7 +38,7 @@ export class AudirService {
       },
       "status_filter": ["completed", "created", "lead_auditor"]
     };
-    return this.http.post(`${environment.apiUrl}/api/listChildAudits`, emailDateDetails);
+    return this.http.post(`${environment.apiUrl}/api/ListChildAuditsByUser`, emailDateDetails);
   }
 
   getQuestionData(payload: any) {
@@ -118,7 +118,7 @@ export class AudirService {
   /* services for Audit perform */
 
   getAuditLists(payload: any) {
-    return this.http.post<any>(`${environment.apiUrl}/api/listAudits`, payload);
+    return this.http.post<any>(`${environment.apiUrl}/api/ListRelativeAuditsByUser`, payload);
   }
 
   getAuditQuestions(payload: any) {
@@ -140,7 +140,7 @@ export class AudirService {
   /* services for audit findings */
 
   getNCAuditLists(payload: any) {
-    return this.http.post<any>(`${environment.apiUrl}/api/listNCAudits`, payload);
+    return this.http.post<any>(`${environment.apiUrl}/api/listNCAuditsUser`, payload);
   }
 
   getData(): any {
