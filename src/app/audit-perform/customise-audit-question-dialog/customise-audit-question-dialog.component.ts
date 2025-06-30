@@ -108,7 +108,7 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   close(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(false);
   }
 
   onAuditNoteChange() {

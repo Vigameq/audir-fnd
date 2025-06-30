@@ -67,7 +67,7 @@ export class FindingsAuditProgressDialogComponent {
   }
 
   closeResponseDialog(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(false);
   }
 
   downloadEvidence(responseData: any) {
