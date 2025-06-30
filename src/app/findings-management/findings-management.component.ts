@@ -147,6 +147,7 @@ export class FindingsManagementComponent {
       if (response) {
         this.isSvgDisabled = true;
         this.audirService.showSuccess(response.message);
+        this.getNCAuditLists(this.fromDate, this.toDate);
       } else {
         this.audirService.showError('Failed to update audit plan');
       }

@@ -206,6 +206,7 @@ export class AuditPerformComponent {
       if (response) {
         this.isSvgDisabled = true;
         this.audirService.showSuccess(response.message);
+        this.getAuditLists(this.fromDate, this.toDate);
       } else {
         this.audirService.showError('Failed to update audit plan');
       }
@@ -251,7 +252,6 @@ export class AuditPerformComponent {
       localStorage.setItem('performToDate', this.toDate);
     }
     this.getAuditLists(this.fromDate, this.toDate);
-
   }
 
   showAuditors(auditorOptions: any) {
