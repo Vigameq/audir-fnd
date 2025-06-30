@@ -99,7 +99,7 @@ export class TemplatesComponent {
   getTemplates() {
     const email = localStorage.getItem('user')?.toString() || '';
     const selectedTemplate: any = JSON.parse(localStorage.getItem("selectedTemplate") as any);
-    if (selectedTemplate.name) {
+    if (selectedTemplate && selectedTemplate?.name) {
       this.standardSelectedOption = selectedTemplate;
       this.templateName = this.standardSelectedOption.name;
       this.getTemplateQuestions(this.standardSelectedOption.id);

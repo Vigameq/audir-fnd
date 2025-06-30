@@ -79,6 +79,9 @@ export class SpecificFunctionAuditInfoComponent {
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        this.getAuditPlanCompletionPercentage(this.auditId);
+      }
       console.log(`Dialog result: ${result}`);
     });
   }
