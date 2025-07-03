@@ -1,0 +1,93 @@
+<div class="create-user-dialog">
+    <mat-dialog-content class="mat-dialog-content">
+        <div class="content">
+            <div class="create-user-header">
+                <span>Create new user</span>
+            </div>
+            <div class="form-container">
+                <form [formGroup]="createUserForm" (ngSubmit)="onUserCreation()" autocomplete="off">
+                    <div class="create-user-section">
+                        <div class="user-creation-fields">
+                            <div class="left-section">
+                                <div class="first-name">
+                                    <label for="pwd">First name:</label>
+                                    <input type="text" id="first-name" class="form-control"
+                                        formControlName="firstNameValue" name="firstName" placeholder="Enter first name"
+                                        required />
+                                </div>
+                                <div class="email">
+                                    <label for="email">Email:</label>
+                                    <input type="text" id="email" class="form-control" formControlName="emailValue"
+                                        name="email" placeholder="Enter email" required />
+                                </div>
+                                <div class="organization">
+                                    <label for="organization">Organization:</label>
+                                    <input type="text" id="organization" class="form-control"
+                                        formControlName="organizationValue" name="organization"
+                                        placeholder="Enter organization" required />
+                                </div>
+                                <div class="department">
+                                    <label for="department">Department:</label>
+                                    <input type="text" id="department" class="form-control"
+                                        formControlName="departmentValue" name="department"
+                                        placeholder="Enter department" required />
+                                </div>
+                                <div class="user-profile-image">
+                                    <label for="userProfileImage">Upload Profile:</label>
+                                    <input type="file" id="userProfileImage" class="form-control" accept=".jpg, .jpeg"
+                                        (change)="onProfileImageUpload($event)" formControlName="userProfileImageValue"
+                                        name="userProfileImage" required />
+                                </div>
+                            </div>
+                            <div class="right-section">
+                                <div class="last-name">
+                                    <label for="last-name">Last name:</label>
+                                    <input type="text" id="last-name" class="form-control"
+                                        formControlName="lastNameValue" name="lastName" placeholder="Enter last name"
+                                        required />
+                                </div>
+                                <div class="password">
+                                    <label for="password">Password:</label>
+                                    <input type="text" id="password" class="form-control"
+                                        formControlName="passwordValue" name="password" placeholder="Enter password"
+                                        required />
+                                </div>
+                                <div class="dropdown-section">
+                                    <div class="role" (click)="onRoleDropdownClick()" #roleDropdown>
+                                        <label for="role">Role:</label>
+                                        <select class="role-dropdown-select" id='role'
+                                            (change)="onRoleOptionChange($event)">
+                                            <option value="" disabled selected>
+                                                {{roleSelectedOption.name}}</option>
+                                            <option *ngFor="let role of roles" [value]="role.name">
+                                                {{ role.name }}
+                                            </option>
+                                        </select>
+                                        <div class="dropdown-arrow">
+                                            <app-dropdown-arrow-icons
+                                                [isOpen]="isRoleDropdownOpen"></app-dropdown-arrow-icons>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="location">
+                                    <label for="location">Location:</label>
+                                    <input type="text" id="location" class="form-control"
+                                        formControlName="locationValue" name="location" placeholder="Enter location"
+                                        required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-butons">
+                            <button mat-dialog-close class="cancel" (click)="onClose()">
+                                <span>Cancel</span>
+                            </button>
+                            <button class="create-user" (click)="onUserCreatedSucess()">
+                                <span>Create User</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </mat-dialog-content>
+</div>
