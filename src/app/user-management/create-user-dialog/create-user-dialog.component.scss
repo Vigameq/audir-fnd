@@ -1,0 +1,172 @@
+.create-user-dialog {
+    padding: 20px 20px 40px;
+    min-height: 628px;
+    z-index: 1000;
+
+    .mat-dialog-content {
+        padding: 0px;
+        font-family: 'Apple SD Gothic Neo', sans-serif;
+        min-height: 556px;
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: center;
+
+            .create-user-header {
+                font-size: 22px;
+                font-weight: 600;
+                color: #575757;
+                line-height: 100%;
+                padding: 30px 20px 0px;
+
+                span {
+                    padding: 10px 15px 0 0;
+                }
+            }
+
+            .create-user-section {
+                background-color: #FAFAFA;
+                border-radius: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                padding: 30px 30px 10px;
+
+                .user-creation-fields {
+                    flex: 8;
+                    display: flex;
+                    flex-direction: row;
+                    gap: 30px;
+
+                    .left-section,
+                    .right-section {
+                        display: flex;
+                        flex-direction: column;
+                        flex: 1;
+                        gap: 10px;
+
+                        .last-name,
+                        .first-name,
+                        .email,
+                        .password,
+                        .organization,
+                        .department,
+                        .location,
+                        .role,
+                        .user-profile-image {
+
+                            input,
+                            select {
+                                min-width: 262px;
+                                min-height: 36px;
+                                border-radius: 20px;
+                                border: 1px solid #f1f1f1;
+                                outline: none;
+                                padding: 6px 12px;
+                                appearance: none;
+                            }
+
+                            label {
+                                font-weight: 600;
+                                color: #575757;
+                                padding: 6px 12px;
+
+                                .asterisk {
+                                    color: #ff0000;
+                                    padding-left: 4px;
+                                }
+                            }
+
+                            input:hover,
+                            select:hover {
+                                border: 1px solid #FDE714;
+                                outline: none;
+                                box-shadow: none;
+                            }
+
+                            input::placeholder {
+                                color: #1D2431;
+                            }
+
+                            input:focus,
+                            select:focus {
+                                outline: none;
+                                box-shadow: none;
+                            }
+                        }
+
+                        .dropdown-section {
+                            position: relative;
+
+                            .role {
+                                .role-dropdown-select {
+                                    padding-right: 30px;
+                                    cursor: pointer;
+                                }
+
+                                .dropdown-arrow {
+                                    position: absolute;
+                                    top: 77%;
+                                    transform: translateY(-50%);
+                                    pointer-events: none;
+                                    left: 236px;
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+                .action-butons {
+                    flex: 2;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    gap: 20px;
+                    margin-top: 10px;
+
+                    .cancel,
+                    .create-user {
+                        font-size: 16px;
+                        font-weight: 400;
+                        height: 36px;
+                        min-width: 148px;
+                        border-radius: 6px;
+                        border: 1px solid #1D2431;
+                    }
+
+                    .cancel {
+                        background-color: #FFFFFF;
+
+                        span {
+                            color: #1D2431;
+                        }
+                    }
+
+                    .create-user {
+                        background-color: #1D2431;
+
+                        span {
+                            color: #FFFFFF;
+                        }
+                    }
+
+                    button:hover {
+                        border-color: #FDE714;
+                    }
+
+                    .create-user:hover {
+                        background-color: #FDE714;
+
+                        span {
+                            color: #1D2431;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+}
