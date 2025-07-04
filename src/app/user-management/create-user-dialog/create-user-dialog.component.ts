@@ -11,6 +11,7 @@ import { AudirService } from 'src/services/audir-services.service';
 export class CreateUserDialogComponent {
   @ViewChild('roleDropdown') roleDropdown: ElementRef | undefined;
   isAllDetailsAvailable: boolean | undefined;
+  isEmailValid : boolean | undefined;
   roleSelectedOption: any = { name: 'Select role' };
   isRoleDropdownOpen = false;
   createUserForm: FormGroup = new FormGroup({
@@ -49,8 +50,7 @@ export class CreateUserDialogComponent {
       lastNameValue: new FormControl('', [Validators.required, Validators.minLength(3)]),
       passwordValue: new FormControl('', [
         Validators.required,
-        Validators.minLength(8),
-        Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[a-z]).{8,}$/)
+        Validators.minLength(4)
       ]),
       roleValue: new FormControl('', Validators.required),
       locationValue: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -58,11 +58,17 @@ export class CreateUserDialogComponent {
     });
   }
 
+  isValidEmail(email: string):boolean {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/;
+    this.isEmailValid = emailRegex.test(email);
+    return this.isEmailValid;
+  }
+
   onUserCreation() {
     if (this.createUserForm.value.userProfileImageValue && this.createUserForm.value.firstNameValue &&
       this.createUserForm.value.lastNameValue && this.createUserForm.value.emailValue &&
       this.createUserForm.value.organisationValue && this.createUserForm.value.roleValue && this.createUserForm.value.departmentValue &&
-      this.createUserForm.value.locationValue && this.createUserForm.value.passwordValue) {
+      this.createUserForm.value.locationValue && this.createUserForm.value.passwordValue && this.isValidEmail(this.createUserForm.value.emailValue)) {
       this.isAllDetailsAvailable = true;
       const userCreationDetails: any = new FormData();
       userCreationDetails.append('userProfileImage', this.createUserForm.value.userProfileImageValue);
@@ -88,7 +94,7 @@ export class CreateUserDialogComponent {
     }
     else {
       this.isAllDetailsAvailable = false;
-      this.audirService.showError('Fill all required fields to create new user');
+      this.audirService.showError('Please enter mandatory (*) fields');
 
     }
   }
