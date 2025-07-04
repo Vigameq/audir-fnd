@@ -118,3 +118,9 @@ body {
 .mat-mdc-tooltip-trigger {
   cursor: context-menu !important;
 }
+
+input::placeholder {
+  color: #4E4E4E !important;
+  opacity: 1 !important;
+  font-family: 'Apple SD Gothic Neo', sans-serif !important;
+}

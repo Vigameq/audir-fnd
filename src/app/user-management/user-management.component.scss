@@ -1,0 +1,30 @@
+.user-management-container {
+    max-width: 100%;
+    margin: 16px 40px 16px 44px;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Apple SD Gothic Neo', sans-serif;
+    gap: 20px;
+
+    .create-btn-section {
+        text-align: right;
+        .create-user-btn {
+            background-color: #1D2431;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            border: 1px solid #2C2C2C;
+            cursor: pointer;
+            height: 44px;
+            width: 140px;
+        }
+
+        .create-user-btn:hover {
+            background-color: #FDE714;
+            color: #1D2431;
+            border-color: #FDE714;
+        }
+
+    }
+}
