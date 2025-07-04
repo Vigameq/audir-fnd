@@ -1,6 +1,6 @@
 .create-user-dialog {
     padding: 20px 20px 40px;
-    min-height: 620px;
+    min-height: 628px;
     z-index: 1000;
 
     .mat-dialog-content {
@@ -62,7 +62,7 @@
                                 min-width: 262px;
                                 min-height: 36px;
                                 border-radius: 20px;
-                                border: none;
+                                border: 1px solid #FAFAFA;
                                 outline: none;
                                 padding: 6px 12px;
                                 appearance: none;
@@ -72,15 +72,28 @@
                                 font-weight: 600;
                                 color: #575757;
                                 padding: 6px 12px;
+
+                                .asterisk {
+                                    color: #ff0000;
+                                    padding-left: 4px;
+                                }
                             }
 
                             input:hover,
                             select:hover {
                                 border: 1px solid #FDE714;
+                                outline: none;
+                                box-shadow: none;
                             }
 
                             input::placeholder {
                                 color: #1D2431;
+                            }
+
+                            input:focus,
+                            select:focus {
+                                outline: none;
+                                box-shadow: none;
                             }
                         }
 

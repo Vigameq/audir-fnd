@@ -24,6 +24,10 @@ export class AudirService {
     return this.http.post(`${environment.apiUrl}/api/getAuditPlan`, audit_id);
   }
 
+  createNewUser(userDetails: any) {
+    return this.http.post(`${environment.apiUrl}/api/createUser`, userDetails);
+  }
+
   getTemplate(template_id: any) {
     const templateDetails = { "template_id": template_id };
     return this.http.post(`${environment.apiUrl}/api/getTemplate`, templateDetails);

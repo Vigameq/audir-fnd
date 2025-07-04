@@ -17,7 +17,7 @@ export class UserManagementComponent {
       autoFocus: false,
       disableClose: true,
       width: '654px',
-      height: '620px',
+      height: '628px',
       data: {}
     });
     dialogRef.afterClosed().subscribe(async (result: any) => {
