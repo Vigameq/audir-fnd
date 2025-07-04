@@ -74,7 +74,7 @@ export class CreateUserDialogComponent {
       userCreationDetails.append('department', this.createUserForm.value.departmentValue);
       userCreationDetails.append('location', this.createUserForm.value.locationValue);
       userCreationDetails.append('password', this.createUserForm.value.passwordValue);
-      this.audirService.updateAuditPlan(userCreationDetails).subscribe((response: any) => {
+      this.audirService.createNewUser(userCreationDetails).subscribe((response: any) => {
         if (response) {
           this.audirService.showSuccess(response.message);
           this.dialogRef.close('success');
@@ -130,7 +130,6 @@ export class CreateUserDialogComponent {
         alert('Only JPG files are allowed.');
         return;
       }
-
       if (uploadedImage.size > 2 * 1024 * 1024) {
         this.createUserForm.patchValue({
           userProfileImageValue: null

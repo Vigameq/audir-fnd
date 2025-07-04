@@ -24,7 +24,7 @@ export class AudirService {
     return this.http.post(`${environment.apiUrl}/api/getAuditPlan`, audit_id);
   }
 
-  createNewUser(userDetails: any) {
+  createNewUser(userDetails: FormData): any {
     return this.http.post(`${environment.apiUrl}/api/createUser`, userDetails);
   }
 
