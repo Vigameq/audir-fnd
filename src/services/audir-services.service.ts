@@ -28,6 +28,14 @@ export class AudirService {
     return this.http.post(`${environment.apiUrl}/api/createUser`, userDetails);
   }
 
+  updateUser(userDetails: FormData): any {
+    return this.http.post(`${environment.apiUrl}/api/updateUser`, userDetails);
+  }
+
+  updatePassword(userDetails: FormData): any {
+    return this.http.post(`${environment.apiUrl}/api/updatePassword`, userDetails);
+  }
+
   getTemplate(template_id: any) {
     const templateDetails = { "template_id": template_id };
     return this.http.post(`${environment.apiUrl}/api/getTemplate`, templateDetails);

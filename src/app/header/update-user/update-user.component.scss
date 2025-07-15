@@ -1,12 +1,12 @@
-.create-user-dialog {
+.update-user-dialog {
     padding: 20px 20px 40px;
-    min-height: 628px;
+    min-height: 512px;
     z-index: 1000;
 
     .mat-dialog-content {
         padding: 0px;
         font-family: 'Apple SD Gothic Neo', sans-serif;
-        min-height: 556px;
+        min-height: 440px;
 
         .content {
             display: flex;
@@ -14,7 +14,7 @@
             gap: 10px;
             justify-content: center;
 
-            .create-user-header {
+            .update-user-header {
                 font-size: 22px;
                 font-weight: 600;
                 color: #575757;
@@ -26,7 +26,7 @@
                 }
             }
 
-            .create-user-section {
+            .update-user-section {
                 background-color: #FAFAFA;
                 border-radius: 20px;
                 display: flex;
@@ -34,7 +34,7 @@
                 gap: 10px;
                 padding: 30px 30px 10px;
 
-                .user-creation-fields {
+                .user-updation-fields {
                     flex: 8;
                     display: flex;
                     flex-direction: row;
@@ -50,17 +50,14 @@
                         .last-name,
                         .first-name,
                         .email,
-                        .password,
-                        .organization,
                         .department,
                         .location,
-                        .role,
-                        .user-profile-image {
+                        .role {
 
                             input,
                             select {
                                 min-width: 262px;
-                                min-height: 36px;
+                                min-height: 46px;
                                 border-radius: 20px;
                                 border: 1px solid #f1f1f1;
                                 outline: none;
@@ -132,10 +129,10 @@
                     margin-top: 10px;
 
                     .cancel,
-                    .create-user {
+                    .update-user {
                         font-size: 16px;
                         font-weight: 400;
-                        height: 36px;
+                        height: 46px;
                         min-width: 148px;
                         border-radius: 6px;
                         border: 1px solid #1D2431;
@@ -149,7 +146,7 @@
                         }
                     }
 
-                    .create-user {
+                    .update-user {
                         background-color: #1D2431;
 
                         span {
@@ -161,7 +158,7 @@
                         border-color: #FDE714;
                     }
 
-                    .create-user:hover {
+                    .update-user:hover {
                         background-color: #FDE714;
 
                         span {
