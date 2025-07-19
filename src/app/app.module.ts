@@ -42,6 +42,11 @@ import { FindingsAuditProgressDialogComponent } from './findings-management/find
 import { CreateUserDialogComponent } from './user-management/create-user-dialog/create-user-dialog.component';
 import { UpdatePasswordComponent } from './header/update-password/update-password.component';
 import { UpdateUserComponent } from './header/update-user/update-user.component';
+import { LoaderComponent } from './shared/loader/loader.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { LoaderInterceptor } from './shared/interceptors/loader.interceptor';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -72,7 +77,8 @@ import { UpdateUserComponent } from './header/update-user/update-user.component'
     FindingsAuditProgressDialogComponent,
     CreateUserDialogComponent,
     UpdatePasswordComponent,
-    UpdateUserComponent
+    UpdateUserComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,
@@ -81,6 +87,7 @@ import { UpdateUserComponent } from './header/update-user/update-user.component'
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    MatProgressSpinnerModule,
     IgxCalendarModule,
     IgxIconModule,
     MatDialogModule,
@@ -92,7 +99,7 @@ import { UpdateUserComponent } from './header/update-user/update-user.component'
     MatDatepickerModule,
     MatNativeDateModule
   ],
-  providers: [],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true }],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this to allow custom elements
 
