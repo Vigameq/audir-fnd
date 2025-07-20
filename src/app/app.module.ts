@@ -40,6 +40,8 @@ import { FindingsQuestionResponseDialogComponent } from './findings-management/f
 import { ApprovalRemarksDialogComponent } from './findings-management/approval-remarks-dialog/approval-remarks-dialog.component';
 import { FindingsAuditProgressDialogComponent } from './findings-management/findings-audit-progress-dialog/findings-audit-progress-dialog.component';
 import { CreateUserDialogComponent } from './user-management/create-user-dialog/create-user-dialog.component';
+import { UpdatePasswordComponent } from './header/update-password/update-password.component';
+import { UpdateUserComponent } from './header/update-user/update-user.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -68,7 +70,9 @@ import { CreateUserDialogComponent } from './user-management/create-user-dialog/
     FindingsAuditInfoComponent,
     FindingsQuestionResponseDialogComponent,
     FindingsAuditProgressDialogComponent,
-    CreateUserDialogComponent
+    CreateUserDialogComponent,
+    UpdatePasswordComponent,
+    UpdateUserComponent
   ],
   imports: [
     BrowserModule,

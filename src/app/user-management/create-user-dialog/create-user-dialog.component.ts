@@ -10,10 +10,14 @@ import { AudirService } from 'src/services/audir-services.service';
 })
 export class CreateUserDialogComponent {
   @ViewChild('roleDropdown') roleDropdown: ElementRef | undefined;
+  @ViewChild('locationDropdown') locationDropdown: ElementRef | undefined;
   isAllDetailsAvailable: boolean | undefined;
-  isEmailValid : boolean | undefined;
+  isEmailValid: boolean | undefined;
   roleSelectedOption: any = { name: 'Select role' };
+  locationSelectedOption: any = 'Select location';
+  locations = ["Amaravati", "Bengaluru", "Bhopal", "Bhubaneswar", "Chandigarh", "Chennai", "Dehradun", "Gandhinagar", "Gangtok", "Hyderabad", "Jaipur", "Kolkata", "Lucknow", "Mumbai", "Panaji", "Patna", "Raipur", "Ranchi", "Shillong", "Shimla", "Thiruvananthapuram"];
   isRoleDropdownOpen = false;
+  isLocationDropdownOpen = false;
   createUserForm: FormGroup = new FormGroup({
     firstNameValue: new FormControl('', [Validators.required, Validators.minLength(3)]),
     emailValue: new FormControl('', [Validators.required, Validators.email]),
@@ -39,10 +43,10 @@ export class CreateUserDialogComponent {
     name: 'Auditee'
   }]
 
-  constructor(private audirService: AudirService, private renderer: Renderer2, private CreateUserFormBuilder: FormBuilder, public dialogRef: MatDialogRef<CreateUserDialogComponent>) { }
+  constructor(private audirService: AudirService, private renderer: Renderer2, private createUserFormBuilder: FormBuilder, public dialogRef: MatDialogRef<CreateUserDialogComponent>) { }
 
   ngOnInit(): void {
-    this.createUserForm = this.CreateUserFormBuilder.group({
+    this.createUserForm = this.createUserFormBuilder.group({
       firstNameValue: new FormControl('', [Validators.required, Validators.minLength(3)]),
       emailValue: new FormControl('', [Validators.required, Validators.email]),
       organisationValue: new FormControl('vigameq', [Validators.required, Validators.minLength(3)]),
@@ -58,7 +62,7 @@ export class CreateUserDialogComponent {
     });
   }
 
-  isValidEmail(email: string):boolean {
+  isValidEmail(email: string): boolean {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/;
     this.isEmailValid = emailRegex.test(email);
     return this.isEmailValid;
@@ -107,6 +111,10 @@ export class CreateUserDialogComponent {
     this.isRoleDropdownOpen = !this.isRoleDropdownOpen;
   }
 
+  onLocationDropdownClick() {
+    this.isLocationDropdownOpen = !this.isLocationDropdownOpen;
+  }
+
   onClose() {
     this.dialogRef.close();
   }
@@ -118,10 +126,20 @@ export class CreateUserDialogComponent {
     });
   }
 
+  onLocationOptionChange(event: any) {
+    const target = event.target as HTMLSelectElement;
+    this.createUserForm.patchValue({
+      locationValue: target.value
+    });
+  }
+
   ngAfterViewInit() {
     this.renderer.listen('document', 'click', (event: Event) => {
       if (this.roleDropdown && !this.roleDropdown.nativeElement.contains(event.target)) {
         this.isRoleDropdownOpen = false;
+      }
+      else if (this.locationDropdown && !this.locationDropdown.nativeElement.contains(event.target)) {
+        this.isLocationDropdownOpen = false;
       }
     });
   }
