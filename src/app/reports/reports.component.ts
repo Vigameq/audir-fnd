@@ -43,7 +43,6 @@ export class ReportsComponent {
 
   onStandardOptionChange(event: Event) {
     const target = event.target as HTMLSelectElement;
-    console.log("Selected Option: ", this.standardSelectedOption, target);
     this.standardSelectedOption = target.value;
   }
 
@@ -53,7 +52,6 @@ export class ReportsComponent {
   onFunctionsOptionChange(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.functionsSelectedOption = target.value;
-    console.log("Selected Option: ", this.functionsSelectedOption);
   }
 
   onFunctionsDropdownClick(): void {

@@ -1,13 +1,13 @@
-<div class="create-user-dialog">
+<div class="update-user-dialog">
     <mat-dialog-content class="mat-dialog-content">
         <div class="content">
-            <div class="create-user-header">
-                <span>Create new user</span>
+            <div class="update-user-header">
+                <span>Update user details</span>
             </div>
             <div class="form-container">
-                <form [formGroup]="createUserForm" (ngSubmit)="onUserCreation()" autocomplete="off">
-                    <div class="create-user-section">
-                        <div class="user-creation-fields">
+                <form [formGroup]="updateUserForm" (ngSubmit)="onUserUpdation()" autocomplete="off">
+                    <div class="update-user-section">
+                        <div class="user-updation-fields">
                             <div class="left-section">
                                 <div class="first-name">
                                     <label for="pwd">First name<span class="asterisk"
@@ -19,25 +19,13 @@
                                     <label for="email">Email<span class="asterisk"
                                             *ngIf="(form['emailValue'].touched && form['emailValue'].invalid) || ((isAllDetailsAvailable === false) && form['emailValue'].invalid)">*</span></label>
                                     <input type="text" id="email" class="form-control" formControlName="emailValue"
-                                        name="email" required />
-                                </div>
-                                <div class="organization">
-                                    <label for="organization">Organization<span class="asterisk"
-                                            *ngIf="(form['organisationValue'].touched && form['organisationValue'].invalid) || ((isAllDetailsAvailable === false) && form['organisationValue'].invalid)">*</span></label>
-                                    <input type="text" id="organization" class="form-control"
-                                        formControlName="organisationValue" name="organization" readonly required />
+                                        name="email" readonly />
                                 </div>
                                 <div class="department">
                                     <label for="department">Department<span class="asterisk"
                                             *ngIf="(form['departmentValue'].touched && form['departmentValue'].invalid) || ((isAllDetailsAvailable === false) && form['departmentValue'].invalid)">*</span></label>
                                     <input type="text" id="department" class="form-control"
                                         formControlName="departmentValue" name="department" required />
-                                </div>
-                                <div class="user-profile-image">
-                                    <label for="userProfileImage">Upload profile picture<span class="asterisk"
-                                            *ngIf="(form['userProfileImageValue'].touched && form['userProfileImageValue'].invalid) || ((isAllDetailsAvailable === false) && form['userProfileImageValue'].invalid)">*</span></label>
-                                    <input type="file" id="userProfileImage" class="form-control"
-                                        (change)="onProfileImageUpload($event)" name="userProfileImage" required />
                                 </div>
                             </div>
                             <div class="right-section">
@@ -46,12 +34,6 @@
                                             *ngIf="(form['lastNameValue'].touched && form['lastNameValue'].invalid) || ((isAllDetailsAvailable === false) && form['lastNameValue'].invalid)">*</span></label>
                                     <input type="text" id="last-name" class="form-control"
                                         formControlName="lastNameValue" name="lastName" required />
-                                </div>
-                                <div class="password">
-                                    <label for="password">Password<span class="asterisk"
-                                            *ngIf="(form['passwordValue'].touched && form['passwordValue'].invalid) || ((isAllDetailsAvailable === false) && form['passwordValue'].invalid)">*</span></label>
-                                    <input type="text" id="password" class="form-control"
-                                        formControlName="passwordValue" name="password" required />
                                 </div>
                                 <div class="role-dropdown">
                                     <div class="role" (click)="onRoleDropdownClick()" #roleDropdown>
@@ -95,8 +77,8 @@
                             <button mat-dialog-close class="cancel" (click)="onClose()">
                                 <span>Cancel</span>
                             </button>
-                            <button class="create-user">
-                                <span>Create User</span>
+                            <button class="update-user">
+                                <span>Update</span>
                             </button>
                         </div>
                     </div>
