@@ -42,6 +42,8 @@ import { FindingsAuditProgressDialogComponent } from './findings-management/find
 import { CreateUserDialogComponent } from './user-management/create-user-dialog/create-user-dialog.component';
 import { UpdatePasswordComponent } from './header/update-password/update-password.component';
 import { UpdateUserComponent } from './header/update-user/update-user.component';
+import { AuditManageComponent } from './audit-manage/audit-manage.component';
+import { DatePipe } from '@angular/common';
 @NgModule({
   declarations: [
     AppComponent,
@@ -72,7 +74,8 @@ import { UpdateUserComponent } from './header/update-user/update-user.component'
     FindingsAuditProgressDialogComponent,
     CreateUserDialogComponent,
     UpdatePasswordComponent,
-    UpdateUserComponent
+    UpdateUserComponent,
+    AuditManageComponent
   ],
   imports: [
     BrowserModule,
@@ -92,7 +95,7 @@ import { UpdateUserComponent } from './header/update-user/update-user.component'
     MatDatepickerModule,
     MatNativeDateModule
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this to allow custom elements
 
