@@ -10,22 +10,36 @@
         </div>
         <div class="form-container">
             <form [formGroup]="auditPlanForm" (ngSubmit)="onSubmit()">
-                <div class="link-audit-row">
+                <div class="audit-title-and-functions-row" *ngIf="auditPlanForm.get('parentAudit')?.value === ''">
+                    <div class="audit-title" #auditTitle>
+                        <label for="audit-title" class="form-label">Audit Title<span class="asterisk">*</span></label>
+                        <input id="audit-title" class="audit-title-input" formControlName="auditTitle"
+                            name="auditTitle" />
+                    </div>
+                    <div class="functions">
+                        <label for="function" class="form-label">Functions</label>
+                        <input id="function" class="audit-function-input" formControlName="functions"
+                            name="functions" />
+                    </div>
+                </div>
+                <div class="parent-audit-link">
                     <div class="link-audit-label">
-                        <label for="parentAudit" class="form-label">Parent Audit <span class="info">(select only if child audit to be created)</span></label>
+                        <label for="parentAudit" class="form-label">Parent Audit <span class="info">(select only if
+                                child audit to be created)</span></label>
                     </div>
                     <div class="link-audit-select">
                         <select id="parentAudit" class="dropdown-select" formControlName="parentAudit"
                             (change)="onParentAuditChange()" name="parentAudit">
-                            <option value="" disabled selected>Select Audit</option>
+                            <option value="" selected>Select Audit</option>
                             <option *ngFor="let audit of parent_audits" [ngValue]="audit">
                                 {{audit.title}}</option>
                         </select>
                     </div>
                 </div>
-                <div class="audit-title-and-functions-row">
+                <div class="audit-title-and-functions-row" *ngIf="auditPlanForm.get('parentAudit')?.value != ''">
                     <div class="audit-title" #auditTitle>
-                        <label for="audit-title" class="form-label">Audit Title<span class="asterisk">*</span></label>
+                        <label for="audit-title" class="form-label">Child Audit Title<span
+                                class="asterisk">*</span></label>
                         <input id="audit-title" class="audit-title-input" formControlName="auditTitle"
                             name="auditTitle" />
                     </div>
@@ -38,7 +52,7 @@
                 <div class="templates-row">
                     <div class="template-dropdown">
                         <label for="templates" class="form-label">Template</label>
-                        <div class="dropbtn" [matTooltip]="selectedTemplateOptions"
+                        <div class="dropbtn" [matTooltip]="selectedTemplateOptions" [class.disabled]="auditPlanForm.get('parentAudit')?.value != ''"
                             (click)="templateToggleDropdown($event)">
                             <span [ngStyle]="{'max-width.px': maxWidth}">{{selectedTemplateOptions}}</span>
                         </div>
@@ -55,18 +69,22 @@
                     </div>
                     <div class="function-template">
                         <label for="function-templates" class="form-label">Functions Template</label>
-                        <div class="function-template-dropdown" (click)="onFunctionTemplateDropdownClick()"
-                            #functionTemplateDropdown>
-                            <select id="function-templates" class="dropdown-select"
-                                formControlName="functionTemplateValue" name="functionTemplateValue" required>
-                                <option value="" disabled selected>Select template..</option>
-                                <option *ngFor="let template of templates" [value]="template.name">
-                                    {{ template.name }}</option>
-                            </select>
-                            <div class="dropdown-arrow">
-                                <app-dropdown-arrow-icons
-                                    [isOpen]="isFunctionTemplateDropdownOpen"></app-dropdown-arrow-icons>
-                            </div>
+                        <div class="dropbtn" [matTooltip]="selectedFunctionTemplateOptions"
+                            (click)="functionTemplateToggleDropdown($event)">
+                            <span [ngStyle]="{'max-width.px': maxWidth}">{{selectedFunctionTemplateOptions}}</span>
+                        </div>
+                        <div *ngIf="isFunctionTemplateDropdownOpen" class="dropdown-content" #functionTemplateDropdown>
+                            <label *ngFor="let functionTemplate of functionTemplates; let i = index"
+                                (click)="onCheckboxClick($event)">
+                                <input type="checkbox" [value]="functionTemplate.name" class="checkbox-input"
+                                    (change)="onFunctionTemplateSelectionChange($event,i)"
+                                    [checked]="functionTemplates[i].checked" />
+                                <span class="template-value">{{ functionTemplate.name }}</span>
+                            </label>
+                        </div>
+                        <div class="dropdown-arrow">
+                            <app-dropdown-arrow-icons
+                                [isOpen]="isFunctionTemplateDropdownOpen"></app-dropdown-arrow-icons>
                         </div>
                     </div>
                 </div>

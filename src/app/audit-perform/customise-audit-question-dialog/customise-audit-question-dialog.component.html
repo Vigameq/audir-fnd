@@ -40,12 +40,12 @@
                                         <input type="file" id="fileUpload" accept="application/pdf"
                                             (change)="uploadEvidence($event)" hidden>
                                     </label>
-                                    <p [matTooltip]="uploadEvidenceLabel">{{uploadEvidenceLabel}}</p>
+                                    <p [matTooltip]="auditeeResponseEvidenceFileName">{{auditeeResponseEvidenceFileName}}</p>
                                 </div>
                             </div>
                             <div class="link">
                                 <div class="link-label"><span>Link</span></div>
-                                <div class="link-input"><input type="url" [(ngModel)]="linkInput" 
+                                <div class="link-input"><input type="url" [(ngModel)]="linkInput"
                                         (input)="onLinkInputChange()" class="link-input" />
                                 </div>
                             </div>
@@ -113,7 +113,7 @@
                     <path
                         d="M3.45895 8.21V5.186H0.578953V3.26H3.45895V0.289999H5.56495V3.26H8.42695V5.186H5.56495V8.21H3.45895Z"
                         fill="" />
-                </svg><span>Add Audit Finding  </span> <span>[ {{totalFindings.length}}/10 ]</span>
+                </svg><span>Add Audit Finding </span> <span>[ {{totalFindings.length}}/10 ]</span>
             </button>
         </div>
         <div class="cancel-save-btns">

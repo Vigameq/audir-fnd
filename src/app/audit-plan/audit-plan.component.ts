@@ -45,15 +45,18 @@ export class AuditPlanComponent {
   });
   isTemplateOptionsOpen = false;
   isTemplateDropdownOpened = false;
+  isFunctionTemplateDropdownOpened = false;
   cities = ["Amaravati", "Bengaluru", "Bhopal", "Bhubaneswar", "Chandigarh", "Chennai", "Dehradun", "Gandhinagar", "Gangtok", "Hyderabad", "Jaipur", "Kolkata", "Lucknow", "Mumbai", "Panaji", "Patna", "Raipur", "Ranchi", "Shillong", "Shimla", "Thiruvananthapuram"];
   countries = ["India"];
   selectedTemplate: string[] = [];
+  selectedFunctionTemplate: string[] = [];
   selectedAuditor: string[] = [];
   selectedAuditorsEmail: string[] = [];
   selectedAuditees: string[] = [];
   selectedAuditeesEmail: string[] = [];
   parent_audits: any[] = [];
   templates: any[] = [];
+  functionTemplates: any[] = [];
   auditees: any[] = [];
   auditors: any[] = [];
   isImportVisible: boolean = true;
@@ -65,8 +68,9 @@ export class AuditPlanComponent {
   isParentAudit: boolean = false;
   private destroy$ = new Subject<void>();
   selectedTemplateOptions: string = 'Select templates..';
-  selectedAuditorOptions: string = 'Select Auditors..';
-  selectedAuditeesOptions: string = 'Select Auditees..';
+  selectedFunctionTemplateOptions: string = 'Select function templates..';
+  selectedAuditorOptions: string = 'Select auditors..';
+  selectedAuditeesOptions: string = 'Select auditees..';
   maxWidth: any;
   isAuditorOptionsOpen = false;
   isAuditeesOptionsOpen = false;
@@ -124,7 +128,8 @@ export class AuditPlanComponent {
     this.audirService.getPlanItems(this.userEmail).subscribe((items: any) => {
       if (items) {
         this.parent_audits = items.parent_audits;
-        this.templates = items.templates;
+        this.templates = items.templates.map((template: any) => ({ ...template }));
+        this.functionTemplates = items.templates.map((template: any) => ({ ...template }));
         this.auditees = items.users.auditees;
         this.auditors = items.users.auditors;
       }
@@ -148,6 +153,21 @@ export class AuditPlanComponent {
     this.selectedTemplateOptions = this.selectedTemplate.length > 0 ? this.selectedTemplate.join(', ') : 'Select templates..';
   }
 
+  onFunctionTemplateSelectionChange(event: Event, index: any) {
+    const checkbox = event.target as HTMLInputElement;
+    if (!this.selectedFunctionTemplate.includes(checkbox.value)) {
+      if (checkbox.checked) {
+        this.selectedFunctionTemplate.push(checkbox.value);
+        this.functionTemplates[index].checked = true;
+      }
+    }
+    else {
+      this.functionTemplates[index].checked = false;
+      this.selectedFunctionTemplate = this.selectedFunctionTemplate.filter(option => option !== checkbox.value);
+    }
+    this.selectedFunctionTemplateOptions = this.selectedFunctionTemplate.length > 0 ? this.selectedFunctionTemplate.join(', ') : 'Select function templates..';
+  }
+
   onAuditeeSelectionChange(event: Event, index: any, auditee: any) {
     const checkbox = event.target as HTMLInputElement;
     if (!this.selectedAuditees.includes(checkbox.value)) {
@@ -162,7 +182,7 @@ export class AuditPlanComponent {
       this.selectedAuditees = this.selectedAuditees.filter(option => option !== checkbox.value);
       this.selectedAuditeesEmail = this.selectedAuditeesEmail.filter(option => option !== auditee.email);
     }
-    this.selectedAuditeesOptions = this.selectedAuditees.length > 0 ? this.selectedAuditees.join(', ') : 'Select Auditees..';
+    this.selectedAuditeesOptions = this.selectedAuditees.length > 0 ? this.selectedAuditees.join(', ') : 'Select auditees..';
   }
 
   onAuditorSelectionChange(event: Event, index: any, auditor: any) {
@@ -179,7 +199,7 @@ export class AuditPlanComponent {
       this.selectedAuditor = this.selectedAuditor.filter(option => option !== checkbox.value);
       this.selectedAuditorsEmail = this.selectedAuditorsEmail.filter(option => option !== auditor.email);
     }
-    this.selectedAuditorOptions = this.selectedAuditor.length > 0 ? this.selectedAuditor.join(', ') : 'Select Auditors..';
+    this.selectedAuditorOptions = this.selectedAuditor.length > 0 ? this.selectedAuditor.join(', ') : 'Select auditors..';
   }
 
   onSubmit() {
@@ -189,7 +209,7 @@ export class AuditPlanComponent {
         audit_title: this.auditPlanForm.value?.auditTitle,
         functions: this.auditPlanForm.value?.functions,
         template: this.selectedTemplate,
-        function_template: (this.auditPlanForm.value?.functionTemplateValue).length > 0 ? [this.auditPlanForm.value?.functionTemplateValue] : '',
+        function_template: this.selectedFunctionTemplate.length > 0 ? this.selectedFunctionTemplate : '',
         start_date: this.auditPlanForm.value?.startDateTime,
         end_date: this.auditPlanForm.value?.endDateTime,
         lead_auditor: this.auditPlanForm?.value?.leadAuditorValue,
@@ -232,6 +252,8 @@ export class AuditPlanComponent {
 
   resetForm() {
     this.isParentAudit = false;
+    this.isTemplateDropdownOpened = false;
+    this.isFunctionTemplateDropdownOpened = false;
     this.auditPlanForm.reset({
       parentAudit: '',
       auditTitle: '',
@@ -248,13 +270,15 @@ export class AuditPlanComponent {
       auditScopeValue: ''
     });
     this.selectedTemplate = [];
+    this.selectedFunctionTemplate = [];
     this.selectedAuditor = [];
     this.selectedAuditorsEmail = [];
     this.selectedAuditeesEmail = [];
     this.selectedAuditees = [];
     this.selectedTemplateOptions = 'Select templates..';
-    this.selectedAuditorOptions = 'Select Auditors..';
-    this.selectedAuditeesOptions = 'Select Auditees..';
+    this.selectedFunctionTemplateOptions = 'Select function templates..';
+    this.selectedAuditorOptions = 'Select auditors..';
+    this.selectedAuditeesOptions = 'Select auditees..';
     this.setMaxMinDateTime();
   }
 
@@ -330,6 +354,7 @@ export class AuditPlanComponent {
   templateToggleDropdown(event: any) {
     this.isAuditorOptionsOpen = false;
     this.isAuditeesOptionsOpen = false;
+    this.isFunctionTemplateDropdownOpen = false;
     event.stopPropagation();
     this.isTemplateOptionsOpen = !this.isTemplateOptionsOpen;
     if (!this.isTemplateDropdownOpened) {
@@ -338,9 +363,22 @@ export class AuditPlanComponent {
     }
   }
 
+  functionTemplateToggleDropdown(event: any) {
+    this.isAuditorOptionsOpen = false;
+    this.isAuditeesOptionsOpen = false;
+    this.isTemplateOptionsOpen = false;
+    event.stopPropagation();
+    this.isFunctionTemplateDropdownOpen = !this.isFunctionTemplateDropdownOpen;
+    if (!this.isFunctionTemplateDropdownOpened) {
+      this.isFunctionTemplateDropdownOpened = true;
+      this.functionTemplates = this.setCheckedOption(this.functionTemplates);
+    }
+  }
+
   auditorToggleDropdown(event: any) {
     this.isTemplateOptionsOpen = false;
     this.isAuditeesOptionsOpen = false;
+    this.isFunctionTemplateDropdownOpen = false;
     event.stopPropagation();
     this.isAuditorOptionsOpen = !this.isAuditorOptionsOpen;
     if (!this.isAuditorDropdownOpened) {
@@ -352,6 +390,7 @@ export class AuditPlanComponent {
   auditeesToggleDropdown(event: any) {
     this.isTemplateOptionsOpen = false;
     this.isAuditorOptionsOpen = false;
+    this.isFunctionTemplateDropdownOpen = false;
     event.stopPropagation();
     this.isAuditeesOptionsOpen = !this.isAuditeesOptionsOpen;
     if (!this.isAuditeesDropdownOpened) {
@@ -404,10 +443,6 @@ export class AuditPlanComponent {
 
   updateWidth() {
     this.maxWidth = this.auditTitleElement.nativeElement.offsetWidth - 38;
-  }
-
-  onFunctionTemplateDropdownClick(): void {
-    this.isFunctionTemplateDropdownOpen = !this.isFunctionTemplateDropdownOpen;
   }
 
   onLeadAuditorDropdownClick(): void {
@@ -494,6 +529,7 @@ export class AuditPlanComponent {
   onParentAuditChange() {
     this.auditPlanForm.get('startDateTime')?.setValue('');
     this.auditPlanForm.get('endDateTime')?.setValue('');
+    this.auditPlanForm.get('auditTitle')?.setValue('');
     this.maxDateTime = this.datePipe.transform(this.auditPlanForm.value.parentAudit.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
     this.minDateTime = this.datePipe.transform(this.auditPlanForm.value.parentAudit.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
   }

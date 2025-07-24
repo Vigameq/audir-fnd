@@ -160,15 +160,18 @@ export class AuditPerformComponent {
   updateLineHeight(auditIndex: any, index: number, statusContent: HTMLElement) {
     const subAudit: any = this.auditList[auditIndex].sub_audits;
     let newLineHeight: any;
+    newLineHeight = statusContent.offsetHeight;
     if (index <= subAudit.length) {
-      if (this.auditList[auditIndex].sub_audits[index].city === '' || this.auditList[auditIndex].sub_audits[index].functions === '') {
-        newLineHeight = index === 0 ? statusContent.offsetHeight - 46 : statusContent.offsetHeight + 16;
-        if (this.auditList[auditIndex].sub_audits[index].functions === '') {
-          newLineHeight = index === 0 ? statusContent.offsetHeight - 26 : statusContent.offsetHeight + 36;
+      if (this.auditList[auditIndex].sub_audits[index]?.city === '' || this.auditList[auditIndex].sub_audits[index]?.functions === '') {
+        if (this.auditList[auditIndex].sub_audits[index]?.functions === '') {
+          newLineHeight = index === 0 ? newLineHeight - 26 : newLineHeight + 36;
+        }
+        if (this.auditList[auditIndex].sub_audits[index]?.city === '') {
+          newLineHeight = index === 0 ? newLineHeight - 26 : newLineHeight + 16;
         }
       }
       else {
-        newLineHeight = index === 0 ? statusContent.offsetHeight - 66 : statusContent.offsetHeight - 4;
+        newLineHeight = index === 0 ? newLineHeight - 38 : newLineHeight + 6;
       }
       if (subAudit.lineHeight !== newLineHeight) {
         this.auditList[auditIndex].sub_audits[index].lineHeight = newLineHeight;
