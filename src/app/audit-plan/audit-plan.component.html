@@ -11,16 +11,17 @@
         <div class="form-container">
             <form [formGroup]="auditPlanForm" (ngSubmit)="onSubmit()">
                 <div class="audit-type">
-                    <div class="audit-type-label">
-                        <label for="auditType" class="form-label">Audit Type</label>
-                    </div>
-                    <div class="audit-type-select">
+                    <label for="auditType" class="form-label">Audit Type<span class="asterisk">*</span></label>
+                    <div class="auditType-dropdown" (click)="onAuditTypeDropdownClick()" #auditTypeDropdown>
                         <select id="auditType" class="dropdown-select" formControlName="auditType"
-                            (change)="onAuditTypeChange()" name="auditType">
+                            (change)="onAuditTypeChange()" name="auditType" required>
                             <option value="" disabled selected>Select Audit Type</option>
                             <option *ngFor="let auditType of auditTypes" [ngValue]="auditType">
                                 {{auditType}}</option>
                         </select>
+                        <div class="dropdown-arrow">
+                            <app-dropdown-arrow-icons [isOpen]="isAuditTypeDropdownOpen"></app-dropdown-arrow-icons>
+                        </div>
                     </div>
                 </div>
                 <div class="audit-title-and-functions-row" *ngIf="auditPlanForm.get('parentAudit')?.value === ''">

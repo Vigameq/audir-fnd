@@ -112,7 +112,6 @@
             }
 
             .parent-audit-link,
-            .audit-type,
             .audit-scope-row {
                 display: flex;
                 flex-direction: column;
@@ -232,6 +231,7 @@
 
             .lead-auditor,
             .city,
+            .audit-type,
             .country {
                 position: relative;
             }

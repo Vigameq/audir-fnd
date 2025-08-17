@@ -26,7 +26,8 @@ export class AuditPlanComponent {
   @ViewChild('leadAuditorDropdown', { static: false }) leadAuditorDropdown!: ElementRef;
   @ViewChild('cityDropdown', { static: false }) cityDropdown!: ElementRef;
   @ViewChild('countryDropdown', { static: false }) countryDropdown!: ElementRef;
-  @ViewChild('auditTitle') auditTitleElement!: ElementRef;
+  @ViewChild('auditTitle', { static: false }) auditTitleElement!: ElementRef;
+  @ViewChild('auditTypeDropdown', { static: false }) auditTypeDropdown!: ElementRef;
 
   auditPlanForm: FormGroup = new FormGroup({
     parentAudit: new FormControl(''),
@@ -82,6 +83,7 @@ export class AuditPlanComponent {
   isLeadAuditorDropdownOpen = false;
   isCityDropdownOpen = false;
   isCountryDropdownOpen = false;
+  isAuditTypeDropdownOpen = false;
   startDate: any;
   userEmail: string = '';
   minDateTime: any;
@@ -462,6 +464,10 @@ export class AuditPlanComponent {
     this.isCountryDropdownOpen = !this.isCountryDropdownOpen;
   }
 
+  onAuditTypeDropdownClick(): void {
+    this.isAuditTypeDropdownOpen = !this.isAuditTypeDropdownOpen;
+  }
+
   getEmail() {
     return localStorage.getItem('user')?.toString() || '';
   }
@@ -484,6 +490,7 @@ export class AuditPlanComponent {
     const leadAuditorDropdownMenuElement = this.leadAuditorDropdown?.nativeElement;
     const cityDropdownMenuElement = this.cityDropdown?.nativeElement;
     const countryDropdownMenuElement = this.countryDropdown?.nativeElement;
+    const auditTypeDropdownMenuElement = this.auditTypeDropdown?.nativeElement;
 
     if (this.isTemplateOptionsOpen) {
       if (templateDropdownMenuElement && !templateDropdownMenuElement.contains(event.target as Node)) {
@@ -518,6 +525,11 @@ export class AuditPlanComponent {
     else if (this.isCountryDropdownOpen) {
       if (countryDropdownMenuElement && !countryDropdownMenuElement.contains(event.target as Node)) {
         this.isCountryDropdownOpen = false;
+      }
+    }
+    else if (this.isAuditTypeDropdownOpen) {
+      if (auditTypeDropdownMenuElement && !auditTypeDropdownMenuElement.contains(event.target as Node)) {
+        this.isAuditTypeDropdownOpen = false;
       }
     }
   }
