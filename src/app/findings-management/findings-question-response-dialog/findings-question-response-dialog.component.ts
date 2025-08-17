@@ -23,6 +23,7 @@ export class FindingsQuestionResponseDialogComponent {
   isRootCauseChanged: boolean = false;
   isCorrectivePlanChanged: boolean = false;
   noErrors: boolean = true;
+  fileSize = 1048 * 1048;
   questionData: any;
   auditQuestionData: any =
     {
@@ -384,6 +385,11 @@ export class FindingsQuestionResponseDialogComponent {
     //   console.log('Upload only PDF file');
     //   return;
     // }
+    if (this.correctionsEvidenceFile.size >= this.fileSize) {
+      this.audirService.showError('Only below 1 MB file size is allowed');
+      console.log('Upload file size below 1 MB');
+      return;
+    }
     this.isCorrectionsChanged = true;
     this.uploadCorrectionsEvidenceText = this.correctionsEvidenceFile.name;
     this.auditQuestionData.nc_correction.attach_evidence = this.correctionsEvidenceFile;
@@ -402,6 +408,11 @@ export class FindingsQuestionResponseDialogComponent {
     //   console.log('Upload only PDF file');
     //   return;
     // }
+    if (this.rootCauseEvidenceFile.size >= this.fileSize) {
+      this.audirService.showError('Only below 1 MB file size is allowed');
+      console.log('Upload file size below 1 MB');
+      return;
+    }
     this.isRootCauseChanged = true;
     this.uploadRootCauseResponseFileText = this.rootCauseEvidenceFile.name;
     this.auditQuestionData.nc_root_cause.attach_evidence = this.rootCauseEvidenceFile;
@@ -420,6 +431,11 @@ export class FindingsQuestionResponseDialogComponent {
     //   console.log('Upload only PDF file');
     //   return;
     // }
+    if (this.correctiveStatusEvidenceFile.size >= this.fileSize) {
+      this.audirService.showError('Only below 1 MB file size is allowed');
+      console.log('Upload file size below 1 MB');
+      return;
+    }
     this.isCorrectivePlanChanged = true;
     this.uploadCorrectiveActionStatusFileName = this.correctiveStatusEvidenceFile.name;
     this.auditQuestionData.nc_corrective_action_plan.attach_evidence = this.correctiveStatusEvidenceFile;

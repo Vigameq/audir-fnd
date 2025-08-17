@@ -19,6 +19,7 @@ export class CustomiseAuditQuestionDialogComponent {
   noErrors!: boolean;
   questionData: any;
   deleteText = 'Delete';
+  fileSize = 1048 * 1048;
   isAuditFindingsPresent = false;
   isAuditeeResponseChanged = false;
   isAuditNoteChanged = false;
@@ -340,6 +341,11 @@ export class CustomiseAuditQuestionDialogComponent {
     //   console.log('Upload only PDF file');
     //   return;
     // }
+    if (this.evidenceFile.size >= this.fileSize) {
+      this.audirService.showError('Only below 1 MB file size is allowed');
+      console.log('Upload file size below 1 MB');
+      return;
+    }
     this.isAuditeeResponseChanged = true;
     this.auditeeResponseEvidenceFileName = this.evidenceFile.name;
     this.auditQuestionData.auditeeInfo.attach_evidence = this.evidenceFile;
