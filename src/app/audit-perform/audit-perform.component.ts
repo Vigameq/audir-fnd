@@ -171,7 +171,7 @@ export class AuditPerformComponent {
         }
       }
       else {
-        newLineHeight = index === 0 ? newLineHeight - 38 : newLineHeight + 6;
+        newLineHeight = index === 0 ? newLineHeight - 64 : newLineHeight + 6;
       }
       if (subAudit.lineHeight !== newLineHeight) {
         this.auditList[auditIndex].sub_audits[index].lineHeight = newLineHeight;

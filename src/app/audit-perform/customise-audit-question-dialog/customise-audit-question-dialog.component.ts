@@ -133,7 +133,6 @@ export class CustomiseAuditQuestionDialogComponent {
         if (response) {
           const lastModifiedDate = new Date();
           const file = new File([response], attach_evidence_file_Name, {
-            type: "application/pdf",
             lastModified: lastModifiedDate.getTime()
           });
           this.evidenceFile = file;
@@ -239,7 +238,7 @@ export class CustomiseAuditQuestionDialogComponent {
         this.saveAuditFindings();
       }
     }
-    if (this.evidenceFile && this.isAuditeeResponseChanged) {
+    if (this.evidenceFile || this.isAuditeeResponseChanged) {
       this.saveAuditeeResponse();
     }
     if (this.noErrors) {
@@ -251,7 +250,7 @@ export class CustomiseAuditQuestionDialogComponent {
 
   checkResponseAvailability() {
     return (this.checkIfAuditFindingPresent(this.auditFindingsValue, this.findingCategorySelectedOption, this.clauseInput)
-      || this.auditNoteValue !== '' && this.isAuditNoteChanged || (this.evidenceFile && (this.auditeeResponseValue !== '' || this.linkInput !== '')) && this.isAuditeeResponseChanged);
+      || this.auditNoteValue !== '' && this.isAuditNoteChanged || (this.evidenceFile || (this.auditeeResponseValue !== '' || this.linkInput !== '')) && this.isAuditeeResponseChanged);
   }
 
   checkIfAuditFindingPresent(auditFindingsValue: any, findingCategorySelectedOption: any, clauseInput: any) {
@@ -333,19 +332,19 @@ export class CustomiseAuditQuestionDialogComponent {
   uploadEvidence(event: any) {
     this.evidenceFile = event.target.files[0];
     if (!this.evidenceFile) {
-      this.audirService.showError('Uploading PDF failed');
+      this.audirService.showError('Uploading evidence file failed');
       return;
     }
-    if (this.evidenceFile.type !== 'application/pdf') {
-      this.audirService.showError('Only PDF file is allowed');
-      console.log('Upload only PDF file');
-      return;
-    }
+    // if (this.evidenceFile.type !== 'application/pdf') {
+    //   this.audirService.showError('Only PDF file is allowed');
+    //   console.log('Upload only PDF file');
+    //   return;
+    // }
     this.isAuditeeResponseChanged = true;
     this.auditeeResponseEvidenceFileName = this.evidenceFile.name;
     this.auditQuestionData.auditeeInfo.attach_evidence = this.evidenceFile;
-    this.audirService.showSuccess('Upload Evidence Successful');
-    console.log('PDF file uploaded successfully.');
+    this.audirService.showSuccess('Uploaded Evidence Successful');
+    console.log('Evidence file uploaded successfully.');
   }
 
   checkFindingsLengthInRange() {

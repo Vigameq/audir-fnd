@@ -14,34 +14,34 @@
 
         .top-bar {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             gap: 15px;
             width: 100%;
             font-size: 16px;
 
-            .toggle-group {
-                display: flex;
-                border: 1px solid #ccc;
-                border-radius: 32px;
-                overflow: hidden;
-                width: 75%;
-                height: 50px;
+            // .toggle-group {
+            //     display: flex;
+            //     border: 1px solid #ccc;
+            //     border-radius: 32px;
+            //     overflow: hidden;
+            //     width: 75%;
+            //     height: 50px;
 
-                .toggle-button {
-                    flex: 1;
-                    padding: 10px 20px;
-                    border: none;
-                    background: white;
-                    cursor: pointer;
-                    transition: background 0.3s;
-                    border-right: 1px solid #cccccc;
-                }
+            //     .toggle-button {
+            //         flex: 1;
+            //         padding: 10px 20px;
+            //         border: none;
+            //         background: white;
+            //         cursor: pointer;
+            //         transition: background 0.3s;
+            //         border-right: 1px solid #cccccc;
+            //     }
 
-                .toggle-button.active {
-                    background: #f5f3f3;
-                }
-            }
+            //     .toggle-button.active {
+            //         background: #f5f3f3;
+            //     }
+            // }
 
             .import-button {
                 background-color: #1D2431;
@@ -112,6 +112,7 @@
             }
 
             .parent-audit-link,
+            .audit-type,
             .audit-scope-row {
                 display: flex;
                 flex-direction: column;

@@ -40,7 +40,7 @@
                                         <span>{{elementStatus.link}}</span>
                                     </div>
                                     <div class="view-img-btn" *ngIf="elementStatus.type === 'auditee_response'">
-                                        <button (click)="downloadEvidence(elementStatus)">
+                                        <button [disabled]="elementStatus.attach_evidence === 'None'" (click)="downloadEvidence(elementStatus)">
                                             <span>Download evidence</span>
                                         </button>
                                     </div>

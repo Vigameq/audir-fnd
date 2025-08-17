@@ -32,12 +32,11 @@
                                 (input)="onAuditeeResponseChange()"></textarea></div>
                         <div class="upload-evidence-and-link-section">
                             <div class="upload-evidence">
-                                <div class="upload-evidence-label"><span>Attach Evidence</span><span *ngIf="(auditeeResponseValue !=='') || linkInput !== ''"
-                                        class="asterisk">*</span></div>
+                                <div class="upload-evidence-label"><span>Attach Evidence</span></div>
                                 <div class="upload-evidence-btn">
                                     <label for="fileUpload" class="upload">
                                         Upload
-                                        <input type="file" id="fileUpload" accept="application/pdf"
+                                        <input type="file" id="fileUpload" accept="video/*,image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
                                             (change)="uploadEvidence($event)" hidden>
                                     </label>
                                     <p [matTooltip]="auditeeResponseEvidenceFileName">{{auditeeResponseEvidenceFileName}}</p>

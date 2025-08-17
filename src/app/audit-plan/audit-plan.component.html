@@ -1,15 +1,28 @@
 <div class="audit-plan-container">
     <div class="main-content">
         <div class="top-bar">
-            <div class="toggle-group">
+            <!-- <div class="toggle-group">
                 <button class="toggle-button active">✔ Physical</button>
                 <button class="toggle-button">Offline</button>
                 <button class="toggle-button">Virtual</button>
-            </div>
+            </div> -->
             <button class="import-button" *ngIf="isImportVisible" (click)="openImportPlanDialog()">+ Import</button>
         </div>
         <div class="form-container">
             <form [formGroup]="auditPlanForm" (ngSubmit)="onSubmit()">
+                <div class="audit-type">
+                    <div class="audit-type-label">
+                        <label for="auditType" class="form-label">Audit Type</label>
+                    </div>
+                    <div class="audit-type-select">
+                        <select id="auditType" class="dropdown-select" formControlName="auditType"
+                            (change)="onAuditTypeChange()" name="auditType">
+                            <option value="" disabled selected>Select Audit Type</option>
+                            <option *ngFor="let auditType of auditTypes" [ngValue]="auditType">
+                                {{auditType}}</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="audit-title-and-functions-row" *ngIf="auditPlanForm.get('parentAudit')?.value === ''">
                     <div class="audit-title" #auditTitle>
                         <label for="audit-title" class="form-label">Audit Title<span class="asterisk">*</span></label>
@@ -52,7 +65,8 @@
                 <div class="templates-row">
                     <div class="template-dropdown">
                         <label for="templates" class="form-label">Template</label>
-                        <div class="dropbtn" [matTooltip]="selectedTemplateOptions" [class.disabled]="auditPlanForm.get('parentAudit')?.value != ''"
+                        <div class="dropbtn" [matTooltip]="selectedTemplateOptions"
+                            [class.disabled]="auditPlanForm.get('parentAudit')?.value != ''"
                             (click)="templateToggleDropdown($event)">
                             <span [ngStyle]="{'max-width.px': maxWidth}">{{selectedTemplateOptions}}</span>
                         </div>

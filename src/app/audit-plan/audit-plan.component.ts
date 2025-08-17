@@ -30,6 +30,7 @@ export class AuditPlanComponent {
 
   auditPlanForm: FormGroup = new FormGroup({
     parentAudit: new FormControl(''),
+    auditType: new FormControl('Physical'),
     auditTitle: new FormControl(''),
     functions: new FormControl(''),
     templateValue: new FormControl([]),
@@ -47,6 +48,7 @@ export class AuditPlanComponent {
   isTemplateDropdownOpened = false;
   isFunctionTemplateDropdownOpened = false;
   cities = ["Amaravati", "Bengaluru", "Bhopal", "Bhubaneswar", "Chandigarh", "Chennai", "Dehradun", "Gandhinagar", "Gangtok", "Hyderabad", "Jaipur", "Kolkata", "Lucknow", "Mumbai", "Panaji", "Patna", "Raipur", "Ranchi", "Shillong", "Shimla", "Thiruvananthapuram"];
+  auditTypes = ["Physical", "Offline", "Virtual"];
   countries = ["India"];
   selectedTemplate: string[] = [];
   selectedFunctionTemplate: string[] = [];
@@ -96,6 +98,7 @@ export class AuditPlanComponent {
     this.auditPlanForm = this.formBuilder.group(
       {
         parentAudit: [''],
+        auditType: ['Physical'],
         auditTitle: ['', Validators.required],
         functions: [''],
         templateValue: [[], Validators.required],
@@ -218,7 +221,8 @@ export class AuditPlanComponent {
         city: this.auditPlanForm.value?.cityName,
         country: this.auditPlanForm.value?.countryName,
         audit_scope: this.auditPlanForm.value?.auditScopeValue,
-        audit_type: "ISO 270015",
+        // audit_type: this.auditPlanForm.value?.auditType,
+        audit_type: 'Physical',
         eMail: this.userEmail
       }
       if (this.checkRequiredPlanValues(plan)) {
@@ -230,7 +234,7 @@ export class AuditPlanComponent {
             this.audirService.showError('Failed to create audit plan');
           }
         }, (error: any) => {
-          this.audirService.showError('Failed to create audit plan');
+          this.audirService.showError(error.error.message);
           console.error('Error for creation of audit plan:', error);
         }
         )
@@ -256,6 +260,7 @@ export class AuditPlanComponent {
     this.isFunctionTemplateDropdownOpened = false;
     this.auditPlanForm.reset({
       parentAudit: '',
+      auditType: 'Physical',
       auditTitle: '',
       functions: '',
       templateValue: [],
@@ -533,6 +538,8 @@ export class AuditPlanComponent {
     this.maxDateTime = this.datePipe.transform(this.auditPlanForm.value.parentAudit.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
     this.minDateTime = this.datePipe.transform(this.auditPlanForm.value.parentAudit.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
   }
+
+  onAuditTypeChange() { }
 
   ngOnDestroy(): void {
     this.destroy$.next();

@@ -142,7 +142,6 @@ export class FindingsQuestionResponseDialogComponent {
         if (response) {
           const lastModifiedDate = new Date();
           const file = new File([response], attach_evidence_file_Name, {
-            type: "application/pdf",
             lastModified: lastModifiedDate.getTime()
           });
           if (responseType === 'nc_root_cause') {
@@ -290,13 +289,13 @@ export class FindingsQuestionResponseDialogComponent {
 
   onSave() {
     this.noErrors = true;
-    if (this.correctionsEvidenceFile && this.checkCorrectionsResponse() && this.isCorrectionsChanged) {
+    if (this.checkCorrectionsResponse() && this.isCorrectionsChanged) {
       this.saveCorrectionsResponse();
     }
-    if (this.correctiveStatusEvidenceFile && this.checkCorrectivePlanResponse() && this.isCorrectivePlanChanged) {
+    if (this.checkCorrectivePlanResponse() && this.isCorrectivePlanChanged) {
       this.saveCorrectivePlanResponse();
     }
-    if (this.rootCauseEvidenceFile && this.checkRootCauseResponse() && this.isRootCauseChanged) {
+    if (this.checkRootCauseResponse() && this.isRootCauseChanged) {
       this.saveRootCauseResponse();
     }
     if (this.noErrors) {
@@ -377,61 +376,61 @@ export class FindingsQuestionResponseDialogComponent {
   uploadCorrectionsEvidence(event: any) {
     this.correctionsEvidenceFile = event.target.files[0];
     if (!this.correctionsEvidenceFile) {
-      this.audirService.showError('Uploading PDF failed');
+      this.audirService.showError('Uploading evidence failed');
       return;
     }
-    if (this.correctionsEvidenceFile.type !== 'application/pdf') {
-      this.audirService.showError('Only PDF file is allowed');
-      console.log('Upload only PDF file');
-      return;
-    }
+    // if (this.correctionsEvidenceFile.type !== 'application/pdf') {
+    //   this.audirService.showError('Only PDF file is allowed');
+    //   console.log('Upload only PDF file');
+    //   return;
+    // }
     this.isCorrectionsChanged = true;
     this.uploadCorrectionsEvidenceText = this.correctionsEvidenceFile.name;
     this.auditQuestionData.nc_correction.attach_evidence = this.correctionsEvidenceFile;
-    this.audirService.showSuccess('Upload Evidence Successful');
-    console.log('PDF file uploaded successfully.');
+    this.audirService.showSuccess('Uploaded Evidence Successful');
+    console.log('Evidence file uploaded successfully.');
   }
 
   uploadRootCauseEvidence(event: any) {
     this.rootCauseEvidenceFile = event.target.files[0];
     if (!this.rootCauseEvidenceFile) {
-      this.audirService.showError('Uploading PDF failed');
+      this.audirService.showError('Uploading evidence file failed');
       return;
     }
-    if (this.rootCauseEvidenceFile.type !== 'application/pdf') {
-      this.audirService.showError('Only PDF file is allowed');
-      console.log('Upload only PDF file');
-      return;
-    }
+    // if (this.rootCauseEvidenceFile.type !== 'application/pdf') {
+    //   this.audirService.showError('Only PDF file is allowed');
+    //   console.log('Upload only PDF file');
+    //   return;
+    // }
     this.isRootCauseChanged = true;
     this.uploadRootCauseResponseFileText = this.rootCauseEvidenceFile.name;
     this.auditQuestionData.nc_root_cause.attach_evidence = this.rootCauseEvidenceFile;
-    this.audirService.showSuccess('Upload Evidence Successful');
-    console.log('PDF file uploaded successfully.');
+    this.audirService.showSuccess('Uploaded Evidence Successful');
+    console.log('Evidence file uploaded successfully.');
   }
 
   uploadCorrectiveStatusEvidence(event: any) {
     this.correctiveStatusEvidenceFile = event.target.files[0];
     if (!this.correctiveStatusEvidenceFile) {
-      this.audirService.showError('Uploading PDF failed');
+      this.audirService.showError('Uploading evidence file failed');
       return;
     }
-    if (this.correctiveStatusEvidenceFile.type !== 'application/pdf') {
-      this.audirService.showError('Only PDF file is allowed');
-      console.log('Upload only PDF file');
-      return;
-    }
+    // if (this.correctiveStatusEvidenceFile.type !== 'application/pdf') {
+    //   this.audirService.showError('Only PDF file is allowed');
+    //   console.log('Upload only PDF file');
+    //   return;
+    // }
     this.isCorrectivePlanChanged = true;
     this.uploadCorrectiveActionStatusFileName = this.correctiveStatusEvidenceFile.name;
     this.auditQuestionData.nc_corrective_action_plan.attach_evidence = this.correctiveStatusEvidenceFile;
-    this.audirService.showSuccess('Upload Evidence Successful');
-    console.log('PDF file uploaded successfully.');
+    this.audirService.showSuccess('Uploaded Evidence Successful');
+    console.log('Evidence file uploaded successfully.');
   }
 
   checkResponseAvailability() {
-    return ((this.correctionsEvidenceFile && this.checkCorrectionsResponse() && this.isCorrectionsChanged)
-      || (this.rootCauseEvidenceFile && this.checkRootCauseResponse() && this.isRootCauseChanged)
-      || (this.correctiveStatusEvidenceFile && this.checkCorrectivePlanResponse() && this.isCorrectivePlanChanged));
+    return ((this.checkCorrectionsResponse() && this.isCorrectionsChanged)
+      || (this.checkRootCauseResponse() && this.isRootCauseChanged)
+      || (this.checkCorrectivePlanResponse() && this.isCorrectivePlanChanged));
   }
 
   checkCorrectionsResponse() {
