@@ -165,6 +165,17 @@
                     min-height: 217px;
                 }
 
+                .more {
+                    text-align: right;
+                    padding-top: 10px;
+
+                    a:hover {
+                        cursor: pointer;
+                        color: #FDE714;
+                        text-decoration: underline;
+                    }
+                }
+
                 .upload-evidence-and-link-section,
                 .finding-category-and-clause-section {
                     border-top: 1px solid #BABABA;
