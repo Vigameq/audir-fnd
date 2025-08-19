@@ -1,0 +1,130 @@
+<div class="audit-perform">
+    <div class="search-date-filter-section">
+        <div class="audit-perform-search-bar">
+            <input type="text" [(ngModel)]="searchQuery" placeholder="Search" (input)="onSearch()"
+                class="audit-perform-search-input" />
+            <button *ngIf="searchQuery" (click)="clearSearch()" class="clear-btn">
+                &#10006;
+            </button>
+        </div>
+        <div class="date-filter-and-reset">
+            <div class="from-date">
+                <mat-form-field appearance="fill" class="custom-date-picker">
+                    <mat-label>From Date</mat-label>
+                    <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" (dateChange)="onDateChange()"
+                        name="fromDate" readonly>
+                    <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #fromPicker></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="to-date">
+                <mat-form-field appearance="fill" class="custom-date-picker">
+                    <mat-label>To Date</mat-label>
+                    <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate" (dateChange)="onDateChange()"
+                        name="toDate" [min]="fromDate" readonly>
+                    <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #toPicker></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="reset">
+                <input type="reset" (click)="resetDateFilter(true)">
+            </div>
+        </div>
+    </div>
+    <div class="audit-info-label"><span>Audit Information</span></div>
+    <div class="audit-perform-container-section" *ngIf="auditList?.length > 0">
+        <div *ngFor="let auditPerformItem of auditList; let i = index">
+            <div class="audit-perform-container">
+                <div class="audit-perform-details">
+                    <div class="plan-creation-id"><span>{{auditPerformItem.audit_title}}</span></div>
+                    <div class="templates-location-details">
+                        <div class="templates-details"
+                            *ngIf="auditPerformItem.template[0] || auditPerformItem.function_template[0]">
+                            <span>{{auditPerformItem.template[0]}}</span>
+                            <span class="vertical-bar"
+                                *ngIf="auditPerformItem.template[0] && auditPerformItem.function_template[0]">|</span>
+                            <span>{{auditPerformItem.function_template[0]}}
+                            </span>
+                        </div>
+                        <div class="location-details" *ngIf="auditPerformItem.country || auditPerformItem.city">
+                            <span>{{auditPerformItem.city}}</span>
+                            <span class="vertical-bar"
+                                *ngIf="auditPerformItem.country && auditPerformItem.city">|</span>
+                            <span>{{auditPerformItem.country}}</span>
+                        </div>
+                    </div>
+                    <div class="duration-details">
+                        <div class="date-details">
+                            <span>{{auditPerformItem.start_date | date:'dd/MM/yyyy':'UTC'}}</span>
+                            <span class="hyphen">-</span>
+                            <span>{{auditPerformItem.end_date | date:'dd/MM/yyyy':'UTC'}}
+                            </span>
+                        </div>
+                        <div class="time-details">
+                            <span class="start-time">{{auditPerformItem.start_date | date:'hh:mm a':'UTC'}}</span>
+                            <span class="end-time">{{auditPerformItem.end_date | date:'hh:mm a':'UTC'}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-badge"
+                                [ngClass]="{'progress-badge-green': auditPerformItem.audit_status === 'created','progress-badge-yellow': auditPerformItem.audit_status === 'inprogress','progress-badge-orange': auditPerformItem.audit_status === 'submitted'}">
+                                <span>
+                                    {{auditPerformItem.audit_status | pascalCase}}</span>
+                            </div>
+                </div>
+                <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0"
+                    (click)="openSubAudits(auditPerformItem.sub_audits,i)">
+                    <span>{{auditPerformItem.sub_audits.length}}</span>
+                </div>
+            </div>
+            <div *ngIf="auditPerformItem.sub_audits.length > 0 && auditPerformItem.isSubAuditsOpened">
+                <div class="sub-audit" *ngFor="let sub_audit of auditPerformItem.sub_audits; let j = index">
+                    <div class="tree-node">
+                        <div class="line" [ngStyle]="{'height.px': sub_audit.lineHeight}"></div>
+                        <div class="dot"></div>
+                    </div>
+                    <div class="sub-audit-perform-container" #detailsContent>
+                        <div class="audit-perform-details">
+                            <div class="plan-creation-id"><span>{{sub_audit.audit_title}}</span></div>
+                            <div class="templates-location-details">
+                                <div class="templates-details">
+                                    <!-- <span>{{sub_audit.template[0]}}</span>
+                            <span class="vertical-bar">|</span> -->
+                                    <span>{{sub_audit.functions}}
+                                    </span>
+                                </div>
+                                <div class="location-details" *ngIf="sub_audit.country || sub_audit.city">
+                                    <span>{{sub_audit.city}}</span>
+                                    <span class="vertical-bar" *ngIf="sub_audit.country && sub_audit.city">|</span>
+                                    <span>{{sub_audit.country}}</span>
+                                </div>
+                            </div>
+                            <div class="duration-details">
+                                <div class="date-details">
+                                    <span>{{sub_audit.start_date | date:'dd/MM/yyyy':'UTC'}}</span>
+                                    <span class="hyphen">-</span>
+                                    <span>{{sub_audit.end_date | date:'dd/MM/yyyy':'UTC'}}
+                                    </span>
+                                </div>
+                                <div class="time-details">
+                                    <span class="start-time">{{sub_audit.start_date | date:'hh:mm a':'UTC'}}</span>
+                                    <span class="end-time">{{sub_audit.end_date | date:'hh:mm a':'UTC'}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="progress-badge"
+                                [ngClass]="{'progress-badge-green': sub_audit.audit_status === 'created','progress-badge-yellow': sub_audit.audit_status === 'inprogress','progress-badge-orange': sub_audit.audit_status === 'submitted'}">
+                                <span>
+                                    {{sub_audit.audit_status | pascalCase}}</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="no-audit-data" *ngIf="auditList?.length === 0">
+        <span>No audits are available.</span>
+    </div>
+</div>
