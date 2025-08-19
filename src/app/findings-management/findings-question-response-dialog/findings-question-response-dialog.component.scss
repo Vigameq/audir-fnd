@@ -206,14 +206,22 @@
                     line-height: 100%
                 }
 
-                .upload-correctons-evidence-label,
-                .upload-root-cause-evidence-label,
-                .upload-corrective-action-status-evidence-label {
+                .planned-completion-date-label,
+                .actual-completion-date-label {
                     .asterisk {
                         color: #ff0000;
                         padding-left: 4px;
                     }
                 }
+
+                // .upload-correctons-evidence-label,
+                // .upload-root-cause-evidence-label,
+                // .upload-corrective-action-status-evidence-label {
+                //     .asterisk {
+                //         color: #ff0000;
+                //         padding-left: 4px;
+                //     }
+                // }
 
                 .upload-correctons-evidence-btn,
                 .upload-root-cause-evidence-btn,
