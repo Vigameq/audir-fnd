@@ -73,7 +73,7 @@ export class AuditFunctionalQuestionProgressDialogComponent {
   downloadEvidence(responseData: any) {
     this.audirService.getEvidence(this.data.auditQuestionData.audit_id, responseData.attach_evidence).subscribe((response: any) => {
       if (response) {
-        const blobData = new Blob([response], { type: 'application/pdf' });
+        const blobData = new Blob([response]);
         const evidenceFileURL = URL.createObjectURL(blobData);
         const templateDownloadLink = document.createElement('a');
         templateDownloadLink.href = evidenceFileURL;

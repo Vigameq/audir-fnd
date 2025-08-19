@@ -93,7 +93,7 @@ export class ImportCreatePlanDialogComponent {
         this.audirService.showSuccess('Audit plan created successfully');
       }, (error: any) => {
         this.isCreated = false;
-        this.audirService.showError('Failed to create audit plan');
+        this.audirService.showError(error.error.message);
         console.error('Error for creation of audit plan:', error);
       })
     } else {

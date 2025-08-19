@@ -15,12 +15,14 @@
                 <div class="question-text"><span>{{auditQuestionData.question}}</span></div>
             </div>
             <div class="audit-section">
-                <div class="res-hist-btn"><button [disabled]="questionData?.history.length == 0" (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
+                <div class="res-hist-btn"><button [disabled]="questionData?.history.length == 0"
+                        (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
                 <div class="auditor-note" *ngIf="isAuditor">
                     <div class="auditor-note-label"><span>Auditor Note</span></div>
                     <div class="auditor-note-fields-section">
                         <div class="audit-note-textarea"><textarea id="audit-note-textarea" rows="4" name="auditNote"
-                                [(ngModel)]="auditNoteValue" placeholder="Enter Note..." (input)="onAuditNoteChange()"></textarea>
+                                [(ngModel)]="auditNoteValue" placeholder="Enter Note..."
+                                (input)="onAuditNoteChange()"></textarea>
                         </div>
                     </div>
                 </div>
@@ -32,20 +34,21 @@
                                 (input)="onAuditeeResponseChange()"></textarea></div>
                         <div class="upload-evidence-and-link-section">
                             <div class="upload-evidence">
-                                <div class="upload-evidence-label"><span>Attach Evidence</span><span *ngIf="(auditeeResponseValue !=='') || linkInput !== ''"
-                                        class="asterisk">*</span></div>
+                                <div class="upload-evidence-label"><span>Attach Evidence</span></div>
                                 <div class="upload-evidence-btn">
                                     <label for="fileUpload" class="upload">
                                         Upload
-                                        <input type="file" id="fileUpload" accept="application/pdf"
+                                        <input type="file" id="fileUpload"
+                                            accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
                                             (change)="uploadEvidence($event)" hidden>
                                     </label>
-                                    <p [matTooltip]="uploadEvidenceLabel">{{uploadEvidenceLabel}}</p>
+                                    <p [matTooltip]="auditeeResponseEvidenceFileName">
+                                        {{auditeeResponseEvidenceFileName}}</p>
                                 </div>
                             </div>
                             <div class="link">
                                 <div class="link-label"><span>Link</span></div>
-                                <div class="link-input"><input type="url" [(ngModel)]="linkInput" 
+                                <div class="link-input"><input type="url" [(ngModel)]="linkInput"
                                         (input)="onLinkInputChange()" class="link-input" />
                                 </div>
                             </div>
@@ -68,7 +71,7 @@
                                         <div class="finding-category-dropdown-section"
                                             (click)="onFindingCategoryDropdownClick()" #findingsCategoryDropdown>
                                             <select class="finding-category-dropdown-select"
-                                                (change)="onFindingsOptionChange($event,i)"
+                                                (change)="onFindingsOptionChange(i)"
                                                 [(ngModel)]="findingCategorySelectedOption[i]">
                                                 <option value="" disabled selected>Select</option>
                                                 <option *ngFor="let findingCategory of findingCategoryOptions"
@@ -102,6 +105,8 @@
                             </div>
                         </div>
                     </div>
+                    <div class="more" *ngIf="questionData.audit_findings.length > 1"><a (click)="openResponseHistory()">more findings</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -113,7 +118,7 @@
                     <path
                         d="M3.45895 8.21V5.186H0.578953V3.26H3.45895V0.289999H5.56495V3.26H8.42695V5.186H5.56495V8.21H3.45895Z"
                         fill="" />
-                </svg><span>Add Audit Finding  </span> <span>[ {{totalFindings.length}}/10 ]</span>
+                </svg><span>Add Audit Finding </span> <span>[ {{totalFindings.length}}/10 ]</span>
             </button>
         </div>
         <div class="cancel-save-btns">

@@ -107,8 +107,8 @@
                     <div class="sub-audit-perform-container" #detailsContent>
                         <div class="audit-perform-details">
                             <div class="plan-creation-id"><span>{{sub_audit.audit_title}}</span></div>
-                            <div class="templates-location-details">
-                                <div class="templates-details">
+                            <div class="templates-location-details" *ngIf="sub_audit.functions || sub_audit.country || sub_audit.city ">
+                                <div class="templates-details" *ngIf="sub_audit.functions">
                                     <!-- <span>{{sub_audit.template[0]}}</span>
                             <span class="vertical-bar">|</span> -->
                                     <span>{{sub_audit.functions}}
