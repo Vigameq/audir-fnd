@@ -12,6 +12,7 @@ import { authGuard as AuthGuard } from './auth.guard';
 import { SpecificFunctionAuditInfoComponent } from './audit-perform/specific-function-audit-info/specific-function-audit-info.component';
 import { CustomiseAuditQuestionDialogComponent } from './audit-perform/customise-audit-question-dialog/customise-audit-question-dialog.component';
 import { FindingsAuditInfoComponent } from './findings-management/findings-audit-info/findings-audit-info.component';
+import { AuditManageComponent } from './audit-manage/audit-manage.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -29,6 +30,10 @@ const routes: Routes = [
   },
   {
     path: 'auditPerform/:id', component: SpecificFunctionAuditInfoComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'auditManage', component: AuditManageComponent,
     canActivate: [AuthGuard]
   },
   {
