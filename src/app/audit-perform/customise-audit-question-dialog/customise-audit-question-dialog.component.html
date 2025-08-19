@@ -15,12 +15,14 @@
                 <div class="question-text"><span>{{auditQuestionData.question}}</span></div>
             </div>
             <div class="audit-section">
-                <div class="res-hist-btn"><button [disabled]="questionData?.history.length == 0" (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
+                <div class="res-hist-btn"><button [disabled]="questionData?.history.length == 0"
+                        (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
                 <div class="auditor-note" *ngIf="isAuditor">
                     <div class="auditor-note-label"><span>Auditor Note</span></div>
                     <div class="auditor-note-fields-section">
                         <div class="audit-note-textarea"><textarea id="audit-note-textarea" rows="4" name="auditNote"
-                                [(ngModel)]="auditNoteValue" placeholder="Enter Note..." (input)="onAuditNoteChange()"></textarea>
+                                [(ngModel)]="auditNoteValue" placeholder="Enter Note..."
+                                (input)="onAuditNoteChange()"></textarea>
                         </div>
                     </div>
                 </div>
@@ -36,10 +38,12 @@
                                 <div class="upload-evidence-btn">
                                     <label for="fileUpload" class="upload">
                                         Upload
-                                        <input type="file" id="fileUpload" accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
+                                        <input type="file" id="fileUpload"
+                                            accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
                                             (change)="uploadEvidence($event)" hidden>
                                     </label>
-                                    <p [matTooltip]="auditeeResponseEvidenceFileName">{{auditeeResponseEvidenceFileName}}</p>
+                                    <p [matTooltip]="auditeeResponseEvidenceFileName">
+                                        {{auditeeResponseEvidenceFileName}}</p>
                                 </div>
                             </div>
                             <div class="link">
@@ -67,7 +71,7 @@
                                         <div class="finding-category-dropdown-section"
                                             (click)="onFindingCategoryDropdownClick()" #findingsCategoryDropdown>
                                             <select class="finding-category-dropdown-select"
-                                                (change)="onFindingsOptionChange($event,i)"
+                                                (change)="onFindingsOptionChange(i)"
                                                 [(ngModel)]="findingCategorySelectedOption[i]">
                                                 <option value="" disabled selected>Select</option>
                                                 <option *ngFor="let findingCategory of findingCategoryOptions"
@@ -100,6 +104,8 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="more" *ngIf="questionData.audit_findings.length > 1"><a (click)="openResponseHistory()">more findings</a>
                     </div>
                 </div>
             </div>

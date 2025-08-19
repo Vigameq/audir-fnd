@@ -23,6 +23,7 @@ export class CustomiseAuditQuestionDialogComponent {
   isAuditFindingsPresent = false;
   isAuditeeResponseChanged = false;
   isAuditNoteChanged = false;
+  isAuditFindingsChanged = false;
   auditeeResponseEvidenceFileName = 'No file choosen..';
   auditQuestionData: any =
     {
@@ -116,9 +117,15 @@ export class CustomiseAuditQuestionDialogComponent {
     this.auditeeResponseValue = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].auditee_response : '';
     this.linkInput = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].link : '';
     this.auditeeResponseEvidenceFileName = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].attach_evidence : '';
+    this.auditFindingsValue[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].audit_finding : '';
+    this.findingCategorySelectedOption[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].finding_category : '';
+    this.clauseInput[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].closure_reference : '';
     this.onAuditNoteChange();
     this.onAuditeeResponseChange();
     this.onLinkInputChange();
+    this.onAuditFindingsChange(0);
+    this.onFindingsOptionChange(0);
+    this.onClauseInputChange(0);
     this.bindExistingEvidence();
   }
 
@@ -126,6 +133,7 @@ export class CustomiseAuditQuestionDialogComponent {
     this.downloadFileEvidence(this.auditeeResponseEvidenceFileName);
     this.isAuditeeResponseChanged = false;
     this.isAuditNoteChanged = false;
+    this.isAuditFindingsChanged = false;
   }
 
   downloadFileEvidence(attach_evidence_file_Name: any) {
@@ -155,24 +163,37 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   onAuditeeResponseChange() {
-    this.isAuditeeResponseChanged = true;
     this.auditQuestionData.auditeeInfo.auditee_response = this.auditeeResponseValue;
+    if (this.auditeeResponseValue !== this.questionData.auditee_response[0]?.auditee_response) {
+      this.isAuditeeResponseChanged = true;
+    }
+    else {
+      this.isAuditeeResponseChanged = false;
+    }
   }
 
   onLinkInputChange() {
-    this.isAuditeeResponseChanged = true;
     this.auditQuestionData.auditeeInfo.link = this.linkInput;
+    if (this.linkInput !== this.questionData.auditee_response[0]?.link) {
+      this.isAuditeeResponseChanged = true;
+    }
+    else {
+      this.isAuditeeResponseChanged = false;
+    }
   }
 
   onAuditFindingsChange(index: number) {
+    this.isAuditFindingsChanged = true;
     this.auditQuestionData.auditFindingsInfo[index].audit_finding = this.auditFindingsValue[index];
   }
 
-  onFindingsOptionChange(event: Event, index: number) {
+  onFindingsOptionChange(index: number) {
+    this.isAuditFindingsChanged = true;
     this.auditQuestionData.auditFindingsInfo[index].finding_category = this.findingCategorySelectedOption[index];
   }
 
   onClauseInputChange(index: number) {
+    this.isAuditFindingsChanged = true;
     this.auditQuestionData.auditFindingsInfo[index].closure_reference = this.clauseInput[index];
   }
 
@@ -239,7 +260,7 @@ export class CustomiseAuditQuestionDialogComponent {
         this.saveAuditFindings();
       }
     }
-    if (this.evidenceFile || this.isAuditeeResponseChanged) {
+    if (this.isAuditeeResponseChanged) {
       this.saveAuditeeResponse();
     }
     if (this.noErrors) {
@@ -250,8 +271,9 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   checkResponseAvailability() {
-    return (this.checkIfAuditFindingPresent(this.auditFindingsValue, this.findingCategorySelectedOption, this.clauseInput)
-      || this.auditNoteValue !== '' && this.isAuditNoteChanged || (this.evidenceFile || (this.auditeeResponseValue !== '' || this.linkInput !== '')) && this.isAuditeeResponseChanged);
+    return ((this.checkIfAuditFindingPresent(this.auditFindingsValue, this.findingCategorySelectedOption, this.clauseInput) && this.isAuditFindingsChanged)
+      || (this.auditNoteValue !== '' && this.isAuditNoteChanged)
+      || (this.isAuditeeResponseChanged));
   }
 
   checkIfAuditFindingPresent(auditFindingsValue: any, findingCategorySelectedOption: any, clauseInput: any) {
