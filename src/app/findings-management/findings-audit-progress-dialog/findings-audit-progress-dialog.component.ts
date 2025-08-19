@@ -73,7 +73,7 @@ export class FindingsAuditProgressDialogComponent {
   downloadEvidence(responseData: any) {
     this.audirService.getNCEvidence(this.data.auditQuestionData.audit_id, responseData.attach_evidence,responseData.type).subscribe((response: any) => {
       if (response) {
-        const blobData = new Blob([response], { type: 'application/pdf' });
+        const blobData = new Blob([response]);
         const evidenceFileURL = URL.createObjectURL(blobData);
         const templateDownloadLink = document.createElement('a');
         templateDownloadLink.href = evidenceFileURL;

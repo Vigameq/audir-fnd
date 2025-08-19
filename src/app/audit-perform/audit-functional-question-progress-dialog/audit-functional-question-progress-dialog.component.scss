@@ -43,9 +43,11 @@
             flex-direction: column;
             line-height: 100%;
             gap: 6px;
-            .question-details{
+
+            .question-details {
                 margin: 10px 0;
             }
+
             .id,
             .child-audit-title,
             .parent-audit-title {
@@ -146,7 +148,7 @@
                     button {
                         background-color: #FDE714;
                         border-radius: 30px;
-                        width: 110px;
+                        width: 132px;
                         height: 30px;
                         border: none;
                         outline: none;
@@ -161,6 +163,20 @@
                             line-height: 100%;
                             letter-spacing: 0;
                         }
+                    }
+
+                    button:hover {
+                        background-color: #77f54d;
+                    }
+
+                    button:disabled,
+                    button:disabled:hover {
+                        outline: none;
+                        background-color: #ccc;
+                        color: #666;
+                        cursor: not-allowed;
+                        border: 1px solid #aaa;
+                        opacity: 0.7;
                     }
                 }
             }

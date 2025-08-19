@@ -50,10 +50,12 @@
                     </div>
                 </div>
 
-                <div class="auditor-label"><span>Auditor : </span><span
-                        class="auditors-value" [matTooltip]="showAllOptionsByName(auditInfo?.auditors)">{{showAllOptionsByName(auditInfo?.auditors)}}</span></div>
-                <div class="auditee-label"><span>Auditee : </span><span
-                        class="auditees-value" [matTooltip]="showAllOptionsByName(auditInfo?.auditees)">{{showAllOptionsByName(auditInfo?.auditees)}}</span></div>
+                <div class="auditor-label"><span>Auditor : </span><span class="auditors-value"
+                        [matTooltip]="showAllOptionsByName(auditInfo?.auditors)">{{showAllOptionsByName(auditInfo?.auditors)}}</span>
+                </div>
+                <div class="auditee-label"><span>Auditee : </span><span class="auditees-value"
+                        [matTooltip]="showAllOptionsByName(auditInfo?.auditees)">{{showAllOptionsByName(auditInfo?.auditees)}}</span>
+                </div>
                 <!-- <div class="auditor-details">
                     <span>{{auditorInfo.auditorName}}</span>
                     <span class="vertical-bar">|</span>
@@ -86,6 +88,7 @@
         </div>
     </div>
     <div class="submit-btn">
-        <button class="submit" (click)="openSubmitConfirmationDialog()">Submit</button>
+        <button class="submit" [disabled]="auditCompletionPercentage !== 100"
+            (click)="openSubmitConfirmationDialog()">Submit</button>
     </div>
 </div>
