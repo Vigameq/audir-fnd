@@ -16,11 +16,15 @@ export class CustomiseAuditQuestionDialogComponent {
   isAuditor!: boolean;
   isSaved = false;
   evidenceFile: File | undefined;
-  uploadEvidenceLabel = 'No file choosen..';
   noErrors!: boolean;
   questionData: any;
   deleteText = 'Delete';
+  fileSize = 1048 * 1048;
   isAuditFindingsPresent = false;
+  isAuditeeResponseChanged = false;
+  isAuditNoteChanged = false;
+  isAuditFindingsChanged = false;
+  auditeeResponseEvidenceFileName = 'No file choosen..';
   auditQuestionData: any =
     {
       audit_id: '',
@@ -100,6 +104,7 @@ export class CustomiseAuditQuestionDialogComponent {
     this.audirService.getQuestionData(payload).subscribe((response: any) => {
       if (response) {
         this.questionData = response;
+        this.bindResponses();
       }
     }, (error: any) => {
       this.noErrors = false;
@@ -107,31 +112,88 @@ export class CustomiseAuditQuestionDialogComponent {
     });
   }
 
+  bindResponses() {
+    this.auditNoteValue = this.questionData.auditor_notes[0] ? this.questionData.auditor_notes[0].auditor_notes : '';
+    this.auditeeResponseValue = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].auditee_response : '';
+    this.linkInput = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].link : '';
+    this.auditeeResponseEvidenceFileName = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].attach_evidence : '';
+    this.auditFindingsValue[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].audit_finding : '';
+    this.findingCategorySelectedOption[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].finding_category : '';
+    this.clauseInput[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].closure_reference : '';
+    this.onAuditNoteChange();
+    this.onAuditeeResponseChange();
+    this.onLinkInputChange();
+    this.onAuditFindingsChange(0);
+    this.onFindingsOptionChange(0);
+    this.onClauseInputChange(0);
+    this.bindExistingEvidence();
+  }
+
+  bindExistingEvidence() {
+    this.downloadFileEvidence(this.auditeeResponseEvidenceFileName);
+    this.isAuditeeResponseChanged = false;
+    this.isAuditNoteChanged = false;
+    this.isAuditFindingsChanged = false;
+  }
+
+  downloadFileEvidence(attach_evidence_file_Name: any) {
+    if (attach_evidence_file_Name !== '') {
+      this.audirService.getEvidence(this.auditQuestionData.audit_id, attach_evidence_file_Name).subscribe((response: any) => {
+        if (response) {
+          const lastModifiedDate = new Date();
+          const file = new File([response], attach_evidence_file_Name, {
+            lastModified: lastModifiedDate.getTime()
+          });
+          this.evidenceFile = file;
+          this.auditQuestionData.auditeeInfo.attach_evidence = this.evidenceFile;
+        }
+      }, (error: any) => {
+        console.error('Error downloading evidence file:', error);
+      });
+    }
+  }
+
   close(): void {
     this.dialogRef.close(false);
   }
 
   onAuditNoteChange() {
+    this.isAuditNoteChanged = true;
     this.auditQuestionData.auditor_notes = this.auditNoteValue;
   }
 
   onAuditeeResponseChange() {
     this.auditQuestionData.auditeeInfo.auditee_response = this.auditeeResponseValue;
+    if (this.auditeeResponseValue !== this.questionData.auditee_response[0]?.auditee_response) {
+      this.isAuditeeResponseChanged = true;
+    }
+    else {
+      this.isAuditeeResponseChanged = false;
+    }
   }
 
   onLinkInputChange() {
     this.auditQuestionData.auditeeInfo.link = this.linkInput;
+    if (this.linkInput !== this.questionData.auditee_response[0]?.link) {
+      this.isAuditeeResponseChanged = true;
+    }
+    else {
+      this.isAuditeeResponseChanged = false;
+    }
   }
 
   onAuditFindingsChange(index: number) {
+    this.isAuditFindingsChanged = true;
     this.auditQuestionData.auditFindingsInfo[index].audit_finding = this.auditFindingsValue[index];
   }
 
-  onFindingsOptionChange(event: Event, index: number) {
+  onFindingsOptionChange(index: number) {
+    this.isAuditFindingsChanged = true;
     this.auditQuestionData.auditFindingsInfo[index].finding_category = this.findingCategorySelectedOption[index];
   }
 
   onClauseInputChange(index: number) {
+    this.isAuditFindingsChanged = true;
     this.auditQuestionData.auditFindingsInfo[index].closure_reference = this.clauseInput[index];
   }
 
@@ -191,14 +253,14 @@ export class CustomiseAuditQuestionDialogComponent {
     this.isSaved = true;
     this.noErrors = true;
     if (this.isAuditor) {
-      if (this.auditNoteValue) {
+      if (this.auditNoteValue && this.isAuditNoteChanged) {
         this.saveAuditorNotes();
       }
       if (this.checkIfAuditFindingPresent(this.auditFindingsValue, this.findingCategorySelectedOption, this.clauseInput)) {
         this.saveAuditFindings();
       }
     }
-    if (this.evidenceFile) {
+    if (this.isAuditeeResponseChanged) {
       this.saveAuditeeResponse();
     }
     if (this.noErrors) {
@@ -209,8 +271,9 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   checkResponseAvailability() {
-    return (this.checkIfAuditFindingPresent(this.auditFindingsValue, this.findingCategorySelectedOption, this.clauseInput)
-      || this.auditNoteValue !== '' || (this.evidenceFile && (this.auditeeResponseValue !== '' || this.linkInput !== '')));
+    return ((this.checkIfAuditFindingPresent(this.auditFindingsValue, this.findingCategorySelectedOption, this.clauseInput) && this.isAuditFindingsChanged)
+      || (this.auditNoteValue !== '' && this.isAuditNoteChanged)
+      || (this.isAuditeeResponseChanged));
   }
 
   checkIfAuditFindingPresent(auditFindingsValue: any, findingCategorySelectedOption: any, clauseInput: any) {
@@ -292,18 +355,24 @@ export class CustomiseAuditQuestionDialogComponent {
   uploadEvidence(event: any) {
     this.evidenceFile = event.target.files[0];
     if (!this.evidenceFile) {
-      this.audirService.showError('Uploading PDF failed');
+      this.audirService.showError('Uploading evidence file failed');
       return;
     }
-    if (this.evidenceFile.type !== 'application/pdf') {
-      this.audirService.showError('Only PDF file is allowed');
-      console.log('Upload only PDF file');
+    // if (this.evidenceFile.type !== 'application/pdf') {
+    //   this.audirService.showError('Only PDF file is allowed');
+    //   console.log('Upload only PDF file');
+    //   return;
+    // }
+    if (this.evidenceFile.size >= this.fileSize) {
+      this.audirService.showError('Only below 1 MB file size is allowed');
+      console.log('Upload file size below 1 MB');
       return;
     }
-    this.uploadEvidenceLabel = this.evidenceFile.name;
+    this.isAuditeeResponseChanged = true;
+    this.auditeeResponseEvidenceFileName = this.evidenceFile.name;
     this.auditQuestionData.auditeeInfo.attach_evidence = this.evidenceFile;
-    this.audirService.showSuccess('Upload Evidence Successful');
-    console.log('PDF file uploaded successfully.');
+    this.audirService.showSuccess('Uploaded Evidence Successful');
+    console.log('Evidence file uploaded successfully.');
   }
 
   checkFindingsLengthInRange() {

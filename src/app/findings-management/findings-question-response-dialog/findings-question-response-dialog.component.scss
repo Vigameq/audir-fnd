@@ -71,11 +71,10 @@
                     flex-direction: row;
                     justify-content: flex-end;
 
+                    button:disabled,
                     button:disabled:hover {
                         background-color: #ccc;
-                        /* Light grey */
                         color: #666;
-                        /* Darker text for contrast */
                         cursor: not-allowed;
                         border: 1px solid #aaa;
                         opacity: 0.7;

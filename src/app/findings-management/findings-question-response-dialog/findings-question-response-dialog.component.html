@@ -28,12 +28,11 @@
                             <div class="upload-correctons-evidence">
                                 <div class="upload-correctons-evidence-label">
                                     <span>Attach Evidence</span>
-                                    <span *ngIf="checkCorrectionsResponse()" class="asterisk">*</span>
                                 </div>
                                 <div class="upload-correctons-evidence-btn">
                                     <label for="corrections-file-upload" class="upload">
                                         Upload
-                                        <input type="file" id="corrections-file-upload" accept="application/pdf"
+                                        <input type="file" id="corrections-file-upload" accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
                                             (change)="uploadCorrectionsEvidence($event)" hidden>
                                     </label>
                                     <p [matTooltip]="uploadCorrectionsEvidenceText">{{uploadCorrectionsEvidenceText}}
@@ -77,12 +76,11 @@
                             <div class="upload-root-cause-evidence">
                                 <div class="upload-root-cause-evidence-label">
                                     <span>Attach Evidence</span>
-                                    <span *ngIf="checkRootCauseResponse()" class="asterisk">*</span>
                                 </div>
                                 <div class="upload-root-cause-evidence-btn">
                                     <label for="root-cause-file-Upload" class="upload">
                                         Upload
-                                        <input type="file" id="root-cause-file-Upload" accept="application/pdf"
+                                        <input type="file" id="root-cause-file-Upload" accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
                                             (change)="uploadRootCauseEvidence($event)" hidden>
                                     </label>
                                     <p [matTooltip]="uploadRootCauseResponseFileText">
@@ -160,15 +158,13 @@
                             </div>
                             <div class="upload-corrective-action-status-evidence">
                                 <div class="upload-corrective-action-status-evidence-label">
-                                    <span>Attach
-                                        Evidence</span>
-                                    <span *ngIf="checkCorrectivePlanResponse()" class="asterisk">*</span>
+                                    <span>Attach Evidence</span>
                                 </div>
                                 <div class="upload-corrective-action-status-evidence-btn">
                                     <label for="corrective-action-status-file-upload" class="upload">
                                         Upload
                                         <input type="file" id="corrective-action-status-file-upload"
-                                            accept="application/pdf" (change)="uploadCorrectiveStatusEvidence($event)"
+                                            accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar" (change)="uploadCorrectiveStatusEvidence($event)"
                                             hidden>
                                     </label>
                                     <p [matTooltip]="uploadCorrectiveActionStatusFileName">

@@ -14,34 +14,34 @@
 
         .top-bar {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             gap: 15px;
             width: 100%;
             font-size: 16px;
 
-            .toggle-group {
-                display: flex;
-                border: 1px solid #ccc;
-                border-radius: 32px;
-                overflow: hidden;
-                width: 75%;
-                height: 50px;
+            // .toggle-group {
+            //     display: flex;
+            //     border: 1px solid #ccc;
+            //     border-radius: 32px;
+            //     overflow: hidden;
+            //     width: 75%;
+            //     height: 50px;
 
-                .toggle-button {
-                    flex: 1;
-                    padding: 10px 20px;
-                    border: none;
-                    background: white;
-                    cursor: pointer;
-                    transition: background 0.3s;
-                    border-right: 1px solid #cccccc;
-                }
+            //     .toggle-button {
+            //         flex: 1;
+            //         padding: 10px 20px;
+            //         border: none;
+            //         background: white;
+            //         cursor: pointer;
+            //         transition: background 0.3s;
+            //         border-right: 1px solid #cccccc;
+            //     }
 
-                .toggle-button.active {
-                    background: #f5f3f3;
-                }
-            }
+            //     .toggle-button.active {
+            //         background: #f5f3f3;
+            //     }
+            // }
 
             .import-button {
                 background-color: #1D2431;
@@ -111,7 +111,7 @@
                 font-size: 13px;
             }
 
-            .link-audit-row,
+            .parent-audit-link,
             .audit-scope-row {
                 display: flex;
                 flex-direction: column;
@@ -125,53 +125,71 @@
                 display: flex;
                 flex-direction: row;
                 gap: 40px;
+                cursor: pointer;
+            }
 
+            .templates-row {
+                .disabled {
+                    pointer-events: none;
+                    opacity: 0.6;
+                    background-color: #f0f0f0;
+                }
             }
 
             .template-dropdown,
+            .function-template,
             .auditors,
             .auditees {
                 position: relative;
                 flex: 1;
-            }
 
-            .dropbtn {
-                background-color: #ffffff;
-                color: #000000;
-                padding: 6px;
-                padding-right: 30px;
-                border: 1px solid #dbdbdb;
-                cursor: pointer;
-                border-radius: 5px;
-                margin: 0 0 10px;
-                display: flex;
-                align-items: center;
-                height: 50px;
+                .dropbtn {
+                    background-color: #ffffff;
+                    color: #000000;
+                    padding: 6px;
+                    padding-right: 30px;
+                    border: 1px solid #dbdbdb;
+                    cursor: pointer !important;
+                    border-radius: 5px;
+                    margin: 0 0 10px;
+                    display: flex;
+                    align-items: center;
+                    height: 50px;
 
-                span {
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
+                    span {
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    }
                 }
-            }
 
-            .dropdown-content {
-                display: grid;
-                position: absolute;
-                background-color: #ffffff;
-                min-width: 160px;
-                /* box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); */
-                padding: 10px;
-                z-index: 1;
-                border-radius: 6px;
-                border: 1px solid #dbdbdb;
-                width: 100%;
-                top: 82px;
+                .dropdown-content {
+                    display: grid;
+                    position: absolute;
+                    background-color: #ffffff;
+                    min-width: 160px;
+                    /* box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); */
+                    padding: 10px;
+                    z-index: 1;
+                    border-radius: 6px;
+                    border: 1px solid #dbdbdb;
+                    width: 100%;
+                    top: 82px;
 
-                .template-value,
-                .auditor-value,
-                .auditee-value {
-                    margin-left: 15px !important;
+                    label {
+                        cursor: pointer;
+                    }
+
+                    input {
+                        cursor: pointer;
+                    }
+
+                    .template-value,
+                    .auditor-value,
+                    .auditee-value {
+                        cursor: pointer;
+                        margin-left: 15px !important;
+                    }
                 }
             }
 
@@ -192,7 +210,6 @@
 
             .audit-title,
             .functions,
-            .function-template,
             .start-date-time,
             .end-date-time,
             .lead-auditor,
@@ -212,9 +229,9 @@
                 margin-bottom: 10px;
             }
 
-            .function-template,
             .lead-auditor,
             .city,
+            .audit-type,
             .country {
                 position: relative;
             }
