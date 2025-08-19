@@ -129,8 +129,24 @@
                 flex: 1;
                 flex-direction: column;
                 gap: 10px;
+                .progress-badge{
+                    padding: 5px;
+                    color: black;
+                    border-radius: 20px;
+                    font-size: 13px;
+                    width: 80px;
+                    text-align: center;              
+                }
+                .progress-badge-green {
+                    background: #4cfa94;
+                
+                }
 
-                .plan-creation-id {
+                .progress-badge-yellow {
+                    background: #FFEA00;
+                
+                }
+                    .plan-creation-id {
                     display: flex;
 
                     span {
@@ -362,24 +378,26 @@
                     }
                 }
             }
-
-            .progress-badge {
-                background: #FFEA00;
+            .progress-badge{
                 padding: 5px;
-                position: relative;
-                top: -60px;
-                left: 20px;
                 color: black;
-                border-top-right-radius: 20px;
-                font-size: 15px;
+                border-radius: 20px;
+                font-size: 13px;
+                width: 80px;
+                text-align: center;              
+            }
+            .progress-badge-green {
+                background: #4cfa94;
+               
+            }
 
-                svg:hover {
-                    cursor: pointer;
-
-                    path {
-                        fill: #FFEA00;
-                    }
-                }
+            .progress-badge-yellow {
+                background: #FFEA00;
+               
+            }
+            .progress-badge-orange {
+                background: #faa04c;
+                
             }
 
             .disabled {

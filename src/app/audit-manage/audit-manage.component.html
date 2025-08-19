@@ -66,33 +66,12 @@
                             </span>
                         </div>
                     </div>
-                </div>
-                <!-- <div class="audit-progress-details">
-                     <div class="audit-progress-label">
-                        <span>Audit Progress</span>
-                    </div>
-                    <div class="progress-percentage">
-                        <div class="progress-bar">
-                            <div class="progress-percent" [ngStyle]="{ 'width': auditPerformItem.percentage + '%' }">
+                    <div class="progress-badge"
+                                [ngClass]="{'progress-badge-green': auditPerformItem.audit_status === 'created','progress-badge-yellow': auditPerformItem.audit_status === 'inprogress','progress-badge-orange': auditPerformItem.audit_status === 'submitted'}">
+                                <span>
+                                    {{auditPerformItem.audit_status | pascalCase}}</span>
                             </div>
-                        </div>
-                        <div class="percentage"><span>{{auditPerformItem.percentage}}%</span></div>
-                    </div>
-                    <div class="auditor-details">
-                        <span>{{auditPerformItem.auditors[0]?.name}}</span>
-                        <span class="vertical-bar">|</span>
-                        <span>{{auditPerformItem.auditCompany}}</span>
-                    </div>
-                </div> -->
-                <!-- <div class="delete-icon">
-                    <svg width="22px" height="22px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <g>
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path
-                                d="M7 4V2h10v2h5v2h-2v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6H2V4h5zM6 6v14h12V6H6zm3 3h2v8H9V9zm4 0h2v8h-2V9z" />
-                        </g>
-                    </svg>
-                </div> -->
+                </div>
                 <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0"
                     (click)="openSubAudits(auditPerformItem.sub_audits,i)">
                     <span>{{auditPerformItem.sub_audits.length}}</span>
@@ -133,10 +112,13 @@
                                     </span>
                                 </div>
                             </div>
+                            <div class="progress-badge"
+                                [ngClass]="{'progress-badge-green': sub_audit.audit_status === 'created','progress-badge-yellow': sub_audit.audit_status === 'inprogress','progress-badge-orange': sub_audit.audit_status === 'submitted'}">
+                                <span>
+                                    {{sub_audit.audit_status | pascalCase}}</span>
+                            </div>
                         </div>
-                        <div class="progress-badge">
-                            <span>{{sub_audit.audit_status | pascalCase}}</span>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
