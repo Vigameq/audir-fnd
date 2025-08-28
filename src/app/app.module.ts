@@ -44,6 +44,7 @@ import { UpdatePasswordComponent } from './header/update-password/update-passwor
 import { UpdateUserComponent } from './header/update-user/update-user.component';
 import { AuditManageComponent } from './audit-manage/audit-manage.component';
 import { DatePipe } from '@angular/common';
+import { FindingsResponseDialogComponent } from './findings-management/findings-response-dialog/findings-response-dialog.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -75,7 +76,8 @@ import { DatePipe } from '@angular/common';
     CreateUserDialogComponent,
     UpdatePasswordComponent,
     UpdateUserComponent,
-    AuditManageComponent
+    AuditManageComponent,
+    FindingsResponseDialogComponent
   ],
   imports: [
     BrowserModule,

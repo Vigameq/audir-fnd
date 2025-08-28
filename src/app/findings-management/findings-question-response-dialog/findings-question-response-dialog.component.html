@@ -15,8 +15,10 @@
                 <div class="question-text"><span>{{auditQuestionData.question}}</span></div>
             </div>
             <div class="audit-section">
-                <div class="res-hist-btn"><button [disabled]="questionData?.history.length === 0"
-                        (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
+                <div class="fnds-hist-res-btns"><button (click)="openFindingsResponse()">AUDIT FINDINGS</button>
+                    <button [disabled]="questionData?.history.length === 0" (click)="openResponseHistory()">RESPONSE
+                        HISTORY</button>
+                </div>
                 <div class="corrections-note">
                     <div class="corrections-note-label"><span>Correction</span></div>
                     <div class="corrections-note-fields-section">

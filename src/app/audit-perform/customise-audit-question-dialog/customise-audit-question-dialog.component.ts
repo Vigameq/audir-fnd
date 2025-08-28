@@ -83,14 +83,7 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   ngOnInit(): void {
-    const payload = {
-      audit_id: this.auditQuestionData.audit_id,
-      template: this.auditQuestionData.template,
-      template_type: this.auditQuestionData.template_type,
-      question: this.data.questionText,
-      email: this.auditQuestionData.email
-    };
-    this.getQuestionData(payload);
+    this.getQuestionData();
   }
 
   setQuestionData() {
@@ -100,7 +93,14 @@ export class CustomiseAuditQuestionDialogComponent {
     this.auditQuestionData.email = localStorage.getItem('user')?.toString() || '';
   }
 
-  getQuestionData(payload: any) {
+  getQuestionData() {
+    const payload = {
+      audit_id: this.auditQuestionData.audit_id,
+      template: this.auditQuestionData.template,
+      template_type: this.auditQuestionData.template_type,
+      question: this.data.questionText,
+      email: this.auditQuestionData.email
+    };
     this.audirService.getQuestionData(payload).subscribe((response: any) => {
       if (response) {
         this.questionData = response;
@@ -108,7 +108,7 @@ export class CustomiseAuditQuestionDialogComponent {
       }
     }, (error: any) => {
       this.noErrors = false;
-      console.error('Error saving audit findings:', error);
+      console.error('Error getting question data:', error);
     });
   }
 

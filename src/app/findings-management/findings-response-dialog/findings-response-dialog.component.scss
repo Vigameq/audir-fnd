@@ -1,0 +1,107 @@
+.findings-response-template {
+    font-family: 'Apple SD Gothic Neo', sans-serif;
+    min-height: 408px;
+
+    .header-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        border-bottom: 1px solid #575757;
+
+        .header {
+            font-weight: 700;
+            font-size: 24px;
+            line-height: 100%;
+            color: #575757;
+        }
+
+        .close-icon {
+            svg:hover {
+                cursor: pointer;
+
+                path {
+                    fill: #FFEA00;
+                }
+            }
+        }
+    }
+
+    .findings-dialog-content {
+        display: flex;
+        height: 266px;
+        flex-direction: column;
+        font-family: 'Apple SD Gothic Neo', sans-serif;
+        // border: 1px solid #575757;
+        border-radius: 10px;
+        margin: 0 20px;
+        padding: 0;
+
+        .response-index {
+            margin: 0 20px 20px;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 100%;
+            color: #575757;
+            text-align: center;
+        }
+
+        .findings-responses {
+            padding: 10px 0;
+            border-bottom: 1px solid #575757;
+
+            .response {
+                padding: 0 10px 10px;
+
+                .audit-finding,
+                .closure-reference,
+                .finding-category {
+                    display: flex;
+                    line-height: 100%;
+                    width: 100%;
+
+                    .type {
+                        font-size: 16px;
+                        font-weight: 500;
+                        color: #000000;
+                        min-width: 176px;
+                    }
+
+                    .response-text {
+                        padding-left: 4px;
+                        flex: 1;
+                        white-space: normal;
+                        overflow-wrap: break-word;
+                        word-break: break-word;
+                    }
+                }
+            }
+        }
+
+        .no-border-bottom {
+            border-bottom: none;
+        }
+    }
+
+    .mat-dialog-actions-section {
+        padding: 20px;
+
+        button {
+            font-family: 'Apple SD Gothic Neo', sans-serif;
+            height: 36px;
+            width: 164px;
+            border-radius: 30px;
+            outline: none;
+            border: 1px solid #575757;
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+
+        button:hover {
+            border-color: #FDE714;
+            background-color: #FDE714;
+            color: #ffffff;
+        }
+    }
+}
