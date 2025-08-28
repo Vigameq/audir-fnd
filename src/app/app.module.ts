@@ -45,6 +45,11 @@ import { UpdateUserComponent } from './header/update-user/update-user.component'
 import { AuditManageComponent } from './audit-manage/audit-manage.component';
 import { DatePipe } from '@angular/common';
 import { FindingsResponseDialogComponent } from './findings-management/findings-response-dialog/findings-response-dialog.component';
+import { LoaderComponent } from './shared/loader/loader.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { LoaderInterceptor } from './shared/interceptors/loader.interceptor';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -77,7 +82,8 @@ import { FindingsResponseDialogComponent } from './findings-management/findings-
     UpdatePasswordComponent,
     UpdateUserComponent,
     AuditManageComponent,
-    FindingsResponseDialogComponent
+    FindingsResponseDialogComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,
@@ -86,6 +92,7 @@ import { FindingsResponseDialogComponent } from './findings-management/findings-
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    MatProgressSpinnerModule,
     IgxCalendarModule,
     IgxIconModule,
     MatDialogModule,
@@ -97,7 +104,7 @@ import { FindingsResponseDialogComponent } from './findings-management/findings-
     MatDatepickerModule,
     MatNativeDateModule
   ],
-  providers: [DatePipe],
+  providers: [DatePipe, { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true }],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this to allow custom elements
 
