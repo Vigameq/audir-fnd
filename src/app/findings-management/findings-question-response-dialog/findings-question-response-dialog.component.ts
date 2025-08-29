@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { AudirService } from 'src/services/audir-services.service';
 import { FindingsAuditProgressDialogComponent } from '../findings-audit-progress-dialog/findings-audit-progress-dialog.component';
 import { DatePipe } from '@angular/common';
+import { FindingsResponseDialogComponent } from '../findings-response-dialog/findings-response-dialog.component';
 
 @Component({
   selector: 'app-findings-question-response-dialog',
@@ -80,6 +81,7 @@ export class FindingsQuestionResponseDialogComponent {
   }];
   minDateTime!: any;
   maxDateTime!: any;
+  findingsResponsesData: any = [];
 
   constructor(private datePipe: DatePipe, private dialog: MatDialog, private renderer: Renderer2, private audirService: AudirService,
     public dialogRef: MatDialogRef<FindingsAuditProgressDialogComponent>,
@@ -95,12 +97,13 @@ export class FindingsQuestionResponseDialogComponent {
     this.maxDateTime = this.datePipe.transform(this.data.auditInfo.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
     this.minDateTime = this.datePipe.transform(this.data.auditInfo.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
     this.getQuestionData();
+    this.getNCQuestionData();
   }
 
   fillExistingResponses() {
-    this.uploadCorrectionsEvidenceText = this.questionData.nc_correction[0] ? this.questionData.nc_correction[0].attach_evidence : '';
-    this.uploadRootCauseResponseFileText = this.questionData.nc_root_cause[0] ? this.questionData.nc_root_cause[0].attach_evidence : '';
-    this.uploadCorrectiveActionStatusFileName = this.questionData.nc_corrective_action_plan[0] ? this.questionData.nc_corrective_action_plan[0].attach_evidence : '';
+    this.uploadCorrectionsEvidenceText = this.questionData.nc_correction[0] ? this.questionData.nc_correction[0].attach_evidence : 'No file choosen...';
+    this.uploadRootCauseResponseFileText = this.questionData.nc_root_cause[0] ? this.questionData.nc_root_cause[0].attach_evidence : 'No file choosen...';
+    this.uploadCorrectiveActionStatusFileName = this.questionData.nc_corrective_action_plan[0] ? this.questionData.nc_corrective_action_plan[0].attach_evidence : 'No file choosen...';
     this.correctionsNoteValue = this.questionData.nc_correction[0] ? this.questionData.nc_correction[0].notes : '';
     this.correctionsLinkInput = this.questionData.nc_correction[0] ? this.questionData.nc_correction[0].link : '';
     this.correctionPlannedCompletionDateValue = this.questionData.nc_correction[0] ? this.questionData.nc_correction[0].planned_completion_date : '';
@@ -129,9 +132,18 @@ export class FindingsQuestionResponseDialogComponent {
   }
 
   attachExistingEvidence() {
-    this.downloadFileEvidence(this.uploadRootCauseResponseFileText, 'nc_root_cause');
-    this.downloadFileEvidence(this.uploadCorrectionsEvidenceText, 'nc_correction');
-    this.downloadFileEvidence(this.uploadCorrectiveActionStatusFileName, 'nc_corrective_action_plan');
+    this.uploadRootCauseResponseFileText = this.uploadRootCauseResponseFileText === 'None' ? 'No file choosen..' : this.uploadRootCauseResponseFileText;
+    if (this.questionData.nc_root_cause.length > 0 && this.questionData.nc_root_cause[0].attach_evidence !== 'None') {
+      this.downloadFileEvidence(this.uploadRootCauseResponseFileText, 'nc_root_cause');
+    }
+    this.uploadCorrectionsEvidenceText = this.uploadCorrectionsEvidenceText === 'None' ? 'No file choosen..' : this.uploadCorrectionsEvidenceText;
+    if (this.questionData.nc_correction.length > 0 && this.questionData.nc_correction[0].attach_evidence !== 'None') {
+      this.downloadFileEvidence(this.uploadCorrectionsEvidenceText, 'nc_correction');
+    }
+    this.uploadCorrectiveActionStatusFileName = this.uploadCorrectiveActionStatusFileName === 'None' ? 'No file choosen..' : this.uploadCorrectiveActionStatusFileName;
+    if (this.questionData.nc_corrective_action_plan.length > 0 && this.questionData.nc_corrective_action_plan[0].attach_evidence !== 'None') {
+      this.downloadFileEvidence(this.uploadCorrectiveActionStatusFileName, 'nc_corrective_action_plan');
+    }
     this.isCorrectionsChanged = false;
     this.isRootCauseChanged = false;
     this.isCorrectivePlanChanged = false;
@@ -179,15 +191,32 @@ export class FindingsQuestionResponseDialogComponent {
       question: this.data.questionText,
       email: this.auditQuestionData.email
     };
+    this.audirService.getQuestionData(payload).subscribe((response: any) => {
+      if (response) {
+        this.findingsResponsesData = response.audit_findings;
+      }
+    }, (error: any) => {
+      this.noErrors = false;
+      console.error('Error getting question data:', error);
+    });
+  }
+
+  getNCQuestionData() {
+    const payload = {
+      audit_id: this.auditQuestionData.audit_id,
+      template: this.auditQuestionData.template,
+      template_type: this.auditQuestionData.template_type,
+      question: this.data.questionText,
+      email: this.auditQuestionData.email
+    };
     this.audirService.getNCQuestionData(payload).subscribe((response: any) => {
       if (response) {
         this.questionData = response;
         this.fillExistingResponses();
-
       }
     }, (error: any) => {
       this.noErrors = false;
-      console.error('Error saving audit findings:', error);
+      console.error('Error getting question data:', error);
     });
   }
 
@@ -283,6 +312,19 @@ export class FindingsQuestionResponseDialogComponent {
       data: { auditQuestionData: this.auditQuestionData, auditResponseHistory: auditResponseHistory, auditInfo: this.auditInfo }
     });
 
+    dialogReference.afterClosed().subscribe((result: any) => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  openFindingsResponse(): void {
+    const dialogReference = this.dialog.open(FindingsResponseDialogComponent, {
+      disableClose: true,
+      width: '654px',
+      height: '408px',
+      panelClass: 'findings-response-dialog-container',
+      data: { findingsResponsesData: this.findingsResponsesData }
+    });
     dialogReference.afterClosed().subscribe((result: any) => {
       console.log(`Dialog result: ${result}`);
     });
@@ -450,7 +492,8 @@ export class FindingsQuestionResponseDialogComponent {
   }
 
   checkCorrectionsResponse() {
-    return (this.correctionsEvidenceFile || (this.correctionsNoteValue !== '') || (this.correctionsLinkInput !== '') || (this.correctionPlannedCompletionDateValue !== '') || (this.correctionActualCompletionDateValue !== ''));
+    return ((this.correctionsEvidenceFile || (this.correctionsNoteValue !== '') || (this.correctionsLinkInput !== ''))
+      && ((this.correctionPlannedCompletionDateValue !== '') && (this.correctionActualCompletionDateValue !== '')));
   }
 
   checkRootCauseResponse() {
@@ -458,7 +501,8 @@ export class FindingsQuestionResponseDialogComponent {
   }
 
   checkCorrectivePlanResponse() {
-    return (this.correctiveStatusEvidenceFile || (this.correctivePlanNoteValue !== '') || (this.ownerIDValue !== '') || (this.correctivePlannedDateValue !== '') ||
-      (this.correctiveActualDateValue !== '') || (this.correctivePlanLinkInput !== '') || (this.actionStatusSelectedOption !== ''));
+    return ((this.correctiveStatusEvidenceFile || (this.correctivePlanNoteValue !== '') || (this.ownerIDValue !== '') ||
+      (this.correctivePlanLinkInput !== '') || (this.actionStatusSelectedOption !== '')) &&
+      ((this.correctivePlannedDateValue !== '') && (this.correctiveActualDateValue !== '')));
   }
 }
