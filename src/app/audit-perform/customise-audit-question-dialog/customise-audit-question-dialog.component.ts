@@ -83,14 +83,7 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   ngOnInit(): void {
-    const payload = {
-      audit_id: this.auditQuestionData.audit_id,
-      template: this.auditQuestionData.template,
-      template_type: this.auditQuestionData.template_type,
-      question: this.data.questionText,
-      email: this.auditQuestionData.email
-    };
-    this.getQuestionData(payload);
+    this.getQuestionData();
   }
 
   setQuestionData() {
@@ -100,7 +93,14 @@ export class CustomiseAuditQuestionDialogComponent {
     this.auditQuestionData.email = localStorage.getItem('user')?.toString() || '';
   }
 
-  getQuestionData(payload: any) {
+  getQuestionData() {
+    const payload = {
+      audit_id: this.auditQuestionData.audit_id,
+      template: this.auditQuestionData.template,
+      template_type: this.auditQuestionData.template_type,
+      question: this.data.questionText,
+      email: this.auditQuestionData.email
+    };
     this.audirService.getQuestionData(payload).subscribe((response: any) => {
       if (response) {
         this.questionData = response;
@@ -108,7 +108,7 @@ export class CustomiseAuditQuestionDialogComponent {
       }
     }, (error: any) => {
       this.noErrors = false;
-      console.error('Error saving audit findings:', error);
+      console.error('Error getting question data:', error);
     });
   }
 
@@ -116,7 +116,7 @@ export class CustomiseAuditQuestionDialogComponent {
     this.auditNoteValue = this.questionData.auditor_notes[0] ? this.questionData.auditor_notes[0].auditor_notes : '';
     this.auditeeResponseValue = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].auditee_response : '';
     this.linkInput = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].link : '';
-    this.auditeeResponseEvidenceFileName = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].attach_evidence : '';
+    this.auditeeResponseEvidenceFileName = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].attach_evidence : 'No file choosen..';
     this.auditFindingsValue[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].audit_finding : '';
     this.findingCategorySelectedOption[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].finding_category : '';
     this.clauseInput[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].closure_reference : '';
@@ -130,7 +130,10 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   bindExistingEvidence() {
-    this.downloadFileEvidence(this.auditeeResponseEvidenceFileName);
+    this.auditeeResponseEvidenceFileName = this.auditeeResponseEvidenceFileName === 'None' ? 'No file choosen..' : this.auditeeResponseEvidenceFileName;
+    if (this.questionData.auditee_response.length > 0 && this.questionData.auditee_response[0].attach_evidence !== 'None') {
+      this.downloadFileEvidence(this.auditeeResponseEvidenceFileName);
+    }
     this.isAuditeeResponseChanged = false;
     this.isAuditNoteChanged = false;
     this.isAuditFindingsChanged = false;

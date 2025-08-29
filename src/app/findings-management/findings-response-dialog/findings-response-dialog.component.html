@@ -1,0 +1,45 @@
+<div class="findings-response-template">
+    <div class="header-section">
+        <div class="header">
+            <span>Audit Findings</span>
+        </div>
+        <!-- <div class="close-icon" mat-dialog-close>
+            <svg width="14" height="14" viewBox="0 0 19 21" fill="#515151" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M0.672734 20.77L7.18273 10.24L1.09273 0.189998H5.20273L9.79273 7.75H9.91273L14.1427 0.189998H17.8927L11.9227 10.21L18.2827 20.77H14.1727L9.34273 12.76H9.25274L4.39273 20.77H0.672734Z"
+                    fill="" />
+            </svg>
+        </div> -->
+    </div>
+    <mat-dialog-content class="findings-dialog-content">
+        <div class="findings-responses"
+            *ngFor="let response of auditFindingsResponse | slice:0:3;let isLastResponse = last;let i = index"
+            [class.no-border-bottom]="isLastResponse">
+            <div class="response-index"><span>Audit Findings - {{i+1}}</span></div>
+            <div class="response">
+                <div class="audit-finding">
+                    <div class="type"><span>Audit Response Note</span></div>
+                    <div class="colon"><span> : </span></div>
+                    <div class="response-text"><span>{{response.audit_finding}}</span></div>
+                </div>
+            </div>
+            <div class="response">
+                <div class="closure-reference">
+                    <div class="type"><span>Clause / Reference</span></div>
+                    <div class="colon"><span> : </span></div>
+                    <div class="response-text"><span>{{response.closure_reference}}</span></div>
+                </div>
+            </div>
+            <div class="response">
+                <div class="finding-category">
+                    <div class="type"><span>Finding Category</span></div>
+                    <div class="colon"><span> : </span></div>
+                    <div class="response-text"><span>{{response.finding_category}}</span></div>
+                </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center" class="mat-dialog-actions-section">
+        <button mat-dialog-close>Close</button>
+    </mat-dialog-actions>
+</div>
