@@ -207,7 +207,8 @@ export class FindingsQuestionResponseDialogComponent {
       template: this.auditQuestionData.template,
       template_type: this.auditQuestionData.template_type,
       question: this.data.questionText,
-      email: this.auditQuestionData.email
+      email: this.auditQuestionData.email,
+      audit_finding_id:this.data.audit_finding_id
     };
     this.audirService.getNCQuestionData(payload).subscribe((response: any) => {
       if (response) {
@@ -362,6 +363,7 @@ export class FindingsQuestionResponseDialogComponent {
     saveCorrectionsResponsePayload.append('attach_evidence', this.auditQuestionData.nc_correction.attach_evidence);
     saveCorrectionsResponsePayload.append('planned_completion_date', this.auditQuestionData.nc_correction.plannedCompletionDate);
     saveCorrectionsResponsePayload.append('actual_completion_date', this.auditQuestionData.nc_correction.actualCompletionDate);
+    saveCorrectionsResponsePayload.append('audit_finding_id', this.questionData?.audit_finding_id);
     this.audirService.saveCorrectionsResponse(saveCorrectionsResponsePayload).subscribe((response: any) => {
       if (response) {
         console.log(response.msg);
@@ -382,6 +384,7 @@ export class FindingsQuestionResponseDialogComponent {
     saveRootCausePayload.append('notes', this.auditQuestionData.nc_root_cause.rootCauseNote);
     saveRootCausePayload.append('link', this.auditQuestionData.nc_root_cause.link);
     saveRootCausePayload.append('attach_evidence', this.auditQuestionData.nc_root_cause.attach_evidence);
+    saveRootCausePayload.append('audit_finding_id', this.questionData?.audit_finding_id);
     this.audirService.saveRootCauseResponse(saveRootCausePayload as any).subscribe((response: any) => {
       if (response) {
         console.log(response.msg);
@@ -406,6 +409,7 @@ export class FindingsQuestionResponseDialogComponent {
     saveCorrectivePlanResponsePayload.append('planned_completion_date', this.auditQuestionData.nc_corrective_action_plan.planned_completion_date);
     saveCorrectivePlanResponsePayload.append('actual_completion_date', this.auditQuestionData.nc_corrective_action_plan.actual_completion_date);
     saveCorrectivePlanResponsePayload.append('corrective_action_status', this.auditQuestionData.nc_corrective_action_plan.corrective_action_status);
+    saveCorrectivePlanResponsePayload.append('audit_finding_id', this.questionData?.audit_finding_id);
     this.audirService.savesCorrectiveActionPlanResponse(saveCorrectivePlanResponsePayload).subscribe((response: any) => {
       if (response) {
         console.log(response.msg);
