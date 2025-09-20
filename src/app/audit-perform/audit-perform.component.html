@@ -101,13 +101,14 @@
             <div *ngIf="auditPerformItem.sub_audits.length > 0 && auditPerformItem.isSubAuditsOpened">
                 <div class="sub-audit" *ngFor="let sub_audit of auditPerformItem.sub_audits; let j = index">
                     <div class="tree-node">
-                        <div class="line" [ngStyle]="{'height.px': sub_audit.lineHeight}"></div>
+                        <!-- <div class="line" [ngStyle]="{'height.px': sub_audit.lineHeight}"></div> -->
                         <div class="dot"></div>
                     </div>
                     <div class="sub-audit-perform-container" #detailsContent>
                         <div class="audit-perform-details">
                             <div class="plan-creation-id"><span>{{sub_audit.audit_title}}</span></div>
-                            <div class="templates-location-details" *ngIf="sub_audit.functions || sub_audit.country || sub_audit.city ">
+                            <div class="templates-location-details"
+                                *ngIf="sub_audit.functions || sub_audit.country || sub_audit.city ">
                                 <div class="templates-details" *ngIf="sub_audit.functions">
                                     <!-- <span>{{sub_audit.template[0]}}</span>
                             <span class="vertical-bar">|</span> -->
@@ -140,7 +141,7 @@
                             </div>
                             <div class="progress-percentage">
                                 <div class="progress-bar">
-                                    <div class="progress-percent"
+                                    <div class="progress-percent" *ngIf="sub_audit?.completion_percent != null"
                                         [ngStyle]="{ 'width': sub_audit.completion_percent + '%' }">
                                     </div>
                                 </div>
