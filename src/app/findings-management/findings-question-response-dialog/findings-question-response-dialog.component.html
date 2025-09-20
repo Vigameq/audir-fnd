@@ -15,7 +15,8 @@
                 <div class="question-text"><span>{{auditQuestionData.question}}</span></div>
             </div>
             <div class="audit-section">
-                <div class="fnds-hist-res-btns"><button (click)="openFindingsResponse()">AUDIT FINDINGS</button>
+                <div class="fnds-hist-res-btns">
+                    <!-- <button (click)="openFindingsResponse()">AUDIT FINDINGS</button> -->
                     <button [disabled]="questionData?.history.length === 0" (click)="openResponseHistory()">RESPONSE
                         HISTORY</button>
                 </div>
