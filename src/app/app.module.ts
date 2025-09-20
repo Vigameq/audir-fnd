@@ -46,7 +46,6 @@ import { AuditManageComponent } from './audit-manage/audit-manage.component';
 import { DatePipe } from '@angular/common';
 import { FindingsResponseDialogComponent } from './findings-management/findings-response-dialog/findings-response-dialog.component';
 import { LoaderComponent } from './shared/loader/loader.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LoaderInterceptor } from './shared/interceptors/loader.interceptor';
 
@@ -92,7 +91,6 @@ import { LoaderInterceptor } from './shared/interceptors/loader.interceptor';
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatProgressSpinnerModule,
     IgxCalendarModule,
     IgxIconModule,
     MatDialogModule,
@@ -106,7 +104,7 @@ import { LoaderInterceptor } from './shared/interceptors/loader.interceptor';
   ],
   providers: [DatePipe, { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true }],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this to allow custom elements
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
 })
 export class AppModule { }

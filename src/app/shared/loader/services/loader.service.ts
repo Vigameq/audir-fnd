@@ -5,11 +5,10 @@ import { BehaviorSubject } from 'rxjs';
 export class LoaderService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.loadingSubject.asObservable();
-
   private activeRequests = 0;
   private delayTimer: any;
 
-  show(delay = 300) {
+  show(delay = 200) {
     this.activeRequests++;
 
     if (!this.delayTimer) {
@@ -29,5 +28,10 @@ export class LoaderService {
       this.delayTimer = null;
       this.loadingSubject.next(false);
     }
+  }
+
+  reset() {
+    this.activeRequests = 0;
+    this.loadingSubject.next(false);
   }
 }

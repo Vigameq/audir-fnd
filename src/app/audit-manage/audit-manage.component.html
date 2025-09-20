@@ -80,7 +80,7 @@
             <div *ngIf="auditPerformItem.sub_audits.length > 0 && auditPerformItem.isSubAuditsOpened">
                 <div class="sub-audit" *ngFor="let sub_audit of auditPerformItem.sub_audits; let j = index">
                     <div class="tree-node">
-                        <div class="line" [ngStyle]="{'height.px': sub_audit.lineHeight}"></div>
+                        <!-- <div class="line" [ngStyle]="{'height.px': sub_audit.lineHeight}"></div> -->
                         <div class="dot"></div>
                     </div>
                     <div class="sub-audit-perform-container" #detailsContent>

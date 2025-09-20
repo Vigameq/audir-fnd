@@ -129,28 +129,32 @@
                 flex: 1;
                 flex-direction: column;
                 gap: 10px;
-                .progress-badge{
+
+                .progress-badge {
                     padding: 5px;
                     color: black;
                     border-radius: 20px;
                     font-size: 13px;
                     width: 80px;
-                    text-align: center;              
+                    text-align: center;
                 }
+
                 .progress-badge-green {
                     background: #8bffbb;
-                
+
                 }
 
                 .progress-badge-yellow {
                     background: #FFEA00;
-                
+
                 }
+
                 .progress-badge-orange {
                     background: #fdb571;
-                
+
                 }
-                    .plan-creation-id {
+
+                .plan-creation-id {
                     display: flex;
 
                     span {
@@ -239,8 +243,8 @@
                 top: 50%;
                 padding: 2px;
                 transform: translateY(-50%);
-                background-color: #000000;
-                border: 1px solid #000000;
+                background-color: #1D2431;
+                border: 1px solid #1D2431;
                 font-size: 20px;
                 font-weight: 400;
                 line-height: 100%;
@@ -362,7 +366,7 @@
                 border-radius: 50%;
                 top: 14px;
                 z-index: 1;
-                background-color: #000000;
+                background-color: #1D2431;
             }
 
             .line {
@@ -382,26 +386,29 @@
                     }
                 }
             }
-            .progress-badge{
+
+            .progress-badge {
                 padding: 5px;
                 color: black;
                 border-radius: 20px;
                 font-size: 13px;
                 width: 80px;
-                text-align: center;              
+                text-align: center;
             }
+
             .progress-badge-green {
                 background: #8bffbb;
-               
+
             }
 
             .progress-badge-yellow {
                 background: #FFEA00;
-               
+
             }
+
             .progress-badge-orange {
                 background: #fdb571;
-                
+
             }
 
             .disabled {

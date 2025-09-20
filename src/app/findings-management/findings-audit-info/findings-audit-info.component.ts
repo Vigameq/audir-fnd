@@ -51,7 +51,7 @@ export class FindingsAuditInfoComponent {
     });
   }
 
-  questionInfo(index: number) {
+  questionInfo(index: number,audit_finding_id:number) {
     const dialogRef = this.dialog.open(FindingsQuestionResponseDialogComponent, {
       disableClose: true,
       width: '1300px',
@@ -60,7 +60,8 @@ export class FindingsAuditInfoComponent {
       data: {
         index: index + 1,
         questionText: this.allQuestions[index].question,
-        auditInfo: this.auditInfo
+        auditInfo: this.auditInfo,
+        audit_finding_id: audit_finding_id
       }
     });
 
