@@ -190,13 +190,14 @@
                     svg {
                         height: 22px;
                         width: 22px;
-                        cursor: pointer;
+                        cursor: pointer !important;
                         margin-top: 36px;
                         margin-left: 40px;
                     }
 
                     svg:hover {
-                        fill: #FDE714
+                        fill: #FDE714;
+                        cursor: pointer !important;
                     }
                 }
 
