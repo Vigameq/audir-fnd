@@ -173,7 +173,31 @@
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
+                .progress-badge {
+                    padding: 5px;
+                    color: black;
+                    border-radius: 20px;
+                    font-size: 13px;
+                    width: 80px;
+                    text-align: center;
+                }
+                .remarks{
+                    font-style: italic;
+                }
+                .progress-badge-green {
+                    background: #8bffbb;
 
+                }
+
+                .progress-badge-red {
+                    background: #f74b4b;
+
+                }
+
+                .progress-badge-orange {
+                    background: #fdb571;
+
+                }
                 .question-number {
                     font-size: 20px;
                     font-weight: 700;
@@ -224,6 +248,17 @@
             background-color: #FDE714;
             color: black;
             border: 1px solid #FDE714;
+        }
+        .submit:disabled {
+            background-color: #bdbdbd;
+            color: black;
+            cursor: not-allowed;
+            
+        }
+        .submit:disabled:hover {
+            background-color: #bdbdbd;
+            color: black;
+          
         }
     }
 }

@@ -127,7 +127,7 @@
                             <select id="lead-auditor" class="dropdown-select" formControlName="leadAuditorValue"
                                 name="leadAuditorValue" required>
                                 <option value="" disabled selected>Select Lead Auditor..</option>
-                                <option *ngFor="let auditor of auditors" [value]="auditor.Name">
+                                <option *ngFor="let auditor of auditors" [value]="auditor.email">
                                     {{ auditor.Name }}</option>
                             </select>
                             <div class="dropdown-arrow">

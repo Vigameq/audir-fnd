@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-approval-remarks-dialog',
@@ -9,19 +9,22 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class ApprovalRemarksDialogComponent {
   auditorRemarks: string = '';
   constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data : { isQuestionSubmit: boolean},
     public dialogRef: MatDialogRef<ApprovalRemarksDialogComponent>
-  ) { }
+  ) { 
+  }
 
   onApproval(): void {
     this.dialogRef.close({
-      approval_status: 'approved',
+      approval_status: '',
       auditor_remarks: this.auditorRemarks
     });
   }
 
   onReject(): void {
     this.dialogRef.close({
-      approval_status: 'rejected',
+      approval_status: '',
       auditor_remarks: this.auditorRemarks
     });
   }
