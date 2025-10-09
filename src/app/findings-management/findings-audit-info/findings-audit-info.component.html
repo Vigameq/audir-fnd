@@ -69,6 +69,14 @@
                     <span>{{questionData?.audit_finding_clause}}</span><br><br>
                     <span>{{questionData?.question}}</span>
                 </div>
+                <!-- <div class="progress-badge"
+                    [ngClass]="{'progress-badge-green': questionData?.audit_finding_status === 'created','progress-badge-red': questionData?.audit_finding_status === 'rejected','progress-badge-orange': questionData?.audit_finding_status === 'completed'}">
+                    <span>
+                        {{questionData?.audit_finding_status | pascalCase}}</span>
+                </div> -->
+                <div>
+                    <span class="remarks" *ngIf="questionData?.nc_audit_finding_remarks">Remarks : {{questionData?.nc_audit_finding_remarks}}</span>
+                </div>
             </div>
         </div>
     </div>

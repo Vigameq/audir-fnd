@@ -48,7 +48,7 @@ export class AudirService {
         "from": date,
         "to": date
       },
-      "status_filter": ["completed", "created", "lead_auditor"]
+      "status_filter": ["completed", "created","inprogress"]
     };
     return this.http.post(`${environment.apiUrl}/api/ListChildAuditsByUser`, emailDateDetails);
   }
@@ -83,6 +83,10 @@ export class AudirService {
 
   savesCorrectiveActionPlanResponse(payload: any) {
     return this.http.post(`${environment.apiUrl}/api/saveNCCorrectiveActionPlanData`, payload);
+  }
+
+  submitNCQuestion(payload: any){
+    return this.http.post(`${environment.apiUrl}/api/submitNCQuestion`, payload);
   }
 
   updateAuditPlan(updatedAuditDetails: any) {

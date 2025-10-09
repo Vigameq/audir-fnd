@@ -49,7 +49,7 @@ export class FindingsManagementComponent {
         from: fromDate,
         to: toDate
       },
-      status_filter: ["inprogress", "submitted", "nc_inprogress", "completed"]
+      status_filter: ["inprogress", "nc_inprogress", "completed","submitted"]
     };
 
     this.audirService.getNCAuditLists(payload).subscribe((response: any) => {
@@ -132,7 +132,7 @@ export class FindingsManagementComponent {
     this.auditList = this.CompleteAuditList;
   }
 
-  updatePlanWithNewAssignee(audit: any, index: number) {
+  updatePlanWithNewAssignee(auditPerformItem:any,audit: any, index: number) {
     const updatedAuditPlan: any = {
       'audit_id': audit.audit_id,
       'start_date': audit.start_date,
@@ -141,6 +141,10 @@ export class FindingsManagementComponent {
       'auditees': this.selectedAuditeesEmail[index],
       'city': audit.city,
       'country': audit.country,
+      "lead_auditor": auditPerformItem.lead_auditor,
+      "link_audit": audit.link_audit,
+      "template": audit.template,
+      "function_template": audit.function_template,
       'audit_type': audit.audit_type
     };
     this.audirService.updateAuditPlan(updatedAuditPlan).subscribe((response: any) => {
