@@ -194,7 +194,7 @@ export class AuditPerformComponent {
     this.auditList = this.CompleteAuditList;
   }
 
-  updatePlanWithNewAssignee(sub_audit: any, index: number) {
+  updatePlanWithNewAssignee(auditPerformItem:any,sub_audit: any, index: number) {
     const updatedAuditPlan: any = {
       'audit_id': sub_audit.audit_id,
       'start_date': sub_audit.start_date,
@@ -203,6 +203,10 @@ export class AuditPerformComponent {
       'auditees': this.selectedAuditeesEmail[index],
       'city': sub_audit.city,
       'country': sub_audit.country,
+      "lead_auditor": auditPerformItem.lead_auditor,
+      "link_audit": sub_audit.link_audit,
+      "template": sub_audit.template,
+      "function_template": sub_audit.function_template,
       'audit_type': sub_audit.audit_type
     };
     this.audirService.updateAuditPlan(updatedAuditPlan).subscribe((response: any) => {

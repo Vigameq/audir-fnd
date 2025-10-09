@@ -92,7 +92,7 @@ export class CreateUserDialogComponent {
           this.audirService.showError('Failed to create user');
         }
       }, (error: any) => {
-        this.audirService.showError('Failed to create user');
+        this.audirService.showError(error.error.message);
         console.error('Error for creating user:', error);
       });
     }

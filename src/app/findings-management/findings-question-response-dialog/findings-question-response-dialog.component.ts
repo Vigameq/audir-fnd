@@ -4,6 +4,7 @@ import { AudirService } from 'src/services/audir-services.service';
 import { FindingsAuditProgressDialogComponent } from '../findings-audit-progress-dialog/findings-audit-progress-dialog.component';
 import { DatePipe } from '@angular/common';
 import { FindingsResponseDialogComponent } from '../findings-response-dialog/findings-response-dialog.component';
+import { ApprovalRemarksDialogComponent } from '../approval-remarks-dialog/approval-remarks-dialog.component';
 
 @Component({
   selector: 'app-findings-question-response-dialog',
@@ -349,6 +350,37 @@ export class FindingsQuestionResponseDialogComponent {
     else {
       console.log('Responses not saved successfully, please save again')
     }
+  }
+  onSubmitConfirmation(){
+    const dialogRef = this.dialog.open(ApprovalRemarksDialogComponent, {
+          disableClose: true,
+          data : {isQuestionSubmit : true}
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.onSubmit(result);
+          }
+        });
+    
+  }
+  onSubmit(result: any){
+    const submitResponse = {
+      audit_id : this.auditQuestionData.audit_id,
+      email : this.auditQuestionData.email,
+      approval_status : result.approval_status,
+      auditor_remarks : result.auditor_remarks,
+      audit_finding_id : this.questionData?.audit_finding_id
+    }
+    this.audirService.submitNCQuestion(submitResponse).subscribe((response: any) => {
+      if (response) {
+        console.log(response.msg);
+        this.audirService.showSuccess('Question submitted successfully');
+      }
+    }, (error: any) => {
+      this.noErrors = false;
+      this.audirService.showError('Error while submitting !');
+      console.error('Error saving correction responses:', error);
+    });
   }
 
   saveCorrectionsResponse() {

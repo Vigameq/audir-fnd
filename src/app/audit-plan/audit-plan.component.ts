@@ -88,6 +88,7 @@ export class AuditPlanComponent {
   userEmail: string = '';
   minDateTime: any;
   maxDateTime: any;
+  parentLeadAuditor: any[] = [];
 
   constructor(private datePipe: DatePipe, private formBuilder: FormBuilder, private audirService: AudirService, private notificationsService: NotificationsService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
     this.setMaxMinDateTime();
@@ -209,6 +210,10 @@ export class AuditPlanComponent {
 
   onSubmit() {
     if (this.auditPlanForm) {
+      if(this.auditPlanForm.value?.parentAudit.title){
+        this.parentLeadAuditor = this.parent_audits.filter(p=> p.title == this.auditPlanForm.value?.parentAudit.title);
+      }
+      
       const plan: Audit = {
         link_audit: this.auditPlanForm.value?.parentAudit ? this.auditPlanForm.value?.parentAudit.title : null,
         audit_title: this.auditPlanForm.value?.auditTitle,
@@ -218,7 +223,7 @@ export class AuditPlanComponent {
         start_date: this.auditPlanForm.value?.startDateTime,
         end_date: this.auditPlanForm.value?.endDateTime,
         lead_auditor: this.auditPlanForm?.value?.leadAuditorValue,
-        auditors: this.selectedAuditorsEmail,
+        auditors: this.selectedAuditorsEmail.length == 0 && this.auditPlanForm.value?.parentAudit.title ? this.parentLeadAuditor[0]?.lead_auditor : this.selectedAuditorsEmail,
         auditees: this.selectedAuditeesEmail,
         city: this.auditPlanForm.value?.cityName,
         country: this.auditPlanForm.value?.countryName,

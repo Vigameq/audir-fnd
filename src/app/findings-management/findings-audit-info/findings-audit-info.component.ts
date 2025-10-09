@@ -15,6 +15,9 @@ export class FindingsAuditInfoComponent {
   allQuestions!: any[];
   auditInfo: any;
   auditId: any;
+  disableFlag: boolean | undefined;
+  audit_status: string | null | undefined;
+
 
   constructor(private dialog: MatDialog,
     private route: ActivatedRoute,
@@ -23,6 +26,7 @@ export class FindingsAuditInfoComponent {
     private location: Location) {
     this.route.paramMap.subscribe(params => {
       this.auditId = { "audit_id": params.get('id') };
+      this.audit_status =  params.get('audit_status');
       this.getPlanAudit(this.auditId);
       this.getQuestions(this.auditId);
     });
@@ -34,7 +38,10 @@ export class FindingsAuditInfoComponent {
   getQuestions(auditId: any) {
     this.audirService.getNCAuditQuestions(auditId).subscribe((auditQuestion: any) => {
       if (auditQuestion) {
-        this.allQuestions = auditQuestion.nc_questions
+        this.allQuestions = auditQuestion.nc_questions;
+        this.disableFlag = this.allQuestions.every(
+          (item) => item.audit_finding_status === "inprogress"
+        );
       }
     }, (error: any) => {
       console.error('Error for getting questions:', error);
@@ -66,6 +73,7 @@ export class FindingsAuditInfoComponent {
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
+      this.getQuestions(this.auditId);
       console.log(`Dialog result: ${result}`);
     });
   }
@@ -102,10 +110,11 @@ export class FindingsAuditInfoComponent {
 
   openSubmitConfirmationDialog(): void {
     const dialogRef = this.dialog.open(ApprovalRemarksDialogComponent, {
-      disableClose: true
+      disableClose: true,
+      data: { isQuestionSubmit: false}
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result && result?.approval_status != '') {
+      if (result) {
         this.onsubmit(result);
       }
     });
