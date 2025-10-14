@@ -67,10 +67,10 @@
                         </div>
                     </div>
                     <div class="progress-badge"
-                                [ngClass]="{'progress-badge-green': auditPerformItem.audit_status === 'created','progress-badge-yellow': auditPerformItem.audit_status === 'inprogress','progress-badge-orange': auditPerformItem.audit_status === 'submitted'}">
-                                <span>
-                                    {{auditPerformItem.audit_status | pascalCase}}</span>
-                            </div>
+                        [ngClass]="{'progress-badge-green': auditPerformItem.audit_status === 'created','progress-badge-yellow': auditPerformItem.audit_status === 'inprogress','progress-badge-orange': auditPerformItem.audit_status === 'submitted'}">
+                        <span>
+                            {{auditPerformItem.audit_status | pascalCase}}</span>
+                    </div>
                 </div>
                 <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0"
                     (click)="openSubAudits(auditPerformItem.sub_audits,i)">
@@ -118,7 +118,10 @@
                                     {{sub_audit.audit_status | pascalCase}}</span>
                             </div>
                         </div>
-                        
+                        <div class="edit-icon" (click)="openEditPlanDialog(sub_audit)">
+                            <img src="../assets/images/Ellipse.png" alt="Ellipse" id="ellipse-icon" />
+                            <img src="../assets/images/Vector.png" alt="Vector" id="vector-icon" />
+                        </div>
                     </div>
                 </div>
             </div>

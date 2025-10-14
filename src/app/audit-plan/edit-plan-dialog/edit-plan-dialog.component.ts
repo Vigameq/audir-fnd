@@ -27,13 +27,17 @@ export class EditPlanDialogComponent {
   maxWidth!: any;
   editPlanForm: FormGroup = new FormGroup({
     startDateTimeValue: new FormControl(''),
-    endDateTimeValue: new FormControl('')
+    endDateTimeValue: new FormControl(''),
+    cityNameValue: new FormControl(''),
+    countryNameValue: new FormControl('')
   });
   auditees: any[] = [];
   auditors: any[] = [];
   parent_audits_details!: any;
   minDateTime!: any;
   maxDateTime!: any;
+  cities = ["Amaravati", "Bengaluru", "Bhopal", "Bhubaneswar", "Chandigarh", "Chennai", "Dehradun", "Gandhinagar", "Gangtok", "Hyderabad", "Jaipur", "Kolkata", "Lucknow", "Mumbai", "Panaji", "Patna", "Raipur", "Ranchi", "Shillong", "Shimla", "Thiruvananthapuram"];
+  countries = ["India"];
 
   constructor(private datePipe: DatePipe, private audirService: AudirService, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<EditPlanDialogComponent>) { }
 
@@ -41,6 +45,8 @@ export class EditPlanDialogComponent {
     this.editPlanForm = this.fb.group({
       startDateTimeValue: new FormControl(''),
       endDateTimeValue: new FormControl(''),
+      cityNameValue: new FormControl(''),
+      countryNameValue: new FormControl('')
     });
     this.planDetails = this.data.planDetails;
     this.auditees = this.data.auditees;
@@ -54,7 +60,9 @@ export class EditPlanDialogComponent {
     this.minDateTime = this.datePipe.transform(this.parent_audits_details.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
     this.editPlanForm.setValue({
       startDateTimeValue: (new Date(this.planDetails.start_date)).toISOString().slice(0, 16),
-      endDateTimeValue: (new Date(this.planDetails.end_date)).toISOString().slice(0, 16)
+      endDateTimeValue: (new Date(this.planDetails.end_date)).toISOString().slice(0, 16),
+      cityNameValue: this.planDetails.city,
+      countryNameValue: this.planDetails.country
     });
     this.auditors = this.selectedOptionValuesChecked(this.auditors, this.planDetails.auditors);
     this.auditees = this.selectedOptionValuesChecked(this.auditees, this.planDetails.auditees);
@@ -103,8 +111,12 @@ export class EditPlanDialogComponent {
       'end_date': this.editPlanForm.value.endDateTimeValue,
       'auditors': this.selectedAuditorsEmail,
       'auditees': this.selectedAuditeesEmail,
-      'city': this.planDetails.city,
-      'country': this.planDetails.country,
+      'city': this.editPlanForm.value.cityNameValue,
+      'country': this.editPlanForm.value.countryNameValue,
+      'lead_auditor': this.planDetails.lead_auditor,
+      'link_audit': this.planDetails.link_audit,
+      'template': this.planDetails.template,
+      'function_template': this.planDetails.function_template,
       'audit_type': this.planDetails.audit_type
     };
     this.audirService.updateAuditPlan(editedAuditPlan).subscribe((response: any) => {

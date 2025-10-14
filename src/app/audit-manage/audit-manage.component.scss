@@ -349,6 +349,17 @@
                         right: 12px;
                     }
                 }
+
+                .edit-icon {
+                    position: relative;
+
+                    #vector-icon {
+                        position: absolute;
+                        top: 10px;
+                        left: 10px;
+                        cursor: pointer;
+                    }
+                }
             }
 
             .tree-node {

@@ -121,8 +121,36 @@ export class AuditPlanComponent {
         this.auditPlanForm.get('leadAuditorValue')?.setValue('');
       }
     });
+    this.getAuditLists();
     this.getPlanItems();
     await this.getAllChildAuditPlan();
+  }
+
+  getAuditLists() {
+    const now = new Date();
+    const utcToday = new Date(Date.UTC(now.getUTCFullYear() - 50, now.getUTCMonth(), now.getUTCDate()));
+    const utcTomorrow = new Date(Date.UTC(now.getUTCFullYear() + 50, now.getUTCMonth(), now.getUTCDate() + 1));
+    const fromDate = utcToday.toISOString().substring(0, 10);
+    const toDate = utcTomorrow.toISOString().substring(0, 10);
+    const email = localStorage.getItem('user')?.toString() || '';
+    var payload = {
+      eMail: email,
+      start_date_filter: {
+        from: fromDate,
+        to: toDate
+      },
+      status_filter: ["created", "inprogress"]
+    };
+
+    this.audirService.getAuditLists(payload).subscribe((response: any) => {
+      if (response) {
+        const CompleteAuditList = response.audit_data;
+        this.parent_audits = CompleteAuditList.filter((item: any) => item.hasOwnProperty('audit_title'))
+          .map((item: any) => ({ title: item.audit_title, lead_auditor: [item.lead_auditor] }));
+      }
+    }, (error: any) => {
+      console.error('Error for getting audits:', error);
+    });
   }
 
   setMaxMinDateTime() {
@@ -133,7 +161,7 @@ export class AuditPlanComponent {
   getPlanItems() {
     this.audirService.getPlanItems(this.userEmail).subscribe((items: any) => {
       if (items) {
-        this.parent_audits = items.parent_audits;
+        //this.parent_audits = items.parent_audits;
         this.templates = items.templates.map((template: any) => ({ ...template }));
         this.functionTemplates = items.templates.map((template: any) => ({ ...template }));
         this.auditees = items.users.auditees;
@@ -210,10 +238,10 @@ export class AuditPlanComponent {
 
   onSubmit() {
     if (this.auditPlanForm) {
-      if(this.auditPlanForm.value?.parentAudit.title){
-        this.parentLeadAuditor = this.parent_audits.filter(p=> p.title == this.auditPlanForm.value?.parentAudit.title);
+      if (this.auditPlanForm.value?.parentAudit.title) {
+        this.parentLeadAuditor = this.parent_audits.filter(p => p.title === this.auditPlanForm.value?.parentAudit.title);
       }
-      
+
       const plan: Audit = {
         link_audit: this.auditPlanForm.value?.parentAudit ? this.auditPlanForm.value?.parentAudit.title : null,
         audit_title: this.auditPlanForm.value?.auditTitle,
@@ -318,7 +346,7 @@ export class AuditPlanComponent {
       autoFocus: false,
       disableClose: true,
       width: '654px',
-      height: '472px',
+      height: '520px',
       data: {
         'planDetails': planDetails,
         'auditees': this.auditees,
