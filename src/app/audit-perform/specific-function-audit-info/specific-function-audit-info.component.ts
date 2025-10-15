@@ -16,6 +16,7 @@ export class SpecificFunctionAuditInfoComponent {
   auditCompletionPercentage!: any;
   auditInfo: any;
   auditId: any;
+  parentAuditID: any;
 
   constructor(private dialog: MatDialog,
     private route: ActivatedRoute,
@@ -24,24 +25,57 @@ export class SpecificFunctionAuditInfoComponent {
     private location: Location) {
     this.route.paramMap.subscribe(params => {
       this.auditId = { "audit_id": params.get('id') };
+      this.route.queryParams.subscribe(params => {
+        this.parentAuditID = { "audit_id": params['parentAuditID'] };
+      });
       this.getPlanAudit(this.auditId);
       this.getAuditPlanCompletionPercentage(this.auditId);
-      this.getQuestions(this.auditId);
+      this.getQuestions(this.auditId, this.parentAuditID);
     });
   }
 
   ngOnInit() {
   }
 
-  getQuestions(auditId: any) {
-    this.audirService.getAuditQuestions(auditId).subscribe((auditQuestion: any) => {
+  getQuestions(auditId: any, parentAuditID: any) {
+    let questionTemplates: any;
+    this.audirService.getAuditQuestions(parentAuditID).subscribe((auditQuestion: any) => {
       if (auditQuestion) {
-        this.allFunctionalQuestions = Object.values(auditQuestion.questions?.function_template).flat();
+        questionTemplates =
+        {
+          ...auditQuestion.questions?.function_template,
+          ...auditQuestion.questions?.template
+        };
+        this.audirService.getAuditQuestions(auditId).subscribe((auditQuestion: any) => {
+          if (auditQuestion) {
+            questionTemplates = {
+              ...questionTemplates,
+              ...(auditQuestion.questions?.function_template)
+            };
+            this.getAllQuestions(questionTemplates);
+          }
+        }, (error: any) => {
+          console.error('Error for getting questions:', error);
+        });
       }
     }, (error: any) => {
       console.error('Error for getting questions:', error);
     });
   }
+
+  getAllQuestions(questionTemplates: any): any {
+    const templates = new Set();
+    const result: any = {};
+    for (const key of Object.keys(questionTemplates)) {
+      const normalizedKey = key.replace(/[\s_]/g, '').toLowerCase();
+      if (!templates.has(normalizedKey)) {
+        templates.add(normalizedKey);
+        result[key] = questionTemplates[key];
+      }
+    }
+    this.allFunctionalQuestions = Object.values(result).flat();
+  }
+
 
   getAuditPlanCompletionPercentage(auditId: any) {
     this.audirService.getAuditCompletionPercentage(auditId).subscribe((response: any) => {
