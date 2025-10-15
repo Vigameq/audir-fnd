@@ -1,7 +1,9 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, HostListener, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, HostListener, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { forkJoin } from 'rxjs';
 import { AudirService } from 'src/services/audir-services.service';
+import { EditPlanDialogComponent } from '../audit-plan/edit-plan-dialog/edit-plan-dialog.component';
 
 @Component({
   selector: 'app-audit-manage',
@@ -13,6 +15,8 @@ export class AuditManageComponent {
   searchQuery: string = '';
   updateAuditee = 'Update Auditee';
   auditees: any;
+  auditors: any;
+  parent_audits: any;
   subAuditAuditees: any;
   @ViewChildren('detailsContent') detailsContentElements!: QueryList<ElementRef>;
   @ViewChild('auditeeDropdown') auditeeDropdown: ElementRef | undefined;
@@ -30,7 +34,7 @@ export class AuditManageComponent {
   selectedAuditeesEmail: any;
   isSvgDisabled = true;
 
-  constructor(private audirService: AudirService, private datePipe: DatePipe) {
+  constructor(private audirService: AudirService, private datePipe: DatePipe, private dialog: MatDialog) {
     this.resetDateFilter();
   }
 
@@ -46,7 +50,7 @@ export class AuditManageComponent {
         from: fromDate,
         to: toDate
       },
-      status_filter: ["created", "inprogress","submitted"]
+      status_filter: ["created", "inprogress", "submitted"]
     };
 
     this.audirService.getAuditLists(payload).subscribe((response: any) => {
@@ -219,7 +223,9 @@ export class AuditManageComponent {
     const email = localStorage.getItem('user')?.toString() || '';
     this.audirService.getPlanItems(email).subscribe((items: any) => {
       if (items) {
+        this.parent_audits = items.parent_audits;
         this.auditees = items.users.auditees;
+        this.auditors = items.users.auditors;
       }
     }, (error: any) => {
       console.error('Error for getting plans:', error);
@@ -274,6 +280,21 @@ export class AuditManageComponent {
 
   onCheckboxClick(event: Event) {
     event.stopPropagation();
+  }
+
+  openEditPlanDialog(planDetails: any): void {
+    const dialogRef = this.dialog.open(EditPlanDialogComponent, {
+      autoFocus: false,
+      disableClose: true,
+      width: '654px',
+      height: '520px',
+      data: {
+        'planDetails': planDetails,
+        'auditees': this.auditees,
+        'auditors': this.auditors,
+        'parent_audits': this.parent_audits
+      }
+    });
   }
 
   onAuditeeSelectionChange(event: Event, subAuditIndex: any, auditeesIndex: any, auditee: any) {

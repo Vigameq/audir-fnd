@@ -156,6 +156,10 @@
                     align-items: center;
                     height: 50px;
 
+                    &:hover {
+                        outline: 3px solid #000000;
+                    }
+
                     span {
                         overflow: hidden;
                         white-space: nowrap;
@@ -220,6 +224,16 @@
                 input,
                 select {
                     min-height: 50px;
+
+                    &:focus {
+                        box-shadow: none;
+                        border: none !important;
+                        outline: #000000 solid 2px !important;
+                    }
+
+                    &:focus-visible {
+                        border: #000000 solid 2px !important;
+                    }
                 }
             }
 

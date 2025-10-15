@@ -91,6 +91,7 @@ export class AuditPerformComponent {
       });
       this.auditList[index].sub_audits = this.auditList[index].sub_audits.map((obj: any) => {
         obj.lineHeight = 0;
+        obj.parentAuditID = this.auditList[index].audit_id;
         return obj;
       });
       this.updateLineHeights(index);
