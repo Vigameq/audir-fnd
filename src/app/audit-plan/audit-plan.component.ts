@@ -58,6 +58,7 @@ export class AuditPlanComponent {
   selectedAuditees: string[] = [];
   selectedAuditeesEmail: string[] = [];
   parent_audits: any[] = [];
+  parentAudits: any[] = [];
   templates: any[] = [];
   functionTemplates: any[] = [];
   auditees: any[] = [];
@@ -121,8 +122,8 @@ export class AuditPlanComponent {
         this.auditPlanForm.get('leadAuditorValue')?.setValue('');
       }
     });
-    this.getAuditLists();
     this.getPlanItems();
+    this.getAuditLists();
     await this.getAllChildAuditPlan();
   }
 
@@ -144,9 +145,12 @@ export class AuditPlanComponent {
 
     this.audirService.getAuditLists(payload).subscribe((response: any) => {
       if (response) {
-        const CompleteAuditList = response.audit_data;
-        this.parent_audits = CompleteAuditList.filter((item: any) => item.hasOwnProperty('audit_title'))
-          .map((item: any) => ({ title: item.audit_title, lead_auditor: [item.lead_auditor] }));
+        const completeAuditList = response.audit_data;
+        this.parent_audits = completeAuditList.filter((item: any) => item.hasOwnProperty('audit_title'))
+          .map((item: any) => ({ title: item.audit_title }));
+        this.parent_audits = this.parentAudits.filter(item =>
+          this.parent_audits.some(t => t.title === item.title)
+        );
       }
     }, (error: any) => {
       console.error('Error for getting audits:', error);
@@ -161,7 +165,7 @@ export class AuditPlanComponent {
   getPlanItems() {
     this.audirService.getPlanItems(this.userEmail).subscribe((items: any) => {
       if (items) {
-        //this.parent_audits = items.parent_audits;
+        this.parentAudits = items.parent_audits;
         this.templates = items.templates.map((template: any) => ({ ...template }));
         this.functionTemplates = items.templates.map((template: any) => ({ ...template }));
         this.auditees = items.users.auditees;
@@ -346,11 +350,12 @@ export class AuditPlanComponent {
       autoFocus: false,
       disableClose: true,
       width: '654px',
-      height: '520px',
+      height: '658px',
       data: {
         'planDetails': planDetails,
         'auditees': this.auditees,
         'auditors': this.auditors,
+        'functionTemplates': this.functionTemplates,
         'parent_audits': this.parent_audits
       }
     });
