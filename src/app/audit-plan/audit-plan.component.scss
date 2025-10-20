@@ -80,6 +80,11 @@
                 cursor: pointer;
             }
 
+            #end-date-time,
+            #start-date-time {
+                line-height: 1.2;
+            }
+
             select,
             textarea {
                 width: 100%;

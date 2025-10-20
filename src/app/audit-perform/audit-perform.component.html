@@ -10,7 +10,7 @@
         <div class="date-filter-and-reset">
             <div class="from-date">
                 <mat-form-field appearance="fill" class="custom-date-picker">
-                    <mat-label>From Date</mat-label>
+                    <mat-label>From Date Range</mat-label>
                     <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" (dateChange)="onDateChange()"
                         name="fromDate" readonly>
                     <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
@@ -19,7 +19,7 @@
             </div>
             <div class="to-date">
                 <mat-form-field appearance="fill" class="custom-date-picker">
-                    <mat-label>To Date</mat-label>
+                    <mat-label>To Date Range</mat-label>
                     <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate" (dateChange)="onDateChange()"
                         name="toDate" [min]="fromDate" readonly>
                     <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>

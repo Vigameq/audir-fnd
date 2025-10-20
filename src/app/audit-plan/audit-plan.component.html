@@ -246,7 +246,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="edit-icon" (click)="openEditPlanDialog(plan)">
+                    <div *ngIf="plan.audit_status === 'created'" class="edit-icon" (click)="openEditPlanDialog(plan)">
                         <img src="../assets/images/Ellipse.png" alt="Ellipse" id="ellipse-icon" />
                         <img src="../assets/images/Vector.png" alt="Vector" id="vector-icon" />
                     </div>
