@@ -1,12 +1,12 @@
 .edit-plan-dialog {
-    padding: 20px 20px 40px;
-    min-height: 520px;
+    padding: 20px;
+    min-height: 658px;
     z-index: 1000;
 
     .mat-dialog-content {
         padding: 0px;
         font-family: 'Apple SD Gothic Neo', sans-serif;
-        min-height: 412px;
+        min-height: 618px;
 
         .content {
             display: flex;
@@ -35,7 +35,7 @@
                 font-weight: 700;
                 line-height: 100%;
                 padding: 10px 20px;
-                height: 72px;
+                height: 48px;
                 color: #575757;
             }
 
@@ -60,7 +60,14 @@
                         flex: 1;
                         gap: 20px;
 
+                        .form-label {
+                            font-size: 16px;
+                            color: #4E4E4E;
+                            margin: 0 0 8px;
+                        }
+
                         .end-date-time,
+                        .functions,
                         .start-date-time,
                         .city,
                         .country {
@@ -69,7 +76,7 @@
                             select {
                                 min-width: 262px;
                                 min-height: 46px;
-                                border-radius: 20px;
+                                border-radius: 6px;
                                 border: none;
                                 outline: none;
                                 padding: 6px 12px;
@@ -90,8 +97,14 @@
                             }
                         }
 
+                        #end-date-time,
+                        #start-date-time {
+                            line-height: 1.2;
+                        }
+
                         .auditors,
-                        .auditees {
+                        .auditees,
+                        .function-template {
                             position: relative;
                             flex: 1;
 
@@ -100,8 +113,8 @@
                                 color: #000000;
                                 padding: 6px 30px 6px 12px;
                                 cursor: pointer;
-                                border-radius: 20px;
-                                margin: 0 0 10px;
+                                border-radius: 6px;
+                                margin: 0;
                                 display: flex;
                                 align-items: center;
                                 min-height: 46px;
@@ -135,25 +148,26 @@
                                 /* box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); */
                                 padding: 10px;
                                 z-index: 1100;
-                                border-radius: 20px;
+                                border-radius: 6px;
                                 border: 1px solid #dbdbdb;
                                 width: 100%;
-                                top: 48px;
+                                top: 82px;
                                 max-height: 104px;
                                 overflow-y: auto;
 
                                 .auditor-value,
-                                .auditee-value {
+                                .auditee-value,
+                                .template-value {
                                     margin-left: 15px !important;
                                 }
                             }
 
                             .dropdown-arrow {
                                 position: absolute;
-                                top: 40%;
+                                top: 70%;
                                 transform: translateY(-50%);
                                 pointer-events: none;
-                                right: 18px;
+                                right: 16px;
                             }
                         }
 

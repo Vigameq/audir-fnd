@@ -14,10 +14,15 @@ export class EditPlanDialogComponent {
   @ViewChild('auditorsDropdown', { static: false }) auditorsDropdown!: ElementRef;
   @ViewChild('auditeesDropdown', { static: false }) auditeesDropdown!: ElementRef;
   planDetails: any = {};
+  selectedFunctionTemplateOptions: string = 'Select function templates..';
   selectedAuditorOptions: string = 'Select Auditor..';
   selectedAuditeesOptions: string = 'Select Auditee..';
+  isFunctionTemplateDropdownOpen = false;
+  isFunctionTemplateDropdownOpened = false;
   isAuditorDropdownOpened = false;
   isAuditorOptionsOpen = false;
+  functionTemplates: any[] = [];
+  selectedFunctionTemplate: string[] = [];
   selectedAuditor: string[] = [];
   selectedAuditorsEmail: string[] = [];
   selectedAuditees: string[] = [];
@@ -26,6 +31,7 @@ export class EditPlanDialogComponent {
   isAuditeesDropdownOpened = false;
   maxWidth!: any;
   editPlanForm: FormGroup = new FormGroup({
+    functionsValue: new FormControl(''),
     startDateTimeValue: new FormControl(''),
     endDateTimeValue: new FormControl(''),
     cityNameValue: new FormControl(''),
@@ -43,6 +49,7 @@ export class EditPlanDialogComponent {
 
   ngOnInit(): void {
     this.editPlanForm = this.fb.group({
+      functionsValue: new FormControl(''),
       startDateTimeValue: new FormControl(''),
       endDateTimeValue: new FormControl(''),
       cityNameValue: new FormControl(''),
@@ -51,6 +58,7 @@ export class EditPlanDialogComponent {
     this.planDetails = this.data.planDetails;
     this.auditees = this.data.auditees;
     this.auditors = this.data.auditors;
+    this.functionTemplates = this.data.functionTemplates.map((template: any) => ({ ...template }));
     this.setPlanValues();
   }
 
@@ -59,6 +67,7 @@ export class EditPlanDialogComponent {
     this.maxDateTime = this.datePipe.transform(this.parent_audits_details.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
     this.minDateTime = this.datePipe.transform(this.parent_audits_details.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
     this.editPlanForm.setValue({
+      functionsValue: new FormControl(''),
       startDateTimeValue: (new Date(this.planDetails.start_date)).toISOString().slice(0, 16),
       endDateTimeValue: (new Date(this.planDetails.end_date)).toISOString().slice(0, 16),
       cityNameValue: this.planDetails.city,
@@ -72,6 +81,32 @@ export class EditPlanDialogComponent {
     this.selectedAuditeesOptions = this.selectedAuditees.length > 0 ? this.selectedAuditees.join(', ') : 'Select Auditee..';
     this.selectedAuditorsEmail = this.selectedOptionEmails(this.planDetails.auditors);
     this.selectedAuditeesEmail = this.selectedOptionEmails(this.planDetails.auditees);
+  }
+
+  functionTemplateToggleDropdown(event: any) {
+    this.isAuditorOptionsOpen = false;
+    this.isAuditeesOptionsOpen = false;
+    event.stopPropagation();
+    this.isFunctionTemplateDropdownOpen = !this.isFunctionTemplateDropdownOpen;
+    if (!this.isFunctionTemplateDropdownOpened) {
+      this.isFunctionTemplateDropdownOpened = true;
+      this.functionTemplates = this.setCheckedOption(this.functionTemplates);
+    }
+  }
+
+  onFunctionTemplateSelectionChange(event: Event, index: any) {
+    const checkbox = event.target as HTMLInputElement;
+    if (!this.selectedFunctionTemplate.includes(checkbox.value)) {
+      if (checkbox.checked) {
+        this.selectedFunctionTemplate.push(checkbox.value);
+        this.functionTemplates[index].checked = true;
+      }
+    }
+    else {
+      this.functionTemplates[index].checked = false;
+      this.selectedFunctionTemplate = this.selectedFunctionTemplate.filter(option => option !== checkbox.value);
+    }
+    this.selectedFunctionTemplateOptions = this.selectedFunctionTemplate.length > 0 ? this.selectedFunctionTemplate.join(', ') : 'Select function templates..';
   }
 
   getParentAuditDetails(parent_audits: any, link_audit: any) {

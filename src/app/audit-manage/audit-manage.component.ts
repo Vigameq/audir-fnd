@@ -287,7 +287,7 @@ export class AuditManageComponent {
       autoFocus: false,
       disableClose: true,
       width: '654px',
-      height: '520px',
+      height: '658px',
       data: {
         'planDetails': planDetails,
         'auditees': this.auditees,
