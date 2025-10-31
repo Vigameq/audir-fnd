@@ -158,7 +158,7 @@ export class AuditPlanComponent {
   }
 
   setMaxMinDateTime() {
-    this.minDateTime = '0000-12-31T00:00:00';
+    this.minDateTime = this.datePipe.transform(new Date(), 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
     this.maxDateTime = '9999-12-31T23:59:59';
   }
 
