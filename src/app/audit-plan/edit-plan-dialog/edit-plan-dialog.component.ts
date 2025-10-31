@@ -64,8 +64,6 @@ export class EditPlanDialogComponent {
 
   setPlanValues() {
     this.parent_audits_details = this.getParentAuditDetails(this.data.parent_audits, this.planDetails.link_audit);
-    this.maxDateTime = this.datePipe.transform(this.parent_audits_details.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
-    this.minDateTime = this.datePipe.transform(this.parent_audits_details.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
     this.editPlanForm.setValue({
       functionsValue: new FormControl(''),
       startDateTimeValue: (new Date(this.planDetails.start_date)).toISOString().slice(0, 16),
@@ -81,6 +79,12 @@ export class EditPlanDialogComponent {
     this.selectedAuditeesOptions = this.selectedAuditees.length > 0 ? this.selectedAuditees.join(', ') : 'Select Auditee..';
     this.selectedAuditorsEmail = this.selectedOptionEmails(this.planDetails.auditors);
     this.selectedAuditeesEmail = this.selectedOptionEmails(this.planDetails.auditees);
+    this.maxDateTime = this.datePipe.transform(this.parent_audits_details.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
+    const now = new Date();
+    this.minDateTime = (this.parent_audits_details.start_date > now) ?
+      this.datePipe.transform(this.parent_audits_details.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC') :
+      this.datePipe.transform(now, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC')
+      ;
   }
 
   functionTemplateToggleDropdown(event: any) {
