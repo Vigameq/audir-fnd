@@ -79,12 +79,11 @@ export class EditPlanDialogComponent {
     this.selectedAuditeesOptions = this.selectedAuditees.length > 0 ? this.selectedAuditees.join(', ') : 'Select Auditee..';
     this.selectedAuditorsEmail = this.selectedOptionEmails(this.planDetails.auditors);
     this.selectedAuditeesEmail = this.selectedOptionEmails(this.planDetails.auditees);
-    this.maxDateTime = this.datePipe.transform(this.parent_audits_details.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
     const now = new Date();
     this.minDateTime = (this.parent_audits_details.start_date > now) ?
       this.datePipe.transform(this.parent_audits_details.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC') :
-      this.datePipe.transform(now, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC')
-      ;
+      this.datePipe.transform(now, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
+    this.maxDateTime = this.datePipe.transform(this.parent_audits_details.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
   }
 
   functionTemplateToggleDropdown(event: any) {
