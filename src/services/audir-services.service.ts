@@ -182,7 +182,7 @@ export class AudirService {
   }
 
   showWarning(message: string) {
-    this.toastr.warning(message, 'Warning', {
+    this.toastr.warning(message, 'Alert', {
       timeOut: 2000,
       positionClass: 'toast-bottom-right',
       progressBar: true,
