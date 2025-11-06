@@ -585,8 +585,12 @@ export class AuditPlanComponent {
     this.auditPlanForm.get('startDateTime')?.setValue('');
     this.auditPlanForm.get('endDateTime')?.setValue('');
     this.auditPlanForm.get('auditTitle')?.setValue('');
+    this.auditPlanForm.get('endDateTime')?.disable();
+    const now = new Date();
+    this.minDateTime = (this.auditPlanForm.value.parentAudit.start_date > now) ?
+      this.datePipe.transform(this.auditPlanForm.value.parentAudit.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC') :
+      this.datePipe.transform(now, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
     this.maxDateTime = this.datePipe.transform(this.auditPlanForm.value.parentAudit.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
-    this.minDateTime = this.datePipe.transform(this.auditPlanForm.value.parentAudit.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
   }
 
   onAuditTypeChange() { }

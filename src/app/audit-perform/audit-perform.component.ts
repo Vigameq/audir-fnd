@@ -195,7 +195,7 @@ export class AuditPerformComponent {
     this.auditList = this.CompleteAuditList;
   }
 
-  updatePlanWithNewAssignee(auditPerformItem:any,sub_audit: any, index: number) {
+  updatePlanWithNewAssignee(auditPerformItem: any, sub_audit: any, index: number) {
     const updatedAuditPlan: any = {
       'audit_id': sub_audit.audit_id,
       'start_date': sub_audit.start_date,
@@ -307,6 +307,10 @@ export class AuditPerformComponent {
       };
     }
     this.selectedAuditeesOptions[subAuditIndex] = this.selectedAuditees[subAuditIndex].length > 0 ? this.selectedAuditees[subAuditIndex].join(', ') : 'Select Auditee..';
+  }
+
+  isTemplatePresent() {
+    this.audirService.showWarning('Functional templates are not assigned for this Audit.');
   }
 
   @HostListener('document:click', ['$event'])
