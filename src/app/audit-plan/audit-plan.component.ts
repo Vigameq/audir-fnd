@@ -64,6 +64,7 @@ export class AuditPlanComponent {
   auditees: any[] = [];
   auditors: any[] = [];
   isImportVisible: boolean = true;
+  isDateMatched: boolean = false;
   // showAllPlans: boolean = false;
   auditPlans: any = [];
   selectedDate: any = new Date();
@@ -90,6 +91,8 @@ export class AuditPlanComponent {
   minDateTime: any;
   maxDateTime: any;
   parentLeadAuditor: any[] = [];
+  completeAuditees: any[] = [];
+  completeAuditors: any[] = [];
 
   constructor(private datePipe: DatePipe, private formBuilder: FormBuilder, private audirService: AudirService, private notificationsService: NotificationsService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
     this.setMaxMinDateTime();
@@ -120,6 +123,13 @@ export class AuditPlanComponent {
       if (value) {
         this.isParentAudit = true;
         this.auditPlanForm.get('leadAuditorValue')?.setValue('');
+        this.auditors = this.completeAuditors;
+        this.auditees = this.completeAuditees;
+      }
+      else {
+        this.isParentAudit = false;
+        this.resetAuditorsAuditees();
+        this.auditors = this.completeAuditors;
       }
     });
     this.getPlanItems();
@@ -170,6 +180,8 @@ export class AuditPlanComponent {
         this.functionTemplates = items.templates.map((template: any) => ({ ...template }));
         this.auditees = items.users.auditees;
         this.auditors = items.users.auditors;
+        this.completeAuditees = items.users.auditees;
+        this.completeAuditors = items.users.auditors;
       }
     }, (error: any) => {
       console.error('Error for getting plans:', error);
@@ -255,7 +267,7 @@ export class AuditPlanComponent {
         start_date: this.auditPlanForm.value?.startDateTime,
         end_date: this.auditPlanForm.value?.endDateTime,
         lead_auditor: this.auditPlanForm?.value?.leadAuditorValue,
-        auditors: this.selectedAuditorsEmail.length == 0 && this.auditPlanForm.value?.parentAudit.title ? this.parentLeadAuditor[0]?.lead_auditor : this.selectedAuditorsEmail,
+        auditors: this.selectedAuditorsEmail.length === 0 && this.auditPlanForm.value?.parentAudit.title ? this.parentLeadAuditor[0]?.lead_auditor : this.selectedAuditorsEmail,
         auditees: this.selectedAuditeesEmail,
         city: this.auditPlanForm.value?.cityName,
         country: this.auditPlanForm.value?.countryName,
@@ -421,6 +433,7 @@ export class AuditPlanComponent {
   }
 
   auditorToggleDropdown(event: any) {
+    this.resetDropDownsArrows();
     this.isTemplateOptionsOpen = false;
     this.isAuditeesOptionsOpen = false;
     this.isFunctionTemplateDropdownOpen = false;
@@ -433,6 +446,7 @@ export class AuditPlanComponent {
   }
 
   auditeesToggleDropdown(event: any) {
+    this.resetDropDownsArrows();
     this.isTemplateOptionsOpen = false;
     this.isAuditorOptionsOpen = false;
     this.isFunctionTemplateDropdownOpen = false;
@@ -578,6 +592,7 @@ export class AuditPlanComponent {
     if (this.auditPlanForm.get('endDateTime')?.enabled && (this.auditPlanForm.get('endDateTime')?.value < this.startDate)) {
       this.auditPlanForm.get('endDateTime')?.setValue(this.startDate);
     }
+    this.onEndDateChange();
     this.auditPlanForm.get('endDateTime')?.enable();
   }
 
@@ -593,7 +608,80 @@ export class AuditPlanComponent {
     this.maxDateTime = this.datePipe.transform(this.auditPlanForm.value.parentAudit.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
   }
 
+  resetAuditorsAuditees() {
+    this.auditPlanForm.get('leadAuditorValue')?.setValue('');
+    this.selectedAuditor = [];
+    this.selectedAuditees = [];
+    this.selectedAuditorsEmail = [];
+    this.selectedAuditeesEmail = [];
+    this.selectedAuditorOptions = 'Select auditors..';
+    this.selectedAuditeesOptions = 'Select auditees..';
+    this.auditors = this.setCheckedOption(this.auditors);
+    this.auditees = this.setCheckedOption(this.auditees);
+  }
+
+  async onEndDateChange() {
+    this.isDateMatched = false;
+    this.resetAuditorsAuditees();
+    if (this.auditPlanForm.value?.parentAudit.title) {
+      this.selectedDate = new Date(this.auditPlanForm.value?.startDateTime);
+      await this.getAllChildAuditPlan();
+      this.filterDropdown(this.auditors, this.auditPlans, 'auditors');
+      this.filterDropdown(this.auditees, this.auditPlans, 'auditees');
+    }
+  }
+
+  filterDropdown(dropdownList: any, auditPlanlanList: any, key: any, size = 10000) {
+    const filterEmails = new Set();
+    for (const audit of auditPlanlanList) {
+      const arr = audit[key];
+
+      if (Array.isArray(arr) &&
+        (new Date(audit.start_date).getTime() === this.customISOToDate(this.auditPlanForm.value?.startDateTime).getTime()
+          && new Date(audit.end_date).getTime() === this.customISOToDate(this.auditPlanForm.value?.endDateTime).getTime())) {
+        this.isDateMatched = true;
+        for (const obj of arr) {
+          if (obj.email !== undefined) {
+            filterEmails.add(obj.email);
+          }
+        }
+      }
+    }
+    const filteredDropdown = [];
+    for (let i = 0; i < dropdownList.length; i += size) {
+      const chunk = dropdownList.slice(i, i + size);
+      const filteredChunk = chunk.filter((dropdownValue: any) => !filterEmails.has(dropdownValue.email));
+      filteredDropdown.push(...filteredChunk);
+    }
+    if (this.isDateMatched) {
+      if (key === 'auditors') {
+        this.auditors = filteredDropdown;
+      }
+      else if (key === 'auditees') {
+        this.auditees = filteredDropdown;
+      }
+    }
+    else {
+      if (key === 'auditors') {
+        this.auditors = this.completeAuditors;
+      }
+      else if (key === 'auditees') {
+        this.auditees = this.completeAuditees;
+      }
+    }
+  }
+
+  customISOToDate(customISOString: string): Date {
+    return new Date(customISOString + 'Z');
+  }
+
   onAuditTypeChange() { }
+
+  resetDropDownsArrows() {
+    this.isLeadAuditorDropdownOpen = false;
+    this.isCityDropdownOpen = false;
+    this.isCountryDropdownOpen = false;
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
