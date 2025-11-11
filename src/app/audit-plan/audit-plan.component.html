@@ -115,7 +115,7 @@
                         <label for="end-date-time" class="form-label">End Date & Time<span
                                 class="asterisk">*</span></label>
                         <input type="datetime-local" id="end-date-time" class="form-control" [min]="startDate"
-                            onkeydown="return false;" [max]="maxDateTime" formControlName="endDateTime"
+                            onkeydown="return false;" [max]="maxDateTime" formControlName="endDateTime" (change)="onEndDateChange()"
                             name="endDateTime" required />
                     </div>
                 </div>
