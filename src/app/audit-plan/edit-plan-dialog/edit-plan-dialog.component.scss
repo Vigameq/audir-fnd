@@ -19,7 +19,7 @@
                 font-weight: 500;
                 color: #4E4E4E;
                 line-height: 100%;
-                padding: 30px 20px 0px;
+                padding: 20px 20px 0px;
 
                 span {
                     padding: 10px 15px 0 0;
@@ -70,12 +70,14 @@
                         .functions,
                         .start-date-time,
                         .city,
-                        .country {
+                        .country,
+                        .audit-scope {
 
                             input,
-                            select {
+                            select,
+                            textarea {
                                 min-width: 262px;
-                                min-height: 46px;
+                                height: 46px;
                                 border-radius: 6px;
                                 border: none;
                                 outline: none;
@@ -85,11 +87,10 @@
                                 &:focus {
                                     box-shadow: none;
                                 }
-                            }
 
-                            input:hover,
-                            select:hover {
-                                border: 1px solid #FDE714;
+                                &:hover {
+                                    border: 1px solid #FDE714;
+                                }
                             }
 
                             input::placeholder {
