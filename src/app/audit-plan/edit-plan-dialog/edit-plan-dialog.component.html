@@ -20,7 +20,7 @@
                                 </div> -->
                                 <div class="start-date-time">
                                     <label for="start-date-time" class="form-label">Start Date & Time</label>
-                                    <input type="datetime-local" id="start-date-time" class="form-control"
+                                    <input type="datetime-local" id="start-date-time" class="form-control" (change)="onStartDateChange($event)"
                                         onkeydown="return false;" formControlName="startDateTimeValue"
                                         name="startDateTime" required [min]="minDateTime" [max]="maxDateTime" />
                                 </div>
@@ -48,6 +48,11 @@
                                             [isOpen]="isAuditeesOptionsOpen"></app-dropdown-arrow-icons>
                                     </div>
                                 </div>
+                                <div class="audit-scope">
+                                    <label for="scope-details" class="form-label">Audit Scope</label>
+                                    <textarea id="audit-scope" class="audit-scope-textarea"
+                                        formControlName="auditScopeValue" name="audit_scope" required></textarea>
+                                </div>
                                 <div class="city">
                                     <label for="city-name" class="form-label">City</label>
                                     <select id="city-name" class="dropdown-select" formControlName="cityNameValue"
@@ -59,34 +64,11 @@
                                 </div>
                             </div>
                             <div class="right-section">
-                                <!-- <div class="function-template">
-                                    <label for="function-templates" class="form-label">Functions Template</label>
-                                    <div class="dropbtn" [matTooltip]="selectedFunctionTemplateOptions"
-                                        (click)="functionTemplateToggleDropdown($event)">
-                                        <span
-                                            [ngStyle]="{'max-width.px': maxWidth}">{{selectedFunctionTemplateOptions}}</span>
-                                    </div>
-                                    <div *ngIf="isFunctionTemplateDropdownOpen" class="dropdown-content"
-                                        #functionTemplateDropdown>
-                                        <label *ngFor="let functionTemplate of functionTemplates; let i = index"
-                                            (click)="onCheckboxClick($event)">
-                                            <input type="checkbox" [value]="functionTemplate.name"
-                                                class="checkbox-input"
-                                                (change)="onFunctionTemplateSelectionChange($event,i)"
-                                                [checked]="functionTemplates[i].checked" />
-                                            <span class="template-value">{{ functionTemplate.name }}</span>
-                                        </label>
-                                    </div>
-                                    <div class="dropdown-arrow">
-                                        <app-dropdown-arrow-icons
-                                            [isOpen]="isFunctionTemplateDropdownOpen"></app-dropdown-arrow-icons>
-                                    </div>
-                                </div> -->
                                 <div class="end-date-time">
                                     <label for="end-date-time" class="form-label">End Date & Time</label>
                                     <input type="datetime-local" id="end-date-time" class="form-control"
-                                        onkeydown="return false;" placeholder="End Date"
-                                        formControlName="endDateTimeValue" name="endDateTime" [min]="minDateTime"
+                                        onkeydown="return false;" placeholder="End Date" (change)="onEndDateChange()"
+                                        formControlName="endDateTimeValue" name="endDateTime" [min]="startDate"
                                         [max]="maxDateTime" required />
                                 </div>
                                 <!-- <div class="sub-audit-type">
@@ -111,6 +93,29 @@
                                     <div class="dropdown-arrow">
                                         <app-dropdown-arrow-icons
                                             [isOpen]="isAuditorOptionsOpen"></app-dropdown-arrow-icons>
+                                    </div>
+                                </div>
+                                <div class="function-template">
+                                    <label for="function-templates" class="form-label">Functions Template</label>
+                                    <div class="dropbtn" [matTooltip]="selectedFunctionTemplateOptions"
+                                        (click)="functionTemplateToggleDropdown($event)">
+                                        <span
+                                            [ngStyle]="{'max-width.px': maxWidth}">{{selectedFunctionTemplateOptions}}</span>
+                                    </div>
+                                    <div *ngIf="isFunctionTemplateDropdownOpen" class="dropdown-content"
+                                        #functionTemplateDropdown>
+                                        <label *ngFor="let functionTemplate of functionTemplates; let i = index"
+                                            (click)="onCheckboxClick($event)">
+                                            <input type="checkbox" [value]="functionTemplate.name"
+                                                class="checkbox-input"
+                                                (change)="onFunctionTemplateSelectionChange($event,i)"
+                                                [checked]="functionTemplates[i].checked" />
+                                            <span class="template-value">{{ functionTemplate.name }}</span>
+                                        </label>
+                                    </div>
+                                    <div class="dropdown-arrow">
+                                        <app-dropdown-arrow-icons
+                                            [isOpen]="isFunctionTemplateDropdownOpen"></app-dropdown-arrow-icons>
                                     </div>
                                 </div>
                                 <div class="country">

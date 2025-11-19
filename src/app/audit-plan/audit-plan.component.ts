@@ -96,11 +96,11 @@ export class AuditPlanComponent {
 
   constructor(private datePipe: DatePipe, private formBuilder: FormBuilder, private audirService: AudirService, private notificationsService: NotificationsService, private dialog: MatDialog, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
     this.setMaxMinDateTime();
+    this.userEmail = this.getEmail();
   }
 
   async ngOnInit(): Promise<void> {
     this.isImportVisible = true;
-    this.userEmail = this.getEmail();
     // this.showAllPlans = (this.auditPlans.length <= 4) ? true : false;
     this.auditPlanForm = this.formBuilder.group(
       {
@@ -363,13 +363,13 @@ export class AuditPlanComponent {
       disableClose: true,
       width: '654px',
       height: '658px',
-      data: {
+      data: JSON.parse(JSON.stringify({
         'planDetails': planDetails,
         'auditees': this.auditees,
         'auditors': this.auditors,
         'functionTemplates': this.functionTemplates,
         'parent_audits': this.parent_audits
-      }
+      }))
     });
 
     dialogRef.afterClosed().subscribe(async (result: any) => {
@@ -586,13 +586,13 @@ export class AuditPlanComponent {
     }
   }
 
-  onStartDateChange(date: any) {
+  async onStartDateChange(date: any) {
     const input: any = date.target as HTMLInputElement;
     this.startDate = input.value;
     if (this.auditPlanForm.get('endDateTime')?.enabled && (this.auditPlanForm.get('endDateTime')?.value < this.startDate)) {
       this.auditPlanForm.get('endDateTime')?.setValue(this.startDate);
     }
-    this.onEndDateChange();
+    await this.onEndDateChange();
     this.auditPlanForm.get('endDateTime')?.enable();
   }
 
@@ -631,9 +631,9 @@ export class AuditPlanComponent {
     }
   }
 
-  filterDropdown(dropdownList: any, auditPlanlanList: any, key: any, size = 10000) {
+  filterDropdown(dropdownList: any, auditPlanList: any, key: any, size = 10000) {
     const filterEmails = new Set();
-    for (const audit of auditPlanlanList) {
+    for (const audit of auditPlanList) {
       const arr = audit[key];
 
       if (Array.isArray(arr) &&
