@@ -14,6 +14,7 @@ import { AudirService } from 'src/services/audir-services.service';
 export class EditPlanDialogComponent {
   @ViewChild('auditorsDropdown', { static: false }) auditorsDropdown!: ElementRef;
   @ViewChild('auditeesDropdown', { static: false }) auditeesDropdown!: ElementRef;
+  @ViewChild('functionTemplateDropdown', { static: false }) functionTemplateDropdown!: ElementRef;
   planDetails: any = {};
   selectedFunctionTemplateOptions: string = 'Select function templates..';
   selectedAuditorOptions: string = 'Select Auditor..';
@@ -383,6 +384,7 @@ export class EditPlanDialogComponent {
   onClickOutside(event: MouseEvent) {
     const auditorsDropdownMenuElement = this.auditorsDropdown?.nativeElement;
     const auditeesDropdownMenuElement = this.auditeesDropdown?.nativeElement;
+    const functionTemplatesElement = this.functionTemplateDropdown?.nativeElement;
     if (this.isAuditorOptionsOpen) {
       if (auditorsDropdownMenuElement && !auditorsDropdownMenuElement.contains(event.target as Node)) {
         this.isAuditorOptionsOpen = false;
@@ -391,6 +393,11 @@ export class EditPlanDialogComponent {
     else if (this.isAuditeesOptionsOpen) {
       if (auditeesDropdownMenuElement && !auditeesDropdownMenuElement.contains(event.target as Node)) {
         this.isAuditeesOptionsOpen = false;
+      }
+    }
+    else if (this.isFunctionTemplateDropdownOpen) {
+      if (functionTemplatesElement && !functionTemplatesElement.contains(event.target as Node)) {
+        this.isFunctionTemplateDropdownOpen = false;
       }
     }
   }
