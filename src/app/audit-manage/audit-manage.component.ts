@@ -33,6 +33,7 @@ export class AuditManageComponent {
   selectedAuditees: any = [];
   selectedAuditeesEmail: any;
   isSvgDisabled = true;
+  functionTemplates: any[] = [];
 
   constructor(private audirService: AudirService, private datePipe: DatePipe, private dialog: MatDialog) {
     this.resetDateFilter();
@@ -226,6 +227,7 @@ export class AuditManageComponent {
         this.parent_audits = items.parent_audits;
         this.auditees = items.users.auditees;
         this.auditors = items.users.auditors;
+        this.functionTemplates = items.templates.map((template: any) => ({ ...template }));
       }
     }, (error: any) => {
       console.error('Error for getting plans:', error);
@@ -292,6 +294,7 @@ export class AuditManageComponent {
         'planDetails': planDetails,
         'auditees': this.auditees,
         'auditors': this.auditors,
+        'functionTemplates': this.functionTemplates,
         'parent_audits': this.parent_audits
       }
     });
