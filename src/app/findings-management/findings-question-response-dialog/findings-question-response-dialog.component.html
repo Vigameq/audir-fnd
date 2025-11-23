@@ -54,7 +54,7 @@
                             <div class="planned-completion-date">
                                 <div class="planned-completion-date-label"><span>Planned completion date</span><span
                                         class="asterisk">*</span></div>
-                                <input type="datetime-local" id="planned-completion-date-input"
+                                <input step="1" type="datetime-local" id="planned-completion-date-input"
                                     [(ngModel)]="correctionPlannedCompletionDateValue" onkeydown="return false;"
                                     class="planned-completion-date-input"
                                     (change)="onCorrectionPlannedCompletionDateChange()" name="plannedCompletionDate"
@@ -63,7 +63,7 @@
                             <div class="actual-completion-date">
                                 <div class="actual-completion-date-label"><span>Actual completion date</span><span
                                         class="asterisk">*</span></div>
-                                <input type="datetime-local" id="actual-completion-date-input" onkeydown="return false;"
+                                <input step="1" type="datetime-local" id="actual-completion-date-input" onkeydown="return false;"
                                     [(ngModel)]="correctionActualCompletionDateValue"
                                     class="actual-completion-date-input"
                                     (change)="onCorrectionActualCompletionDateChange()" name="actualCompletionDate"
@@ -122,7 +122,7 @@
                             <div class="planned-completion-date">
                                 <div class="planned-completion-date-label"><span>Planned completion date</span><span
                                         class="asterisk">*</span></div>
-                                <input type="datetime-local" id="planned-completion-date-input"
+                                <input step="1" type="datetime-local" id="planned-completion-date-input"
                                     [(ngModel)]="correctivePlannedDateValue" (change)="onCorrectivePlannedDateChange()"
                                     onkeydown="return false;" class="planned-completion-date-input"
                                     name="plannedCompletionDate" required [min]="minDateTime" />
@@ -130,7 +130,7 @@
                             <div class="actual-completion-date">
                                 <div class="actual-completion-date-label"><span>Actual completion date</span><span
                                         class="asterisk">*</span></div>
-                                <input type="datetime-local" id="planned-completion-date-input"
+                                <input step="1" type="datetime-local" id="planned-completion-date-input"
                                     onkeydown="return false;" [(ngModel)]="correctiveActualDateValue"
                                     (change)="onCorrectiveActualDateChange()" class="planned-completion-date-input"
                                     name="actualCompletionDate" required [min]="minDateTime" [max]="maxDateTime" />
