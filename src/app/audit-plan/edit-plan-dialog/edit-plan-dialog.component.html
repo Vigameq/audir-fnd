@@ -20,7 +20,7 @@
                                 </div> -->
                                 <div class="start-date-time">
                                     <label for="start-date-time" class="form-label">Start Date & Time</label>
-                                    <input type="datetime-local" id="start-date-time" class="form-control" (change)="onStartDateChange($event)"
+                                    <input step="1" type="datetime-local" id="start-date-time" class="form-control" (change)="onStartDateChange($event)"
                                         onkeydown="return false;" formControlName="startDateTimeValue"
                                         name="startDateTime" required [min]="minDateTime" [max]="maxDateTime" />
                                 </div>
@@ -66,7 +66,7 @@
                             <div class="right-section">
                                 <div class="end-date-time">
                                     <label for="end-date-time" class="form-label">End Date & Time</label>
-                                    <input type="datetime-local" id="end-date-time" class="form-control"
+                                    <input step="1" type="datetime-local" id="end-date-time" class="form-control"
                                         onkeydown="return false;" placeholder="End Date" (change)="onEndDateChange()"
                                         formControlName="endDateTimeValue" name="endDateTime" [min]="startDate"
                                         [max]="maxDateTime" required />
