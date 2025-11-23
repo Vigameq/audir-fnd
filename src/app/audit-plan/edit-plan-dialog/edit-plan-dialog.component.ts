@@ -149,7 +149,7 @@ export class EditPlanDialogComponent {
   async onEndDateChange() {
     this.isDateMatched = false;
     this.selectedDate = new Date(this.editPlanForm.value?.startDateTimeValue);
-    await this.getAllChildAuditPlan();
+    this.getAllChildAuditPlan();
     this.filterDropdown(this.auditors, this.auditPlans, 'auditors');
     this.filterDropdown(this.auditees, this.auditPlans, 'auditees');
   }

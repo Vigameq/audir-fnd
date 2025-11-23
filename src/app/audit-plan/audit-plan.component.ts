@@ -134,7 +134,7 @@ export class AuditPlanComponent {
     });
     this.getPlanItems();
     this.getAuditLists();
-    await this.getAllChildAuditPlan();
+    this.getAllChildAuditPlan();
   }
 
   getAuditLists() {
@@ -374,7 +374,7 @@ export class AuditPlanComponent {
 
     dialogRef.afterClosed().subscribe(async (result: any) => {
       if (result === 'success') {
-        await this.getAllChildAuditPlan();
+        this.getAllChildAuditPlan();
         this.router.navigate(['/auditPlan']);
         this.refreshNotifications();
         this.changeDetectorRef.detectChanges();
@@ -472,7 +472,7 @@ export class AuditPlanComponent {
   async onSelection(date: any) {
     this.isLoading = true;
     if (date) {
-      await this.getAllChildAuditPlan();
+      this.getAllChildAuditPlan();
     }
   }
 
@@ -625,7 +625,7 @@ export class AuditPlanComponent {
     this.resetAuditorsAuditees();
     if (this.auditPlanForm.value?.parentAudit.title) {
       this.selectedDate = new Date(this.auditPlanForm.value?.startDateTime);
-      await this.getAllChildAuditPlan();
+      this.getAllChildAuditPlan();
       this.filterDropdown(this.auditors, this.auditPlans, 'auditors');
       this.filterDropdown(this.auditees, this.auditPlans, 'auditees');
     }
