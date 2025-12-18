@@ -80,7 +80,13 @@ export class AuditPerformComponent {
           this.auditList[index].sub_audits.forEach((audit: any) => {
             responses.forEach((res: any) => {
               if (audit.audit_id === res.audit_id) {
-                audit["completion_percent"] = Number.isInteger(res.completion_percent) ? res.completion_percent : parseFloat(res.completion_percent).toFixed(2);
+                const rawPercent = Number(res.completion_percent);
+                const clampedPercent = Number.isFinite(rawPercent)
+                  ? Math.min(100, Math.max(0, rawPercent))
+                  : 0;
+                audit["completion_percent"] = Number.isInteger(clampedPercent)
+                  ? clampedPercent
+                  : parseFloat(clampedPercent.toFixed(2));
               }
             })
           })

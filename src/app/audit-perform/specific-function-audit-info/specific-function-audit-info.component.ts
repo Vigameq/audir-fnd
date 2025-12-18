@@ -80,7 +80,11 @@ export class SpecificFunctionAuditInfoComponent {
   getAuditPlanCompletionPercentage(auditId: any) {
     this.audirService.getAuditCompletionPercentage(auditId).subscribe((response: any) => {
       if (response) {
-        this.auditCompletionPercentage = parseFloat((response.completion_percent).toFixed(2));
+        const rawPercent = Number(response.completion_percent);
+        const clampedPercent = Number.isFinite(rawPercent)
+          ? Math.min(100, Math.max(0, rawPercent))
+          : 0;
+        this.auditCompletionPercentage = parseFloat(clampedPercent.toFixed(2));
       } else {
         console.error('Unable to get audit completion percentage');
       }
