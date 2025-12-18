@@ -21,6 +21,7 @@ export class CustomiseAuditQuestionDialogComponent {
   deleteText = 'Delete';
   fileSize = 1048 * 1048;
   isAuditFindingsPresent = false;
+  isAuditeeResponded = false;
   isAuditeeResponseChanged = false;
   isAuditNoteChanged = false;
   isAuditFindingsChanged = false;
@@ -88,8 +89,9 @@ export class CustomiseAuditQuestionDialogComponent {
 
   setQuestionData() {
     this.auditQuestionData.audit_id = this.auditInfo.audit_id;
-    this.auditQuestionData.template = this.auditInfo.function_template[0];
-    this.auditQuestionData.template_type = 'function_template';
+    this.auditQuestionData.template = this.data.template || this.auditInfo.function_template?.[0] || this.auditInfo.template?.[0];
+    this.auditQuestionData.template_type = this.data.templateType
+      || (this.auditInfo.function_template?.[0] ? 'function_template' : 'template');
     this.auditQuestionData.email = localStorage.getItem('user')?.toString() || '';
   }
 
@@ -115,6 +117,7 @@ export class CustomiseAuditQuestionDialogComponent {
   bindResponses() {
     this.auditNoteValue = this.questionData.auditor_notes[0] ? this.questionData.auditor_notes[0].auditor_notes : '';
     this.auditeeResponseValue = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].auditee_response : '';
+    this.isAuditeeResponded = this.hasAuditeeResponse(this.auditeeResponseValue);
     this.linkInput = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].link : '';
     this.auditeeResponseEvidenceFileName = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].attach_evidence : 'No file choosen..';
     this.auditFindingsValue[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].audit_finding : '';
@@ -127,6 +130,10 @@ export class CustomiseAuditQuestionDialogComponent {
     this.onFindingsOptionChange(0);
     this.onClauseInputChange(0);
     this.bindExistingEvidence();
+  }
+
+  hasAuditeeResponse(value: string) {
+    return value != null && value.trim() !== '';
   }
 
   bindExistingEvidence() {
@@ -347,6 +354,7 @@ export class CustomiseAuditQuestionDialogComponent {
     saveAuditeeResponsePayload.append('attach_evidence', this.auditQuestionData.auditeeInfo.attach_evidence);
     this.audirService.saveAuditeeResponse(saveAuditeeResponsePayload as any).subscribe((response: any) => {
       if (response) {
+        this.isAuditeeResponded = this.hasAuditeeResponse(this.auditQuestionData.auditeeInfo.auditee_response as string);
         console.log(response.msg);
       }
     }, (error: any) => {
