@@ -196,6 +196,7 @@
             background-color: #F9F8F8;
             padding: 20px;
             justify-content: space-between;
+            position: relative;
 
             .question-number-and-text {
                 display: flex;
@@ -215,6 +216,19 @@
                     color: #515151;
                     line-height: 100%;
                 }
+            }
+
+            .responded-badge {
+                position: absolute;
+                top: 12px;
+                right: 16px;
+                font-size: 11px;
+                font-weight: 600;
+                letter-spacing: 0.2px;
+                padding: 4px 8px;
+                border-radius: 12px;
+                background-color: #2E7D32;
+                color: #FFFFFF;
             }
 
             .status {

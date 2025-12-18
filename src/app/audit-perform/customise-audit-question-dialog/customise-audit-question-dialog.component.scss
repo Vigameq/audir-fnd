@@ -44,10 +44,23 @@
                 line-height: 100%;
 
                 .question-number {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
                     line-height: 100%;
                     font-size: 20px;
                     font-weight: 700;
                     color: #4E4E4E;
+
+                    .response-status {
+                        font-size: 12px;
+                        font-weight: 600;
+                        letter-spacing: 0.2px;
+                        padding: 4px 8px;
+                        border-radius: 12px;
+                        background-color: #2E7D32;
+                        color: #FFFFFF;
+                    }
                 }
 
                 .question-text {
