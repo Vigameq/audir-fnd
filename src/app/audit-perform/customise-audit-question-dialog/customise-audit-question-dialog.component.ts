@@ -107,7 +107,7 @@ export class CustomiseAuditQuestionDialogComponent {
     this.audirService.getQuestionData(payload).subscribe((response: any) => {
       if (response) {
         this.questionData = response;
-        this.isQuestionSubmitted = this.isSubmittedFlag(this.questionData?.is_submitted);
+        this.isQuestionSubmitted = this.isSubmittedFlag(this.questionData?.is_submitted) || this.getAuditeeSubmittedFlag();
         this.bindResponses();
       }
     }, (error: any) => {
@@ -120,6 +120,9 @@ export class CustomiseAuditQuestionDialogComponent {
     this.auditNoteValue = this.questionData.auditor_notes[0] ? this.questionData.auditor_notes[0].auditor_notes : '';
     this.auditeeResponseValue = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].auditee_response : '';
     this.isAuditeeResponded = this.getVisibleAuditeeResponded(this.auditeeResponseValue);
+    if (!this.isAuditor && !this.auditeeResponseValue) {
+      this.loadAuditeeDraft();
+    }
     this.isAuditeeResponded = this.hasAuditeeResponse(this.auditeeResponseValue);
     this.linkInput = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].link : '';
     this.auditeeResponseEvidenceFileName = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].attach_evidence : 'No file choosen..';
@@ -156,6 +159,59 @@ export class CustomiseAuditQuestionDialogComponent {
       return false;
     }
     return true;
+  }
+
+  getDraftKey() {
+    const questionKey = encodeURIComponent(this.data.questionText || '');
+    return `auditeeDraft:${this.auditQuestionData.audit_id}:${this.auditQuestionData.template_type}:${this.auditQuestionData.template}:${questionKey}`;
+  }
+
+  getSubmittedKey() {
+    const questionKey = encodeURIComponent(this.data.questionText || '');
+    return `auditeeSubmitted:${this.auditQuestionData.audit_id}:${this.auditQuestionData.template_type}:${this.auditQuestionData.template}:${questionKey}`;
+  }
+
+  loadAuditeeDraft() {
+    const draftRaw = localStorage.getItem(this.getDraftKey());
+    if (!draftRaw) {
+      return false;
+    }
+    try {
+      const draft = JSON.parse(draftRaw);
+      this.auditeeResponseValue = draft.auditee_response || '';
+      this.linkInput = draft.link || '';
+      this.isAuditeeResponded = this.getVisibleAuditeeResponded(this.auditeeResponseValue);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  saveAuditeeDraft() {
+    const draft = {
+      auditee_response: this.auditeeResponseValue || '',
+      link: this.linkInput || ''
+    };
+    localStorage.setItem(this.getDraftKey(), JSON.stringify(draft));
+  }
+
+  clearAuditeeDraft() {
+    localStorage.removeItem(this.getDraftKey());
+  }
+
+  setAuditeeSubmittedFlag() {
+    localStorage.setItem(this.getSubmittedKey(), 'true');
+  }
+
+  getAuditeeSubmittedFlag() {
+    return localStorage.getItem(this.getSubmittedKey()) === 'true';
+  }
+
+  hasAuditeeDraftContent() {
+    const hasText = (this.auditeeResponseValue || '').trim() !== '';
+    const hasLink = (this.linkInput || '').trim() !== '';
+    const hasEvidence = !!this.evidenceFile && this.auditeeResponseEvidenceFileName !== 'No file choosen..';
+    return hasText || hasLink || hasEvidence;
   }
 
   bindExistingEvidence() {
@@ -297,13 +353,10 @@ export class CustomiseAuditQuestionDialogComponent {
       if (this.checkIfAuditFindingPresent(this.auditFindingsValue, this.findingCategorySelectedOption, this.clauseInput)) {
         this.saveAuditFindings();
       }
-    }
-    if (this.isAuditeeResponseChanged) {
-      this.saveAuditeeResponse();
-    }
-    if (this.noErrors) {
-      this.audirService.showSuccess('Response saved successfully');
-      this.dialogRef.close('saved');
+      if (this.noErrors) {
+        this.audirService.showSuccess('Response saved successfully');
+        this.dialogRef.close('saved');
+      }
     }
     this.isSaved = false;
   }
@@ -383,6 +436,11 @@ export class CustomiseAuditQuestionDialogComponent {
     this.audirService.saveAuditeeResponse(saveAuditeeResponsePayload as any).subscribe((response: any) => {
       if (response) {
         this.isAuditeeResponded = this.getVisibleAuditeeResponded(this.auditQuestionData.auditeeInfo.auditee_response as string);
+        this.isQuestionSubmitted = true;
+        this.setAuditeeSubmittedFlag();
+        this.clearAuditeeDraft();
+        this.audirService.showSuccess('Response submitted successfully');
+        this.dialogRef.close('saved');
         console.log(response.msg);
       }
     }, (error: any) => {
@@ -414,6 +472,28 @@ export class CustomiseAuditQuestionDialogComponent {
     console.log('Evidence file uploaded successfully.');
   }
 
+
+  onSaveDraft() {
+    if (this.isQuestionSubmitted) {
+      return;
+    }
+    this.saveAuditeeDraft();
+    this.isAuditeeResponded = this.getVisibleAuditeeResponded(this.auditeeResponseValue);
+    this.audirService.showSuccess('Draft saved');
+    this.dialogRef.close('saved');
+  }
+
+  onSubmitResponse() {
+    if (this.isQuestionSubmitted) {
+      return;
+    }
+    const confirmed = window.confirm('Submit your response? You will not be able to edit after submitting.');
+    if (!confirmed) {
+      return;
+    }
+    this.isAuditeeResponseChanged = true;
+    this.saveAuditeeResponse();
+  }
   checkFindingsLengthInRange() {
     return this.totalFindings.length >= 10
   }

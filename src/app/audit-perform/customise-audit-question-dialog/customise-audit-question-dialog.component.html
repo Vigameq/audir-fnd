@@ -11,7 +11,8 @@
     <mat-dialog-content class="content-section">
         <div class="content">
             <div class="question-number-and-text">
-                <div class="question-number"><span>{{auditQuestionData.questionNumber}}</span><span class="response-status" *ngIf="isAuditeeResponded">Responded</span></div>
+                <div class="question-number"><span>{{auditQuestionData.questionNumber}}</span><span class="response-status saved" *ngIf="isAuditeeResponded && !isQuestionSubmitted">Saved</span>
+                <span class="response-status submitted" *ngIf="isQuestionSubmitted">Submitted</span></div>
                 <div class="question-text"><span>{{auditQuestionData.question}}</span></div>
             </div>
             <div class="audit-section">
@@ -31,7 +32,7 @@
                     <div class="auditee-response-fields-section">
                         <div class="auditee-response-textarea"><textarea id="auditee-response-textarea" rows="4"
                                 name="auditeeResponse" [(ngModel)]="auditeeResponseValue" placeholder="Enter Note..."
-                                (input)="onAuditeeResponseChange()"></textarea></div>
+                                (input)="onAuditeeResponseChange()" [readonly]="!isAuditor && isQuestionSubmitted"></textarea></div>
                         <div class="upload-evidence-and-link-section">
                             <div class="upload-evidence">
                                 <div class="upload-evidence-label"><span>Attach Evidence</span></div>
@@ -40,7 +41,7 @@
                                         Upload
                                         <input type="file" id="fileUpload"
                                             accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
-                                            (change)="uploadEvidence($event)" hidden>
+                                            (change)="uploadEvidence($event)" [disabled]="!isAuditor && isQuestionSubmitted" hidden>
                                     </label>
                                     <p [matTooltip]="auditeeResponseEvidenceFileName">
                                         {{auditeeResponseEvidenceFileName}}</p>
@@ -49,7 +50,7 @@
                             <div class="link">
                                 <div class="link-label"><span>Link</span></div>
                                 <div class="link-input"><input type="url" [(ngModel)]="linkInput"
-                                        (input)="onLinkInputChange()" class="link-input" />
+                                        (input)="onLinkInputChange()" class="link-input" [readonly]="!isAuditor && isQuestionSubmitted" />
                                 </div>
                             </div>
                         </div>
@@ -121,9 +122,14 @@
                 </svg><span>Add Audit Finding </span> <span>[ {{totalFindings.length}}/10 ]</span>
             </button>
         </div>
-        <div class="cancel-save-btns">
+        <div class="cancel-save-btns" *ngIf="isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
             <button class="save" [disabled]="isSaved || !checkResponseAvailability()" (click)="onSave()">Save</button>
+        </div>
+        <div class="cancel-save-btns" *ngIf="!isAuditor">
+            <button class="cancel" mat-dialog-close>Cancel</button>
+            <button class="save" [disabled]="isQuestionSubmitted || !hasAuditeeDraftContent()" (click)="onSaveDraft()">Save</button>
+            <button class="save" [disabled]="isQuestionSubmitted || !hasAuditeeDraftContent()" (click)="onSubmitResponse()">Submit</button>
         </div>
     </mat-dialog-actions>
 </div>
