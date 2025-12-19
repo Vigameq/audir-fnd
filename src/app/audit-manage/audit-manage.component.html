@@ -112,11 +112,11 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="progress-badge"
+                            <div class="progress-badge" *ngIf="!(sub_audit.audit_status === 'submitted' && !isAuditor)"
                                 [ngClass]="{'progress-badge-green': sub_audit.audit_status === 'created','progress-badge-yellow': sub_audit.audit_status === 'inprogress','progress-badge-orange': sub_audit.audit_status === 'submitted'}">
-                                <span>
-                                    {{sub_audit.audit_status | pascalCase}}</span>
+                                <span>{{sub_audit.audit_status | pascalCase}}</span>
                             </div>
+                            <span class="review-text" *ngIf="sub_audit.audit_status === 'submitted' && !isAuditor">Review in Progress</span>
                         </div>
                         <div *ngIf="sub_audit.audit_status==='created' && isAuditor" class="edit-icon">
                             <button class="edit-button" type="button" (click)="openEditPlanDialog(sub_audit)">Edit</button>
