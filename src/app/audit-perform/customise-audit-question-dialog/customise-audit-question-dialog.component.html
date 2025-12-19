@@ -18,7 +18,7 @@
             <div class="audit-section">
                 <div class="res-hist-btn"><button [disabled]="questionData?.history.length == 0"
                         (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
-                <div class="auditor-note" *ngIf="isAuditor || isQuestionSubmitted">
+                <div class="auditor-note" *ngIf="isAuditor">
                     <div class="auditor-note-label"><span>Auditor Note</span></div>
                     <div class="auditor-note-fields-section">
                         <div class="audit-note-textarea"><textarea id="audit-note-textarea" rows="4" name="auditNote"
