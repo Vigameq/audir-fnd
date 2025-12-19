@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 import { AudirService } from 'src/services/audir-services.service';
 
 @Component({
@@ -71,38 +71,101 @@ export class AuditPerformComponent {
       this.subAuditAuditees = Array.from({ length: this.auditList[index].sub_audits.length }, (_) => ({
         auditees: this.auditees
       }));
-      const auditIds = subAudits.map((item: { audit_id: any; }) => ({ audit_id: item.audit_id }));
-      const requests = auditIds.map((id: any) =>
-        this.audirService.getAuditCompletionPercentage(id)
-      );
-      forkJoin(requests).subscribe({
-        next: (responses: any) => {
-          this.auditList[index].sub_audits.forEach((audit: any) => {
-            responses.forEach((res: any) => {
-              if (audit.audit_id === res.audit_id) {
-                const rawPercent = Number(res.completion_percent);
-                const clampedPercent = Number.isFinite(rawPercent)
-                  ? Math.min(100, Math.max(0, rawPercent))
-                  : 0;
-                audit["completion_percent"] = Number.isInteger(clampedPercent)
-                  ? clampedPercent
-                  : parseFloat(clampedPercent.toFixed(2));
-              }
-            })
-          })
-        },
-        error: (err) => {
-          console.error('Error fetching audit data', err);
-        }
-      });
       this.auditList[index].sub_audits = this.auditList[index].sub_audits.map((obj: any) => {
         obj.lineHeight = 0;
         obj.parentAuditID = this.auditList[index].audit_id;
         return obj;
       });
+      this.auditList[index].sub_audits.forEach((audit: any) => {
+        this.computeSubAuditCompletionPercent(audit);
+      });
       this.updateLineHeights(index);
       this.setAuditeeValues(index);
     }
+  }
+
+  buildQuestionList(questionTemplates: any, templateTypeByKey: Record<string, string>) {
+    const templates = new Set();
+    const questions: { text: string; template: string; templateType: string }[] = [];
+    for (const key of Object.keys(questionTemplates || {})) {
+      const normalizedKey = key.replace(/[\s_]/g, '').toLowerCase();
+      if (!templates.has(normalizedKey)) {
+        templates.add(normalizedKey);
+        const templateType = templateTypeByKey[key] || 'function_template';
+        const questionList = Array.isArray(questionTemplates[key]) ? questionTemplates[key] : [];
+        questionList.forEach((question: any) => {
+          questions.push({
+            text: question,
+            template: key,
+            templateType: templateType
+          });
+        });
+      }
+    }
+    return questions;
+  }
+
+  computeSubAuditCompletionPercent(subAudit: any) {
+    const questionTemplates: any = {};
+    const templateTypeByKey: Record<string, string> = {};
+    const addTemplates = (templates: any, templateType: string) => {
+      if (!templates) {
+        return;
+      }
+      Object.keys(templates).forEach((key) => {
+        questionTemplates[key] = templates[key];
+        templateTypeByKey[key] = templateType;
+      });
+    };
+
+    const parentPayload = { audit_id: subAudit.parentAuditID };
+    const childPayload = { audit_id: subAudit.audit_id };
+    this.audirService.getAuditQuestions(parentPayload).subscribe((parentQuestions: any) => {
+      if (parentQuestions) {
+        addTemplates(parentQuestions.questions?.function_template, 'function_template');
+        addTemplates(parentQuestions.questions?.template, 'template');
+      }
+      this.audirService.getAuditQuestions(childPayload).subscribe((childQuestions: any) => {
+        if (childQuestions) {
+          addTemplates(childQuestions.questions?.function_template, 'function_template');
+        }
+
+        const questions = this.buildQuestionList(questionTemplates, templateTypeByKey);
+        if (!questions.length) {
+          subAudit.completion_percent = 0;
+          return;
+        }
+
+        const email = localStorage.getItem('user')?.toString() || '';
+        const requests = questions.map((question) => {
+          const payload = {
+            audit_id: subAudit.audit_id,
+            template: question.template,
+            template_type: question.templateType,
+            question: question.text,
+            email: email
+          };
+          return this.audirService.getQuestionData(payload).pipe(
+            catchError(() => of(null))
+          );
+        });
+
+        forkJoin(requests).subscribe((responses: any[]) => {
+          const answeredCount = responses.filter((response) => {
+            const answer = response?.auditee_response?.[0]?.auditee_response || '';
+            return answer != null && answer.trim() !== '';
+          }).length;
+          const percent = (answeredCount / questions.length) * 100;
+          subAudit.completion_percent = parseFloat(percent.toFixed(2));
+        }, (error: any) => {
+          console.error('Error fetching audit question data:', error);
+        });
+      }, (error: any) => {
+        console.error('Error for getting child questions:', error);
+      });
+    }, (error: any) => {
+      console.error('Error for getting parent questions:', error);
+    });
   }
 
   setAuditeeValues(auditIndex: any) {
