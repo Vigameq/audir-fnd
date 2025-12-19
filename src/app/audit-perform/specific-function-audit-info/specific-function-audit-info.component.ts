@@ -116,9 +116,8 @@ export class SpecificFunctionAuditInfoComponent {
 
     forkJoin(requests).subscribe((responses: any[]) => {
       responses.forEach((response, index) => {
-        const auditeeResponse = response?.auditee_response?.[0]?.auditee_response || '';
         const submitted = this.isSubmittedFlag(response?.is_submitted);
-        const answered = this.hasAuditeeResponse(auditeeResponse);
+        const answered = this.hasResponseForRole(response);
         this.auditQuestions[index].submitted = submitted;
         this.auditQuestions[index].answered = answered;
         this.auditQuestions[index].responded = answered;
@@ -142,9 +141,8 @@ export class SpecificFunctionAuditInfoComponent {
       email: localStorage.getItem('user')?.toString() || ''
     };
     this.audirService.getQuestionData(payload).subscribe((response: any) => {
-      const auditeeResponse = response?.auditee_response?.[0]?.auditee_response || '';
       const submitted = this.isSubmittedFlag(response?.is_submitted);
-      const answered = this.hasAuditeeResponse(auditeeResponse);
+      const answered = this.hasResponseForRole(response);
       question.submitted = submitted;
       question.answered = answered;
       question.responded = answered;
@@ -154,8 +152,11 @@ export class SpecificFunctionAuditInfoComponent {
     });
   }
 
-  hasAuditeeResponse(value: string) {
-    return value != null && value.trim() !== '';
+  hasResponseForRole(response: any) {
+    const value = this.isAuditor
+      ? response?.auditor_notes?.[0]?.auditor_notes
+      : response?.auditee_response?.[0]?.auditee_response;
+    return value != null && value.toString().trim() !== '';
   }
 
   allQuestionsAnswered() {

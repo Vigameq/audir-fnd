@@ -30,8 +30,10 @@ export class AuditPerformComponent {
   selectedAuditees: any = [];
   selectedAuditeesEmail: any;
   isSvgDisabled = true;
+  isAuditor = false;
 
   constructor(private audirService: AudirService, private datePipe: DatePipe) {
+    this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
     this.resetDateFilter();
   }
 
@@ -152,8 +154,10 @@ export class AuditPerformComponent {
 
         forkJoin(requests).subscribe((responses: any[]) => {
           const answeredCount = responses.filter((response) => {
-            const answer = response?.auditee_response?.[0]?.auditee_response || '';
-            return answer != null && answer.trim() !== '';
+            const value = this.isAuditor
+              ? response?.auditor_notes?.[0]?.auditor_notes
+              : response?.auditee_response?.[0]?.auditee_response;
+            return value != null && value.toString().trim() !== '';
           }).length;
           const percent = (answeredCount / questions.length) * 100;
           subAudit.completion_percent = parseFloat(percent.toFixed(2));
