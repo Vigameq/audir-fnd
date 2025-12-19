@@ -61,6 +61,17 @@
                         background-color: #2E7D32;
                         color: #FFFFFF;
                     }
+
+
+                    &.saved {
+                        background-color: #FDE714;
+                        color: #1D2431;
+                    }
+
+                    &.submitted {
+                        background-color: #2E7D32;
+                        color: #FFFFFF;
+                    }
                 }
 
                 .question-text {

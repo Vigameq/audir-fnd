@@ -86,7 +86,8 @@
                     <span>{{question.text}}</span>
                 </div>
             </div>
-            <span class="responded-badge" *ngIf="question.responded">Responded</span>
+            <span class="saved-badge" *ngIf="question.responded && !question.submitted">Saved</span>
+            <span class="submitted-badge" *ngIf="question.submitted">Submitted</span>
             <!-- <div class="status" (click)="customizeQuestion(i)"><span>{{question.status}}</span></div> -->
         </div>
     </div>

@@ -116,8 +116,15 @@ export class SpecificFunctionAuditInfoComponent {
 
     forkJoin(requests).subscribe((responses: any[]) => {
       responses.forEach((response, index) => {
-        const submitted = this.isSubmittedFlag(response?.is_submitted);
-        const answered = this.hasResponseForRole(response);
+        let submitted = this.isSubmittedFlag(response?.is_submitted);
+        if (!submitted && !this.isAuditor) {
+          submitted = this.getAuditeeSubmittedFlag(this.auditQuestions[index]);
+        }
+        let answered = this.hasResponseForRole(response);
+        if (!answered && !this.isAuditor) {
+          const draft = this.getAuditeeDraft(this.auditQuestions[index]);
+          answered = (draft?.auditee_response || '').trim() !== '' || (draft?.link || '').trim() !== '';
+        }
         this.auditQuestions[index].submitted = submitted;
         this.auditQuestions[index].answered = answered;
         this.auditQuestions[index].responded = answered;
@@ -141,8 +148,15 @@ export class SpecificFunctionAuditInfoComponent {
       email: localStorage.getItem('user')?.toString() || ''
     };
     this.audirService.getQuestionData(payload).subscribe((response: any) => {
-      const submitted = this.isSubmittedFlag(response?.is_submitted);
-      const answered = this.hasResponseForRole(response);
+      let submitted = this.isSubmittedFlag(response?.is_submitted);
+      if (!submitted && !this.isAuditor) {
+        submitted = this.getAuditeeSubmittedFlag(question);
+      }
+      let answered = this.hasResponseForRole(response);
+      if (!answered && !this.isAuditor) {
+        const draft = this.getAuditeeDraft(question);
+        answered = (draft?.auditee_response || '').trim() !== '' || (draft?.link || '').trim() !== '';
+      }
       question.submitted = submitted;
       question.answered = answered;
       question.responded = answered;
@@ -174,6 +188,27 @@ export class SpecificFunctionAuditInfoComponent {
     const percent = (answeredCount / total) * 100;
     this.auditCompletionPercentage = parseFloat(percent.toFixed(2));
   }
+
+  getAuditeeDraft(question: { text: string; template: string; templateType: string }) {
+    const questionKey = encodeURIComponent(question.text || '');
+    const key = `auditeeDraft:${this.auditId.audit_id}:${question.templateType}:${question.template}:${questionKey}`;
+    const draftRaw = localStorage.getItem(key);
+    if (!draftRaw) {
+      return null;
+    }
+    try {
+      return JSON.parse(draftRaw);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  getAuditeeSubmittedFlag(question: { text: string; template: string; templateType: string }) {
+    const questionKey = encodeURIComponent(question.text || '');
+    const key = `auditeeSubmitted:${this.auditId.audit_id}:${question.templateType}:${question.template}:${questionKey}`;
+    return localStorage.getItem(key) === 'true';
+  }
+
 
 
   isSubmittedFlag(value: any) {
