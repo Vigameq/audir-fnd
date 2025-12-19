@@ -351,14 +351,25 @@
                 }
 
                 .edit-icon {
-                    position: relative;
+                    display: flex;
+                    align-items: center;
+                }
 
-                    #vector-icon {
-                        position: absolute;
-                        top: 10px;
-                        left: 10px;
-                        cursor: pointer;
-                    }
+                .edit-button {
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    border: 1px solid #1D2431;
+                    background-color: #FFFFFF;
+                    color: #1D2431;
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                }
+
+                .edit-button:hover {
+                    background-color: #FDE714;
+                    border-color: #FDE714;
+                    color: #1D2431;
                 }
             }
 

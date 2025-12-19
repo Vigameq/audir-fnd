@@ -34,8 +34,10 @@ export class AuditManageComponent {
   selectedAuditeesEmail: any;
   isSvgDisabled = true;
   functionTemplates: any[] = [];
+  isAuditor = false;
 
   constructor(private audirService: AudirService, private datePipe: DatePipe, private dialog: MatDialog) {
+    this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
     this.resetDateFilter();
   }
 

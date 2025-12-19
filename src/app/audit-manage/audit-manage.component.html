@@ -118,9 +118,8 @@
                                     {{sub_audit.audit_status | pascalCase}}</span>
                             </div>
                         </div>
-                        <div *ngIf="sub_audit.audit_status==='created'" class="edit-icon" (click)="openEditPlanDialog(sub_audit)">
-                            <img src="../assets/images/Ellipse.png" alt="Ellipse" id="ellipse-icon" />
-                            <img src="../assets/images/Vector.png" alt="Vector" id="vector-icon" />
+                        <div *ngIf="sub_audit.audit_status==='created' && isAuditor" class="edit-icon">
+                            <button class="edit-button" type="button" (click)="openEditPlanDialog(sub_audit)">Edit</button>
                         </div>
                     </div>
                 </div>
