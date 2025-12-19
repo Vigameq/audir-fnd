@@ -15,6 +15,16 @@ export class AuditFunctionalQuestionProgressDialogComponent {
   constructor(private cdr: ChangeDetectorRef, public dialogRef: MatDialogRef<AuditFunctionalQuestionProgressDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private audirService: AudirService) { }
 
+  canShowHistoryDetails(elementStatus: any) {
+    if (this.data?.isQuestionSubmitted) {
+      return true;
+    }
+    if (this.data?.isAuditor) {
+      return elementStatus.type !== 'auditee_response';
+    }
+    return elementStatus.type !== 'audit_findings' && elementStatus.type !== 'auditor_notes';
+  }
+
   ngOnInit(): void {
     this.auditResponseHistory = this.data.auditResponseHistory;
     this.auditResponseHistory.forEach((auditStatusElement,i) => {

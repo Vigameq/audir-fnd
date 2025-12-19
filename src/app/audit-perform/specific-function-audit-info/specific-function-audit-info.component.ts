@@ -13,7 +13,8 @@ import { catchError, forkJoin, of } from 'rxjs';
 })
 export class SpecificFunctionAuditInfoComponent {
 
-  auditQuestions: { text: string; template: string; templateType: string; responded: boolean }[] = [];
+  auditQuestions: { text: string; template: string; templateType: string; responded: boolean; answered: boolean; submitted: boolean }[] = [];
+  isAuditor = false;
   auditCompletionPercentage!: any;
   auditInfo: any;
   auditId: any;
@@ -24,13 +25,13 @@ export class SpecificFunctionAuditInfoComponent {
     private audirService: AudirService,
     private router: Router,
     private location: Location) {
+    this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
     this.route.paramMap.subscribe(params => {
       this.auditId = { "audit_id": params.get('id') };
       this.route.queryParams.subscribe(params => {
         this.parentAuditID = { "audit_id": params['parentAuditID'] };
       });
       this.getPlanAudit(this.auditId);
-      this.getAuditPlanCompletionPercentage(this.auditId);
       this.getQuestions(this.auditId, this.parentAuditID);
     });
   }
@@ -85,7 +86,9 @@ export class SpecificFunctionAuditInfoComponent {
             text: question,
             template: key,
             templateType: templateType,
-            responded: false
+            responded: false,
+            answered: false,
+            submitted: false
           });
         });
       }
@@ -114,8 +117,13 @@ export class SpecificFunctionAuditInfoComponent {
     forkJoin(requests).subscribe((responses: any[]) => {
       responses.forEach((response, index) => {
         const auditeeResponse = response?.auditee_response?.[0]?.auditee_response || '';
-        this.auditQuestions[index].responded = this.hasAuditeeResponse(auditeeResponse);
+        const submitted = this.isSubmittedFlag(response?.is_submitted);
+        const answered = this.hasAuditeeResponse(auditeeResponse);
+        this.auditQuestions[index].submitted = submitted;
+        this.auditQuestions[index].answered = answered;
+        this.auditQuestions[index].responded = answered;
       });
+      this.updateCompletionPercentage();
     }, (error: any) => {
       console.error('Error getting question responses:', error);
     });
@@ -135,7 +143,12 @@ export class SpecificFunctionAuditInfoComponent {
     };
     this.audirService.getQuestionData(payload).subscribe((response: any) => {
       const auditeeResponse = response?.auditee_response?.[0]?.auditee_response || '';
-      question.responded = this.hasAuditeeResponse(auditeeResponse);
+      const submitted = this.isSubmittedFlag(response?.is_submitted);
+      const answered = this.hasAuditeeResponse(auditeeResponse);
+      question.submitted = submitted;
+      question.answered = answered;
+      question.responded = answered;
+      this.updateCompletionPercentage();
     }, (error: any) => {
       console.error('Error getting question data:', error);
     });
@@ -143,6 +156,31 @@ export class SpecificFunctionAuditInfoComponent {
 
   hasAuditeeResponse(value: string) {
     return value != null && value.trim() !== '';
+  }
+
+  allQuestionsAnswered() {
+    return this.auditQuestions.length > 0
+      && this.auditQuestions.every((question) => question.answered);
+  }
+
+  updateCompletionPercentage() {
+    const total = this.auditQuestions.length;
+    if (!total) {
+      this.auditCompletionPercentage = 0;
+      return;
+    }
+    const answeredCount = this.auditQuestions.filter((question) => question.answered).length;
+    const percent = (answeredCount / total) * 100;
+    this.auditCompletionPercentage = parseFloat(percent.toFixed(2));
+  }
+
+
+  isSubmittedFlag(value: any) {
+    if (typeof value === 'string') {
+      const normalized = value.toLowerCase();
+      return normalized === 'true' || normalized === '1' || normalized === 'submitted';
+    }
+    return value === true || value === 1;
   }
 
 
@@ -189,8 +227,7 @@ export class SpecificFunctionAuditInfoComponent {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.getAuditPlanCompletionPercentage(this.auditId);
-        this.refreshQuestionStatus(index);
+          this.refreshQuestionStatus(index);
       }
       console.log(`Dialog result: ${result}`);
     });
