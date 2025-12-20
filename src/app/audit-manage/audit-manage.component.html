@@ -32,6 +32,7 @@
         </div>
     </div>
     <div class="audit-info-label"><span>Audit Information</span></div>
+    <div class="audit-info-hint" *ngIf="isAuditor"><span>Only audits that haven't started yet can be edited.</span></div>
     <div class="audit-perform-container-section" *ngIf="auditList?.length > 0">
         <div *ngFor="let auditPerformItem of auditList; let i = index">
             <div class="audit-perform-container">

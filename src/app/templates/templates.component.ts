@@ -12,7 +12,7 @@ import { ImportTemplateDialogComponent } from './Import-template-dialog/import-t
 export class TemplatesComponent {
   templates: any[] = [];
   editedQuestionText: string | undefined = '';
-  allQuestions: any[] = []
+  allQuestions: { text: string; draft: string; isEditing: boolean }[] = [];
   selectedFunctionId: any[] = [];
   standardSelectedOption: any = { name: 'Select Template' };
   templateName: string = '';
@@ -39,7 +39,12 @@ export class TemplatesComponent {
   getTemplateQuestions(template_id: number) {
     this.audirService.getTemplate(template_id).subscribe((templateDetails: any) => {
       if (templateDetails) {
-        this.allQuestions = templateDetails.questions;
+        const questions = Array.isArray(templateDetails.questions) ? templateDetails.questions : [];
+        this.allQuestions = questions.map((question: string) => ({
+          text: question,
+          draft: question,
+          isEditing: false
+        }));
       }
     }, (error: any) => {
       console.error('Error for getting template details:', error);
@@ -94,6 +99,39 @@ export class TemplatesComponent {
       this.getTemplateQuestions(this.selectedFunctionId[0]);
       localStorage.setItem("selectedTemplate", JSON.stringify({}));
     }
+  }
+
+  startEdit(index: number) {
+    const question = this.allQuestions[index];
+    if (!question) {
+      return;
+    }
+    question.isEditing = true;
+    question.draft = question.text;
+  }
+
+  saveEdit(index: number) {
+    const question = this.allQuestions[index];
+    if (!question) {
+      return;
+    }
+    const updated = (question.draft || '').trim();
+    if (!updated) {
+      this.audirService.showError('Question text cannot be empty');
+      return;
+    }
+    question.text = updated;
+    question.isEditing = false;
+    this.audirService.showSuccess('Question updated');
+  }
+
+  cancelEdit(index: number) {
+    const question = this.allQuestions[index];
+    if (!question) {
+      return;
+    }
+    question.draft = question.text;
+    question.isEditing = false;
   }
 
   getTemplates() {
