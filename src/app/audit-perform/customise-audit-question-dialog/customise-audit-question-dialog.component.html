@@ -133,7 +133,7 @@
         <div class="cancel-save-btns" *ngIf="!isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
             <button class="save" [disabled]="shouldDisableAuditeeEdits() || !hasAuditeeDraftContent()" (click)="onSaveDraft()">Save</button>
-            <button class="save" [disabled]="shouldDisableAuditeeEdits() || !hasAuditeeDraftContent()" (click)="onSubmitResponse()">Submit</button>
+            <button class="save" [disabled]="shouldDisableAuditeeEdits() || !isReviewInProgress || !hasAuditeeDraftContent()" (click)="onSubmitResponse()">Submit</button>
         </div>
     </mat-dialog-actions>
 </div>

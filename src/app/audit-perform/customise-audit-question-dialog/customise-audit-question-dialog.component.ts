@@ -118,9 +118,7 @@ export class CustomiseAuditQuestionDialogComponent {
         this.isQuestionSubmitted = this.isSubmittedFlag(this.questionData?.is_submitted)
           || serverAuditeeSubmitted
           || localAuditeeSubmitted;
-        if (this.isAuditor) {
-          this.isAuditorSubmitted = this.getAuditorSubmittedFlag();
-        }
+        this.isAuditorSubmitted = this.getAuditorSubmittedFlag();
         const historyReview = this.calculateReviewInProgress();
         this.isReviewInProgress = historyReview || this.getReviewInProgressFlag();
         this.bindResponses();
@@ -653,12 +651,6 @@ export class CustomiseAuditQuestionDialogComponent {
 
 
   onSaveDraft() {
-    console.log('auditee save clicked', {
-      isQuestionSubmitted: this.isQuestionSubmitted,
-      isReviewInProgress: this.isReviewInProgress,
-      shouldDisable: this.shouldDisableAuditeeEdits(),
-      hasContent: this.hasAuditeeDraftContent()
-    });
     if (this.shouldDisableAuditeeEdits()) {
       this.audirService.showError('This response is locked for editing');
       return;
@@ -670,12 +662,6 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   onSubmitResponse() {
-    console.log('auditee submit clicked', {
-      isQuestionSubmitted: this.isQuestionSubmitted,
-      isReviewInProgress: this.isReviewInProgress,
-      shouldDisable: this.shouldDisableAuditeeEdits(),
-      hasContent: this.hasAuditeeDraftContent()
-    });
     if (this.shouldDisableAuditeeEdits()) {
       this.audirService.showError('This response is locked for editing');
       return;
