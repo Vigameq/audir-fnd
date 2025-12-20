@@ -161,7 +161,35 @@
                     font-weight: 400;
                     color: #575757;
                     line-height: 100%;
-                    width: 100%;
+                    flex: 1;
+                    min-width: 0;
+                }
+
+                .edit-actions {
+                    display: flex;
+                    gap: 10px;
+                    margin-left: 16px;
+
+                    button {
+                        border: 1px solid #1D2431;
+                        background: transparent;
+                        color: #1D2431;
+                        border-radius: 6px;
+                        padding: 6px 12px;
+                        font-size: 14px;
+                        cursor: pointer;
+                    }
+
+                    .save-btn {
+                        background: #1D2431;
+                        color: #ffffff;
+                        border-color: #1D2431;
+                    }
+
+                    .cancel-btn {
+                        border-color: #A0A0A0;
+                        color: #575757;
+                    }
                 }
 
                 .question-text-input {

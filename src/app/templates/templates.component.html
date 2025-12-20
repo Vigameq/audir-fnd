@@ -46,10 +46,14 @@
             <div class="question-number"><span>Question {{i+1}}</span></div>
             <div class="questions-text-with-delete-icon">
                 <div class="question-text">
-                    <span>{{question}}</span>
-                    <!-- <span *ngIf="question.showEditIcon">{{question}}</span>
-                    <input *ngIf="!question.showEditIcon" id="question-text-input" class="question-text-input"
-                        name="questionText" [(ngModel)]="editedQuestionText" placeholder="Enter Question..." /> -->
+                    <span *ngIf="!question.isEditing">{{question.text}}</span>
+                    <input *ngIf="question.isEditing" id="question-text-input" class="question-text-input"
+                        name="questionText" [(ngModel)]="question.draft" placeholder="Enter Question..." />
+                </div>
+                <div class="edit-actions">
+                    <button type="button" class="edit-btn" *ngIf="!question.isEditing" (click)="startEdit(i)">Edit</button>
+                    <button type="button" class="save-btn" *ngIf="question.isEditing" (click)="saveEdit(i)">Save</button>
+                    <button type="button" class="cancel-btn" *ngIf="question.isEditing" (click)="cancelEdit(i)">Cancel</button>
                 </div>
                 <!-- <div class="edit-and-delete-icon">
                     <div class="edit-question-icon">
