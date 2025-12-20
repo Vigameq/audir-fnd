@@ -190,7 +190,7 @@
     <mat-dialog-actions class="action-btns">
         <div class="cancel-save-btns">
             <button class="cancel" mat-dialog-close>Cancel</button>
-            <button class="save" [disabled]="!noErrors || !checkResponseAvailability() || questionData?.audit_finding_status === 'inprogress' || questionData?.audit_finding_status === 'completed' || questionData?.audit_finding_status === 'rejected'" (click)="onSave()">Save</button>
+            <button class="save" [disabled]="!checkResponseAvailability() || questionData?.audit_finding_status === 'inprogress' || questionData?.audit_finding_status === 'completed' || questionData?.audit_finding_status === 'rejected'" (click)="onSave()">Save</button>
             <button class="save" [disabled]="questionData?.audit_finding_status === 'inprogress' || questionData?.audit_finding_status === 'completed' || questionData?.audit_finding_status === 'rejected'" (click)="onSubmitConfirmation()">Submit</button>
         </div>
     </mat-dialog-actions>

@@ -215,11 +215,135 @@ export class FindingsQuestionResponseDialogComponent {
       if (response) {
         this.questionData = response;
         this.fillExistingResponses();
+        this.applyDraftFromStorage();
       }
     }, (error: any) => {
       this.noErrors = false;
       console.error('Error getting question data:', error);
     });
+  }
+
+  getDraftKey() {
+    const questionKey = encodeURIComponent(this.data.questionText || '');
+    const findingId = this.data.audit_finding_id || this.questionData?.audit_finding_id || '';
+    return `findingsDraft:${this.auditQuestionData.audit_id}:${this.auditQuestionData.template_type}:${this.auditQuestionData.template}:${questionKey}:${findingId}`;
+  }
+
+  saveDraft() {
+    const draft = {
+      correctionsNoteValue: this.correctionsNoteValue || '',
+      correctionsLinkInput: this.correctionsLinkInput || '',
+      correctionPlannedCompletionDateValue: this.correctionPlannedCompletionDateValue || '',
+      correctionActualCompletionDateValue: this.correctionActualCompletionDateValue || '',
+      rootCauseNoteValue: this.rootCauseNoteValue || '',
+      rootCauseLinkInput: this.rootCauseLinkInput || '',
+      correctivePlanNoteValue: this.correctivePlanNoteValue || '',
+      ownerIDValue: this.ownerIDValue || '',
+      correctivePlannedDateValue: this.correctivePlannedDateValue || '',
+      correctiveActualDateValue: this.correctiveActualDateValue || '',
+      correctivePlanLinkInput: this.correctivePlanLinkInput || '',
+      actionStatusSelectedOption: this.actionStatusSelectedOption || ''
+    };
+    localStorage.setItem(this.getDraftKey(), JSON.stringify(draft));
+  }
+
+  loadDraft() {
+    const raw = localStorage.getItem(this.getDraftKey());
+    if (!raw) {
+      return null;
+    }
+    try {
+      return JSON.parse(raw);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  clearDraft() {
+    localStorage.removeItem(this.getDraftKey());
+  }
+
+  hasDraftContent() {
+    const values = [
+      this.correctionsNoteValue,
+      this.correctionsLinkInput,
+      this.correctionPlannedCompletionDateValue,
+      this.correctionActualCompletionDateValue,
+      this.rootCauseNoteValue,
+      this.rootCauseLinkInput,
+      this.correctivePlanNoteValue,
+      this.ownerIDValue,
+      this.correctivePlannedDateValue,
+      this.correctiveActualDateValue,
+      this.correctivePlanLinkInput,
+      this.actionStatusSelectedOption
+    ];
+    const hasValue = values.some((value) => String(value || '').trim() !== '');
+    return hasValue || !!this.correctionsEvidenceFile || !!this.rootCauseEvidenceFile || !!this.correctiveStatusEvidenceFile;
+  }
+
+  hasCorrectionsServerData() {
+    const corrections = this.questionData?.nc_correction?.[0] || {};
+    return ((corrections.notes || '').trim() !== ''
+      || (corrections.link || '').trim() !== ''
+      || (corrections.planned_completion_date || '') !== ''
+      || (corrections.actual_completion_date || '') !== ''
+      || (corrections.attach_evidence && corrections.attach_evidence !== 'None'));
+  }
+
+  hasRootCauseServerData() {
+    const rootCause = this.questionData?.nc_root_cause?.[0] || {};
+    return ((rootCause.notes || '').trim() !== ''
+      || (rootCause.link || '').trim() !== ''
+      || (rootCause.attach_evidence && rootCause.attach_evidence !== 'None'));
+  }
+
+  hasCorrectivePlanServerData() {
+    const plan = this.questionData?.nc_corrective_action_plan?.[0] || {};
+    return ((plan.notes || '').trim() !== ''
+      || (plan.link || '').trim() !== ''
+      || (plan.owner_name_id || '').trim() !== ''
+      || (plan.corrective_action_status || '').trim() !== ''
+      || (plan.planned_completion_date || '') !== ''
+      || (plan.actual_completion_date || '') !== ''
+      || (plan.attach_evidence && plan.attach_evidence !== 'None'));
+  }
+
+  applyDraftFromStorage() {
+    const draft = this.loadDraft();
+    if (!draft) {
+      return;
+    }
+    if (!this.hasCorrectionsServerData()) {
+      this.correctionsNoteValue = draft.correctionsNoteValue || '';
+      this.correctionsLinkInput = draft.correctionsLinkInput || '';
+      this.correctionPlannedCompletionDateValue = draft.correctionPlannedCompletionDateValue || '';
+      this.correctionActualCompletionDateValue = draft.correctionActualCompletionDateValue || '';
+      this.onCorrectionNoteChange();
+      this.onCorrectionsLinkInputChange();
+      this.onCorrectionPlannedCompletionDateChange();
+      this.onCorrectionActualCompletionDateChange();
+    }
+    if (!this.hasRootCauseServerData()) {
+      this.rootCauseNoteValue = draft.rootCauseNoteValue || '';
+      this.rootCauseLinkInput = draft.rootCauseLinkInput || '';
+      this.onRootCauseResponseChange();
+      this.onRootCauseLinkInputChange();
+    }
+    if (!this.hasCorrectivePlanServerData()) {
+      this.correctivePlanNoteValue = draft.correctivePlanNoteValue || '';
+      this.ownerIDValue = draft.ownerIDValue || '';
+      this.correctivePlannedDateValue = draft.correctivePlannedDateValue || '';
+      this.correctiveActualDateValue = draft.correctiveActualDateValue || '';
+      this.correctivePlanLinkInput = draft.correctivePlanLinkInput || '';
+      this.actionStatusSelectedOption = draft.actionStatusSelectedOption || '';
+      this.onCorrectivePlanNoteChange();
+      this.onCorrectivePlanOwnerIDChange();
+      this.onCorrectivePlannedDateChange();
+      this.onCorrectiveActualDateChange();
+      this.onCorrectivePlanLinkInputChange();
+      this.onCorrectivePlanActiveStatusOptionChange();
+    }
   }
 
   close(): void {
@@ -333,23 +457,12 @@ export class FindingsQuestionResponseDialogComponent {
   }
 
   onSave() {
-    this.noErrors = true;
-    if (this.checkCorrectionsResponse() && this.isCorrectionsChanged) {
-      this.saveCorrectionsResponse();
+    if (!this.hasDraftContent()) {
+      return;
     }
-    if (this.checkCorrectivePlanResponse() && this.isCorrectivePlanChanged) {
-      this.saveCorrectivePlanResponse();
-    }
-    if (this.checkRootCauseResponse() && this.isRootCauseChanged) {
-      this.saveRootCauseResponse();
-    }
-    if (this.noErrors) {
-      this.audirService.showSuccess('Response saved successfully');
-      this.dialogRef.close('saved');
-    }
-    else {
-      console.log('Responses not saved successfully, please save again')
-    }
+    this.saveDraft();
+    this.audirService.showSuccess('Draft saved');
+    this.dialogRef.close('saved');
   }
   onSubmitConfirmation(){
     const dialogRef = this.dialog.open(ApprovalRemarksDialogComponent, {
@@ -374,6 +487,7 @@ export class FindingsQuestionResponseDialogComponent {
     this.audirService.submitNCQuestion(submitResponse).subscribe((response: any) => {
       if (response) {
         console.log(response.msg);
+        this.clearDraft();
         this.audirService.showSuccess('Question submitted successfully');
       }
     }, (error: any) => {
@@ -522,9 +636,7 @@ export class FindingsQuestionResponseDialogComponent {
   }
 
   checkResponseAvailability() {
-    return ((this.checkCorrectionsResponse() && this.isCorrectionsChanged)
-      || (this.checkRootCauseResponse() && this.isRootCauseChanged)
-      || (this.checkCorrectivePlanResponse() && this.isCorrectivePlanChanged));
+    return this.hasDraftContent();
   }
 
   checkCorrectionsResponse() {
