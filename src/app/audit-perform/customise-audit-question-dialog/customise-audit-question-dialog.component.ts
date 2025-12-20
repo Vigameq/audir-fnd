@@ -118,7 +118,9 @@ export class CustomiseAuditQuestionDialogComponent {
         this.isQuestionSubmitted = this.isSubmittedFlag(this.questionData?.is_submitted)
           || serverAuditeeSubmitted
           || localAuditeeSubmitted;
-        this.isAuditorSubmitted = this.getAuditorSubmittedFlag();
+        if (this.isAuditor) {
+          this.isAuditorSubmitted = this.getAuditorSubmittedFlag();
+        }
         const historyReview = this.calculateReviewInProgress();
         this.isReviewInProgress = historyReview || this.getReviewInProgressFlag();
         this.bindResponses();
@@ -145,16 +147,38 @@ export class CustomiseAuditQuestionDialogComponent {
     this.auditFindingsValue[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].audit_finding : '';
     this.findingCategorySelectedOption[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].finding_category : '';
     this.clauseInput[0] = this.questionData.audit_findings[0] ? this.questionData.audit_findings[0].closure_reference : '';
-    if (this.isAuditor && !this.auditNoteValue) {
-      const hasServerFindings = Array.isArray(this.questionData.audit_findings)
-        && this.questionData.audit_findings.some((finding: any) => {
-          const findingText = (finding?.audit_finding || '').trim();
-          const category = (finding?.finding_category || '').trim();
-          const clause = (finding?.closure_reference || '').trim();
-          return findingText || category || clause;
-        });
-      if (!hasServerFindings) {
-        this.loadAuditorDraft();
+    const serverFindings = Array.isArray(this.questionData.audit_findings) ? this.questionData.audit_findings : [];
+    const hasServerFindings = serverFindings.some((finding: any) => {
+      const findingText = (finding?.audit_finding || '').trim();
+      const category = (finding?.finding_category || '').trim();
+      const clause = (finding?.closure_reference || '').trim();
+      return findingText || category || clause;
+    });
+    const serverNoteValue = this.auditNoteValue;
+    const hasServerNote = (serverNoteValue || '').trim() !== '';
+    if (this.isAuditor && (!hasServerFindings || !hasServerNote)) {
+      const draftRaw = localStorage.getItem(this.getAuditorDraftKey());
+      if (draftRaw) {
+        try {
+          const draft = JSON.parse(draftRaw);
+          if (!hasServerNote) {
+            this.auditNoteValue = draft.auditNoteValue || '';
+          }
+          if (!hasServerFindings) {
+            this.auditFindingsValue = draft.auditFindingsValue || [''];
+            this.findingCategorySelectedOption = draft.findingCategorySelectedOption || [''];
+            this.clauseInput = draft.clauseInput || [''];
+            this.findingsCount = draft.findingsCount || 1;
+            this.totalFindings = new Array(this.findingsCount);
+            this.auditQuestionData.auditFindingsInfo = this.auditFindingsValue.map((value: any, index: number) => ({
+              audit_finding: value,
+              finding_category: this.findingCategorySelectedOption[index] || '',
+              closure_reference: this.clauseInput[index] || ''
+            }));
+          }
+        } catch (error) {
+          // ignore invalid draft data
+        }
       }
     }
     this.onAuditNoteChange();

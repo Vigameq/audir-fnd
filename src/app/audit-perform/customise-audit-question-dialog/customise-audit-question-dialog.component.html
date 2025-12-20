@@ -57,7 +57,7 @@
                     </div>
                 </div>
             <div class="more-info" *ngIf="isAuditor">
-                <button type="button" (click)="onSubmitMoreInfo()">Submit Response</button>
+                <button type="button" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitMoreInfo()">Submit Response</button>
             </div>
                 <div *ngFor="let itemcount of totalFindings; let i = index">
                     <div [id]="'audit-findings-' + i" class="audit-findings" *ngIf="isAuditor">
@@ -128,12 +128,12 @@
         <div class="cancel-save-btns" *ngIf="isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
             <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSaveAuditorDraft()">Save</button>
-            <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitAuditorResponse()">Close</button>
+            <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitAuditorResponse()">Submit</button>
         </div>
         <div class="cancel-save-btns" *ngIf="!isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
             <button class="save" [disabled]="shouldDisableAuditeeEdits() || !hasAuditeeDraftContent()" (click)="onSaveDraft()">Save</button>
-            <button class="save" [disabled]="shouldDisableAuditeeEdits() || !isReviewInProgress || !hasAuditeeDraftContent()" (click)="onSubmitResponse()">Submit</button>
+            <button class="save" (click)="onSubmitResponse()">Submit</button>
         </div>
     </mat-dialog-actions>
 </div>
