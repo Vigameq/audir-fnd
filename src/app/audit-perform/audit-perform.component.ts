@@ -235,20 +235,20 @@ export class AuditPerformComponent {
     const subAudit: any = this.auditList[auditIndex].sub_audits;
     let newLineHeight: any;
     newLineHeight = statusContent.offsetHeight;
-    if (index <= subAudit.length) {
-      if (this.auditList[auditIndex].sub_audits[index]?.city === '' || this.auditList[auditIndex].sub_audits[index]?.functions === '') {
-        if (this.auditList[auditIndex].sub_audits[index]?.functions === '') {
+    if (index < subAudit.length && this.auditList[auditIndex].sub_audits[index]) {
+      const subAuditItem = this.auditList[auditIndex].sub_audits[index];
+      if (subAuditItem.city === '' || subAuditItem.functions === '') {
+        if (subAuditItem.functions === '') {
           newLineHeight = index === 0 ? newLineHeight - 26 : newLineHeight + 36;
         }
-        if (this.auditList[auditIndex].sub_audits[index]?.city === '') {
+        if (subAuditItem.city === '') {
           newLineHeight = index === 0 ? newLineHeight - 26 : newLineHeight + 16;
         }
-      }
-      else {
+      } else {
         newLineHeight = index === 0 ? newLineHeight - 64 : newLineHeight + 6;
       }
-      if (subAudit.lineHeight !== newLineHeight) {
-        this.auditList[auditIndex].sub_audits[index].lineHeight = newLineHeight;
+      if (subAuditItem.lineHeight !== newLineHeight) {
+        subAuditItem.lineHeight = newLineHeight;
       }
     }
   }
