@@ -23,7 +23,7 @@
                     <div class="auditee-response-fields-section">
                         <div class="auditee-response-textarea"><textarea id="auditee-response-textarea" rows="4"
                                 name="auditeeResponse" [(ngModel)]="auditeeResponseValue" placeholder="Enter Note..."
-                                (input)="onAuditeeResponseChange()" [readonly]="isAuditor || (!isAuditor && isQuestionSubmitted)"></textarea></div>
+                                (input)="onAuditeeResponseChange()" [readonly]="isAuditor || shouldDisableAuditeeEdits()"></textarea></div>
                         <div class="upload-evidence-and-link-section" *ngIf="!isAuditor">
                             <div class="upload-evidence">
                                 <div class="upload-evidence-label"><span>Attach Evidence</span></div>
@@ -32,7 +32,7 @@
                                         Upload
                                         <input type="file" id="fileUpload"
                                             accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
-                                            (change)="uploadEvidence($event)" [disabled]="isAuditor || (!isAuditor && isQuestionSubmitted)" hidden>
+                                            (change)="uploadEvidence($event)" [disabled]="isAuditor || shouldDisableAuditeeEdits()" hidden>
                                     </label>
                                     <p [matTooltip]="auditeeResponseEvidenceFileName">
                                         {{auditeeResponseEvidenceFileName}}</p>
@@ -41,7 +41,7 @@
                             <div class="link">
                                 <div class="link-label"><span>Link</span></div>
                                 <div class="link-input"><input type="url" [(ngModel)]="linkInput"
-                                        (input)="onLinkInputChange()" class="link-input" [readonly]="isAuditor || (!isAuditor && isQuestionSubmitted)" />
+                                        (input)="onLinkInputChange()" class="link-input" [readonly]="isAuditor || shouldDisableAuditeeEdits()" />
                                 </div>
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                         </div>
                     </div>
                 </div>
-            <div class="more-info" *ngIf="isAuditor && !isAuditorSubmitted">
+            <div class="more-info" *ngIf="isAuditor">
                 <button type="button" (click)="onSubmitMoreInfo()">Submit Response</button>
             </div>
                 <div *ngFor="let itemcount of totalFindings; let i = index">
@@ -109,7 +109,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="more" *ngIf="questionData.audit_findings.length > 1"><a (click)="openResponseHistory()">more findings</a>
+                    <div class="more" *ngIf="questionData?.audit_findings?.length > 1"><a (click)="openResponseHistory()">more findings</a>
                     </div>
                 </div>
             </div>
@@ -127,13 +127,13 @@
         </div>
         <div class="cancel-save-btns" *ngIf="isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
-            <button class="save" [disabled]="isAuditorSubmitted || !hasAuditorDraftContent()" (click)="onSaveAuditorDraft()">Save</button>
-            <button class="save" [disabled]="isAuditorSubmitted || !hasAuditorDraftContent()" (click)="onSubmitAuditorResponse()">Close</button>
+            <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSaveAuditorDraft()">Save</button>
+            <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitAuditorResponse()">Close</button>
         </div>
         <div class="cancel-save-btns" *ngIf="!isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
-            <button class="save" [disabled]="isQuestionSubmitted || !hasAuditeeDraftContent()" (click)="onSaveDraft()">Save</button>
-            <button class="save" [disabled]="isQuestionSubmitted || !hasAuditeeDraftContent()" (click)="onSubmitResponse()">Close</button>
+            <button class="save" [disabled]="shouldDisableAuditeeEdits() || !hasAuditeeDraftContent()" (click)="onSaveDraft()">Save</button>
+            <button class="save" [disabled]="shouldDisableAuditeeEdits() || !hasAuditeeDraftContent()" (click)="onSubmitResponse()">Submit</button>
         </div>
     </mat-dialog-actions>
 </div>

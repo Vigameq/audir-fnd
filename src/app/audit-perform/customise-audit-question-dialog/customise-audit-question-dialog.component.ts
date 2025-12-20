@@ -23,7 +23,7 @@ export class CustomiseAuditQuestionDialogComponent {
   fileSize = 1048 * 1048;
   isAuditFindingsPresent = false;
   isAuditorSubmitted = false;
-  isAuditorMoreInfoSubmitted = false;
+  isReviewInProgress = false;
   isQuestionSubmitted = false;
   isAuditeeResponded = false;
   isAuditeeResponseChanged = false;
@@ -110,11 +110,19 @@ export class CustomiseAuditQuestionDialogComponent {
     this.audirService.getQuestionData(payload).subscribe((response: any) => {
       if (response) {
         this.questionData = response;
-        this.isQuestionSubmitted = this.isSubmittedFlag(this.questionData?.is_submitted) || this.getAuditeeSubmittedFlag();
+        const auditeeResponse = this.questionData?.auditee_response?.[0] || {};
+        const serverAuditeeSubmitted = this.hasAuditeeResponse(auditeeResponse.auditee_response || '')
+          || (auditeeResponse.link || '').trim() !== ''
+          || (auditeeResponse.attach_evidence && auditeeResponse.attach_evidence !== 'None');
+        const localAuditeeSubmitted = this.isAuditor ? false : this.getAuditeeSubmittedFlag();
+        this.isQuestionSubmitted = this.isSubmittedFlag(this.questionData?.is_submitted)
+          || serverAuditeeSubmitted
+          || localAuditeeSubmitted;
         if (this.isAuditor) {
           this.isAuditorSubmitted = this.getAuditorSubmittedFlag();
-          this.isAuditorMoreInfoSubmitted = this.getAuditorMoreInfoSubmittedFlag();
         }
+        const historyReview = this.calculateReviewInProgress();
+        this.isReviewInProgress = historyReview || this.getReviewInProgressFlag();
         this.bindResponses();
       }
     }, (error: any) => {
@@ -286,21 +294,67 @@ export class CustomiseAuditQuestionDialogComponent {
     return localStorage.getItem(this.getAuditorSubmittedKey()) === 'true';
   }
 
-  getAuditorMoreInfoSubmittedKey() {
+  getReviewInProgressKey() {
     const questionKey = encodeURIComponent(this.data.questionText || '');
-    return `auditorMoreInfo:${this.auditQuestionData.audit_id}:${this.auditQuestionData.template_type}:${this.auditQuestionData.template}:${questionKey}`;
+    return `reviewInProgress:${this.auditQuestionData.audit_id}:${questionKey}`;
   }
 
-  setAuditorMoreInfoSubmittedFlag() {
-    localStorage.setItem(this.getAuditorMoreInfoSubmittedKey(), 'true');
+  setReviewInProgressFlag() {
+    localStorage.setItem(this.getReviewInProgressKey(), 'true');
   }
 
-  getAuditorMoreInfoSubmittedFlag() {
-    return localStorage.getItem(this.getAuditorMoreInfoSubmittedKey()) === 'true';
+  getReviewInProgressFlag() {
+    return localStorage.getItem(this.getReviewInProgressKey()) === 'true';
+  }
+
+  clearReviewInProgressFlag() {
+    localStorage.removeItem(this.getReviewInProgressKey());
   }
 
   hasAuditorNote() {
     return (this.auditNoteValue || '').trim() !== '';
+  }
+
+  isAuditClosed() {
+    return this.isAuditorSubmitted;
+  }
+
+  shouldDisableAuditeeEdits() {
+    return this.isAuditClosed() || (this.isQuestionSubmitted && !this.isReviewInProgress);
+  }
+
+  calculateReviewInProgress() {
+    const history = Array.isArray(this.questionData?.history) ? this.questionData.history : [];
+    if (history.length) {
+      const types = history.map((item: any) => item.type);
+      const lastAuditorIndex = types.lastIndexOf('auditor_notes');
+      const lastAuditeeIndex = types.lastIndexOf('auditee_response');
+      if (lastAuditorIndex !== -1 && lastAuditeeIndex !== -1) {
+        const latestAuditorNote = history[lastAuditorIndex];
+        const latestAuditeeResponse = history[lastAuditeeIndex];
+        const auditorTime = new Date(latestAuditorNote.updated_at || latestAuditorNote.updatedAt || latestAuditorNote.timestamp || 0).getTime();
+        const auditeeTime = new Date(latestAuditeeResponse.updated_at || latestAuditeeResponse.updatedAt || latestAuditeeResponse.timestamp || 0).getTime();
+        if (auditorTime && auditeeTime) {
+          return auditorTime > auditeeTime;
+        }
+        return lastAuditorIndex > lastAuditeeIndex;
+      }
+    }
+
+    const auditeeEntry = this.questionData?.auditee_response?.[0] || {};
+    const auditorEntry = this.questionData?.auditor_notes?.[0] || {};
+    const auditeeTime = new Date(auditeeEntry.updated_at || auditeeEntry.updatedAt || auditeeEntry.timestamp || 0).getTime();
+    const auditorTime = new Date(auditorEntry.updated_at || auditorEntry.updatedAt || auditorEntry.timestamp || 0).getTime();
+    if (auditorTime && auditeeTime) {
+      return auditorTime > auditeeTime;
+    }
+
+    // Fallback: if both exist but timestamps are missing, assume review in progress
+    const hasAuditor = (auditorEntry.auditor_notes || '').trim() !== '';
+    const hasAuditee = (auditeeEntry.auditee_response || '').trim() !== ''
+      || (auditeeEntry.link || '').trim() !== ''
+      || (auditeeEntry.attach_evidence && auditeeEntry.attach_evidence !== 'None');
+    return hasAuditor && hasAuditee;
   }
 
   hasAuditorDraftContent() {
@@ -559,7 +613,11 @@ export class CustomiseAuditQuestionDialogComponent {
         this.isAuditeeResponded = this.getVisibleAuditeeResponded(this.auditQuestionData.auditeeInfo.auditee_response as string);
         this.isQuestionSubmitted = true;
         this.setAuditeeSubmittedFlag();
+        this.clearReviewInProgressFlag();
+        this.isReviewInProgress = false;
         this.clearAuditeeDraft();
+        this.isReviewInProgress = true;
+        this.setReviewInProgressFlag();
         this.audirService.showSuccess('Response submitted successfully');
         this.dialogRef.close('saved');
         console.log(response.msg);
@@ -595,7 +653,14 @@ export class CustomiseAuditQuestionDialogComponent {
 
 
   onSaveDraft() {
-    if (this.isQuestionSubmitted) {
+    console.log('auditee save clicked', {
+      isQuestionSubmitted: this.isQuestionSubmitted,
+      isReviewInProgress: this.isReviewInProgress,
+      shouldDisable: this.shouldDisableAuditeeEdits(),
+      hasContent: this.hasAuditeeDraftContent()
+    });
+    if (this.shouldDisableAuditeeEdits()) {
+      this.audirService.showError('This response is locked for editing');
       return;
     }
     this.saveAuditeeDraft();
@@ -605,7 +670,14 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   onSubmitResponse() {
-    if (this.isQuestionSubmitted) {
+    console.log('auditee submit clicked', {
+      isQuestionSubmitted: this.isQuestionSubmitted,
+      isReviewInProgress: this.isReviewInProgress,
+      shouldDisable: this.shouldDisableAuditeeEdits(),
+      hasContent: this.hasAuditeeDraftContent()
+    });
+    if (this.shouldDisableAuditeeEdits()) {
+      this.audirService.showError('This response is locked for editing');
       return;
     }
     const confirmed = window.confirm('Submit your response? You will not be able to edit after submitting.');
@@ -674,6 +746,8 @@ export class CustomiseAuditQuestionDialogComponent {
     forkJoin(requests).subscribe({
       next: () => {
         this.clearAuditorDraft();
+        this.clearReviewInProgressFlag();
+        this.isReviewInProgress = false;
         this.audirService.showSuccess('Response submitted successfully');
         this.dialogRef.close('saved');
       },
@@ -688,9 +762,6 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   onSubmitMoreInfo() {
-    if (this.isAuditorSubmitted || this.isAuditorMoreInfoSubmitted) {
-      return;
-    }
     const confirmed = window.confirm('Requesting for more information from auditee will be submitted');
     if (!confirmed) {
       return;
@@ -717,8 +788,8 @@ export class CustomiseAuditQuestionDialogComponent {
           updated_at: new Date(),
           updated_by: { name: userDetails.name || 'Auditor' }
         });
-        this.isAuditorMoreInfoSubmitted = true;
-        this.setAuditorMoreInfoSubmittedFlag();
+        this.isReviewInProgress = true;
+        this.setReviewInProgressFlag();
         this.audirService.showSuccess('Response submitted successfully');
       }
     }, (error: any) => {
