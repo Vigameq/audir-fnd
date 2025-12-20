@@ -67,9 +67,9 @@
                         </div>
                     </div>
                     <div class="progress-badge"
-                        [ngClass]="{'progress-badge-green': auditPerformItem.audit_status === 'created','progress-badge-yellow': auditPerformItem.audit_status === 'inprogress','progress-badge-orange': auditPerformItem.audit_status === 'submitted'}">
+                        [ngClass]="{'progress-badge-green': getParentAuditStatus(auditPerformItem) === 'created','progress-badge-yellow': getParentAuditStatus(auditPerformItem) === 'inprogress','progress-badge-orange': getParentAuditStatus(auditPerformItem) === 'submitted'}">
                         <span>
-                            {{auditPerformItem.audit_status | pascalCase}}</span>
+                            {{getParentAuditStatus(auditPerformItem) | pascalCase}}</span>
                     </div>
                 </div>
                 <div class="audit-count" *ngIf="auditPerformItem.sub_audits.length>0"

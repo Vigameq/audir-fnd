@@ -327,6 +327,23 @@ export class AuditManageComponent {
   }
 
   @HostListener('document:click', ['$event'])
+  getParentAuditStatus(audit: any) {
+    const subAudits = Array.isArray(audit?.sub_audits) ? audit.sub_audits : [];
+    if (!subAudits.length) {
+      return audit?.audit_status || '';
+    }
+    if (subAudits.some((item: any) => item.audit_status === 'inprogress')) {
+      return 'inprogress';
+    }
+    if (subAudits.some((item: any) => item.audit_status === 'submitted')) {
+      return 'submitted';
+    }
+    if (subAudits.some((item: any) => item.audit_status === 'created')) {
+      return 'created';
+    }
+    return audit?.audit_status || '';
+  }
+
   onClickOutside(event: MouseEvent) {
     this.isAuditeesDropdownOpened = this.isAuditeesDropdownOpened?.map(() => false);
     this.isAuditeesOptionsOpen = this.isAuditeesOptionsOpen?.map(() => false);
