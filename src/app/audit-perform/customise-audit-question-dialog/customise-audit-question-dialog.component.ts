@@ -1,4 +1,5 @@
 import { Component, ElementRef, Inject, Renderer2, ViewChild } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AuditFunctionalQuestionProgressDialogComponent } from '../audit-functional-question-progress-dialog/audit-functional-question-progress-dialog.component';
 import { AudirService } from 'src/services/audir-services.service';
@@ -21,6 +22,7 @@ export class CustomiseAuditQuestionDialogComponent {
   deleteText = 'Delete';
   fileSize = 1048 * 1048;
   isAuditFindingsPresent = false;
+  isAuditorSubmitted = false;
   isQuestionSubmitted = false;
   isAuditeeResponded = false;
   isAuditeeResponseChanged = false;
@@ -108,6 +110,9 @@ export class CustomiseAuditQuestionDialogComponent {
       if (response) {
         this.questionData = response;
         this.isQuestionSubmitted = this.isSubmittedFlag(this.questionData?.is_submitted) || this.getAuditeeSubmittedFlag();
+        if (this.isAuditor) {
+          this.isAuditorSubmitted = this.getAuditorSubmittedFlag();
+        }
         this.bindResponses();
       }
     }, (error: any) => {
@@ -118,6 +123,9 @@ export class CustomiseAuditQuestionDialogComponent {
 
   bindResponses() {
     this.auditNoteValue = this.questionData.auditor_notes[0] ? this.questionData.auditor_notes[0].auditor_notes : '';
+    if (this.isAuditor && !this.auditNoteValue && (!this.questionData.audit_findings || this.questionData.audit_findings.length === 0)) {
+      this.loadAuditorDraft();
+    }
     this.auditeeResponseValue = this.questionData.auditee_response[0] ? this.questionData.auditee_response[0].auditee_response : '';
     this.isAuditeeResponded = this.getVisibleAuditeeResponded(this.auditeeResponseValue);
     if (!this.isAuditor && !this.auditeeResponseValue) {
@@ -205,6 +213,69 @@ export class CustomiseAuditQuestionDialogComponent {
 
   getAuditeeSubmittedFlag() {
     return localStorage.getItem(this.getSubmittedKey()) === 'true';
+  }
+
+  getAuditorDraftKey() {
+    const questionKey = encodeURIComponent(this.data.questionText || '');
+    return `auditorDraft:${this.auditQuestionData.audit_id}:${this.auditQuestionData.template_type}:${this.auditQuestionData.template}:${questionKey}`;
+  }
+
+  getAuditorSubmittedKey() {
+    const questionKey = encodeURIComponent(this.data.questionText || '');
+    return `auditorSubmitted:${this.auditQuestionData.audit_id}:${this.auditQuestionData.template_type}:${this.auditQuestionData.template}:${questionKey}`;
+  }
+
+  saveAuditorDraft() {
+    const draft = {
+      auditNoteValue: this.auditNoteValue || '',
+      auditFindingsValue: [...this.auditFindingsValue],
+      findingCategorySelectedOption: [...this.findingCategorySelectedOption],
+      clauseInput: [...this.clauseInput],
+      findingsCount: this.findingsCount
+    };
+    localStorage.setItem(this.getAuditorDraftKey(), JSON.stringify(draft));
+  }
+
+  loadAuditorDraft() {
+    const draftRaw = localStorage.getItem(this.getAuditorDraftKey());
+    if (!draftRaw) {
+      return false;
+    }
+    try {
+      const draft = JSON.parse(draftRaw);
+      this.auditNoteValue = draft.auditNoteValue || '';
+      this.auditFindingsValue = draft.auditFindingsValue || [''];
+      this.findingCategorySelectedOption = draft.findingCategorySelectedOption || [''];
+      this.clauseInput = draft.clauseInput || [''];
+      this.findingsCount = draft.findingsCount || 1;
+      this.totalFindings = new Array(this.findingsCount);
+      this.auditQuestionData.auditFindingsInfo = this.auditFindingsValue.map((value: any, index: number) => ({
+        audit_finding: value,
+        finding_category: this.findingCategorySelectedOption[index] || '',
+        closure_reference: this.clauseInput[index] || ''
+      }));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  clearAuditorDraft() {
+    localStorage.removeItem(this.getAuditorDraftKey());
+  }
+
+  setAuditorSubmittedFlag() {
+    localStorage.setItem(this.getAuditorSubmittedKey(), 'true');
+  }
+
+  getAuditorSubmittedFlag() {
+    return localStorage.getItem(this.getAuditorSubmittedKey()) === 'true';
+  }
+
+  hasAuditorDraftContent() {
+    const hasNote = (this.auditNoteValue || '').trim() !== '';
+    const hasFindings = this.checkIfAuditFindingPresent(this.auditFindingsValue, this.findingCategorySelectedOption, this.clauseInput);
+    return hasNote || hasFindings;
   }
 
   hasAuditeeDraftContent() {
@@ -494,6 +565,76 @@ export class CustomiseAuditQuestionDialogComponent {
     this.isAuditeeResponseChanged = true;
     this.saveAuditeeResponse();
   }
+  onSaveAuditorDraft() {
+    if (this.isAuditorSubmitted) {
+      return;
+    }
+    this.saveAuditorDraft();
+    this.audirService.showSuccess('Draft saved');
+    this.dialogRef.close('saved');
+  }
+
+  onSubmitAuditorResponse() {
+    if (this.isAuditorSubmitted) {
+      return;
+    }
+    const confirmed = window.confirm('Submit your response? You will not be able to edit after submitting.');
+    if (!confirmed) {
+      return;
+    }
+    const requests: any[] = [];
+    const email = this.auditQuestionData.email;
+
+    if ((this.auditNoteValue || '').trim() !== '') {
+      const saveAuditorNotesPayload: any = {
+        audit_id: this.auditQuestionData.audit_id,
+        template: this.auditQuestionData.template,
+        template_type: this.auditQuestionData.template_type,
+        question: this.auditQuestionData.question,
+        auditor_notes: this.auditNoteValue,
+        email: email
+      };
+      requests.push(this.audirService.saveAuditorNotes(saveAuditorNotesPayload));
+    }
+
+    if (this.checkIfAuditFindingPresent(this.auditFindingsValue, this.findingCategorySelectedOption, this.clauseInput)) {
+      for (let index = 0; index < this.findingsCount; index++) {
+        const saveAuditFinding: any = {
+          audit_id: this.auditQuestionData.audit_id,
+          template: this.auditQuestionData.template,
+          template_type: this.auditQuestionData.template_type,
+          question: this.auditQuestionData.question,
+          audit_finding: this.auditFindingsValue[index],
+          finding_category: this.findingCategorySelectedOption[index],
+          closure_reference: this.clauseInput[index],
+          email: email
+        };
+        requests.push(this.audirService.saveAuditFinding(saveAuditFinding));
+      }
+    }
+
+    if (!requests.length) {
+      return;
+    }
+
+    this.noErrors = true;
+    this.isSaved = true;
+    forkJoin(requests).subscribe({
+      next: () => {
+        this.isAuditorSubmitted = true;
+        this.setAuditorSubmittedFlag();
+        this.clearAuditorDraft();
+        this.audirService.showSuccess('Response submitted successfully');
+        this.dialogRef.close('saved');
+      },
+      error: (error: any) => {
+        this.noErrors = false;
+        this.isSaved = false;
+        console.error('Error submitting auditor response:', error);
+      }
+    });
+  }
+
   checkFindingsLengthInRange() {
     return this.totalFindings.length >= 10
   }

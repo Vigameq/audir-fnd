@@ -11,29 +11,20 @@
     <mat-dialog-content class="content-section">
         <div class="content">
             <div class="question-number-and-text">
-                <div class="question-number"><span>{{auditQuestionData.questionNumber}}</span><span class="response-status saved" *ngIf="isAuditeeResponded && !isQuestionSubmitted">Saved</span>
-                <span class="response-status submitted" *ngIf="isQuestionSubmitted">Submitted</span></div>
+                <div class="question-number"><span>{{auditQuestionData.questionNumber}}</span><span class="response-status saved" *ngIf="!isAuditor && isAuditeeResponded && !isQuestionSubmitted">Saved</span>
+                </div>
                 <div class="question-text"><span>{{auditQuestionData.question}}</span></div>
             </div>
             <div class="audit-section">
                 <div class="res-hist-btn"><button [disabled]="questionData?.history.length == 0"
                         (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
-                <div class="auditor-note" *ngIf="isAuditor">
-                    <div class="auditor-note-label"><span>Auditor Note</span></div>
-                    <div class="auditor-note-fields-section">
-                        <div class="audit-note-textarea"><textarea id="audit-note-textarea" rows="4" name="auditNote"
-                                [(ngModel)]="auditNoteValue" placeholder="Enter Note..."
-                                (input)="onAuditNoteChange()"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="auditee-response" *ngIf="!isAuditor || isQuestionSubmitted">
+                <div class="auditee-response">
                     <div class="auditee-response-label"><span>Auditee Response</span></div>
                     <div class="auditee-response-fields-section">
                         <div class="auditee-response-textarea"><textarea id="auditee-response-textarea" rows="4"
                                 name="auditeeResponse" [(ngModel)]="auditeeResponseValue" placeholder="Enter Note..."
-                                (input)="onAuditeeResponseChange()" [readonly]="!isAuditor && isQuestionSubmitted"></textarea></div>
-                        <div class="upload-evidence-and-link-section">
+                                (input)="onAuditeeResponseChange()" [readonly]="isAuditor || (!isAuditor && isQuestionSubmitted)"></textarea></div>
+                        <div class="upload-evidence-and-link-section" *ngIf="!isAuditor">
                             <div class="upload-evidence">
                                 <div class="upload-evidence-label"><span>Attach Evidence</span></div>
                                 <div class="upload-evidence-btn">
@@ -41,7 +32,7 @@
                                         Upload
                                         <input type="file" id="fileUpload"
                                             accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
-                                            (change)="uploadEvidence($event)" [disabled]="!isAuditor && isQuestionSubmitted" hidden>
+                                            (change)="uploadEvidence($event)" [disabled]="isAuditor || (!isAuditor && isQuestionSubmitted)" hidden>
                                     </label>
                                     <p [matTooltip]="auditeeResponseEvidenceFileName">
                                         {{auditeeResponseEvidenceFileName}}</p>
@@ -50,9 +41,18 @@
                             <div class="link">
                                 <div class="link-label"><span>Link</span></div>
                                 <div class="link-input"><input type="url" [(ngModel)]="linkInput"
-                                        (input)="onLinkInputChange()" class="link-input" [readonly]="!isAuditor && isQuestionSubmitted" />
+                                        (input)="onLinkInputChange()" class="link-input" [readonly]="isAuditor || (!isAuditor && isQuestionSubmitted)" />
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="auditor-note" *ngIf="isAuditor">
+                    <div class="auditor-note-label"><span>Auditor Note</span></div>
+                    <div class="auditor-note-fields-section">
+                        <div class="audit-note-textarea"><textarea id="audit-note-textarea" rows="4" name="auditNote"
+                                [(ngModel)]="auditNoteValue" placeholder="Enter Note..."
+                                (input)="onAuditNoteChange()" [readonly]="isAuditorSubmitted"></textarea>
                         </div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                             <div class="audit-findings-textarea">
                                 <textarea id="audit-findings-textarea" rows="4" name="auditFindings"
                                     [(ngModel)]="auditFindingsValue[i]" placeholder="Enter Note..."
-                                    (input)="onAuditFindingsChange(i)"></textarea>
+                                    (input)="onAuditFindingsChange(i)" [readonly]="isAuditorSubmitted"></textarea>
                             </div>
                             <div class="finding-category-and-clause-section">
                                 <div class="finding-category">
@@ -73,7 +73,7 @@
                                             (click)="onFindingCategoryDropdownClick()" #findingsCategoryDropdown>
                                             <select class="finding-category-dropdown-select"
                                                 (change)="onFindingsOptionChange(i)"
-                                                [(ngModel)]="findingCategorySelectedOption[i]">
+                                                [(ngModel)]="findingCategorySelectedOption[i]" [disabled]="isAuditorSubmitted">
                                                 <option value="" disabled selected>Select</option>
                                                 <option *ngFor="let findingCategory of findingCategoryOptions"
                                                     [value]="findingCategory.name">
@@ -90,10 +90,10 @@
                                 <div class="clause">
                                     <div class="clause-label"><span>Clause / Reference</span></div>
                                     <div class="clause-input"> <input type="text" [(ngModel)]="clauseInput[i]"
-                                            placeholder="" (input)="onClauseInputChange(i)" class="clause-input" />
+                                            placeholder="" (input)="onClauseInputChange(i)" class="clause-input" [readonly]="isAuditorSubmitted" />
                                     </div>
                                 </div>
-                                <div *ngIf="totalFindings.length!==1" class="delete-icon">
+                                <div *ngIf="totalFindings.length!==1 && !isAuditorSubmitted" class="delete-icon">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" (click)="deleteFindings(i)"
                                         [matTooltip]="deleteText" xmlns="http://www.w3.org/2000/svg">
                                         <g>
@@ -114,7 +114,7 @@
     </mat-dialog-content>
     <mat-dialog-actions class="action-btns">
         <div class="addAuditFinding" (click)="addFindings()" *ngIf="isAuditor">
-            <button [class.disabled]="checkFindingsLengthInRange()" [disabled]="checkFindingsLengthInRange()">
+            <button [class.disabled]="checkFindingsLengthInRange() || isAuditorSubmitted" [disabled]="checkFindingsLengthInRange() || isAuditorSubmitted">
                 <svg width="24" height="24" viewBox="0 0 21 21" fill="" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M3.45895 8.21V5.186H0.578953V3.26H3.45895V0.289999H5.56495V3.26H8.42695V5.186H5.56495V8.21H3.45895Z"
@@ -124,7 +124,8 @@
         </div>
         <div class="cancel-save-btns" *ngIf="isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
-            <button class="save" [disabled]="isSaved || !checkResponseAvailability()" (click)="onSave()">Save</button>
+            <button class="save" [disabled]="isAuditorSubmitted || !hasAuditorDraftContent()" (click)="onSaveAuditorDraft()">Save</button>
+            <button class="save" [disabled]="isAuditorSubmitted || !hasAuditorDraftContent()" (click)="onSubmitAuditorResponse()">Submit</button>
         </div>
         <div class="cancel-save-btns" *ngIf="!isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
