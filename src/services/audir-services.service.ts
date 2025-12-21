@@ -28,17 +28,29 @@ export class AudirService {
     return this.http.post(`${environment.apiUrl}/api/createUser`, userDetails);
   }
 
-  updateUser(userDetails: FormData): any {
+  updateUser(userDetails: any): any {
     return this.http.post(`${environment.apiUrl}/api/updateUser`, userDetails);
   }
 
-  updatePassword(userDetails: FormData): any {
+  updatePassword(userDetails: any): any {
     return this.http.post(`${environment.apiUrl}/api/updatePassword`, userDetails);
   }
 
   getTemplate(template_id: any) {
     const templateDetails = { "template_id": template_id };
     return this.http.post(`${environment.apiUrl}/api/getTemplate`, templateDetails);
+  }
+
+  updateTemplateQuestions(payload: any) {
+    return this.http.post(`${environment.apiUrl}/api/updateTemplateQuestions`, payload);
+  }
+
+  listUsers(payload: any) {
+    return this.http.post(`${environment.apiUrl}/api/listUsers`, payload);
+  }
+
+  deleteUser(payload: any) {
+    return this.http.post(`${environment.apiUrl}/api/deleteUser`, payload);
   }
 
   getAllChildPlans(email: any, date: any) {

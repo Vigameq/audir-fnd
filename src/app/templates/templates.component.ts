@@ -101,6 +101,16 @@ export class TemplatesComponent {
     }
   }
 
+  getActiveTemplateId() {
+    if (this.selectedFunctionId.length > 0) {
+      return this.selectedFunctionId[0];
+    }
+    if (this.standardSelectedOption && this.standardSelectedOption.id) {
+      return this.standardSelectedOption.id;
+    }
+    return null;
+  }
+
   startEdit(index: number) {
     const question = this.allQuestions[index];
     if (!question) {
@@ -120,9 +130,32 @@ export class TemplatesComponent {
       this.audirService.showError('Question text cannot be empty');
       return;
     }
-    question.text = updated;
-    question.isEditing = false;
-    this.audirService.showSuccess('Question updated');
+    const templateId = this.getActiveTemplateId();
+    if (!templateId) {
+      this.audirService.showError('Template not selected');
+      return;
+    }
+    const updatedQuestions = this.allQuestions.map((item, idx) =>
+      idx === index ? updated : item.text
+    );
+    const payload = {
+      template_id: templateId,
+      questions: updatedQuestions
+    };
+    this.audirService.updateTemplateQuestions(payload).subscribe({
+      next: (response: any) => {
+        if (response) {
+          question.text = updated;
+          question.draft = updated;
+          question.isEditing = false;
+          this.audirService.showSuccess('Question updated');
+        }
+      },
+      error: (error: any) => {
+        console.error('Error updating template question:', error);
+        this.audirService.showError('Failed to update question');
+      }
+    });
   }
 
   cancelEdit(index: number) {
