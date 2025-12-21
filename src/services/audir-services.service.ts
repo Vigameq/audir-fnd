@@ -53,6 +53,10 @@ export class AudirService {
     return this.http.post(`${environment.apiUrl}/api/deleteUser`, payload);
   }
 
+  dashboardSummary(payload: any) {
+    return this.http.post(`${environment.apiUrl}/api/dashboardSummary`, payload);
+  }
+
   getAllChildPlans(email: any, date: any) {
     const emailDateDetails = {
       "eMail": email,
