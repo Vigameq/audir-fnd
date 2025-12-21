@@ -52,16 +52,19 @@
 
     <div class="chart-card">
       <div class="card-header">
-        <h2>Monthly throughput</h2>
-        <span class="subtext">Audits initiated this year</span>
+        <h2>Auditee performance</h2>
+        <span class="subtext">Completion rate by auditee</span>
       </div>
-      <div class="bar-chart">
-        <div class="bar" *ngFor="let item of monthlyData">
-          <div
-            class="bar-fill"
-            [style.height.%]="(item.count / getMonthlyMax()) * 100"
-          ></div>
-          <span class="bar-label">{{ item.month }}</span>
+      <div class="auditor-list">
+        <div class="auditor-row" *ngFor="let auditee of auditeeData">
+          <div class="auditor-name">{{ auditee.name }}</div>
+          <div class="auditor-meta">{{ auditee.audits }} audits</div>
+          <div class="auditor-progress">
+            <div class="progress-track">
+              <div class="progress-fill" [style.width.%]="auditee.completion"></div>
+            </div>
+            <span class="progress-value">{{ auditee.completion }}%</span>
+          </div>
         </div>
       </div>
     </div>

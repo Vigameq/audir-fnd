@@ -38,6 +38,7 @@ export class DashboardComponent {
   ];
 
   auditorData: Array<{ name: string; audits: number; completion: number }> = [];
+  auditeeData: Array<{ name: string; audits: number; completion: number }> = [];
   fromDate = '';
   toDate = '';
 
@@ -84,6 +85,7 @@ export class DashboardComponent {
           }));
         }
         this.auditorData = Array.isArray(response.auditors) ? response.auditors : [];
+        this.auditeeData = Array.isArray(response.auditees) ? response.auditees : [];
       },
       error: (error: any) => {
         console.error('Error loading dashboard summary:', error);
