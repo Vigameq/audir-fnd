@@ -77,7 +77,8 @@
     </div>
     <div class="functional-template-question-section">
         <div *ngFor="let question of auditQuestions; let i = index" class="questions-section"
-            (click)="questionInfo(i)">
+            role="button" tabindex="0" [attr.aria-label]="'Open question ' + (i + 1)"
+            (click)="questionInfo(i)" (keydown.enter)="questionInfo(i)" (keydown.space)="questionInfo(i)">
             <div class="question-number-and-text">
                 <div class="question-number">
                     <span>Question {{i+1}}</span>
