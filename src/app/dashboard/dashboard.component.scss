@@ -1,7 +1,7 @@
 .dashboard {
   margin: 24px 40px 32px 44px;
   font-family: 'Apple SD Gothic Neo', sans-serif;
-  color: #1D2431;
+  color: var(--ink);
   background: radial-gradient(circle at top right, #FDEFB6 0%, #FFFFFF 45%, #F7F8FA 100%);
   padding: 24px;
   border-radius: 24px;
@@ -42,7 +42,7 @@
 }
 
 .apply-btn {
-  background: #1D2431;
+  background: var(--ink);
   color: #FFFFFF;
   border: none;
   padding: 8px 14px;
@@ -58,7 +58,7 @@
 .hero-text h1 {
   margin: 6px 0 8px;
   font-size: 28px;
-  color: #1D2431;
+  color: var(--ink);
 }
 
 .hero-text p {
@@ -76,7 +76,7 @@
 }
 
 .hero-badge {
-  background: #1D2431;
+  background: var(--ink);
   color: #FFFFFF;
   padding: 8px 14px;
   border-radius: 16px;
@@ -135,7 +135,7 @@
 }
 
 .chart-card.highlight {
-  background: linear-gradient(135deg, #1D2431 0%, #2F3B52 100%);
+  background: linear-gradient(135deg, var(--ink) 0%, #2F3B52 100%);
   color: #FFFFFF;
 }
 
@@ -239,7 +239,7 @@
 
 .progress-fill {
   height: 100%;
-  background: #1D2431;
+  background: var(--ink);
 }
 
 .progress-value {
@@ -277,8 +277,8 @@
 
 .primary-btn {
   margin-top: auto;
-  background: #FDE714;
-  color: #1D2431;
+  background: var(--accent);
+  color: var(--ink);
   border: none;
   padding: 10px 14px;
   border-radius: 10px;

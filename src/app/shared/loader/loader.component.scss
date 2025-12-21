@@ -28,28 +28,28 @@
 .fusion-ball1 {
   top: 40px;
   left: 0;
-  background-color: #FDE714;
+  background-color: var(--accent);
   animation: move1 2.4s infinite;
 }
 
 .fusion-ball2 {
   top: 0;
   left: 40px;
-  background-color: #FDE714;
+  background-color: var(--accent);
   animation: move2 2.4s infinite;
 }
 
 .fusion-ball3 {
   top: 40px;
   left: 80px;
-  background-color: #FDE714;
+  background-color: var(--accent);
   animation: move3 2.4s infinite;
 }
 
 .fusion-ball4 {
   top: 80px;
   left: 40px;
-  background-color: #FDE714;
+  background-color: var(--accent);
   animation: move4 2.4s infinite;
 }
 

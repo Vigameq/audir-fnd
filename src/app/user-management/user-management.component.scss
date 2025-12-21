@@ -1,7 +1,7 @@
 .user-management-container {
     margin: 16px 40px 16px 44px;
     font-family: 'Apple SD Gothic Neo', sans-serif;
-    color: #1D2431;
+    color: var(--ink);
 
     .header-row {
         display: flex;
@@ -31,13 +31,13 @@
             }
 
             .search-input:focus {
-                border-color: #FDE714;
+                border-color: var(--accent);
             }
 
             .create-user-btn {
-                background-color: #1D2431;
+                background-color: var(--ink);
                 color: #ffffff;
-                border: 1px solid #1D2431;
+                border: 1px solid var(--ink);
                 border-radius: 8px;
                 padding: 8px 16px;
                 font-size: 14px;
@@ -45,9 +45,9 @@
             }
 
             .create-user-btn:hover {
-                background-color: #FDE714;
-                color: #1D2431;
-                border-color: #FDE714;
+                background-color: var(--accent);
+                color: var(--ink);
+                border-color: var(--accent);
             }
         }
     }
@@ -84,8 +84,8 @@
             gap: 8px;
 
             .self-tag {
-                background-color: #FDE714;
-                color: #1D2431;
+                background-color: var(--accent);
+                color: var(--ink);
                 font-size: 12px;
                 font-weight: 600;
                 padding: 2px 6px;
@@ -108,9 +108,9 @@
             }
 
             .save-role {
-                background-color: #1D2431;
+                background-color: var(--ink);
                 color: #ffffff;
-                border: 1px solid #1D2431;
+                border: 1px solid var(--ink);
                 border-radius: 6px;
                 padding: 4px 10px;
                 font-size: 12px;
@@ -148,8 +148,8 @@
 
             .reset-btn {
                 background-color: #ffffff;
-                border-color: #1D2431;
-                color: #1D2431;
+                border-color: var(--ink);
+                color: var(--ink);
             }
 
             .delete-btn {

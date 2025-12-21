@@ -27,7 +27,7 @@
             }
 
             .create-user-section {
-                background-color: #FAFAFA;
+                background-color: var(--surface);
                 border-radius: 20px;
                 display: flex;
                 flex-direction: column;
@@ -81,13 +81,13 @@
 
                             input:hover,
                             select:hover {
-                                border: 1px solid #FDE714;
+                                border: 1px solid var(--accent);
                                 outline: none;
                                 box-shadow: none;
                             }
 
                             input::placeholder {
-                                color: #1D2431;
+                                color: var(--ink);
                             }
 
                             input:focus,
@@ -138,19 +138,19 @@
                         height: 36px;
                         min-width: 148px;
                         border-radius: 6px;
-                        border: 1px solid #1D2431;
+                        border: 1px solid var(--ink);
                     }
 
                     .cancel {
                         background-color: #FFFFFF;
 
                         span {
-                            color: #1D2431;
+                            color: var(--ink);
                         }
                     }
 
                     .create-user {
-                        background-color: #1D2431;
+                        background-color: var(--ink);
 
                         span {
                             color: #FFFFFF;
@@ -158,14 +158,14 @@
                     }
 
                     button:hover {
-                        border-color: #FDE714;
+                        border-color: var(--accent);
                     }
 
                     .create-user:hover {
-                        background-color: #FDE714;
+                        background-color: var(--accent);
 
                         span {
-                            color: #1D2431;
+                            color: var(--ink);
                         }
                     }
 

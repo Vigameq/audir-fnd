@@ -7,7 +7,7 @@
         width: 100%;
         height: 127px;
         display: flex;
-        background-color: #1D2431;
+        background-color: var(--ink);
         border-radius: 15px;
         border: 1px #000000;
         align-items: center;
@@ -35,12 +35,12 @@
             }
 
             .audit-perform-search-input::placeholder {
-                color: #515151;
+                color: var(--muted);
             }
 
 
             .audit-perform-search-input:focus {
-                border-color: #FFEA00;
+                border-color: var(--accent);
             }
 
             .clear-btn {
@@ -52,11 +52,11 @@
                 border: none;
                 font-size: 12px;
                 cursor: pointer;
-                color: #1D2431;
+                color: var(--ink);
             }
 
             .clear-btn:hover {
-                color: #FFEA00;
+                color: var(--accent);
             }
 
         }
@@ -90,8 +90,8 @@
 
             .reset input:active {
                 color: #000000;
-                background-color: #FFEA00;
-                border: 1px #FFEA00;
+                background-color: var(--accent);
+                border: 1px var(--accent);
             }
         }
 
@@ -125,7 +125,7 @@
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #1D2431;
+            border: 1px solid var(--ink);
             border-radius: 20px;
             padding: 20px 40px 26px;
             gap: 20px;
@@ -151,7 +151,7 @@
                 }
 
                 .progress-badge-yellow {
-                    background: #FFEA00;
+                    background: var(--accent);
 
                 }
 
@@ -180,7 +180,7 @@
                         font-size: 20px;
                         font-weight: 700;
                         line-height: 100%;
-                        color: #515151;
+                        color: var(--muted);
                     }
                 }
 
@@ -191,7 +191,7 @@
                     font-size: 18px;
                     font-weight: 400;
                     line-height: 100%;
-                    color: #515151;
+                    color: var(--muted);
 
                     .templates-details {
                         padding-bottom: 2px;
@@ -202,7 +202,7 @@
                     font-size: 16px;
                     font-weight: 400;
                     line-height: 100%;
-                    color: #515151;
+                    color: var(--muted);
 
                     .time-details {
                         padding-top: 2px;
@@ -226,7 +226,7 @@
                     font-size: 14px;
                     font-weight: 400;
                     line-height: 100%;
-                    color: #515151;
+                    color: var(--muted);
                     padding: 0 10px;
                 }
 
@@ -262,8 +262,8 @@
                 top: 50%;
                 padding: 2px;
                 transform: translateY(-50%);
-                background-color: #1D2431;
-                border: 1px solid #1D2431;
+                background-color: var(--ink);
+                border: 1px solid var(--ink);
                 font-size: 20px;
                 font-weight: 400;
                 line-height: 100%;
@@ -347,7 +347,7 @@
                         padding: 6px;
                         z-index: 1100;
                         border-radius: 6px;
-                        border: 1px solid #dbdbdb;
+                        border: 1px solid var(--border);
                         width: 240px;
                         top: 66px;
                         max-height: 104px;
@@ -377,18 +377,18 @@
                 .edit-button {
                     padding: 6px 12px;
                     border-radius: 6px;
-                    border: 1px solid #1D2431;
+                    border: 1px solid var(--ink);
                     background-color: #FFFFFF;
-                    color: #1D2431;
+                    color: var(--ink);
                     font-size: 12px;
                     font-weight: 600;
                     cursor: pointer;
                 }
 
                 .edit-button:hover {
-                    background-color: #FDE714;
-                    border-color: #FDE714;
-                    color: #1D2431;
+                    background-color: var(--accent);
+                    border-color: var(--accent);
+                    color: var(--ink);
                 }
             }
 
@@ -407,7 +407,7 @@
                 border-radius: 50%;
                 top: 14px;
                 z-index: 1;
-                background-color: #1D2431;
+                background-color: var(--ink);
             }
 
             .line {
@@ -423,7 +423,7 @@
 
                 svg:hover {
                     path {
-                        fill: #FFEA00;
+                        fill: var(--accent);
                     }
                 }
             }
@@ -443,7 +443,7 @@
             }
 
             .progress-badge-yellow {
-                background: #FFEA00;
+                background: var(--accent);
 
             }
 
@@ -464,7 +464,7 @@
         font-size: 16px;
         font-weight: 400;
         line-height: 100%;
-        color: #515151;
+        color: var(--muted);
         padding-top: 20px;
     }
 }

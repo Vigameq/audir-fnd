@@ -2,7 +2,7 @@
     max-width: 100%;
     margin: 16px 40px 16px 44px;
     display: flex;
-    color: #1D2431;
+    color: var(--ink);
     flex-direction: column;
     font-family: 'Apple SD Gothic Neo', sans-serif;
 
@@ -22,7 +22,7 @@
 
             .import {
                 .import-button {
-                    background-color: #1D2431;
+                    background-color: var(--ink);
                     color: white;
                     padding: 8px 20px;
                     border-radius: 8px;
@@ -35,9 +35,9 @@
                 }
 
                 .import-button:hover {
-                    background-color: #FDE714;
-                    color: #1D2431;
-                    border-color: #FDE714;
+                    background-color: var(--accent);
+                    color: var(--ink);
+                    border-color: var(--accent);
                 }
             }
 
@@ -50,9 +50,9 @@
                     .standard-dropdown-select {
                         width: 240px;
                         height: 44px;
-                        background-color: #FAFAFA;
+                        background-color: var(--surface);
                         font-family: 'Apple SD Gothic Neo', sans-serif;
-                        border: 1px solid #dbdbdb;
+                        border: 1px solid var(--border);
                         border-radius: 6px;
                         font-size: 16px;
                         padding: 10px 30px 10px 10px;
@@ -105,13 +105,13 @@
 
             .selected {
                 background-color: #000000;
-                color: #FAFAFA;
+                color: var(--surface);
                 border-radius: 30px;
                 border: 1px solid #000000;
 
                 .svg-icon {
                     path {
-                        fill: #FAFAFA;
+                        fill: var(--surface);
                     }
                 }
             }
@@ -133,7 +133,7 @@
         }
 
         .filtered-questions-section {
-            border: 1px solid #1D2431;
+            border: 1px solid var(--ink);
             border-radius: 20px;
             padding: 20px;
             display: flex;
@@ -171,9 +171,9 @@
                     margin-left: 16px;
 
                     button {
-                        border: 1px solid #1D2431;
+                        border: 1px solid var(--ink);
                         background: transparent;
-                        color: #1D2431;
+                        color: var(--ink);
                         border-radius: 6px;
                         padding: 6px 12px;
                         font-size: 14px;
@@ -181,9 +181,9 @@
                     }
 
                     .save-btn {
-                        background: #1D2431;
+                        background: var(--ink);
                         color: #ffffff;
-                        border-color: #1D2431;
+                        border-color: var(--ink);
                     }
 
                     .cancel-btn {
@@ -196,14 +196,14 @@
                     width: 90%;
                     height: 40px;
                     outline: none;
-                    border: 1px solid #dbdbdb;
+                    border: 1px solid var(--border);
                     border-radius: 6px;
                     font-size: 16px;
                     padding: 6px 10px;
                 }
 
                 .question-text-input:focus {
-                    border-color: #FDE714;
+                    border-color: var(--accent);
                 }
 
                 .edit-and-delete-icon {

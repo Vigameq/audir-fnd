@@ -6,7 +6,7 @@
         width: 100%;
         height: 127px;
         display: flex;
-        background-color: #1D2431;
+        background-color: var(--ink);
         border-radius: 15px;
         border: 1px #000000;
         align-items: center;
@@ -33,12 +33,12 @@
             }
 
             .reports-search-input::placeholder {
-                color: #515151;
+                color: var(--muted);
             }
 
 
             .reports-search-input:focus {
-                border-color: #FFEA00;
+                border-color: var(--accent);
             }
 
             .clear-btn {
@@ -50,11 +50,11 @@
                 border: none;
                 font-size: 12px;
                 cursor: pointer;
-                color: #1D2431;
+                color: var(--ink);
             }
 
             .clear-btn:hover {
-                color: #FFEA00;
+                color: var(--accent);
             }
 
         }
@@ -95,8 +95,8 @@
 
                 .apply-btn {
                     height: 32px;
-                    background: #FDE714;
-                    color: #1D2431;
+                    background: var(--accent);
+                    color: var(--ink);
                     border: none;
                     border-radius: 8px;
                     padding: 0 12px;
@@ -113,9 +113,9 @@
                 .functions-dropdown-select {
                     width: 240px;
                     height: 44px;
-                    background-color: #FAFAFA;
+                    background-color: var(--surface);
                     font-family: 'Apple SD Gothic Neo', sans-serif;
-                    border: 1px solid #dbdbdb;
+                    border: 1px solid var(--border);
                     border-radius: 6px;
                     font-size: 16px;
                     padding: 6px;
@@ -156,7 +156,7 @@
         gap: 30px;
 
         .report-container {
-            border: 1px solid #1D2431;
+            border: 1px solid var(--ink);
             height: 118px;
             padding: 10px 14px;
             border-radius: 20px;
@@ -177,7 +177,7 @@
                     height: 24px;
                     font-size: 20px;
                     font-weight: 700;
-                    color: #515151;
+                    color: var(--muted);
                     line-height: 24px;
                 }
 
@@ -185,7 +185,7 @@
                     height: 24px;
                     font-size: 12px;
                     font-weight: 400;
-                    color: #515151;
+                    color: var(--muted);
                     line-height: 15px;
                     padding-top: 4px;
                 }
@@ -199,7 +199,7 @@
                 align-items: center;
 
                 .city-country-section {
-                    color: #515151;
+                    color: var(--muted);
                     font-size: 10px;
                     font-weight: 400;
                     line-height: 12px;
@@ -208,9 +208,9 @@
                 .download-button button {
                     width: 90px;
                     height: 24px;
-                    background-color: #1D2431;
+                    background-color: var(--ink);
                     border-radius: 20px;
-                    border: 1px solid #1D2431;
+                    border: 1px solid var(--ink);
                     color: #FFFFFF;
                     line-height: 12px;
                     font-size: 10px;
