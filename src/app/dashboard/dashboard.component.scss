@@ -135,12 +135,30 @@
 }
 
 .chart-card.highlight {
-  background: linear-gradient(135deg, var(--ink) 0%, #2F3B52 100%);
-  color: #FFFFFF;
+  background: #0b0b0b;
+  color: #ffffff;
 }
 
 .chart-card.highlight .subtext {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.chart-card.highlight .focus-label {
+  color: #ffffff;
+}
+
+.chart-card.highlight .focus-value {
   color: rgba(255, 255, 255, 0.7);
+}
+
+.chart-card.highlight .primary-btn {
+  background: #0b0b0b;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+.chart-card.highlight .primary-btn:hover {
+  background: #1a1a1a;
 }
 
 .card-header h2 {
@@ -277,8 +295,8 @@
 
 .primary-btn {
   margin-top: auto;
-  background: var(--accent);
-  color: var(--ink);
+  background: var(--ink);
+  color: #ffffff;
   border: none;
   padding: 10px 14px;
   border-radius: 10px;
@@ -288,7 +306,7 @@
 }
 
 .primary-btn:hover {
-  background: #F2B705;
+  background: #1a1a1a;
 }
 
 @media (max-width: 900px) {
