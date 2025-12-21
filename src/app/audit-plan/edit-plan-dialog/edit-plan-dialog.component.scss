@@ -40,7 +40,7 @@
             }
 
             .edit-section {
-                background-color: #FAFAFA;
+                background-color: var(--surface);
                 border-radius: 20px;
                 display: flex;
                 flex-direction: column;
@@ -89,12 +89,12 @@
                                 }
 
                                 &:hover {
-                                    border: 1px solid #FDE714;
+                                    border: 1px solid var(--accent);
                                 }
                             }
 
                             input::placeholder {
-                                color: #1D2431;
+                                color: var(--ink);
                             }
                         }
 
@@ -133,7 +133,7 @@
                             }
 
                             .dropbtn:hover {
-                                border: 1px solid #FDE714;
+                                border: 1px solid var(--accent);
                             }
 
                             .auditeeDropdown,
@@ -150,7 +150,7 @@
                                 padding: 10px;
                                 z-index: 1100;
                                 border-radius: 6px;
-                                border: 1px solid #dbdbdb;
+                                border: 1px solid var(--border);
                                 width: 100%;
                                 top: 82px;
                                 max-height: 104px;
@@ -189,19 +189,19 @@
                         height: 46px;
                         min-width: 148px;
                         border-radius: 6px;
-                        border: 1px solid #1D2431;
+                        border: 1px solid var(--ink);
                     }
 
                     .cancel {
                         background-color: #FFFFFF;
 
                         span {
-                            color: #1D2431;
+                            color: var(--ink);
                         }
                     }
 
                     .save-changes {
-                        background-color: #1D2431;
+                        background-color: var(--ink);
 
                         span {
                             color: #FFFFFF;
@@ -209,14 +209,14 @@
                     }
 
                     button:hover {
-                        border-color: #FDE714;
+                        border-color: var(--accent);
                     }
 
                     .save-changes:hover {
-                        background-color: #FDE714;
+                        background-color: var(--accent);
 
                         span {
-                            color: #1D2431;
+                            color: var(--ink);
                         }
                     }
 

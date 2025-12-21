@@ -59,7 +59,7 @@
         line-height: 100%;
         margin: 0;
         padding: 0 0 4px;
-        color: #515151;
+        color: var(--muted);
       }
     }
 
@@ -117,7 +117,7 @@
     }
 
     .rounded-button:hover {
-      background-color: #FDE714;
+      background-color: var(--accent);
       color: #000000;
     }
 
