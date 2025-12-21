@@ -8,6 +8,17 @@
             </button>
         </div>
         <div class="dropdown-section">
+            <div class="date-range">
+                <div class="date-field">
+                    <label>From</label>
+                    <input type="date" [(ngModel)]="fromDate" />
+                </div>
+                <div class="date-field">
+                    <label>To</label>
+                    <input type="date" [(ngModel)]="toDate" />
+                </div>
+                <button class="apply-btn" type="button" (click)="applyDateFilter()">Apply</button>
+            </div>
             <div class="standard-dropdown-section" (click)="onStandardDropdownClick()" #standardDropdown>
                 <select class="standard-dropdown-select" (change)="onStandardOptionChange($event)"
                     [(ngModel)]="standardSelectedOption">

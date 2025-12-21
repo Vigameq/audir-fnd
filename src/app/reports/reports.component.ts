@@ -13,6 +13,8 @@ export class ReportsComponent {
   standardSelectedOption: string = '';
   functionsDropdownOptions = ['options2', 'option2', 'option3'];
   functionsSelectedOption: string = '';
+  fromDate: string = '';
+  toDate: string = '';
   reportsData = [
     { name: 'Item 1', standardType: 'This1', functionType: 'function1', city: 'bangalore', country: 'india' },
     { name: 'Item 2', standardType: 'This2', functionType: 'function2', city: 'hyderabad', country: 'india' },
@@ -32,6 +34,25 @@ export class ReportsComponent {
   @ViewChild('functionsDropdown') functionsDropdown: ElementRef | undefined;
 
   constructor(private renderer: Renderer2) { }
+
+
+  ngOnInit(): void {
+    const storedFrom = localStorage.getItem('reportsFromDate');
+    const storedTo = localStorage.getItem('reportsToDate');
+    const today = new Date();
+    const last30 = new Date();
+    last30.setDate(today.getDate() - 30);
+    this.fromDate = storedFrom || last30.toISOString().substring(0, 10);
+    this.toDate = storedTo || today.toISOString().substring(0, 10);
+  }
+
+  applyDateFilter(): void {
+    if (!this.fromDate || !this.toDate) {
+      return;
+    }
+    localStorage.setItem('reportsFromDate', this.fromDate);
+    localStorage.setItem('reportsToDate', this.toDate);
+  }
 
   onSearch() {
     console.log('Search query:', this.searchQuery);
