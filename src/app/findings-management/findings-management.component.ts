@@ -111,10 +111,13 @@ export class FindingsManagementComponent {
   }
 
   setCheckedOption(optionsList: any) {
-    return optionsList.map((objectValue: any) => {
-      objectValue.checked = false;
-      return objectValue;
-    });
+    if (!Array.isArray(optionsList)) {
+      return [];
+    }
+    return optionsList.map((objectValue: any) => ({
+      ...objectValue,
+      checked: false
+    }));
   }
 
   onSearch() {

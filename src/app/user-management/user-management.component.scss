@@ -1,30 +1,175 @@
 .user-management-container {
-    max-width: 100%;
     margin: 16px 40px 16px 44px;
-    display: flex;
-    flex-direction: column;
     font-family: 'Apple SD Gothic Neo', sans-serif;
-    gap: 20px;
+    color: #1D2431;
 
-    .create-btn-section {
-        text-align: right;
-        .create-user-btn {
-            background-color: #1D2431;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 8px;
-            font-size: 16px;
-            border: 1px solid #2C2C2C;
-            cursor: pointer;
-            height: 44px;
-            width: 140px;
+    .header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+
+        .title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #4E4E4E;
         }
 
-        .create-user-btn:hover {
-            background-color: #FDE714;
-            color: #1D2431;
-            border-color: #FDE714;
+        .actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+
+            .search-input {
+                width: 240px;
+                height: 40px;
+                border: 1px solid #D9D9D9;
+                border-radius: 8px;
+                padding: 0 12px;
+                font-size: 14px;
+                outline: none;
+            }
+
+            .search-input:focus {
+                border-color: #FDE714;
+            }
+
+            .create-user-btn {
+                background-color: #1D2431;
+                color: #ffffff;
+                border: 1px solid #1D2431;
+                border-radius: 8px;
+                padding: 8px 16px;
+                font-size: 14px;
+                cursor: pointer;
+            }
+
+            .create-user-btn:hover {
+                background-color: #FDE714;
+                color: #1D2431;
+                border-color: #FDE714;
+            }
+        }
+    }
+
+    .user-table {
+        border: 1px solid #E5E5E5;
+        border-radius: 12px;
+        overflow: hidden;
+        background-color: #ffffff;
+    }
+
+    .user-row {
+        display: grid;
+        grid-template-columns: 1.3fr 1.6fr 1.1fr 1.2fr 1.4fr;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-bottom: 1px solid #EFEFEF;
+
+        &.header {
+            background-color: #F7F7F7;
+            font-weight: 600;
+            color: #4E4E4E;
         }
 
+        .cell {
+            font-size: 14px;
+            color: #4E4E4E;
+        }
+
+        .name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .self-tag {
+                background-color: #FDE714;
+                color: #1D2431;
+                font-size: 12px;
+                font-weight: 600;
+                padding: 2px 6px;
+                border-radius: 10px;
+            }
+        }
+
+        .role {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            select {
+                border: 1px solid #D9D9D9;
+                border-radius: 6px;
+                height: 32px;
+                padding: 0 8px;
+                font-size: 14px;
+                outline: none;
+            }
+
+            .save-role {
+                background-color: #1D2431;
+                color: #ffffff;
+                border: 1px solid #1D2431;
+                border-radius: 6px;
+                padding: 4px 10px;
+                font-size: 12px;
+                cursor: pointer;
+            }
+
+            .save-role:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
+
+        .department {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .location-text {
+                font-size: 12px;
+                color: #8A8A8A;
+            }
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+
+            button {
+                border-radius: 6px;
+                padding: 6px 10px;
+                font-size: 12px;
+                border: 1px solid transparent;
+                cursor: pointer;
+            }
+
+            .reset-btn {
+                background-color: #ffffff;
+                border-color: #1D2431;
+                color: #1D2431;
+            }
+
+            .delete-btn {
+                background-color: #f44336;
+                color: #ffffff;
+            }
+
+            .delete-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    .user-row:last-child {
+        border-bottom: none;
+    }
+
+    .empty-state {
+        padding: 20px 0;
+        color: #8A8A8A;
     }
 }
