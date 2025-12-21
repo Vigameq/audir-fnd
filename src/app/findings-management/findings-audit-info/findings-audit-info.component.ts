@@ -25,8 +25,13 @@ export class FindingsAuditInfoComponent {
     private router: Router,
     private location: Location) {
     this.route.paramMap.subscribe(params => {
-      this.auditId = { "audit_id": params.get('id') };
-      this.audit_status =  params.get('audit_status');
+      const auditParam = params.get('id');
+      if (!auditParam) {
+        return;
+      }
+      const auditIdValue = Number(auditParam);
+      this.auditId = { audit_id: Number.isFinite(auditIdValue) ? auditIdValue : auditParam };
+      this.audit_status = params.get('audit_status');
       this.getPlanAudit(this.auditId);
       this.getQuestions(this.auditId);
     });
@@ -49,16 +54,27 @@ export class FindingsAuditInfoComponent {
   }
 
   getPlanAudit(auditId: any) {
+    if (!auditId?.audit_id) {
+      return;
+    }
     this.audirService.getAuditPlan(auditId).subscribe((audit: any) => {
       if (audit) {
-        this.auditInfo = audit.audit_data;
+        const auditData = Array.isArray(audit.audit_data) ? audit.audit_data[0] : audit.audit_data;
+        if (auditData) {
+          this.auditInfo = auditData;
+        }
       }
     }, (error: any) => {
       console.error('Error for getting audit plan:', error);
     });
   }
 
-  questionInfo(index: number,audit_finding_id:number) {
+  questionInfo(index: number, audit_finding_id: number) {
+    const question = this.allQuestions?.[index];
+    if (!question) {
+      return;
+    }
+    const auditInfo = this.auditInfo || { audit_id: this.auditId?.audit_id };
     const dialogRef = this.dialog.open(FindingsQuestionResponseDialogComponent, {
       disableClose: true,
       width: '1300px',
@@ -66,8 +82,8 @@ export class FindingsAuditInfoComponent {
       panelClass: 'customize-question-dialog-container',
       data: {
         index: index + 1,
-        questionText: this.allQuestions[index].question,
-        auditInfo: this.auditInfo,
+        questionText: question.question,
+        auditInfo: auditInfo,
         audit_finding_id: audit_finding_id
       }
     });

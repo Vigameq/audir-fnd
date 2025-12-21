@@ -34,27 +34,42 @@
     li {
       width: 98%;
       border-radius: 15px;
-      transition: background-color 0.3s;
+      transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
       margin: 4px 2px;
 
       a {
         width: 100%;
         display: flex;
-        padding: 12px 0;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
         text-decoration: none;
         text-align: start;
+        border-radius: 15px;
 
-        .icons {
-          width: 42px;
-          height: 21px;
-          padding: 0 10px;
+        .icon-wrap {
+          width: 34px;
+          height: 34px;
+          border-radius: 10px;
+          background-color: #f1f1f1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          transition: background-color 0.2s, box-shadow 0.2s;
         }
 
-        span {
+        .icons {
+          width: 18px;
+          height: 18px;
+          filter: grayscale(100%) contrast(1.1) brightness(0.4);
+        }
+
+        .label {
           color: var(--muted);
-          font-weight: 400;
+          font-weight: 500;
           line-height: 19.2px;
-          letter-spacing: 0;
+          letter-spacing: 0.2px;
           display: block;
           width: 100%;
         }
@@ -62,10 +77,18 @@
 
       &.active a {
         background-color: var(--ink);
-        border-radius: 15px;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
 
-        span {
+        .label {
           color: #ffffff;
+        }
+
+        .icon-wrap {
+          background-color: var(--accent);
+        }
+
+        .icons {
+          filter: brightness(0) invert(1);
         }
       }
 
@@ -73,13 +96,22 @@
         background-color: var(--accent-soft);
 
         a {
-          span {
+          .label {
             color: var(--ink);
+          }
+
+          .icon-wrap {
+            background-color: #ffffff;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+          }
+
+          .icons {
+            filter: grayscale(100%) contrast(1.1) brightness(0.2);
           }
         }
 
         &.active a {
-          span {
+          .label {
             color: #ffffff;
           }
         }

@@ -325,3 +325,57 @@
         padding-top: 20px;
     }
 }
+.findings-management .findings-management-container-section .audit-accordion {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+}
+
+.findings-management .findings-management-container-section .parent-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.findings-management .findings-management-container-section .parent-main {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+.findings-management .findings-management-container-section .parent-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.findings-management .findings-management-container-section .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--accent-soft);
+    border: 1px solid var(--border);
+}
+
+.findings-management .findings-management-container-section .chip.muted {
+    color: var(--muted);
+}
+
+.findings-management .findings-management-container-section .child-count-chip {
+    border-radius: 999px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: #ffffff;
+    padding: 8px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}

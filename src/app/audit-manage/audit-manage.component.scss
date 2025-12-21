@@ -468,3 +468,131 @@
         padding-top: 20px;
     }
 }
+.audit-perform .audit-perform-container-section .audit-accordion {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+}
+
+.audit-perform .audit-perform-container-section .parent-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.audit-perform .audit-perform-container-section .parent-main {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+.audit-perform .audit-perform-container-section .parent-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.audit-perform .audit-perform-container-section .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--accent-soft);
+    border: 1px solid var(--border);
+}
+
+.audit-perform .audit-perform-container-section .chip.muted {
+    color: var(--muted);
+}
+
+.audit-perform .audit-perform-container-section .chip.status {
+    background: #ffffff;
+    border-color: var(--ink);
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.audit-perform .audit-perform-container-section .child-count-chip {
+    border-radius: 999px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: #ffffff;
+    padding: 8px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.audit-perform .audit-perform-container-section .timeline {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    padding-left: 22px;
+}
+
+.audit-perform .audit-perform-container-section .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--border);
+}
+
+.audit-perform .audit-perform-container-section .timeline-item {
+    display: flex;
+    gap: 16px;
+    position: relative;
+}
+
+.audit-perform .audit-perform-container-section .timeline-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--ink);
+    margin-left: -22px;
+    margin-top: 18px;
+    flex-shrink: 0;
+}
+
+.audit-perform .audit-perform-container-section .sub-audit-card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+.audit-perform .audit-perform-container-section .sub-card-main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.audit-perform .audit-perform-container-section .sub-card-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.audit-perform .audit-perform-container-section .edit-button {
+    background: #9aa0a6;
+    color: #ffffff;
+    border: 1px solid #9aa0a6;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 12px;
+    cursor: pointer;
+}

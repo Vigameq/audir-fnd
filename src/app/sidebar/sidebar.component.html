@@ -3,8 +3,10 @@
   <ul class="nav-list">
     <li routerLinkActive="active" *ngFor="let item of navItems">
       <a [routerLink]="item.path" (click)="sendDataToAppComponent(item.header)">
-        <img [src]="item.src" [alt]="item.label" class="icons" />
-        <span>{{ item.label }}</span>
+        <span class="icon-wrap">
+          <img [src]="item.src" [alt]="item.label" class="icons" />
+        </span>
+        <span class="label">{{ item.label }}</span>
       </a>
     </li>
   </ul>

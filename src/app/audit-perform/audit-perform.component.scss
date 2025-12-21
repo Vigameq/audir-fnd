@@ -565,3 +565,35 @@
     gap: 14px;
     width: 100%;
 }
+
+.audit-perform .chip.status.status-created {
+  background: #2e7d32;
+  color: #ffffff;
+  border-color: #2e7d32;
+}
+
+.audit-perform .chip.status.status-inprogress {
+  background: #f39c12;
+  color: #ffffff;
+  border-color: #f39c12;
+}
+
+.audit-perform .perform-btn {
+  background: #1e5eff;
+  color: #ffffff;
+  border: 1px solid #1e5eff;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.audit-perform .perform-btn:hover {
+  background: #1a4fd6;
+  border-color: #1a4fd6;
+}
+
+.audit-perform .perform-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

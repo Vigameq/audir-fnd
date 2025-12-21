@@ -239,7 +239,14 @@ export class SpecificFunctionAuditInfoComponent {
   getPlanAudit(auditId: any) {
     this.audirService.getAuditPlan(auditId).subscribe((audit: any) => {
       if (audit) {
-        this.auditInfo = audit.audit_data;
+        const auditData = Array.isArray(audit.audit_data) ? audit.audit_data[0] : audit.audit_data;
+        if (auditData) {
+          this.auditInfo = auditData;
+          return;
+        }
+      }
+      if (this.parentAuditID?.audit_id && auditId?.audit_id !== this.parentAuditID.audit_id) {
+        this.getPlanAudit(this.parentAuditID);
       }
     }, (error: any) => {
       console.error('Error for getting audit plan:', error);
@@ -247,6 +254,11 @@ export class SpecificFunctionAuditInfoComponent {
   }
 
   questionInfo(index: number) {
+    const question = this.auditQuestions[index];
+    if (!question) {
+      return;
+    }
+    const auditInfo = this.auditInfo || { audit_id: this.auditId?.audit_id };
     const dialogRef = this.dialog.open(CustomiseAuditQuestionDialogComponent, {
       disableClose: true,
       width: '1300px',
@@ -254,10 +266,10 @@ export class SpecificFunctionAuditInfoComponent {
       panelClass: 'customize-question-dialog-container',
       data: {
         index: index + 1,
-        questionText: this.auditQuestions[index].text,
-        template: this.auditQuestions[index].template,
-        templateType: this.auditQuestions[index].templateType,
-        auditInfo: this.auditInfo
+        questionText: question.text,
+        template: question.template,
+        templateType: question.templateType,
+        auditInfo: auditInfo
       }
     });
 

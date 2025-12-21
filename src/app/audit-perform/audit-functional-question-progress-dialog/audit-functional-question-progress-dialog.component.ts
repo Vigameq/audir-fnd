@@ -80,18 +80,24 @@ export class AuditFunctionalQuestionProgressDialogComponent {
     this.dialogRef.close(false);
   }
 
+  private getContentType(fileName: string): string {
+    const lower = (fileName || '').toLowerCase();
+    if (lower.endsWith('.png')) return 'image/png';
+    if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return 'image/jpeg';
+    if (lower.endsWith('.pdf')) return 'application/pdf';
+    return 'application/octet-stream';
+  }
+
   downloadEvidence(responseData: any) {
     this.audirService.getEvidence(this.data.auditQuestionData.audit_id, responseData.attach_evidence).subscribe((response: any) => {
-      if (response) {
-        const blobData = new Blob([response]);
+      if (response?.body) {
+        const contentType = response.headers?.get('content-type') || this.getContentType(responseData.attach_evidence);
+        const blobData = new Blob([response.body], { type: contentType });
         const evidenceFileURL = URL.createObjectURL(blobData);
-        const templateDownloadLink = document.createElement('a');
-        templateDownloadLink.href = evidenceFileURL;
-        templateDownloadLink.download = responseData.attach_evidence;
-        templateDownloadLink.click();
-        URL.revokeObjectURL(evidenceFileURL);
-        this.audirService.showSuccess(responseData.attach_evidence + ' file downloaded successfully');
-        console.log('Successfully downloading' + responseData.attach_evidence + ' file');
+        window.open(evidenceFileURL, '_blank');
+        setTimeout(() => URL.revokeObjectURL(evidenceFileURL), 1000);
+        this.audirService.showSuccess(responseData.attach_evidence + ' opened successfully');
+        console.log('Successfully opening ' + responseData.attach_evidence);
       }
     }, (error: any) => {
       console.error('Error downloading evidence file:', error);

@@ -95,8 +95,12 @@ export class FindingsQuestionResponseDialogComponent {
   }
 
   ngOnInit(): void {
-    this.maxDateTime = this.datePipe.transform(this.data.auditInfo.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
-    this.minDateTime = this.datePipe.transform(this.data.auditInfo.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
+    if (this.auditInfo?.end_date) {
+      this.maxDateTime = this.datePipe.transform(this.auditInfo.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
+    }
+    if (this.auditInfo?.start_date) {
+      this.minDateTime = this.datePipe.transform(this.auditInfo.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
+    }
     this.getQuestionData();
     this.getNCQuestionData();
   }
@@ -178,9 +182,11 @@ export class FindingsQuestionResponseDialogComponent {
   }
 
   setQuestionData() {
-    this.auditQuestionData.audit_id = this.auditInfo.audit_id;
-    this.auditQuestionData.template = this.auditInfo.function_template[0];
-    this.auditQuestionData.template_type = 'function_template';
+    this.auditQuestionData.audit_id = this.auditInfo?.audit_id;
+    const functionTemplate = this.auditInfo?.function_template?.[0];
+    const template = this.auditInfo?.template?.[0];
+    this.auditQuestionData.template = functionTemplate || template || '';
+    this.auditQuestionData.template_type = functionTemplate ? 'function_template' : 'template';
     this.auditQuestionData.email = localStorage.getItem('user')?.toString() || '';
   }
 
