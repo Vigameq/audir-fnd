@@ -685,6 +685,16 @@ export class CustomiseAuditQuestionDialogComponent {
     this.dialogRef.close('saved');
   }
 
+  isSubmitEnable() {
+    if (this.questionData) {
+      if (this.questionData?.auditor_notes.length > 0) {
+        return this.questionData?.auditor_notes[0]?.updated_at >= this.questionData?.auditee_response[0]?.updated_at;
+      }
+      return (this.questionData?.auditee_response.length === 0);
+    }
+    return;
+  }
+
   onSubmitResponse() {
     if (this.shouldDisableAuditeeEdits()) {
       this.audirService.showError('This response is locked for editing');
