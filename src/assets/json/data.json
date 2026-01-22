@@ -3,7 +3,7 @@
         { "label": "DASHBOARD", "path": "dashboard", "header": "Dashboard", "src": "assets/images/dashboard.png" },
         { "label": "AUDIT PLAN", "path": "auditPlan", "header": "Audit Plan", "src": "assets/images/auditPlan.png" },
         { "label": "AUDIT PERFORM", "path": "auditPerform", "header": "Audit Perform", "src": "assets/images/auditPerform.png" },
-        { "label": "AUDIT MANAGE", "path": "auditManage", "header": "Audit Manage", "src": "assets/images/auditPerform.png" },
+        { "label": "AUDIT MANAGE", "path": "auditManage", "header": "Audit Manage", "src": "assets/images/work_in_progress.png" },
         { "label": "FINDINGS  MANAGEMENT", "path": "findingsManagement", "header": "Findings Management", "src": "assets/images/findingsManagement.png" },
         { "label": "TEMPLATES", "path": "templates", "header": "Templates", "src": "assets/images/templates.png" },
         { "label": "REPORTS", "path": "reports", "header": "Reports", "src": "assets/images/reports.png" },

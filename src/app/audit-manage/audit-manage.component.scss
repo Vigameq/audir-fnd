@@ -7,7 +7,7 @@
         width: 100%;
         height: 127px;
         display: flex;
-        background-color: #1D2431;
+        background-color: var(--ink);
         border-radius: 15px;
         border: 1px #000000;
         align-items: center;
@@ -35,12 +35,12 @@
             }
 
             .audit-perform-search-input::placeholder {
-                color: #515151;
+                color: var(--muted);
             }
 
 
             .audit-perform-search-input:focus {
-                border-color: #FFEA00;
+                border-color: var(--accent);
             }
 
             .clear-btn {
@@ -52,11 +52,11 @@
                 border: none;
                 font-size: 12px;
                 cursor: pointer;
-                color: #1D2431;
+                color: var(--ink);
             }
 
             .clear-btn:hover {
-                color: #FFEA00;
+                color: var(--accent);
             }
 
         }
@@ -90,8 +90,8 @@
 
             .reset input:active {
                 color: #000000;
-                background-color: #FFEA00;
-                border: 1px #FFEA00;
+                background-color: var(--accent);
+                border: 1px var(--accent);
             }
         }
 
@@ -103,6 +103,12 @@
         font-size: 22px;
         color: #4E4E4E;
         line-height: 100%;
+    }
+
+    .audit-info-hint {
+        margin-top: 6px;
+        font-size: 14px;
+        color: #6B6B6B;
     }
 
     .audit-perform-container-section {
@@ -119,7 +125,7 @@
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #1D2431;
+            border: 1px solid var(--ink);
             border-radius: 20px;
             padding: 20px 40px 26px;
             gap: 20px;
@@ -145,7 +151,7 @@
                 }
 
                 .progress-badge-yellow {
-                    background: #FFEA00;
+                    background: var(--accent);
 
                 }
 
@@ -154,6 +160,19 @@
 
                 }
 
+
+            .review-text {
+                position: absolute;
+                top: 10px;
+                right: 16px;
+                color: #F28C28;
+                font-weight: 700;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+
+
+            
                 .plan-creation-id {
                     display: flex;
 
@@ -161,7 +180,7 @@
                         font-size: 20px;
                         font-weight: 700;
                         line-height: 100%;
-                        color: #515151;
+                        color: var(--muted);
                     }
                 }
 
@@ -172,7 +191,7 @@
                     font-size: 18px;
                     font-weight: 400;
                     line-height: 100%;
-                    color: #515151;
+                    color: var(--muted);
 
                     .templates-details {
                         padding-bottom: 2px;
@@ -183,7 +202,7 @@
                     font-size: 16px;
                     font-weight: 400;
                     line-height: 100%;
-                    color: #515151;
+                    color: var(--muted);
 
                     .time-details {
                         padding-top: 2px;
@@ -207,7 +226,7 @@
                     font-size: 14px;
                     font-weight: 400;
                     line-height: 100%;
-                    color: #515151;
+                    color: var(--muted);
                     padding: 0 10px;
                 }
 
@@ -243,8 +262,8 @@
                 top: 50%;
                 padding: 2px;
                 transform: translateY(-50%);
-                background-color: #1D2431;
-                border: 1px solid #1D2431;
+                background-color: var(--ink);
+                border: 1px solid var(--ink);
                 font-size: 20px;
                 font-weight: 400;
                 line-height: 100%;
@@ -328,7 +347,7 @@
                         padding: 6px;
                         z-index: 1100;
                         border-radius: 6px;
-                        border: 1px solid #dbdbdb;
+                        border: 1px solid var(--border);
                         width: 240px;
                         top: 66px;
                         max-height: 104px;
@@ -351,14 +370,25 @@
                 }
 
                 .edit-icon {
-                    position: relative;
+                    display: flex;
+                    align-items: center;
+                }
 
-                    #vector-icon {
-                        position: absolute;
-                        top: 10px;
-                        left: 10px;
-                        cursor: pointer;
-                    }
+                .edit-button {
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    border: 1px solid var(--ink);
+                    background-color: #FFFFFF;
+                    color: var(--ink);
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                }
+
+                .edit-button:hover {
+                    background-color: var(--accent);
+                    border-color: var(--accent);
+                    color: var(--ink);
                 }
             }
 
@@ -377,7 +407,7 @@
                 border-radius: 50%;
                 top: 14px;
                 z-index: 1;
-                background-color: #1D2431;
+                background-color: var(--ink);
             }
 
             .line {
@@ -393,7 +423,7 @@
 
                 svg:hover {
                     path {
-                        fill: #FFEA00;
+                        fill: var(--accent);
                     }
                 }
             }
@@ -413,7 +443,7 @@
             }
 
             .progress-badge-yellow {
-                background: #FFEA00;
+                background: var(--accent);
 
             }
 
@@ -434,7 +464,135 @@
         font-size: 16px;
         font-weight: 400;
         line-height: 100%;
-        color: #515151;
+        color: var(--muted);
         padding-top: 20px;
     }
+}
+.audit-perform .audit-perform-container-section .audit-accordion {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+}
+
+.audit-perform .audit-perform-container-section .parent-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.audit-perform .audit-perform-container-section .parent-main {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+.audit-perform .audit-perform-container-section .parent-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.audit-perform .audit-perform-container-section .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--accent-soft);
+    border: 1px solid var(--border);
+}
+
+.audit-perform .audit-perform-container-section .chip.muted {
+    color: var(--muted);
+}
+
+.audit-perform .audit-perform-container-section .chip.status {
+    background: #ffffff;
+    border-color: var(--ink);
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.audit-perform .audit-perform-container-section .child-count-chip {
+    border-radius: 999px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: #ffffff;
+    padding: 8px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.audit-perform .audit-perform-container-section .timeline {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    padding-left: 22px;
+}
+
+.audit-perform .audit-perform-container-section .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--border);
+}
+
+.audit-perform .audit-perform-container-section .timeline-item {
+    display: flex;
+    gap: 16px;
+    position: relative;
+}
+
+.audit-perform .audit-perform-container-section .timeline-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--ink);
+    margin-left: -22px;
+    margin-top: 18px;
+    flex-shrink: 0;
+}
+
+.audit-perform .audit-perform-container-section .sub-audit-card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+.audit-perform .audit-perform-container-section .sub-card-main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.audit-perform .audit-perform-container-section .sub-card-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.audit-perform .audit-perform-container-section .edit-button {
+    background: #9aa0a6;
+    color: #ffffff;
+    border: 1px solid #9aa0a6;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 12px;
+    cursor: pointer;
 }

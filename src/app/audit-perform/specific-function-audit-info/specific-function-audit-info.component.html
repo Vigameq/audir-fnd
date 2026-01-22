@@ -69,26 +69,31 @@
         </div>
         <div class="progress-percentage">
             <div class="progress-bar">
-                <div class="progress-percentage" [ngStyle]="{ 'width': auditCompletionPercentage + '%' }">
+                <div class="progress-fill" [style.width.%]="auditCompletionPercentage || 0">
                 </div>
             </div>
             <div class="percentage"><span>{{auditCompletionPercentage}}% complete</span></div>
         </div>
     </div>
     <div class="functional-template-question-section">
-        <div *ngFor="let question of allFunctionalQuestions; let i = index" class="questions-section"
-            (click)="questionInfo(i)">
+        <div *ngFor="let question of auditQuestions; let i = index" class="questions-section"
+            role="button" tabindex="0" [attr.aria-label]="'Open question ' + (i + 1)"
+            (click)="questionInfo(i)" (keydown.enter)="questionInfo(i)" (keydown.space)="questionInfo(i)">
             <div class="question-number-and-text">
-                <div class="question-number"><span>Question {{i+1}}</span></div>
+                <div class="question-number">
+                    <span>Question {{i+1}}</span>
+                </div>
                 <div class="question-text">
-                    <span>{{question}}</span>
+                    <span>{{question.text}}</span>
                 </div>
             </div>
+            <span class="saved-badge" *ngIf="!isAuditor && question.responded && !question.submitted">Saved</span>
+            <span class="submitted-badge" *ngIf="!isAuditor && question.submitted">Submitted</span>
             <!-- <div class="status" (click)="customizeQuestion(i)"><span>{{question.status}}</span></div> -->
         </div>
     </div>
     <div class="submit-btn">
-        <button class="submit" [disabled]="auditCompletionPercentage !== 100"
+        <button class="submit" [disabled]="!isAuditor || !allQuestionsAnswered()"
             (click)="openSubmitConfirmationDialog()">Submit</button>
     </div>
 </div>

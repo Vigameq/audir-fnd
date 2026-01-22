@@ -28,17 +28,33 @@ export class AudirService {
     return this.http.post(`${environment.apiUrl}/api/createUser`, userDetails);
   }
 
-  updateUser(userDetails: FormData): any {
+  updateUser(userDetails: any): any {
     return this.http.post(`${environment.apiUrl}/api/updateUser`, userDetails);
   }
 
-  updatePassword(userDetails: FormData): any {
+  updatePassword(userDetails: any): any {
     return this.http.post(`${environment.apiUrl}/api/updatePassword`, userDetails);
   }
 
   getTemplate(template_id: any) {
     const templateDetails = { "template_id": template_id };
     return this.http.post(`${environment.apiUrl}/api/getTemplate`, templateDetails);
+  }
+
+  updateTemplateQuestions(payload: any) {
+    return this.http.post(`${environment.apiUrl}/api/updateTemplateQuestions`, payload);
+  }
+
+  listUsers(payload: any) {
+    return this.http.post(`${environment.apiUrl}/api/listUsers`, payload);
+  }
+
+  deleteUser(payload: any) {
+    return this.http.post(`${environment.apiUrl}/api/deleteUser`, payload);
+  }
+
+  dashboardSummary(payload: any) {
+    return this.http.post(`${environment.apiUrl}/api/dashboardSummary`, payload);
   }
 
   getAllChildPlans(email: any, date: any) {
@@ -98,14 +114,18 @@ export class AudirService {
   }
 
   getEvidence(audit_id: any, evidenceFileName: any) {
-    return this.http.get<any>(`${environment.apiUrl}/api/questionDataFile/` + audit_id + '/' + evidenceFileName, {
-      responseType: 'arraybuffer' as 'json'
+    const safeFileName = encodeURIComponent(evidenceFileName || '');
+    return this.http.get(`${environment.apiUrl}/api/questionDataFile/` + audit_id + '/' + safeFileName, {
+      observe: 'response',
+      responseType: 'arraybuffer'
     });
   }
 
   getNCEvidence(audit_id: any, evidenceFileName: any, responseTYpe: any) {
-    return this.http.get<any>(`${environment.apiUrl}/api/questionNCDataFile/` + audit_id + '/' + responseTYpe + '/' + evidenceFileName, {
-      responseType: 'arraybuffer' as 'json'
+    const safeFileName = encodeURIComponent(evidenceFileName || '');
+    return this.http.get(`${environment.apiUrl}/api/questionNCDataFile/` + audit_id + '/' + responseTYpe + '/' + safeFileName, {
+      observe: 'response',
+      responseType: 'arraybuffer'
     });
   }
 

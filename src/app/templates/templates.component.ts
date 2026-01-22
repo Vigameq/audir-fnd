@@ -12,7 +12,7 @@ import { ImportTemplateDialogComponent } from './Import-template-dialog/import-t
 export class TemplatesComponent {
   templates: any[] = [];
   editedQuestionText: string | undefined = '';
-  allQuestions: any[] = []
+  allQuestions: { text: string; draft: string; isEditing: boolean }[] = [];
   selectedFunctionId: any[] = [];
   standardSelectedOption: any = { name: 'Select Template' };
   templateName: string = '';
@@ -39,7 +39,12 @@ export class TemplatesComponent {
   getTemplateQuestions(template_id: number) {
     this.audirService.getTemplate(template_id).subscribe((templateDetails: any) => {
       if (templateDetails) {
-        this.allQuestions = templateDetails.questions;
+        const questions = Array.isArray(templateDetails.questions) ? templateDetails.questions : [];
+        this.allQuestions = questions.map((question: string) => ({
+          text: question,
+          draft: question,
+          isEditing: false
+        }));
       }
     }, (error: any) => {
       console.error('Error for getting template details:', error);
@@ -94,6 +99,72 @@ export class TemplatesComponent {
       this.getTemplateQuestions(this.selectedFunctionId[0]);
       localStorage.setItem("selectedTemplate", JSON.stringify({}));
     }
+  }
+
+  getActiveTemplateId() {
+    if (this.selectedFunctionId.length > 0) {
+      return this.selectedFunctionId[0];
+    }
+    if (this.standardSelectedOption && this.standardSelectedOption.id) {
+      return this.standardSelectedOption.id;
+    }
+    return null;
+  }
+
+  startEdit(index: number) {
+    const question = this.allQuestions[index];
+    if (!question) {
+      return;
+    }
+    question.isEditing = true;
+    question.draft = question.text;
+  }
+
+  saveEdit(index: number) {
+    const question = this.allQuestions[index];
+    if (!question) {
+      return;
+    }
+    const updated = (question.draft || '').trim();
+    if (!updated) {
+      this.audirService.showError('Question text cannot be empty');
+      return;
+    }
+    const templateId = this.getActiveTemplateId();
+    if (!templateId) {
+      this.audirService.showError('Template not selected');
+      return;
+    }
+    const updatedQuestions = this.allQuestions.map((item, idx) =>
+      idx === index ? updated : item.text
+    );
+    const payload = {
+      template_id: templateId,
+      questions: updatedQuestions
+    };
+    this.audirService.updateTemplateQuestions(payload).subscribe({
+      next: (response: any) => {
+        if (response) {
+          question.text = updated;
+          question.draft = updated;
+          question.isEditing = false;
+          this.audirService.showSuccess('Question updated');
+        }
+      },
+      error: (error: any) => {
+        console.error('Error updating template question:', error);
+        this.audirService.showError('Failed to update question');
+      }
+    });
+  }
+
+  cancelEdit(index: number) {
+    const question = this.allQuestions[index];
+    if (!question) {
+      return;
+    }
+    question.draft = question.text;
+    question.isEditing = false;
   }
 
   getTemplates() {

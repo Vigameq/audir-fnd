@@ -5,7 +5,7 @@
   width: 20%;
   height: 100%;
   margin: 1px;
-  background-color: #ffffff;
+  background-color: var(--surface);
   transition: all 0.3s ease;
   z-index: 10;
   font-family: 'Apple SD Gothic Neo', sans-serif;
@@ -34,53 +34,85 @@
     li {
       width: 98%;
       border-radius: 15px;
-      transition: background-color 0.3s;
+      transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
       margin: 4px 2px;
 
       a {
         width: 100%;
         display: flex;
-        padding: 12px 0;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
         text-decoration: none;
         text-align: start;
+        border-radius: 15px;
 
-        .icons {
-          width: 42px;
-          height: 21px;
-          padding: 0 10px;
+        .icon-wrap {
+          width: 34px;
+          height: 34px;
+          border-radius: 10px;
+          background-color: #f1f1f1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          transition: background-color 0.2s, box-shadow 0.2s;
         }
 
-        span {
-          color: #515151;
-          font-weight: 400;
+        .icons {
+          width: 18px;
+          height: 18px;
+          filter: grayscale(100%) contrast(1.1) brightness(0.4);
+        }
+
+        .label {
+          color: var(--muted);
+          font-weight: 500;
           line-height: 19.2px;
-          letter-spacing: 0;
+          letter-spacing: 0.2px;
           display: block;
           width: 100%;
         }
       }
 
       &.active a {
-        background-color: #1D2431;
-        border-radius: 15px;
+        background-color: var(--ink);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
 
-        span {
-          color: #FFFFFF;
+        .label {
+          color: #ffffff;
+        }
+
+        .icon-wrap {
+          background-color: var(--accent);
+        }
+
+        .icons {
+          filter: brightness(0) invert(1);
         }
       }
 
       &:hover {
-        background-color: #FDE714;
+        background-color: var(--accent-soft);
 
         a {
-          span {
-            color: #1D2431;
+          .label {
+            color: var(--ink);
+          }
+
+          .icon-wrap {
+            background-color: #ffffff;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+          }
+
+          .icons {
+            filter: grayscale(100%) contrast(1.1) brightness(0.2);
           }
         }
 
         &.active a {
-          span {
-            color: #FFFFFF;
+          .label {
+            color: #ffffff;
           }
         }
       }
@@ -94,7 +126,7 @@
 }
 
 .sidebar::-webkit-scrollbar-track {
-  background-color: #1D2431;
+  background-color: var(--ink);
   border-radius: 10px;
 }
 

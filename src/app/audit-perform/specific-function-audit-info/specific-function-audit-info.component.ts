@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AudirService } from 'src/services/audir-services.service';
 import { Location } from "@angular/common";
 import { SubmitConfirmationDialogComponent } from '../submit-confirmation-dialog/submit-confirmation-dialog.component';
+import { catchError, forkJoin, of } from 'rxjs';
 @Component({
   selector: 'app-specific-function-audit-info',
   templateUrl: './specific-function-audit-info.component.html',
@@ -12,7 +13,8 @@ import { SubmitConfirmationDialogComponent } from '../submit-confirmation-dialog
 })
 export class SpecificFunctionAuditInfoComponent {
 
-  allFunctionalQuestions!: any[];
+  auditQuestions: { text: string; template: string; templateType: string; responded: boolean; answered: boolean; submitted: boolean }[] = [];
+  isAuditor = false;
   auditCompletionPercentage!: any;
   auditInfo: any;
   auditId: any;
@@ -23,13 +25,13 @@ export class SpecificFunctionAuditInfoComponent {
     private audirService: AudirService,
     private router: Router,
     private location: Location) {
+    this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
     this.route.paramMap.subscribe(params => {
       this.auditId = { "audit_id": params.get('id') };
       this.route.queryParams.subscribe(params => {
         this.parentAuditID = { "audit_id": params['parentAuditID'] };
       });
       this.getPlanAudit(this.auditId);
-      this.getAuditPlanCompletionPercentage(this.auditId);
       this.getQuestions(this.auditId, this.parentAuditID);
     });
   }
@@ -38,22 +40,29 @@ export class SpecificFunctionAuditInfoComponent {
   }
 
   getQuestions(auditId: any, parentAuditID: any) {
-    let questionTemplates: any;
+    const questionTemplates: any = {};
+    const templateTypeByKey: Record<string, string> = {};
+
+    const addTemplates = (templates: any, templateType: string) => {
+      if (!templates) {
+        return;
+      }
+      Object.keys(templates).forEach((key) => {
+        questionTemplates[key] = templates[key];
+        templateTypeByKey[key] = templateType;
+      });
+    };
+
     this.audirService.getAuditQuestions(parentAuditID).subscribe((auditQuestion: any) => {
       if (auditQuestion) {
-        questionTemplates =
-        {
-          ...auditQuestion.questions?.function_template,
-          ...auditQuestion.questions?.template
-        };
-        this.audirService.getAuditQuestions(auditId).subscribe((auditQuestion: any) => {
-          if (auditQuestion) {
-            questionTemplates = {
-              ...questionTemplates,
-              ...(auditQuestion.questions?.function_template)
-            };
-            this.getAllQuestions(questionTemplates);
+        addTemplates(auditQuestion.questions?.function_template, 'function_template');
+        addTemplates(auditQuestion.questions?.template, 'template');
+        this.audirService.getAuditQuestions(auditId).subscribe((childQuestion: any) => {
+          if (childQuestion) {
+            addTemplates(childQuestion.questions?.function_template, 'function_template');
           }
+          this.buildQuestions(questionTemplates, templateTypeByKey);
+          this.loadQuestionStatuses();
         }, (error: any) => {
           console.error('Error for getting questions:', error);
         });
@@ -63,24 +72,162 @@ export class SpecificFunctionAuditInfoComponent {
     });
   }
 
-  getAllQuestions(questionTemplates: any): any {
+  buildQuestions(questionTemplates: any, templateTypeByKey: Record<string, string>) {
     const templates = new Set();
-    const result: any = {};
-    for (const key of Object.keys(questionTemplates)) {
+    const questions: any[] = [];
+    for (const key of Object.keys(questionTemplates || {})) {
       const normalizedKey = key.replace(/[\s_]/g, '').toLowerCase();
       if (!templates.has(normalizedKey)) {
         templates.add(normalizedKey);
-        result[key] = questionTemplates[key];
+        const templateType = templateTypeByKey[key] || 'function_template';
+        const questionList = Array.isArray(questionTemplates[key]) ? questionTemplates[key] : [];
+        questionList.forEach((question: any) => {
+          questions.push({
+            text: question,
+            template: key,
+            templateType: templateType,
+            responded: false,
+            answered: false,
+            submitted: false
+          });
+        });
       }
     }
-    this.allFunctionalQuestions = Object.values(result).flat();
+    this.auditQuestions = questions;
+  }
+
+  loadQuestionStatuses() {
+    if (!this.auditQuestions.length) {
+      return;
+    }
+    const email = localStorage.getItem('user')?.toString() || '';
+    const requests = this.auditQuestions.map((question) => {
+      const payload = {
+        audit_id: this.auditId.audit_id,
+        template: question.template,
+        template_type: question.templateType,
+        question: question.text,
+        email: email
+      };
+      return this.audirService.getQuestionData(payload).pipe(
+        catchError(() => of(null))
+      );
+    });
+
+    forkJoin(requests).subscribe((responses: any[]) => {
+      responses.forEach((response, index) => {
+        let submitted = this.isSubmittedFlag(response?.is_submitted);
+        if (!submitted && !this.isAuditor) {
+          submitted = this.getAuditeeSubmittedFlag(this.auditQuestions[index]);
+        }
+        let answered = this.hasResponseForRole(response);
+        if (!answered && !this.isAuditor) {
+          const draft = this.getAuditeeDraft(this.auditQuestions[index]);
+          answered = (draft?.auditee_response || '').trim() !== '' || (draft?.link || '').trim() !== '';
+        }
+        this.auditQuestions[index].submitted = submitted;
+        this.auditQuestions[index].answered = answered;
+        this.auditQuestions[index].responded = answered;
+      });
+      this.updateCompletionPercentage();
+    }, (error: any) => {
+      console.error('Error getting question responses:', error);
+    });
+  }
+
+  refreshQuestionStatus(index: number) {
+    const question = this.auditQuestions[index];
+    if (!question) {
+      return;
+    }
+    const payload = {
+      audit_id: this.auditId.audit_id,
+      template: question.template,
+      template_type: question.templateType,
+      question: question.text,
+      email: localStorage.getItem('user')?.toString() || ''
+    };
+    this.audirService.getQuestionData(payload).subscribe((response: any) => {
+      let submitted = this.isSubmittedFlag(response?.is_submitted);
+      if (!submitted && !this.isAuditor) {
+        submitted = this.getAuditeeSubmittedFlag(question);
+      }
+      let answered = this.hasResponseForRole(response);
+      if (!answered && !this.isAuditor) {
+        const draft = this.getAuditeeDraft(question);
+        answered = (draft?.auditee_response || '').trim() !== '' || (draft?.link || '').trim() !== '';
+      }
+      question.submitted = submitted;
+      question.answered = answered;
+      question.responded = answered;
+      this.updateCompletionPercentage();
+    }, (error: any) => {
+      console.error('Error getting question data:', error);
+    });
+  }
+
+  hasResponseForRole(response: any) {
+    const value = this.isAuditor
+      ? response?.auditor_notes?.[0]?.auditor_notes
+      : response?.auditee_response?.[0]?.auditee_response;
+    return value != null && value.toString().trim() !== '';
+  }
+
+  allQuestionsAnswered() {
+    return this.auditQuestions.length > 0
+      && this.auditQuestions.every((question) => question.answered);
+  }
+
+  updateCompletionPercentage() {
+    const total = this.auditQuestions.length;
+    if (!total) {
+      this.auditCompletionPercentage = 0;
+      return;
+    }
+    const answeredCount = this.auditQuestions.filter((question) => question.answered).length;
+    const percent = (answeredCount / total) * 100;
+    this.auditCompletionPercentage = parseFloat(percent.toFixed(2));
+  }
+
+  getAuditeeDraft(question: { text: string; template: string; templateType: string }) {
+    const questionKey = encodeURIComponent(question.text || '');
+    const key = `auditeeDraft:${this.auditId.audit_id}:${question.templateType}:${question.template}:${questionKey}`;
+    const draftRaw = localStorage.getItem(key);
+    if (!draftRaw) {
+      return null;
+    }
+    try {
+      return JSON.parse(draftRaw);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  getAuditeeSubmittedFlag(question: { text: string; template: string; templateType: string }) {
+    const questionKey = encodeURIComponent(question.text || '');
+    const key = `auditeeSubmitted:${this.auditId.audit_id}:${question.templateType}:${question.template}:${questionKey}`;
+    return localStorage.getItem(key) === 'true';
+  }
+
+
+
+  isSubmittedFlag(value: any) {
+    if (typeof value === 'string') {
+      const normalized = value.toLowerCase();
+      return normalized === 'true' || normalized === '1' || normalized === 'submitted';
+    }
+    return value === true || value === 1;
   }
 
 
   getAuditPlanCompletionPercentage(auditId: any) {
     this.audirService.getAuditCompletionPercentage(auditId).subscribe((response: any) => {
       if (response) {
-        this.auditCompletionPercentage = parseFloat((response.completion_percent).toFixed(2));
+        const rawPercent = Number(response.completion_percent);
+        const clampedPercent = Number.isFinite(rawPercent)
+          ? Math.min(100, Math.max(0, rawPercent))
+          : 0;
+        this.auditCompletionPercentage = parseFloat(clampedPercent.toFixed(2));
       } else {
         console.error('Unable to get audit completion percentage');
       }
@@ -92,7 +239,14 @@ export class SpecificFunctionAuditInfoComponent {
   getPlanAudit(auditId: any) {
     this.audirService.getAuditPlan(auditId).subscribe((audit: any) => {
       if (audit) {
-        this.auditInfo = audit.audit_data;
+        const auditData = Array.isArray(audit.audit_data) ? audit.audit_data[0] : audit.audit_data;
+        if (auditData) {
+          this.auditInfo = auditData;
+          return;
+        }
+      }
+      if (this.parentAuditID?.audit_id && auditId?.audit_id !== this.parentAuditID.audit_id) {
+        this.getPlanAudit(this.parentAuditID);
       }
     }, (error: any) => {
       console.error('Error for getting audit plan:', error);
@@ -100,6 +254,11 @@ export class SpecificFunctionAuditInfoComponent {
   }
 
   questionInfo(index: number) {
+    const question = this.auditQuestions[index];
+    if (!question) {
+      return;
+    }
+    const auditInfo = this.auditInfo || { audit_id: this.auditId?.audit_id };
     const dialogRef = this.dialog.open(CustomiseAuditQuestionDialogComponent, {
       disableClose: true,
       width: '1300px',
@@ -107,14 +266,16 @@ export class SpecificFunctionAuditInfoComponent {
       panelClass: 'customize-question-dialog-container',
       data: {
         index: index + 1,
-        questionText: this.allFunctionalQuestions[index],
-        auditInfo: this.auditInfo
+        questionText: question.text,
+        template: question.template,
+        templateType: question.templateType,
+        auditInfo: auditInfo
       }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.getAuditPlanCompletionPercentage(this.auditId);
+          this.refreshQuestionStatus(index);
       }
       console.log(`Dialog result: ${result}`);
     });

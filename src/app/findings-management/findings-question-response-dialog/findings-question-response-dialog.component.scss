@@ -18,13 +18,13 @@
             line-height: 100%;
 
             svg:hover {
-                fill: #FDE714;
+                fill: var(--accent);
             }
         }
     }
 
     .content-section {
-        border-top: 2px solid #1D2431;
+        border-top: 2px solid var(--ink);
         padding: 20px 40px;
         font-family: 'Apple SD Gothic Neo', sans-serif;
         overflow-y: auto;
@@ -54,7 +54,7 @@
                     line-height: 100%;
                     font-size: 18px;
                     font-weight: 500;
-                    color: #515151;
+                    color: var(--muted);
                     max-width: 720px;
                     word-wrap: break-word;
                 }
@@ -86,17 +86,17 @@
                         height: 44px;
                         line-height: 100%;
                         font-size: 16px;
-                        background-color: #1D2431;
-                        border: 1px #1D2431 solid;
+                        background-color: var(--ink);
+                        border: 1px var(--ink) solid;
                         border-radius: 6px;
                         color: #fff;
                         outline: none;
                     }
 
                     button:hover {
-                        background-color: #FDE714;
-                        color: #1D2431;
-                        border: 1px #FDE714 solid;
+                        background-color: var(--accent);
+                        color: var(--ink);
+                        border: 1px var(--accent) solid;
                         outline: none;
                     }
                 }
@@ -149,7 +149,7 @@
                     line-height: 100%;
                     font-size: 16px;
                     font-weight: 400;
-                    color: #515151;
+                    color: var(--muted);
                     height: 97px;
                 }
 
@@ -233,7 +233,7 @@
                         width: 200px;
                         border-radius: 6px;
                         color: #F5F5F5;
-                        background-color: #1D2431;
+                        background-color: var(--ink);
                         border: 1px solid #2C2C2C;
                         font-size: 16px;
                         font-weight: 400;
@@ -247,8 +247,8 @@
                     }
 
                     .upload:hover {
-                        border-color: #FDE714;
-                        background-color: #FDE714;
+                        border-color: var(--accent);
+                        background-color: var(--accent);
                         color: #2C2C2C;
                     }
 
@@ -283,7 +283,7 @@
                             height: 44px;
                             background-color: #FFFFFF;
                             font-family: 'Apple SD Gothic Neo', sans-serif;
-                            border: 1px solid #dbdbdb;
+                            border: 1px solid var(--border);
                             border-radius: 6px;
                             font-size: 16px;
                             padding: 10px 30px 10px 10px;
@@ -335,7 +335,7 @@
             .save {
                 width: 200px;
                 height: 44px;
-                color: #1D2431;
+                color: var(--ink);
                 border-radius: 6px;
                 border: 1px solid #2C2C2C;
                 background-color: #fff;
@@ -348,9 +348,9 @@
 
             .cancel:hover,
             .save:hover:not(:disabled) {
-                background-color: #FDE714;
+                background-color: var(--accent);
                 color: #2C2C2C;
-                border-color: #FDE714;
+                border-color: var(--accent);
             }
         }
     }

@@ -1,3 +1,115 @@
-<div class="header">
-        <img src="../assets/images/work_in_progress.png" style="height: 150px;" alt="Logo" id="audir-logo" />
+<div class="dashboard">
+  <div class="hero">
+    <div class="hero-text">
+      <div class="eyebrow">Audit Health</div>
+      <h1>Operational overview for audits</h1>
+      <p>Track audit volume, completion pace, and bottlenecks at a glance.</p>
+    </div>
+    <div class="hero-controls">
+      <div class="date-filter">
+        <label>From</label>
+        <input type="date" [(ngModel)]="fromDate" />
+      </div>
+      <div class="date-filter">
+        <label>To</label>
+        <input type="date" [(ngModel)]="toDate" />
+      </div>
+      <button type="button" class="apply-btn" (click)="applyDateFilter()">Apply</button>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric-card" *ngFor="let metric of metrics">
+      <div class="metric-label">{{ metric.label }}</div>
+      <div class="metric-value">{{ metric.value }}</div>
+      <div class="metric-trend">{{ metric.trend }}</div>
+    </div>
+  </div>
+
+  <div class="charts">
+    <div class="chart-card">
+      <div class="card-header">
+        <h2>Status breakdown</h2>
+        <span class="subtext">Current audits by status</span>
+      </div>
+      <div class="status-bar">
+        <div
+          class="status-segment"
+          *ngFor="let item of statusData"
+          [style.width.%]="getStatusPercent(item.count)"
+          [style.background]="item.color"
+          [attr.title]="item.label + ' ' + getStatusPercent(item.count) + '%'"
+        ></div>
+      </div>
+      <div class="status-legend">
+        <div class="legend-item" *ngFor="let item of statusData">
+          <span class="dot" [style.background]="item.color"></span>
+          <span class="label">{{ item.label }}</span>
+          <span class="value">{{ item.count }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="card-header">
+        <h2>Auditee performance</h2>
+        <span class="subtext">Completion rate by auditee</span>
+      </div>
+      <div class="auditor-list">
+        <div class="auditor-row" *ngFor="let auditee of auditeeData">
+          <div class="auditor-name">{{ auditee.name }}</div>
+          <div class="auditor-meta">{{ auditee.audits }} audits</div>
+          <div class="auditor-progress">
+            <div class="progress-track">
+              <div class="progress-fill" [style.width.%]="auditee.completion"></div>
+            </div>
+            <span class="progress-value">{{ auditee.completion }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts secondary">
+    <div class="chart-card">
+      <div class="card-header">
+        <h2>Auditor performance</h2>
+        <span class="subtext">Completion rate by auditor</span>
+      </div>
+      <div class="auditor-list">
+        <div class="auditor-row" *ngFor="let auditor of auditorData">
+          <div class="auditor-name">{{ auditor.name }}</div>
+          <div class="auditor-meta">{{ auditor.audits }} audits</div>
+          <div class="auditor-progress">
+            <div class="progress-track">
+              <div class="progress-fill" [style.width.%]="auditor.completion"></div>
+            </div>
+            <span class="progress-value">{{ auditor.completion }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card highlight">
+      <div class="card-header">
+        <h2>Action focus</h2>
+        <span class="subtext">Priority follow-ups</span>
+      </div>
+      <div class="focus-list">
+        <div class="focus-item">
+          <span class="focus-label">Overdue audits</span>
+          <span class="focus-value">7 audits need closure</span>
+        </div>
+        <div class="focus-item">
+          <span class="focus-label">Awaiting response</span>
+          <span class="focus-value">12 audits in review</span>
+        </div>
+        <div class="focus-item">
+          <span class="focus-label">Next 7 days</span>
+          <span class="focus-value">18 audits scheduled</span>
+        </div>
+      </div>
+      <button class="primary-btn" type="button">Open audit queue</button>
+    </div>
+  </div>
 </div>

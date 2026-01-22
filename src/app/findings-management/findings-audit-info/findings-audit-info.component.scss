@@ -11,7 +11,7 @@
 
         svg:hover {
             path {
-                fill: #FDE714
+                fill: var(--accent)
             }
         }
     }
@@ -34,7 +34,7 @@
             justify-content: space-between;
             padding: 20px;
             border: 1px solid #000000;
-            background-color: #1D2431;
+            background-color: var(--ink);
             color: #FFFFFF;
             gap: 20px;
             border-radius: 15px;
@@ -127,7 +127,7 @@
             flex-direction: column;
             padding: 20px;
             border: 1px solid #000000;
-            background-color: #1D2431;
+            background-color: var(--ink);
             color: #FFFFFF;
             gap: 10px;
             border-radius: 15px;
@@ -164,10 +164,20 @@
             flex-direction: row;
             gap: 30px;
             border-radius: 20px;
-            border: none;
+            border: 1px solid transparent;
             background-color: #F9F8F8;
             padding: 20px;
             justify-content: space-between;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+
+            &:hover,
+            &:focus,
+            &:focus-visible {
+                border-color: var(--accent);
+                box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+                transform: translateY(-1px);
+                outline: none;
+            }
 
             .question-number-and-text {
                 display: flex;
@@ -208,7 +218,7 @@
                 .question-text {
                     font-size: 18px;
                     font-weight: 500;
-                    color: #515151;
+                    color: var(--muted);
                     line-height: 100%;
                 }
             }
@@ -218,8 +228,8 @@
                 height: 20px;
                 padding: 2px;
                 border-radius: 6px;
-                background-color: #FDE714;
-                color: #515151;
+                background-color: var(--accent);
+                color: var(--muted);
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -245,9 +255,9 @@
         }
 
         .submit:hover {
-            background-color: #FDE714;
+            background-color: var(--accent);
             color: black;
-            border: 1px solid #FDE714;
+            border: 1px solid var(--accent);
         }
         .submit:disabled {
             background-color: #bdbdbd;

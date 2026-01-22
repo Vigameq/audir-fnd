@@ -45,7 +45,7 @@
                 span {
                     font-size: 16px;
                     font-weight: 400;
-                    color: #515151;
+                    color: var(--muted);
                     line-height: 100%;
                 }
             }
@@ -68,8 +68,8 @@
                     width: 164px;
                     border-radius: 30px;
                     color: #FFFFFF;
-                    background-color: #1D2431;
-                    border: 1px solid #1D2431;
+                    background-color: var(--ink);
+                    border: 1px solid var(--ink);
                     font-size: 14px;
                     font-weight: 400;
                     line-height: 100%;
@@ -79,7 +79,7 @@
 
                 input {
                     text-align: left;
-                    color: #1D2431;
+                    color: var(--ink);
                     cursor: text;
                     outline: none;
                     padding: 0 20px;
@@ -87,14 +87,14 @@
                 }
 
                 input:hover {
-                    border-color: #FDE714;
+                    border-color: var(--accent);
                 }
 
                 button:hover,
                 .upload-btn:hover {
-                    border-color: #FDE714;
-                    background-color: #FDE714;
-                    color: #1D2431;
+                    border-color: var(--accent);
+                    background-color: var(--accent);
+                    color: var(--ink);
                 }
 
                 .upload-btn {
@@ -108,7 +108,7 @@
 
         .download-template .button button {
             background-color: #FFFFFF;
-            color: #1D2431;
+            color: var(--ink);
         }
 
         .svg-icon {
@@ -132,8 +132,8 @@
         }
 
         button:hover {
-            border-color: #FDE714;
-            background-color: #FDE714;
+            border-color: var(--accent);
+            background-color: var(--accent);
             color: #000000;
         }
 
