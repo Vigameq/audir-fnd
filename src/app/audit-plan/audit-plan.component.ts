@@ -67,6 +67,7 @@ export class AuditPlanComponent {
   leadAuditorsAll: any[] = [];
   isImportVisible: boolean = true;
   isDateMatched: boolean = false;
+  lastConflictKey = '';
   // showAllPlans: boolean = false;
   auditPlans: any = [];
   selectedDate: any = new Date();
@@ -694,19 +695,55 @@ export class AuditPlanComponent {
     }
   }
 
+
+  private isSameDateHour(left: Date, right: Date): boolean {
+    return left.getUTCFullYear() == right.getUTCFullYear()
+      && left.getUTCMonth() == right.getUTCMonth()
+      && left.getUTCDate() == right.getUTCDate()
+      && left.getUTCHours() == right.getUTCHours();
+  }
+
   filterDropdown(dropdownList: any, auditPlanList: any, key: any, size = 10000) {
     const filterEmails = new Set();
+    const selectedStartRaw = this.auditPlanForm.value?.startDateTime;
+    const selectedEndRaw = this.auditPlanForm.value?.endDateTime;
+    if (!selectedStartRaw || !selectedEndRaw) {
+      return;
+    }
+    const selectedStart = this.customISOToDate(selectedStartRaw);
+    const selectedEnd = this.customISOToDate(selectedEndRaw);
+    let hasConflict = false;
+    const auditorEmailCounts = new Map<string, number>();
+
     for (const audit of auditPlanList) {
       const arr = audit[key];
+      const auditStart = new Date(audit.start_date);
+      const auditEnd = new Date(audit.end_date);
 
-      if (Array.isArray(arr) &&
-        (new Date(audit.start_date).getTime() === this.customISOToDate(this.auditPlanForm.value?.startDateTime).getTime()
-          && new Date(audit.end_date).getTime() === this.customISOToDate(this.auditPlanForm.value?.endDateTime).getTime())) {
+      if (Array.isArray(arr)
+        && this.isSameDateHour(auditStart, selectedStart)
+        && this.isSameDateHour(auditEnd, selectedEnd)) {
         this.isDateMatched = true;
+        hasConflict = true;
         for (const obj of arr) {
           if (obj.email !== undefined) {
             filterEmails.add(obj.email);
+            if (key === 'auditors') {
+              const emailKey = String(obj.email).toLowerCase();
+              auditorEmailCounts.set(emailKey, (auditorEmailCounts.get(emailKey) || 0) + 1);
+            }
           }
+        }
+      }
+    }
+
+    if (hasConflict && key === 'auditors') {
+      const hasDuplicateAuditor = Array.from(auditorEmailCounts.values()).some(count => count > 1);
+      if (hasDuplicateAuditor) {
+        const warningKey = `${selectedStart.toISOString().slice(0, 13)}-${selectedEnd.toISOString().slice(0, 13)}`;
+        if (this.lastConflictKey !== warningKey) {
+          this.lastConflictKey = warningKey;
+          this.audirService.showWarning('Heads up: This hour already has audits scheduled for the same auditor.');
         }
       }
     }
