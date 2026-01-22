@@ -155,7 +155,7 @@ export class AuditPlanComponent {
     this.audirService.getAuditLists(payload).subscribe((response: any) => {
       if (response) {
         const completeAuditList = response.audit_data || [];
-        this.parent_audits = completeAuditList
+        const mapped = completeAuditList
           .filter((item: any) => item && (item.audit_title || item.title))
           .map((item: any) => ({
             title: item.audit_title || item.title,
@@ -163,6 +163,9 @@ export class AuditPlanComponent {
             end_date: item.end_date,
             lead_auditor: item.lead_auditor
           }));
+        if (mapped.length > 0) {
+          this.parent_audits = mapped;
+        }
       }
     }, (error: any) => {
       console.error('Error for getting audits:', error);
@@ -177,7 +180,8 @@ export class AuditPlanComponent {
   getPlanItems() {
     this.audirService.getPlanItems(this.userEmail).subscribe((items: any) => {
       if (items) {
-        this.parentAudits = items.parent_audits;
+        this.parentAudits = items.parent_audits || [];
+        this.parent_audits = [...this.parentAudits];
         this.templates = items.templates.map((template: any) => ({ ...template }));
         this.functionTemplates = items.templates.map((template: any) => ({ ...template }));
         this.auditees = items.users.auditees;
