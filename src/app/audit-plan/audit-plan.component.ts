@@ -63,6 +63,8 @@ export class AuditPlanComponent {
   functionTemplates: any[] = [];
   auditees: any[] = [];
   auditors: any[] = [];
+  leadAuditors: any[] = [];
+  leadAuditorsAll: any[] = [];
   isImportVisible: boolean = true;
   isDateMatched: boolean = false;
   // showAllPlans: boolean = false;
@@ -124,12 +126,14 @@ export class AuditPlanComponent {
         this.isParentAudit = true;
         this.auditPlanForm.get('leadAuditorValue')?.setValue('');
         this.auditors = this.completeAuditors;
+        this.leadAuditors = [...this.leadAuditorsAll];
         this.auditees = this.completeAuditees;
       }
       else {
         this.isParentAudit = false;
         this.resetAuditorsAuditees();
         this.auditors = this.completeAuditors;
+        this.leadAuditors = [...this.leadAuditorsAll];
       }
     });
     this.getPlanItems();
@@ -184,14 +188,52 @@ export class AuditPlanComponent {
         this.parent_audits = [...this.parentAudits];
         this.templates = items.templates.map((template: any) => ({ ...template }));
         this.functionTemplates = items.templates.map((template: any) => ({ ...template }));
-        this.auditees = items.users.auditees;
-        this.auditors = items.users.auditors;
-        this.completeAuditees = items.users.auditees;
-        this.completeAuditors = items.users.auditors;
+        const users = items.users || {};
+        this.auditees = users.auditees || [];
+        this.auditors = users.auditors || [];
+        this.leadAuditorsAll = this.buildLeadAuditors(users);
+        this.leadAuditors = [...this.leadAuditorsAll];
+        this.completeAuditees = users.auditees || [];
+        this.completeAuditors = users.auditors || [];
       }
     }, (error: any) => {
       console.error('Error for getting plans:', error);
     });
+  }
+
+  private buildLeadAuditors(users: any): any[] {
+    const sources = [
+      ...(users?.auditors || []),
+      ...(users?.auditees || []),
+      ...(users?.users || []),
+      ...(users?.all_users || []),
+      ...(users?.allUsers || [])
+    ];
+    const byEmail = new Map<string, any>();
+    for (const user of sources) {
+      const email = (user?.email || user?.eMail || '').toString().toLowerCase();
+      if (!email) continue;
+      if (!byEmail.has(email)) {
+        byEmail.set(email, user);
+      }
+    }
+    const allUsers = Array.from(byEmail.values());
+    const roleAuditors = allUsers.filter((user: any) => {
+      const role = (
+        user?.role ||
+        user?.Role ||
+        user?.user_role ||
+        user?.userRole ||
+        user?.type ||
+        user?.user_type ||
+        ''
+      ).toString().toLowerCase();
+      return role === 'auditor';
+    });
+    if (roleAuditors.length > 0) {
+      return roleAuditors;
+    }
+    return users?.auditors || [];
   }
 
   onTemplateSelectionChange(event: Event, index: any) {
@@ -670,6 +712,7 @@ export class AuditPlanComponent {
     else {
       if (key === 'auditors') {
         this.auditors = this.completeAuditors;
+        this.leadAuditors = [...this.leadAuditorsAll];
       }
       else if (key === 'auditees') {
         this.auditees = this.completeAuditees;

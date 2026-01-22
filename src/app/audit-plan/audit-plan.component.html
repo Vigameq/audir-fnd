@@ -127,7 +127,7 @@
                             <select id="lead-auditor" class="dropdown-select" formControlName="leadAuditorValue"
                                 name="leadAuditorValue" required>
                                 <option value="" disabled selected>Select Lead Auditor..</option>
-                                <option *ngFor="let auditor of auditors" [value]="auditor.email">
+                                <option *ngFor="let auditor of leadAuditors" [value]="auditor.email">
                                     {{ auditor.Name }}</option>
                             </select>
                             <div class="dropdown-arrow">
@@ -143,7 +143,7 @@
                             <span [ngStyle]="{'max-width.px': maxWidth}">{{selectedAuditorOptions}}</span>
                         </div>
                         <div *ngIf="isAuditorOptionsOpen" class="dropdown-content" #auditorsDropdown>
-                            <label *ngFor="let auditor of auditors; let i = index" (click)="onCheckboxClick($event)">
+                            <label *ngFor="let auditor of leadAuditors; let i = index" (click)="onCheckboxClick($event)">
                                 <input type="checkbox" [value]="auditor.Name" class="checkbox-input"
                                     (change)="onAuditorSelectionChange($event,i,auditor)"
                                     [checked]="auditors[i].checked" />
