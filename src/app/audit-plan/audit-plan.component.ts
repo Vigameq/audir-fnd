@@ -161,11 +161,13 @@ export class AuditPlanComponent {
         const completeAuditList = response.audit_data || [];
         const mapped = completeAuditList
           .filter((item: any) => item && (item.audit_title || item.title))
+          .filter((item: any) => !this.isClosedAudit(item))
           .map((item: any) => ({
             title: item.audit_title || item.title,
             start_date: item.start_date,
             end_date: item.end_date,
-            lead_auditor: item.lead_auditor
+            lead_auditor: item.lead_auditor,
+            audit_status: item.audit_status || item.status || item.auditStatus
           }));
         if (mapped.length > 0) {
           this.parent_audits = mapped;
@@ -184,7 +186,7 @@ export class AuditPlanComponent {
   getPlanItems() {
     this.audirService.getPlanItems(this.userEmail).subscribe((items: any) => {
       if (items) {
-        this.parentAudits = items.parent_audits || [];
+        this.parentAudits = (items.parent_audits || []).filter((audit: any) => !this.isClosedAudit(audit));
         this.parent_audits = [...this.parentAudits];
         this.templates = items.templates.map((template: any) => ({ ...template }));
         this.functionTemplates = items.templates.map((template: any) => ({ ...template }));
@@ -234,6 +236,19 @@ export class AuditPlanComponent {
       return roleAuditors;
     }
     return users?.auditors || [];
+  }
+
+
+  private isClosedAudit(audit: any): boolean {
+    const status = (
+      audit?.audit_status ||
+      audit?.status ||
+      audit?.auditStatus ||
+      audit?.state ||
+      audit?.audit_state ||
+      ''
+    ).toString().toLowerCase();
+    return status === 'completed';
   }
 
   onTemplateSelectionChange(event: Event, index: any) {

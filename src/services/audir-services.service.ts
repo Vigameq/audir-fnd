@@ -135,9 +135,10 @@ export class AudirService {
     });
   }
 
-  downloadTemplate(): Observable<ArrayBuffer> {
-    return this.http.get<any>(`${environment.apiUrl}/api/downloadAuditTemplate`, {
-      responseType: 'arraybuffer' as 'json'
+  downloadTemplate(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/downloadAuditTemplate`, {
+      observe: 'response',
+      responseType: 'arraybuffer'
     });
   }
 
