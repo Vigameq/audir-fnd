@@ -687,6 +687,18 @@ export class AuditPlanComponent {
   async onEndDateChange() {
     this.isDateMatched = false;
     this.resetAuditorsAuditees();
+    const selectedStartRaw = this.auditPlanForm.value?.startDateTime;
+    const selectedEndRaw = this.auditPlanForm.value?.endDateTime;
+    if (selectedStartRaw && selectedEndRaw) {
+      const selectedStart = this.customISOToDate(selectedStartRaw);
+      const selectedEnd = this.customISOToDate(selectedEndRaw);
+      const warningKey = `${selectedStart.toISOString().slice(0, 13)}-${selectedEnd.toISOString().slice(0, 13)}`;
+      if (this.hasSameHourAuditorConflict(this.auditPlans, selectedStart, selectedEnd)
+        && this.lastConflictKey !== warningKey) {
+        this.lastConflictKey = warningKey;
+        this.audirService.showWarning('Heads up: This hour already has audits scheduled for the same auditor.');
+      }
+    }
     if (this.auditPlanForm.value?.parentAudit.title) {
       this.selectedDate = new Date(this.auditPlanForm.value?.startDateTime);
       this.getAllChildAuditPlan();
@@ -695,6 +707,32 @@ export class AuditPlanComponent {
     }
   }
 
+
+
+  private getAuditorKey(auditor: any): string {
+    const email = (auditor?.email || auditor?.eMail || '').toString().toLowerCase();
+    if (email) return email;
+    const name = (auditor?.name || auditor?.Name || '').toString().trim().toLowerCase();
+    return name;
+  }
+
+  private hasSameHourAuditorConflict(auditPlanList: any[], selectedStart: Date, selectedEnd: Date): boolean {
+    const counts = new Map<string, number>();
+    for (const audit of auditPlanList || []) {
+      const auditStart = new Date(audit.start_date);
+      const auditEnd = new Date(audit.end_date);
+      if (!this.isSameDateHour(auditStart, selectedStart) || !this.isSameDateHour(auditEnd, selectedEnd)) {
+        continue;
+      }
+      const auditors = Array.isArray(audit.auditors) ? audit.auditors : [];
+      for (const auditor of auditors) {
+        const key = this.getAuditorKey(auditor);
+        if (!key) continue;
+        counts.set(key, (counts.get(key) || 0) + 1);
+      }
+    }
+    return Array.from(counts.values()).some(count => count > 1);
+  }
 
   private isSameDateHour(left: Date, right: Date): boolean {
     return left.getUTCFullYear() == right.getUTCFullYear()
@@ -737,13 +775,13 @@ export class AuditPlanComponent {
       }
     }
 
+
     if (hasConflict && key === 'auditors') {
       const hasDuplicateAuditor = Array.from(auditorEmailCounts.values()).some(count => count > 1);
       if (hasDuplicateAuditor) {
         const warningKey = `${selectedStart.toISOString().slice(0, 13)}-${selectedEnd.toISOString().slice(0, 13)}`;
         if (this.lastConflictKey !== warningKey) {
           this.lastConflictKey = warningKey;
-          this.audirService.showWarning('Heads up: This hour already has audits scheduled for the same auditor.');
         }
       }
     }
