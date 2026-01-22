@@ -149,18 +149,20 @@ export class AuditPlanComponent {
       start_date_filter: {
         from: fromDate,
         to: toDate
-      },
-      status_filter: ["created", "inprogress"]
+      }
     };
 
     this.audirService.getAuditLists(payload).subscribe((response: any) => {
       if (response) {
-        const completeAuditList = response.audit_data;
-        this.parent_audits = completeAuditList.filter((item: any) => item.hasOwnProperty('audit_title'))
-          .map((item: any) => ({ title: item.audit_title }));
-        this.parent_audits = this.parentAudits.filter(item =>
-          this.parent_audits.some(t => t.title === item.title)
-        );
+        const completeAuditList = response.audit_data || [];
+        this.parent_audits = completeAuditList
+          .filter((item: any) => item && (item.audit_title || item.title))
+          .map((item: any) => ({
+            title: item.audit_title || item.title,
+            start_date: item.start_date,
+            end_date: item.end_date,
+            lead_auditor: item.lead_auditor
+          }));
       }
     }, (error: any) => {
       console.error('Error for getting audits:', error);
