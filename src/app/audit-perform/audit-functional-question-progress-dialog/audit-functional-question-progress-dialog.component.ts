@@ -88,10 +88,32 @@ export class AuditFunctionalQuestionProgressDialogComponent {
     return 'application/octet-stream';
   }
 
+  private detectContentType(payload: ArrayBuffer | Blob | string, fileName: string): string {
+    try {
+      const buffer = payload instanceof ArrayBuffer ? payload : undefined;
+      if (buffer) {
+        const bytes = new Uint8Array(buffer);
+        if (bytes.length >= 4 && bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46) {
+          return 'application/pdf';
+        }
+        if (bytes.length >= 4 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
+          return 'image/png';
+        }
+        if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+          return 'image/jpeg';
+        }
+      }
+    } catch (error) {
+      console.warn('Unable to detect content type from payload.', error);
+    }
+    return this.getContentType(fileName);
+  }
+
+
   downloadEvidence(responseData: any) {
     this.audirService.getEvidence(this.data.auditQuestionData.audit_id, responseData.attach_evidence).subscribe((response: any) => {
       if (response?.body) {
-        const contentType = response.headers?.get('content-type') || this.getContentType(responseData.attach_evidence);
+        const contentType = response.headers?.get('content-type') || this.detectContentType(response.body, responseData.attach_evidence);
         const blobData = new Blob([response.body], { type: contentType });
         const evidenceFileURL = URL.createObjectURL(blobData);
         window.open(evidenceFileURL, '_blank');
