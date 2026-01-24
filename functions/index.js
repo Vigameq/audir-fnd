@@ -1,4 +1,5 @@
 const functions = require("firebase-functions");
+const { defineString } = require("firebase-functions/params");
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
@@ -6,17 +7,36 @@ const https = require("https");
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
+const DO_SPACES_KEY = defineString("DO_SPACES_KEY");
+const DO_SPACES_SECRET = defineString("DO_SPACES_SECRET");
+const DO_SPACES_REGION = defineString("DO_SPACES_REGION");
+const DO_SPACES_BUCKET = defineString("DO_SPACES_BUCKET");
+const DO_SPACES_ENDPOINT = defineString("DO_SPACES_ENDPOINT");
+
 const app = express();
 const httpsAgent = new https.Agent({ rejectUnauthorized: false }); // Allow self-signed certs if needed
 
 
+function normalizeSpacesEndpoint(endpoint, bucket) {
+  if (!endpoint) return endpoint;
+  try {
+    const url = new URL(endpoint);
+    if (bucket && url.hostname.startsWith(bucket + '.')) {
+      url.hostname = url.hostname.slice(bucket.length + 1);
+    }
+    return url.toString().replace(/\/$/, '');
+  } catch (error) {
+    return endpoint;
+  }
+}
+
 function getSpacesConfig() {
-  const cfg = functions.config()?.do_spaces || {};
-  const endpoint = cfg.endpoint;
-  const region = (cfg.region || '').toLowerCase();
-  const bucket = cfg.bucket;
-  const accessKeyId = cfg.key;
-  const secretAccessKey = cfg.secret;
+  const endpointRaw = DO_SPACES_ENDPOINT.value();
+  const region = (DO_SPACES_REGION.value() || '').toLowerCase();
+  const bucket = DO_SPACES_BUCKET.value();
+  const accessKeyId = DO_SPACES_KEY.value();
+  const secretAccessKey = DO_SPACES_SECRET.value();
+  const endpoint = normalizeSpacesEndpoint(endpointRaw, bucket);
   return { endpoint, region, bucket, accessKeyId, secretAccessKey };
 }
 
