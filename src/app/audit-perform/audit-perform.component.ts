@@ -54,8 +54,14 @@ export class AuditPerformComponent {
 
     this.audirService.getAuditLists(payload).subscribe((response: any) => {
       if (response) {
-        this.CompleteAuditList = response.audit_data;
-        this.auditList = this.CompleteAuditList;
+        this.CompleteAuditList = response.audit_data || [];
+        this.auditList = this.CompleteAuditList.filter((parent: any) => {
+          const subs = Array.isArray(parent.sub_audits) ? parent.sub_audits : [];
+          if (subs.length === 0) {
+            return true;
+          }
+          return !subs.every((sub: any) => this.isClosedStatus(sub.audit_status));
+        });
       }
     }, (error: any) => {
       console.error('Error for getting audits:', error);
@@ -84,6 +90,12 @@ export class AuditPerformComponent {
       this.updateLineHeights(index);
       this.setAuditeeValues(index);
     }
+  }
+
+
+  private isClosedStatus(status: any): boolean {
+    const value = (status || '').toString().toLowerCase();
+    return value === 'submitted' || value === 'completed' || value === 'closed';
   }
 
   buildQuestionList(questionTemplates: any, templateTypeByKey: Record<string, string>) {
