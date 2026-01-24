@@ -3,9 +3,41 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const https = require("https");
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 const app = express();
 const httpsAgent = new https.Agent({ rejectUnauthorized: false }); // Allow self-signed certs if needed
+
+
+function getSpacesConfig() {
+  const cfg = functions.config()?.do_spaces || {};
+  const endpoint = cfg.endpoint;
+  const region = (cfg.region || '').toLowerCase();
+  const bucket = cfg.bucket;
+  const accessKeyId = cfg.key;
+  const secretAccessKey = cfg.secret;
+  return { endpoint, region, bucket, accessKeyId, secretAccessKey };
+}
+
+function createSpacesClient() {
+  const { endpoint, region, accessKeyId, secretAccessKey } = getSpacesConfig();
+  if (!endpoint || !region || !accessKeyId || !secretAccessKey) return null;
+  return new S3Client({
+    region,
+    endpoint,
+    credentials: { accessKeyId, secretAccessKey },
+    forcePathStyle: true
+  });
+}
+
+async function buildSignedUrl(key) {
+  const cfg = getSpacesConfig();
+  const client = createSpacesClient();
+  if (!client) return null;
+  const command = new GetObjectCommand({ Bucket: cfg.bucket, Key: key });
+  return await getSignedUrl(client, command, { expiresIn: 300 });
+}
 
 // ✅ CORS configuration
 app.use(cors({
@@ -37,6 +69,42 @@ app.post("/audire/*", async (req, res) => {
       console.error("Backend response:", error.response.status, error.response.data);
     }
     res.status(500).send({ error: "Failed to reach backend API" });
+  }
+});
+
+
+// ✅ Signed URL for evidence files (DO Spaces)
+app.get("/audire/api/questionDataFile/:auditId/:fileName", async (req, res) => {
+  try {
+    const { auditId, fileName } = req.params;
+    const overrideKey = req.query.key;
+    const key = overrideKey || `${auditId}/${fileName}`;
+    const signedUrl = await buildSignedUrl(key);
+    if (!signedUrl) {
+      return res.status(500).send({ error: "Spaces configuration missing" });
+    }
+    res.set("Cache-Control", "no-store");
+    return res.redirect(302, signedUrl);
+  } catch (error) {
+    console.error("Signed URL error (questionDataFile):", error.toString());
+    return res.status(500).send({ error: "Failed to generate signed URL" });
+  }
+});
+
+app.get("/audire/api/questionNCDataFile/:auditId/:responseType/:fileName", async (req, res) => {
+  try {
+    const { auditId, responseType, fileName } = req.params;
+    const overrideKey = req.query.key;
+    const key = overrideKey || `${auditId}/${responseType}/${fileName}`;
+    const signedUrl = await buildSignedUrl(key);
+    if (!signedUrl) {
+      return res.status(500).send({ error: "Spaces configuration missing" });
+    }
+    res.set("Cache-Control", "no-store");
+    return res.redirect(302, signedUrl);
+  } catch (error) {
+    console.error("Signed URL error (questionNCDataFile):", error.toString());
+    return res.status(500).send({ error: "Failed to generate signed URL" });
   }
 });
 
