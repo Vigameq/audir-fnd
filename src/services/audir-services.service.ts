@@ -115,7 +115,8 @@ export class AudirService {
 
   getEvidence(audit_id: any, evidenceFileName: any) {
     const safeFileName = encodeURIComponent(evidenceFileName || '');
-    return this.http.get(`${environment.apiUrl}/api/questionDataFile/` + audit_id + '/' + safeFileName, {
+    const cacheBuster = `?t=${Date.now()}`;
+    return this.http.get(`${environment.apiUrl}/api/questionDataFile/` + audit_id + '/' + safeFileName + cacheBuster, {
       observe: 'response',
       responseType: 'arraybuffer'
     });
@@ -123,7 +124,8 @@ export class AudirService {
 
   getNCEvidence(audit_id: any, evidenceFileName: any, responseTYpe: any) {
     const safeFileName = encodeURIComponent(evidenceFileName || '');
-    return this.http.get(`${environment.apiUrl}/api/questionNCDataFile/` + audit_id + '/' + responseTYpe + '/' + safeFileName, {
+    const cacheBuster = `?t=${Date.now()}`;
+    return this.http.get(`${environment.apiUrl}/api/questionNCDataFile/` + audit_id + '/' + responseTYpe + '/' + safeFileName + cacheBuster, {
       observe: 'response',
       responseType: 'arraybuffer'
     });
