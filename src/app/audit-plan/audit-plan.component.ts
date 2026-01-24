@@ -181,7 +181,9 @@ export class AuditPlanComponent {
         }
       }
     }, (error: any) => {
-      console.error('Error for getting audits:', error);
+      if (error?.status !== 409) {
+        console.error('Error for getting audits:', error);
+      }
       this.completedParentTitles = new Set();
       this.applyParentAuditFilters();
     });
