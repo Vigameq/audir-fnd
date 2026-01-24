@@ -59,6 +59,7 @@ export class AuditPlanComponent {
   selectedAuditeesEmail: string[] = [];
   parent_audits: any[] = [];
   parentAudits: any[] = [];
+  completedParentTitles = new Set<string>();
   templates: any[] = [];
   functionTemplates: any[] = [];
   auditees: any[] = [];
@@ -162,7 +163,7 @@ export class AuditPlanComponent {
         const completeAuditList = response.audit_data || [];
         const mapped = completeAuditList
           .filter((item: any) => item && (item.audit_title || item.title))
-          .filter((item: any) => !this.isClosedAudit(item))
+          .filter((item: any) => !this.isClosedAudit(item) && !this.isParentClosedBySubAudits(item))
           .map((item: any) => ({
             title: item.audit_title || item.title,
             start_date: item.start_date,
@@ -171,11 +172,18 @@ export class AuditPlanComponent {
             audit_status: item.audit_status || item.status || item.auditStatus
           }));
         if (mapped.length > 0) {
-          this.parent_audits = mapped;
+          this.completedParentTitles = new Set(
+            mapped
+              .filter((item: any) => this.isClosedAudit(item))
+              .map((item: any) => item.title)
+          );
+          this.applyParentAuditFilters();
         }
       }
     }, (error: any) => {
       console.error('Error for getting audits:', error);
+      this.completedParentTitles = new Set();
+      this.applyParentAuditFilters();
     });
   }
 
@@ -187,7 +195,7 @@ export class AuditPlanComponent {
   getPlanItems() {
     this.audirService.getPlanItems(this.userEmail).subscribe((items: any) => {
       if (items) {
-        this.parentAudits = (items.parent_audits || []).filter((audit: any) => !this.isClosedAudit(audit));
+        this.parentAudits = (items.parent_audits || []).filter((audit: any) => !this.isClosedAudit(audit) && !this.isParentClosedBySubAudits(audit));
         this.parent_audits = [...this.parentAudits];
         this.templates = items.templates.map((template: any) => ({ ...template }));
         this.functionTemplates = items.templates.map((template: any) => ({ ...template }));
@@ -239,6 +247,25 @@ export class AuditPlanComponent {
     return users?.auditors || [];
   }
 
+
+
+
+  private applyParentAuditFilters() {
+    if (!this.parentAudits.length) {
+      return;
+    }
+    this.parentAudits = this.parentAudits.filter((audit: any) => {
+      const title = (audit?.title || audit?.audit_title || '').toString();
+      return title && !this.completedParentTitles.has(title) && !this.isParentClosedBySubAudits(audit);
+    });
+    this.parent_audits = [...this.parentAudits];
+  }
+
+  private isParentClosedBySubAudits(audit: any): boolean {
+    const subs = Array.isArray(audit?.sub_audits) ? audit.sub_audits : [];
+    if (!subs.length) return false;
+    return subs.every((sub: any) => this.isClosedAudit(sub?.audit_status));
+  }
 
   private isClosedAudit(audit: any): boolean {
     const status = (
