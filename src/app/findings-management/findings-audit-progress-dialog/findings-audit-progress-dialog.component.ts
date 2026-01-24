@@ -74,7 +74,8 @@ export class FindingsAuditProgressDialogComponent {
     this.audirService.getNCEvidence(this.data.auditQuestionData.audit_id, responseData.attach_evidence, responseData.type).subscribe((response: any) => {
       if (response?.body) {
         const contentType = response.headers?.get('content-type') || this.detectContentType(response.body, responseData.attach_evidence);
-        const blobData = new Blob([response.body], { type: contentType });
+        const payload = this.normalizeEvidencePayload(response.body);
+        const blobData = new Blob([payload], { type: contentType });
         const evidenceFileURL = URL.createObjectURL(blobData);
         window.open(evidenceFileURL, '_blank');
         setTimeout(() => URL.revokeObjectURL(evidenceFileURL), 1000);
@@ -94,11 +95,16 @@ export class FindingsAuditProgressDialogComponent {
     return 'application/octet-stream';
   }
 
+
   private detectContentType(payload: ArrayBuffer | Blob | string, fileName: string): string {
     try {
-      const buffer = payload instanceof ArrayBuffer ? payload : undefined;
-      if (buffer) {
-        const bytes = new Uint8Array(buffer);
+      if (typeof payload === 'string') {
+        const trimmed = payload.trim();
+        if (trimmed.startsWith('%PDF-') || trimmed.startsWith('JVBERi0')) {
+          return 'application/pdf';
+        }
+      } else if (payload instanceof ArrayBuffer) {
+        const bytes = new Uint8Array(payload);
         if (bytes.length >= 4 && bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46) {
           return 'application/pdf';
         }
@@ -114,5 +120,41 @@ export class FindingsAuditProgressDialogComponent {
     }
     return this.getContentType(fileName);
   }
+
+  private isProbablyBase64(value: string): boolean {
+    const trimmed = value.trim();
+    if (!trimmed || trimmed.length % 4 != 0) return false;
+    return /^[A-Za-z0-9+/=]+$/.test(trimmed);
+  }
+
+  private base64ToArrayBuffer(base64: string): ArrayBuffer {
+    const cleaned = base64.replace(/^data:.*;base64,/, '');
+    const binary = atob(cleaned);
+    const len = binary.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes.buffer;
+  }
+
+  private normalizeEvidencePayload(payload: ArrayBuffer | Blob | string): ArrayBuffer | Blob {
+    if (payload instanceof ArrayBuffer || payload instanceof Blob) return payload;
+    if (typeof payload === 'string') {
+      const trimmed = payload.trim();
+      if (trimmed.startsWith('data:')) {
+        return this.base64ToArrayBuffer(trimmed);
+      }
+      if (trimmed.startsWith('%PDF-')) {
+        return new TextEncoder().encode(trimmed).buffer;
+      }
+      if (this.isProbablyBase64(trimmed)) {
+        return this.base64ToArrayBuffer(trimmed);
+      }
+      return new TextEncoder().encode(trimmed).buffer;
+    }
+    return payload as any;
+  }
+
 
 }
