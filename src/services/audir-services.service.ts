@@ -136,14 +136,18 @@ export class AudirService {
   }
 
   downloadPlanTemplate(): Observable<Blob> {
-    return this.http.get(`${environment.apiUrl}/api/downloadAuditPlan`, {
-      responseType: 'blob'
+    const cacheBuster = `?t=${Date.now()}`;
+    return this.http.get(`${environment.apiUrl}/api/downloadAuditPlan${cacheBuster}`, {
+      responseType: 'blob',
+      headers: { 'Cache-Control': 'no-cache', Pragma: 'no-cache' }
     });
   }
 
   downloadTemplate(): Observable<Blob> {
-    return this.http.get(`${environment.apiUrl}/api/downloadAuditTemplate`, {
-      responseType: 'blob'
+    const cacheBuster = `?t=${Date.now()}`;
+    return this.http.get(`${environment.apiUrl}/api/downloadAuditTemplate${cacheBuster}`, {
+      responseType: 'blob',
+      headers: { 'Cache-Control': 'no-cache', Pragma: 'no-cache' }
     });
   }
 
