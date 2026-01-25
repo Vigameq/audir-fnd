@@ -22,7 +22,7 @@
             </div>
             <div class="cell email">{{user.email}}</div>
             <div class="cell role">
-                <select [ngModel]="user.roleDraft" (change)="onRoleChange(user, $event)" [disabled]="user.email === currentUserEmail">
+                <select [ngModel]="user.roleDraft" (change)="onRoleChange(user, $event)">
                     <option *ngFor="let role of roles" [value]="role">{{role}}</option>
                 </select>
                 <button class="save-role" [disabled]="!user.isRoleDirty || user.isSaving" (click)="saveRole(user)">Save</button>
