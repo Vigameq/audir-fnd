@@ -26,7 +26,7 @@ export class ImportTemplateDialogComponent {
 
   downloadTemplate(): any {
     this.audirService.downloadTemplate().subscribe(
-      (response: any) => {
+      (response: Blob) => {
         const body = response?.body;
         const contentType = response?.headers?.get('content-type') || '';
         if (!body || contentType.includes('text/html') || contentType.includes('application/json')) {
@@ -52,7 +52,7 @@ export class ImportTemplateDialogComponent {
     );
   }
 
-  private getTemplateFilename(response: any): string {
+  private getTemplateFilename(response: Blob): string {
     const disposition = response?.headers?.get('content-disposition') || '';
     const match = /filename\*=UTF-8''([^;]+)|filename="?([^;"]+)"?/i.exec(disposition);
     const rawName = decodeURIComponent((match && (match[1] || match[2])) || 'Audit_Template');

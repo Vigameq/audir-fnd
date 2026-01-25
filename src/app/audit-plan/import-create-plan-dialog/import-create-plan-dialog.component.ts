@@ -25,7 +25,7 @@ export class ImportCreatePlanDialogComponent {
 
   downloadPlanTemplate(): any {
     this.audirService.downloadPlanTemplate().subscribe(
-      (response: ArrayBuffer) => {
+      (response: Blob) => {
         const blobData = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const templateFileURL = URL.createObjectURL(blobData);
         const templateDownloadLink = document.createElement('a');
@@ -38,9 +38,7 @@ export class ImportCreatePlanDialogComponent {
       }, (error: any) => {
         this.isDownloaded = false;
         console.error('Error for downloading plan template file:', error);
-        const fallbackUrl = `${this.audirService.apiBaseUrl()}/api/downloadAuditPlan?t=${Date.now()}`;
-        window.open(fallbackUrl, '_blank');
-        this.audirService.showError('Download failed, opening in new tab');
+        this.audirService.showError('Download failed');
       }
     );
   }

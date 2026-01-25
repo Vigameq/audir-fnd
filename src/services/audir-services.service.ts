@@ -122,7 +122,7 @@ export class AudirService {
     const cacheBuster = `?t=${Date.now()}`;
     return this.http.get(`${environment.apiUrl}/api/questionDataFile/` + audit_id + '/' + safeFileName + cacheBuster, {
       observe: 'response',
-      responseType: 'arraybuffer'
+      responseType: 'blob'
     });
   }
 
@@ -131,20 +131,20 @@ export class AudirService {
     const cacheBuster = `?t=${Date.now()}`;
     return this.http.get(`${environment.apiUrl}/api/questionNCDataFile/` + audit_id + '/' + responseTYpe + '/' + safeFileName + cacheBuster, {
       observe: 'response',
-      responseType: 'arraybuffer'
+      responseType: 'blob'
     });
   }
 
-  downloadPlanTemplate(): Observable<ArrayBuffer> {
+  downloadPlanTemplate(): Observable<Blob> {
     return this.http.get<any>(`${environment.apiUrl}/api/downloadAuditPlan`, {
-      responseType: 'arraybuffer' as 'json'
+      responseType: 'blob' as 'json'
     });
   }
 
-  downloadTemplate(): Observable<any> {
+  downloadTemplate(): Observable<Blob> {
     return this.http.get(`${environment.apiUrl}/api/downloadAuditTemplate`, {
       observe: 'response',
-      responseType: 'arraybuffer'
+      responseType: 'blob'
     });
   }
 
