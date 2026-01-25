@@ -403,19 +403,10 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   downloadFileEvidence(attach_evidence_file_Name: any) {
-    if (attach_evidence_file_Name !== '') {
-      this.audirService.getEvidence(this.auditQuestionData.audit_id, attach_evidence_file_Name).subscribe((response: any) => {
-        if (response) {
-          const lastModifiedDate = new Date();
-          const file = new File([response], attach_evidence_file_Name, {
-            lastModified: lastModifiedDate.getTime()
-          });
-          this.evidenceFile = file;
-          this.auditQuestionData.auditeeInfo.attach_evidence = this.evidenceFile;
-        }
-      }, (error: any) => {
-        console.error('Error downloading evidence file:', error);
-      });
+    if (attach_evidence_file_Name) {
+      const safeFileName = encodeURIComponent(attach_evidence_file_Name || '');
+      const url = `${this.audirService.apiBaseUrl()}/api/questionDataFile/${this.auditQuestionData.audit_id}/${safeFileName}`;
+      window.open(url, '_blank');
     }
   }
 

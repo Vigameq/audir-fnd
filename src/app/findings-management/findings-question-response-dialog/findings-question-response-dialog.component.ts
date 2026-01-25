@@ -155,29 +155,10 @@ export class FindingsQuestionResponseDialogComponent {
   }
 
   downloadFileEvidence(attach_evidence_file_Name: any, responseType: any) {
-    if (attach_evidence_file_Name !== '') {
-      this.audirService.getNCEvidence(this.auditQuestionData.audit_id, attach_evidence_file_Name, responseType).subscribe((response: any) => {
-        if (response) {
-          const lastModifiedDate = new Date();
-          const file = new File([response], attach_evidence_file_Name, {
-            lastModified: lastModifiedDate.getTime()
-          });
-          if (responseType === 'nc_root_cause') {
-            this.rootCauseEvidenceFile = file;
-            this.auditQuestionData.nc_root_cause.attach_evidence = this.rootCauseEvidenceFile;
-          }
-          else if (responseType === 'nc_correction') {
-            this.correctionsEvidenceFile = file;
-            this.auditQuestionData.nc_correction.attach_evidence = this.correctionsEvidenceFile;
-          }
-          else if (responseType === 'nc_corrective_action_plan') {
-            this.correctiveStatusEvidenceFile = file;
-            this.auditQuestionData.nc_corrective_action_plan.attach_evidence = this.correctiveStatusEvidenceFile;
-          }
-        }
-      }, (error: any) => {
-        console.error('Error downloading evidence file:', error);
-      });
+    if (attach_evidence_file_Name) {
+      const safeFileName = encodeURIComponent(attach_evidence_file_Name || '');
+      const url = `${this.audirService.apiBaseUrl()}/api/questionNCDataFile/${this.auditQuestionData.audit_id}/${responseType}/${safeFileName}`;
+      window.open(url, '_blank');
     }
   }
 

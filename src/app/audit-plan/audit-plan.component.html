@@ -224,7 +224,7 @@
         <div class="calendar-section">
             <article class="calendar-wrapper">
                 <igx-calendar [(ngModel)]="selectedDate" (selected)="onSelection($event)"
-                    selection="single"></igx-calendar>
+                    [minDate]="calendarMinDate" [maxDate]="calendarMaxDate" selection="single"></igx-calendar>
             </article>
         </div>
         <div class="audit-information">

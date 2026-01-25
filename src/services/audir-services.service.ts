@@ -11,6 +11,10 @@ import { environment } from '../environments/environment';
 export class AudirService {
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
+  apiBaseUrl(): string {
+    return environment.apiUrl;
+  }
+
   getPlanItems(email: string): Observable<any> {
     const emailId = { "eMail": email };
     return this.http.post(`${environment.apiUrl}/api/planItems`, emailId);

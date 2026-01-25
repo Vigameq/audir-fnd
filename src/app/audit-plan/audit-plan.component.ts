@@ -94,6 +94,8 @@ export class AuditPlanComponent {
   userEmail: string = '';
   minDateTime: any;
   maxDateTime: any;
+  calendarMinDate: Date | null = null;
+  calendarMaxDate: Date | null = null;
   parentLeadAuditor: any[] = [];
   completeAuditees: any[] = [];
   completeAuditors: any[] = [];
@@ -694,11 +696,27 @@ export class AuditPlanComponent {
     this.auditPlanForm.get('endDateTime')?.setValue('');
     this.auditPlanForm.get('auditTitle')?.setValue('');
     this.auditPlanForm.get('endDateTime')?.disable();
-    const now = new Date();
-    this.minDateTime = (this.auditPlanForm.value.parentAudit.start_date > now) ?
-      this.datePipe.transform(this.auditPlanForm.value.parentAudit.start_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC') :
-      this.datePipe.transform(now, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
-    this.maxDateTime = this.datePipe.transform(this.auditPlanForm.value.parentAudit.end_date, 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
+    const parent = this.auditPlanForm.value.parentAudit;
+    if (parent?.start_date && parent?.end_date) {
+      const parentStart = new Date(parent.start_date);
+      const parentEnd = new Date(parent.end_date);
+      this.calendarMinDate = parentStart;
+      this.calendarMaxDate = parentEnd;
+      const now = new Date();
+      this.minDateTime = (parentStart > now) ?
+        this.datePipe.transform(parentStart, "yyyy-MM-dd'T'HH:mm:ss", 'UTC') :
+        this.datePipe.transform(now, "yyyy-MM-dd'T'HH:mm:ss", 'UTC');
+      this.maxDateTime = this.datePipe.transform(parentEnd, "yyyy-MM-dd'T'HH:mm:ss", 'UTC');
+      if (this.selectedDate < parentStart || this.selectedDate > parentEnd) {
+        this.selectedDate = parentStart;
+      }
+    } else {
+      this.calendarMinDate = null;
+      this.calendarMaxDate = null;
+      const now = new Date();
+      this.minDateTime = this.datePipe.transform(now, "yyyy-MM-dd'T'HH:mm:ss", 'UTC');
+      this.maxDateTime = '9999-12-31T23:59:59';
+    }
   }
 
   resetAuditorsAuditees() {
