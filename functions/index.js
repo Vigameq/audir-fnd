@@ -59,6 +59,44 @@ async function buildSignedUrl(key) {
   return await getSignedUrl(client, command, { expiresIn: 300 });
 }
 
+
+async function proxyEvidenceFromBackend(req, res) {
+  const apiUrl = `https://157.245.108.44${req.url}`;
+  try {
+    const response = await axios({
+      method: "GET",
+      url: apiUrl,
+      headers: { ...req.headers },
+      responseType: "arraybuffer",
+      httpsAgent,
+      timeout: 10000,
+    });
+
+    const fileName = req.params?.fileName || '';
+    const lower = fileName.toLowerCase();
+    let contentType = response.headers["content-type"] || "application/octet-stream";
+    if (!response.headers["content-type"]) {
+      if (lower.endsWith('.pdf')) contentType = 'application/pdf';
+      else if (lower.endsWith('.png')) contentType = 'image/png';
+      else if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) contentType = 'image/jpeg';
+    }
+
+    res.set("Cache-Control", "no-store");
+    res.set("Content-Type", contentType);
+    if (fileName) {
+      res.set("Content-Disposition", `inline; filename="${fileName}"`);
+    }
+
+    return res.status(response.status).send(response.data);
+  } catch (error) {
+    console.error("Backend proxy error:", error.toString());
+    if (error.response) {
+      return res.status(error.response.status).send(error.response.data);
+    }
+    return res.status(500).send({ error: "Failed to proxy evidence" });
+  }
+}
+
 // ✅ CORS configuration
 app.use(cors({
   origin: "https://audire-8fc86.web.app",
@@ -94,22 +132,29 @@ app.post("/audire/*", async (req, res) => {
 
 
 // ✅ Signed URL for evidence files (DO Spaces)
+
 app.get("/audire/api/questionDataFile/:auditId/:fileName", async (req, res) => {
   try {
     const { auditId, fileName } = req.params;
     const overrideKey = req.query.key;
     const key = overrideKey || `${auditId}/${fileName}`;
     const signedUrl = await buildSignedUrl(key);
-    if (!signedUrl) {
-      return res.status(500).send({ error: "Spaces configuration missing" });
+    if (signedUrl) {
+      try {
+        await axios({ method: "HEAD", url: signedUrl, timeout: 5000 });
+        res.set("Cache-Control", "no-store");
+        return res.redirect(302, signedUrl);
+      } catch (headError) {
+        // fall through to backend proxy
+      }
     }
-    res.set("Cache-Control", "no-store");
-    return res.redirect(302, signedUrl);
+    return proxyEvidenceFromBackend(req, res);
   } catch (error) {
     console.error("Signed URL error (questionDataFile):", error.toString());
     return res.status(500).send({ error: "Failed to generate signed URL" });
   }
 });
+
 
 app.get("/audire/api/questionNCDataFile/:auditId/:responseType/:fileName", async (req, res) => {
   try {
@@ -117,11 +162,16 @@ app.get("/audire/api/questionNCDataFile/:auditId/:responseType/:fileName", async
     const overrideKey = req.query.key;
     const key = overrideKey || `${auditId}/${responseType}/${fileName}`;
     const signedUrl = await buildSignedUrl(key);
-    if (!signedUrl) {
-      return res.status(500).send({ error: "Spaces configuration missing" });
+    if (signedUrl) {
+      try {
+        await axios({ method: "HEAD", url: signedUrl, timeout: 5000 });
+        res.set("Cache-Control", "no-store");
+        return res.redirect(302, signedUrl);
+      } catch (headError) {
+        // fall through to backend proxy
+      }
     }
-    res.set("Cache-Control", "no-store");
-    return res.redirect(302, signedUrl);
+    return proxyEvidenceFromBackend(req, res);
   } catch (error) {
     console.error("Signed URL error (questionNCDataFile):", error.toString());
     return res.status(500).send({ error: "Failed to generate signed URL" });
