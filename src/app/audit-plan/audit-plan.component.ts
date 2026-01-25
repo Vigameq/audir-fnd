@@ -778,13 +778,12 @@ export class AuditPlanComponent {
     return Array.from(counts.values()).some(count => count > 1);
   }
 
-  private hasSameHourUserConflict(auditPlanList: any[], selectedStart: Date, selectedEnd: Date, userEmail: string, key: 'auditors' | 'auditees'): boolean {
+  private hasSameHourUserConflict(auditPlanList: any[], selectedStart: Date, userEmail: string, key: 'auditors' | 'auditees'): boolean {
     if (!userEmail) return false;
     const target = userEmail.toLowerCase();
     for (const audit of auditPlanList || []) {
       const auditStart = new Date(audit.start_date);
-      const auditEnd = new Date(audit.end_date);
-      if (!this.isSameDateHour(auditStart, selectedStart) || !this.isSameDateHour(auditEnd, selectedEnd)) {
+      if (!this.isSameDateHour(auditStart, selectedStart)) {
         continue;
       }
       const users = Array.isArray(audit[key]) ? audit[key] : [];
@@ -800,23 +799,20 @@ export class AuditPlanComponent {
 
   private maybeWarnSameHourConflict(userEmail: string, roleLabel: 'auditor' | 'auditee') {
     const selectedStartRaw = this.auditPlanForm.value?.startDateTime;
-    const selectedEndRaw = this.auditPlanForm.value?.endDateTime;
-    if (!selectedStartRaw || !selectedEndRaw || !userEmail) {
+    if (!selectedStartRaw || !userEmail) {
       return;
     }
     const selectedStart = this.customISOToDate(selectedStartRaw);
-    const selectedEnd = this.customISOToDate(selectedEndRaw);
     const hasConflict = this.hasSameHourUserConflict(
       this.auditPlans,
       selectedStart,
-      selectedEnd,
       userEmail,
       roleLabel === 'auditor' ? 'auditors' : 'auditees'
     );
     if (!hasConflict) {
       return;
     }
-    const warningKey = `${roleLabel}-${userEmail.toLowerCase()}-${selectedStart.toISOString().slice(0, 13)}-${selectedEnd.toISOString().slice(0, 13)}`;
+    const warningKey = `${roleLabel}-${userEmail.toLowerCase()}-${selectedStart.toISOString().slice(0, 13)}`;
     if (this.lastConflictKey !== warningKey) {
       this.lastConflictKey = warningKey;
       this.audirService.showWarning(`Heads up: This hour already has audits scheduled for the same ${roleLabel}.`);
