@@ -24,10 +24,25 @@ export class ImportCreatePlanDialogComponent {
   }
 
   downloadPlanTemplate(): any {
-    const url = `${this.audirService.apiBaseUrl()}/api/downloadAuditPlan?t=${Date.now()}`;
-    window.open(url, '_blank');
-    this.isDownloaded = true;
-    this.audirService.showSuccess('Audit_plan.xlsx download started');
+    this.audirService.downloadPlanTemplate().subscribe(
+      (response: ArrayBuffer) => {
+        const blobData = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const templateFileURL = URL.createObjectURL(blobData);
+        const templateDownloadLink = document.createElement('a');
+        templateDownloadLink.href = templateFileURL;
+        templateDownloadLink.download = 'Audit_plan.xlsx';
+        templateDownloadLink.click();
+        URL.revokeObjectURL(templateFileURL);
+        this.isDownloaded = true;
+        this.audirService.showSuccess('Audit_plan.xlsx downloaded successfully');
+      }, (error: any) => {
+        this.isDownloaded = false;
+        console.error('Error for downloading plan template file:', error);
+        const fallbackUrl = `${this.audirService.apiBaseUrl()}/api/downloadAuditPlan?t=${Date.now()}`;
+        window.open(fallbackUrl, '_blank');
+        this.audirService.showError('Download failed, opening in new tab');
+      }
+    );
   }
 
   uploadTemplate(event: any) {
