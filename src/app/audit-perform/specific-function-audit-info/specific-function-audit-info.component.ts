@@ -175,7 +175,7 @@ export class SpecificFunctionAuditInfoComponent {
 
   allQuestionsAnswered() {
     return this.auditQuestions.length > 0
-      && this.auditQuestions.every((question) => question.answered);
+      && this.auditQuestions.every((question) => question.submitted);
   }
 
   updateCompletionPercentage() {
@@ -184,8 +184,8 @@ export class SpecificFunctionAuditInfoComponent {
       this.auditCompletionPercentage = 0;
       return;
     }
-    const answeredCount = this.auditQuestions.filter((question) => question.answered).length;
-    const percent = (answeredCount / total) * 100;
+    const submittedCount = this.auditQuestions.filter((question) => question.submitted).length;
+    const percent = (submittedCount / total) * 100;
     this.auditCompletionPercentage = parseFloat(percent.toFixed(2));
   }
 
