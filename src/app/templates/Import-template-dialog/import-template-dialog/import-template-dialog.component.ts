@@ -27,8 +27,6 @@ export class ImportTemplateDialogComponent {
   downloadTemplate(): any {
     this.audirService.downloadTemplate().subscribe(
       (response: Blob) => {
-        const body = response?.body;
-        const contentType = response?.headers?.get('content-type') || '';
         if (!body || contentType.includes('text/html') || contentType.includes('application/json')) {
           this.isDownloaded = false;
           this.audirService.showError('Download failed');
@@ -36,7 +34,7 @@ export class ImportTemplateDialogComponent {
         }
         const filename = this.getTemplateFilename(response);
         const blobData = new Blob([body], { type: contentType || 'application/octet-stream' });
-        const templateFileURL = URL.createObjectURL(blobData);
+        const templateFileURL = URL.createObjectURL(new Blob([blobData], { type: fileType }));
         const templateDownloadLink = document.createElement('a');
         templateDownloadLink.href = templateFileURL;
         templateDownloadLink.download = filename;
@@ -53,13 +51,11 @@ export class ImportTemplateDialogComponent {
   }
 
   private getTemplateFilename(response: Blob): string {
-    const disposition = response?.headers?.get('content-disposition') || '';
     const match = /filename\*=UTF-8''([^;]+)|filename="?([^;"]+)"?/i.exec(disposition);
     const rawName = decodeURIComponent((match && (match[1] || match[2])) || 'Audit_Template');
     if (rawName.includes('.')) {
       return rawName;
     }
-    const contentType = response?.headers?.get('content-type') || '';
     if (contentType.includes('officedocument.spreadsheetml.sheet')) {
       return `${rawName}.xlsx`;
     }

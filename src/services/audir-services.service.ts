@@ -136,14 +136,13 @@ export class AudirService {
   }
 
   downloadPlanTemplate(): Observable<Blob> {
-    return this.http.get<any>(`${environment.apiUrl}/api/downloadAuditPlan`, {
-      responseType: 'blob' as 'json'
+    return this.http.get(`${environment.apiUrl}/api/downloadAuditPlan`, {
+      responseType: 'blob'
     });
   }
 
   downloadTemplate(): Observable<Blob> {
     return this.http.get(`${environment.apiUrl}/api/downloadAuditTemplate`, {
-      observe: 'response',
       responseType: 'blob'
     });
   }
