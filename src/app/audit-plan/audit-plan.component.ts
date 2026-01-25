@@ -320,6 +320,7 @@ export class AuditPlanComponent {
         this.selectedAuditees.push(checkbox.value);
         this.selectedAuditeesEmail.push(auditee.email);
         this.auditees[index].checked = true;
+        this.maybeWarnSameHourConflict(auditee?.email, 'auditee');
       }
     }
     else {
@@ -337,6 +338,7 @@ export class AuditPlanComponent {
         this.selectedAuditor.push(checkbox.value);
         this.selectedAuditorsEmail.push(auditor.email);
         this.auditors[index].checked = true;
+        this.maybeWarnSameHourConflict(auditor?.email, 'auditor');
       }
     }
     else {
@@ -734,18 +736,6 @@ export class AuditPlanComponent {
   async onEndDateChange() {
     this.isDateMatched = false;
     this.resetAuditorsAuditees();
-    const selectedStartRaw = this.auditPlanForm.value?.startDateTime;
-    const selectedEndRaw = this.auditPlanForm.value?.endDateTime;
-    if (selectedStartRaw && selectedEndRaw) {
-      const selectedStart = this.customISOToDate(selectedStartRaw);
-      const selectedEnd = this.customISOToDate(selectedEndRaw);
-      const warningKey = `${selectedStart.toISOString().slice(0, 13)}-${selectedEnd.toISOString().slice(0, 13)}`;
-      if (this.hasSameHourAuditorConflict(this.auditPlans, selectedStart, selectedEnd)
-        && this.lastConflictKey !== warningKey) {
-        this.lastConflictKey = warningKey;
-        this.audirService.showWarning('Heads up: This hour already has audits scheduled for the same auditor.');
-      }
-    }
     if (this.auditPlanForm.value?.parentAudit.title) {
       this.selectedDate = new Date(this.auditPlanForm.value?.startDateTime);
       this.getAllChildAuditPlan();
@@ -757,9 +747,16 @@ export class AuditPlanComponent {
 
 
   private getAuditorKey(auditor: any): string {
-    const email = (auditor?.email || auditor?.eMail || '').toString().toLowerCase();
+    return this.getUserKey(auditor);
+  }
+
+  private getUserKey(user: any): string {
+    if (typeof user === 'string') {
+      return user.toLowerCase();
+    }
+    const email = (user?.email || user?.eMail || '').toString().toLowerCase();
     if (email) return email;
-    const name = (auditor?.name || auditor?.Name || '').toString().trim().toLowerCase();
+    const name = (user?.name || user?.Name || '').toString().trim().toLowerCase();
     return name;
   }
 
@@ -779,6 +776,51 @@ export class AuditPlanComponent {
       }
     }
     return Array.from(counts.values()).some(count => count > 1);
+  }
+
+  private hasSameHourUserConflict(auditPlanList: any[], selectedStart: Date, selectedEnd: Date, userEmail: string, key: 'auditors' | 'auditees'): boolean {
+    if (!userEmail) return false;
+    const target = userEmail.toLowerCase();
+    for (const audit of auditPlanList || []) {
+      const auditStart = new Date(audit.start_date);
+      const auditEnd = new Date(audit.end_date);
+      if (!this.isSameDateHour(auditStart, selectedStart) || !this.isSameDateHour(auditEnd, selectedEnd)) {
+        continue;
+      }
+      const users = Array.isArray(audit[key]) ? audit[key] : [];
+      for (const user of users) {
+        const keyValue = this.getUserKey(user);
+        if (keyValue && keyValue === target) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private maybeWarnSameHourConflict(userEmail: string, roleLabel: 'auditor' | 'auditee') {
+    const selectedStartRaw = this.auditPlanForm.value?.startDateTime;
+    const selectedEndRaw = this.auditPlanForm.value?.endDateTime;
+    if (!selectedStartRaw || !selectedEndRaw || !userEmail) {
+      return;
+    }
+    const selectedStart = this.customISOToDate(selectedStartRaw);
+    const selectedEnd = this.customISOToDate(selectedEndRaw);
+    const hasConflict = this.hasSameHourUserConflict(
+      this.auditPlans,
+      selectedStart,
+      selectedEnd,
+      userEmail,
+      roleLabel === 'auditor' ? 'auditors' : 'auditees'
+    );
+    if (!hasConflict) {
+      return;
+    }
+    const warningKey = `${roleLabel}-${userEmail.toLowerCase()}-${selectedStart.toISOString().slice(0, 13)}-${selectedEnd.toISOString().slice(0, 13)}`;
+    if (this.lastConflictKey !== warningKey) {
+      this.lastConflictKey = warningKey;
+      this.audirService.showWarning(`Heads up: This hour already has audits scheduled for the same ${roleLabel}.`);
+    }
   }
 
   private isSameDateHour(left: Date, right: Date): boolean {
