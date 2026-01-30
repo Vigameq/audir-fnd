@@ -169,9 +169,14 @@ export class SpecificFunctionAuditInfoComponent {
 
   private hasAuditeeServerResponse(response: any): boolean {
     const auditee = response?.auditee_response?.[0] || {};
-    return (auditee.auditee_response || '').toString().trim() !== ''
+    const hasDirect = (auditee.auditee_response || '').toString().trim() !== ''
       || (auditee.link || '').toString().trim() !== ''
       || (auditee.attach_evidence && auditee.attach_evidence !== 'None');
+    if (hasDirect) {
+      return true;
+    }
+    const history = Array.isArray(response?.history) ? response.history : [];
+    return history.some((item: any) => (item?.type || '').toString().toLowerCase() === 'auditee_response');
   }
 
   hasResponseForRole(response: any) {
