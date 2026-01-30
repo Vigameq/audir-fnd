@@ -95,6 +95,9 @@ export class AuditPerformComponent {
 
   private isClosedStatus(status: any): boolean {
     const value = (status || '').toString().toLowerCase();
+    if (this.isAuditor) {
+      return value === 'completed' || value === 'closed';
+    }
     return value === 'submitted' || value === 'completed' || value === 'closed';
   }
 
