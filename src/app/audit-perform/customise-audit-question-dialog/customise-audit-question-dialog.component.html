@@ -114,7 +114,13 @@
                 </div>
             </div>
         </div>
-    </mat-dialog-content>
+    
+            <div class="cancel-save-btns auditee-actions" *ngIf="!isAuditor">
+                <button class="cancel" mat-dialog-close>Cancel</button>
+                <button class="save" [disabled]="false" (click)="onSaveDraft()">Save</button>
+                <button class="save" [disabled]="false" (click)="onSubmitResponse()">Submit</button>
+            </div>
+</mat-dialog-content>
     <mat-dialog-actions class="action-btns">
         <div class="addAuditFinding" (click)="addFindings()" *ngIf="isAuditor">
             <button [class.disabled]="checkFindingsLengthInRange() || isAuditorSubmitted" [disabled]="checkFindingsLengthInRange() || isAuditorSubmitted">
@@ -129,11 +135,6 @@
             <button class="cancel" mat-dialog-close>Cancel</button>
             <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSaveAuditorDraft()">Save</button>
             <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitAuditorResponse()">Submit</button>
-        </div>
-        <div class="cancel-save-btns" *ngIf="!isAuditor">
-            <button class="cancel" mat-dialog-close>Cancel</button>
-            <button class="save" [disabled]="false" (click)="onSaveDraft()">Save</button>
-            <button class="save" [disabled]="false" (click)="onSubmitResponse()">Submit</button>
         </div>
     </mat-dialog-actions>
 </div>

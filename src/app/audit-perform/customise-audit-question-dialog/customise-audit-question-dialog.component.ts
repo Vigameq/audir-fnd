@@ -342,7 +342,7 @@ export class CustomiseAuditQuestionDialogComponent {
     if (this.isAuditor) {
       return this.isAuditClosed();
     }
-    return this.isAuditClosed() || (this.isQuestionSubmitted && !this.isReviewInProgress);
+    return false;
   }
 
   calculateReviewInProgress() {
