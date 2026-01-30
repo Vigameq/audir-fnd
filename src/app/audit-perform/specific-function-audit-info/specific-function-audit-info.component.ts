@@ -116,7 +116,7 @@ export class SpecificFunctionAuditInfoComponent {
 
     forkJoin(requests).subscribe((responses: any[]) => {
       responses.forEach((response, index) => {
-        let submitted = this.isSubmittedFlag(response?.is_submitted);
+        let submitted = this.isSubmittedFlag(response?.is_submitted) || this.hasAuditeeServerResponse(response);
         if (!submitted && !this.isAuditor) {
           submitted = this.getAuditeeSubmittedFlag(this.auditQuestions[index]);
         }
@@ -148,7 +148,7 @@ export class SpecificFunctionAuditInfoComponent {
       email: localStorage.getItem('user')?.toString() || ''
     };
     this.audirService.getQuestionData(payload).subscribe((response: any) => {
-      let submitted = this.isSubmittedFlag(response?.is_submitted);
+      let submitted = this.isSubmittedFlag(response?.is_submitted) || this.hasAuditeeServerResponse(response);
       if (!submitted && !this.isAuditor) {
         submitted = this.getAuditeeSubmittedFlag(question);
       }
@@ -164,6 +164,14 @@ export class SpecificFunctionAuditInfoComponent {
     }, (error: any) => {
       console.error('Error getting question data:', error);
     });
+  }
+
+
+  private hasAuditeeServerResponse(response: any): boolean {
+    const auditee = response?.auditee_response?.[0] || {};
+    return (auditee.auditee_response || '').toString().trim() !== ''
+      || (auditee.link || '').toString().trim() !== ''
+      || (auditee.attach_evidence && auditee.attach_evidence !== 'None');
   }
 
   hasResponseForRole(response: any) {
