@@ -207,9 +207,6 @@ export class CustomiseAuditQuestionDialogComponent {
     if (!hasResponse) {
       return false;
     }
-    if (this.isAuditor && !this.isQuestionSubmitted) {
-      return false;
-    }
     return true;
   }
 
@@ -342,6 +339,9 @@ export class CustomiseAuditQuestionDialogComponent {
   }
 
   shouldDisableAuditeeEdits() {
+    if (this.isAuditor) {
+      return this.isAuditClosed();
+    }
     return this.isAuditClosed() || (this.isQuestionSubmitted && !this.isReviewInProgress);
   }
 
