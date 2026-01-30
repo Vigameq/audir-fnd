@@ -130,10 +130,5 @@
             <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSaveAuditorDraft()">Save</button>
             <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitAuditorResponse()">Submit</button>
         </div>
-        <div class="cancel-save-btns" *ngIf="true">
-            <button class="cancel" mat-dialog-close>Cancel</button>
-            <button class="save" [disabled]="shouldDisableAuditeeEdits() || isQuestionSubmitted || !hasAuditeeDraftContent()" (click)="onSaveDraft()">Save</button>
-            <button class="save" [disabled]="!isSubmitEnable()" (click)="onSubmitResponse()">Submit</button>
-        </div>
     </mat-dialog-actions>
 </div>
