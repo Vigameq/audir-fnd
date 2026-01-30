@@ -43,13 +43,16 @@ export class AuditPerformComponent {
 
   getAuditLists(fromDate: string, toDate: string) {
     const email = localStorage.getItem('user')?.toString() || '';
+    const statusFilter = this.isAuditor
+      ? ["created", "inprogress", "submitted"]
+      : ["created", "inprogress"];
     var payload = {
       eMail: email,
       start_date_filter: {
         from: fromDate,
         to: toDate
       },
-      status_filter: ["created", "inprogress"]
+      status_filter: statusFilter
     };
 
     this.audirService.getAuditLists(payload).subscribe((response: any) => {
