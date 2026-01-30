@@ -23,8 +23,8 @@
                     <div class="auditee-response-fields-section">
                         <div class="auditee-response-textarea"><textarea id="auditee-response-textarea" rows="4"
                                 name="auditeeResponse" [(ngModel)]="auditeeResponseValue" placeholder="Enter Note..."
-                                (input)="onAuditeeResponseChange()" [readonly]="isAuditor || shouldDisableAuditeeEdits()"></textarea></div>
-                        <div class="upload-evidence-and-link-section" *ngIf="!isAuditor">
+                                (input)="onAuditeeResponseChange()" [readonly]="shouldDisableAuditeeEdits()"></textarea></div>
+                        <div class="upload-evidence-and-link-section" *ngIf="true">
                             <div class="upload-evidence">
                                 <div class="upload-evidence-label"><span>Attach Evidence</span></div>
                                 <div class="upload-evidence-btn">
@@ -32,7 +32,7 @@
                                         Upload
                                         <input type="file" id="fileUpload"
                                             accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
-                                            (change)="uploadEvidence($event)" [disabled]="isAuditor || shouldDisableAuditeeEdits()" hidden>
+                                            (change)="uploadEvidence($event)" [disabled]="shouldDisableAuditeeEdits()" hidden>
                                     </label>
                                     <p [matTooltip]="auditeeResponseEvidenceFileName">
                                         {{auditeeResponseEvidenceFileName}}</p>
@@ -41,7 +41,7 @@
                             <div class="link">
                                 <div class="link-label"><span>Link</span></div>
                                 <div class="link-input"><input type="url" [(ngModel)]="linkInput"
-                                        (input)="onLinkInputChange()" class="link-input" [readonly]="isAuditor || shouldDisableAuditeeEdits()" />
+                                        (input)="onLinkInputChange()" class="link-input" [readonly]="shouldDisableAuditeeEdits()" />
                                 </div>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
             <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSaveAuditorDraft()">Save</button>
             <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitAuditorResponse()">Submit</button>
         </div>
-        <div class="cancel-save-btns" *ngIf="!isAuditor">
+        <div class="cancel-save-btns" *ngIf="true">
             <button class="cancel" mat-dialog-close>Cancel</button>
             <button class="save" [disabled]="shouldDisableAuditeeEdits() || isQuestionSubmitted || !hasAuditeeDraftContent()" (click)="onSaveDraft()">Save</button>
             <button class="save" [disabled]="!isSubmitEnable()" (click)="onSubmitResponse()">Submit</button>
