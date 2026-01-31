@@ -412,7 +412,7 @@ export class FindingsQuestionResponseDialogComponent {
   }
 
   openResponseHistory() {
-    const auditResponseHistory: any = this.questionData?.history;
+    const auditResponseHistory: any[] = Array.isArray(this.questionData?.history) ? this.questionData.history : [];
     auditResponseHistory.forEach((response: any) => {
       response.color = '';
       response.lineHeight = 0;
@@ -451,6 +451,35 @@ export class FindingsQuestionResponseDialogComponent {
     this.audirService.showSuccess('Draft saved');
     this.dialogRef.close('saved');
   }
+
+  onSubmitResponseHistory() {
+    if (!this.checkResponseAvailability()) {
+      return;
+    }
+    const confirmed = window.confirm('Submit response to history?');
+    if (!confirmed) {
+      return;
+    }
+    this.saveCorrectionsResponse();
+    this.saveRootCauseResponse();
+    this.saveCorrectivePlanResponse();
+    this.clearDraft();
+    this.audirService.showSuccess('Response submitted to history');
+    // refresh history data
+    const payload = {
+      audit_id: this.auditQuestionData.audit_id,
+      template: this.auditQuestionData.template,
+      template_type: this.auditQuestionData.template_type,
+      question: this.data.questionText,
+      email: this.auditQuestionData.email
+    };
+    this.audirService.getNCQuestionData(payload).subscribe((response: any) => {
+      if (response) {
+        this.questionData = response;
+      }
+    });
+  }
+
   onSubmitConfirmation(){
     const dialogRef = this.dialog.open(ApprovalRemarksDialogComponent, {
           disableClose: true,

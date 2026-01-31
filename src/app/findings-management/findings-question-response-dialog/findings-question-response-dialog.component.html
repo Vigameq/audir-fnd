@@ -17,7 +17,7 @@
             <div class="audit-section">
                 <div class="fnds-hist-res-btns">
                     <!-- <button (click)="openFindingsResponse()">AUDIT FINDINGS</button> -->
-                    <button [disabled]="questionData?.history.length === 0" (click)="openResponseHistory()">RESPONSE
+                    <button  (click)="openResponseHistory()">RESPONSE
                         HISTORY</button>
                 </div>
                 <div class="corrections-note">
@@ -191,6 +191,7 @@
         <div class="cancel-save-btns">
             <button class="cancel" mat-dialog-close>Cancel</button>
             <button class="save" [disabled]="!checkResponseAvailability() || questionData?.audit_finding_status === 'inprogress' || questionData?.audit_finding_status === 'completed' || questionData?.audit_finding_status === 'rejected'" (click)="onSave()">Save</button>
+            <button class="save" [disabled]="!checkResponseAvailability()" (click)="onSubmitResponseHistory()">Submit Response</button>
             <button class="save" [disabled]="questionData?.audit_finding_status === 'inprogress' || questionData?.audit_finding_status === 'completed' || questionData?.audit_finding_status === 'rejected'" (click)="onSubmitConfirmation()">Submit</button>
         </div>
     </mat-dialog-actions>
