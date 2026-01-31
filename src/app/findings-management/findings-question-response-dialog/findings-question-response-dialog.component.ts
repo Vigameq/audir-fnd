@@ -138,17 +138,8 @@ export class FindingsQuestionResponseDialogComponent {
 
   attachExistingEvidence() {
     this.uploadRootCauseResponseFileText = this.uploadRootCauseResponseFileText === 'None' ? 'No file choosen..' : this.uploadRootCauseResponseFileText;
-    if (this.questionData.nc_root_cause.length > 0 && this.questionData.nc_root_cause[0].attach_evidence !== 'None') {
-      this.downloadFileEvidence(this.uploadRootCauseResponseFileText, 'nc_root_cause');
-    }
     this.uploadCorrectionsEvidenceText = this.uploadCorrectionsEvidenceText === 'None' ? 'No file choosen..' : this.uploadCorrectionsEvidenceText;
-    if (this.questionData.nc_correction.length > 0 && this.questionData.nc_correction[0].attach_evidence !== 'None') {
-      this.downloadFileEvidence(this.uploadCorrectionsEvidenceText, 'nc_correction');
-    }
     this.uploadCorrectiveActionStatusFileName = this.uploadCorrectiveActionStatusFileName === 'None' ? 'No file choosen..' : this.uploadCorrectiveActionStatusFileName;
-    if (this.questionData.nc_corrective_action_plan.length > 0 && this.questionData.nc_corrective_action_plan[0].attach_evidence !== 'None') {
-      this.downloadFileEvidence(this.uploadCorrectiveActionStatusFileName, 'nc_corrective_action_plan');
-    }
     this.isCorrectionsChanged = false;
     this.isRootCauseChanged = false;
     this.isCorrectivePlanChanged = false;
