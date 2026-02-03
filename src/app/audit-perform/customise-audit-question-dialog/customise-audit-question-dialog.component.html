@@ -18,46 +18,79 @@
             <div class="audit-section">
                 <div class="res-hist-btn"><button [disabled]="questionData?.history.length == 0"
                         (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
-                <div class="auditee-response">
-                    <div class="auditee-response-label"><span>Auditee Response</span></div>
-                    <div class="auditee-response-fields-section">
-                        <div class="auditee-response-textarea"><textarea id="auditee-response-textarea" rows="4"
-                                name="auditeeResponse" [(ngModel)]="auditeeResponseValue" placeholder="Enter Note..."
-                                (input)="onAuditeeResponseChange()" [readonly]="shouldDisableAuditeeEdits()"></textarea></div>
-                        <div class="upload-evidence-and-link-section" *ngIf="true">
-                            <div class="upload-evidence">
-                                <div class="upload-evidence-label"><span>Attach Evidence</span></div>
-                                <div class="upload-evidence-btn">
-                                    <label for="fileUpload" class="upload">
-                                        Upload
-                                        <input type="file" id="fileUpload"
-                                            accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
-                                            (change)="uploadEvidence($event)" [disabled]="shouldDisableAuditeeEdits()" hidden>
-                                    </label>
-                                    <p [matTooltip]="auditeeResponseEvidenceFileName">
-                                        {{auditeeResponseEvidenceFileName}}</p>
-                                </div>
+                <ng-container *ngIf="isAuditor; else auditeeLayout">
+                    <div class="auditor-note">
+                        <div class="auditor-note-label"><span>Auditor Note</span></div>
+                        <div class="auditor-note-fields-section">
+                            <div class="audit-note-textarea"><textarea id="audit-note-textarea" rows="4" name="auditNote"
+                                    [(ngModel)]="auditNoteValue" placeholder="Enter Note..."
+                                    (input)="onAuditNoteChange()" [readonly]="isAuditorSubmitted"></textarea>
                             </div>
-                            <div class="link">
-                                <div class="link-label"><span>Link</span></div>
-                                <div class="link-input"><input type="url" [(ngModel)]="linkInput"
-                                        (input)="onLinkInputChange()" class="link-input" [readonly]="shouldDisableAuditeeEdits()" />
+                        </div>
+                    </div>
+                    <div class="auditee-response">
+                        <div class="auditee-response-label"><span>Auditee Response</span></div>
+                        <div class="auditee-response-fields-section">
+                            <div class="auditee-response-textarea"><textarea id="auditee-response-textarea" rows="4"
+                                    name="auditeeResponse" [(ngModel)]="auditeeResponseValue" placeholder="Enter Note..."
+                                    (input)="onAuditeeResponseChange()" [readonly]="shouldDisableAuditeeEdits()"></textarea></div>
+                            <div class="upload-evidence-and-link-section" *ngIf="true">
+                                <div class="upload-evidence">
+                                    <div class="upload-evidence-label"><span>Attach Evidence</span></div>
+                                    <div class="upload-evidence-btn">
+                                        <label for="fileUpload" class="upload">
+                                            Upload
+                                            <input type="file" id="fileUpload"
+                                                accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
+                                                (change)="uploadEvidence($event)" [disabled]="shouldDisableAuditeeEdits()" hidden>
+                                        </label>
+                                        <p [matTooltip]="auditeeResponseEvidenceFileName">
+                                            {{auditeeResponseEvidenceFileName}}</p>
+                                    </div>
+                                </div>
+                                <div class="link">
+                                    <div class="link-label"><span>Link</span></div>
+                                    <div class="link-input"><input type="url" [(ngModel)]="linkInput"
+                                            (input)="onLinkInputChange()" class="link-input" [readonly]="shouldDisableAuditeeEdits()" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="auditor-note" *ngIf="isAuditor">
-                    <div class="auditor-note-label"><span>Auditor Note</span></div>
-                    <div class="auditor-note-fields-section">
-                        <div class="audit-note-textarea"><textarea id="audit-note-textarea" rows="4" name="auditNote"
-                                [(ngModel)]="auditNoteValue" placeholder="Enter Note..."
-                                (input)="onAuditNoteChange()" [readonly]="isAuditorSubmitted"></textarea>
+                </ng-container>
+                <ng-template #auditeeLayout>
+                    <div class="auditee-response">
+                        <div class="auditee-response-label"><span>Auditee Response</span></div>
+                        <div class="auditee-response-fields-section">
+                            <div class="auditee-response-textarea"><textarea id="auditee-response-textarea" rows="4"
+                                    name="auditeeResponse" [(ngModel)]="auditeeResponseValue" placeholder="Enter Note..."
+                                    (input)="onAuditeeResponseChange()" [readonly]="shouldDisableAuditeeEdits()"></textarea></div>
+                            <div class="upload-evidence-and-link-section" *ngIf="true">
+                                <div class="upload-evidence">
+                                    <div class="upload-evidence-label"><span>Attach Evidence</span></div>
+                                    <div class="upload-evidence-btn">
+                                        <label for="fileUpload" class="upload">
+                                            Upload
+                                            <input type="file" id="fileUpload"
+                                                accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
+                                                (change)="uploadEvidence($event)" [disabled]="shouldDisableAuditeeEdits()" hidden>
+                                        </label>
+                                        <p [matTooltip]="auditeeResponseEvidenceFileName">
+                                            {{auditeeResponseEvidenceFileName}}</p>
+                                    </div>
+                                </div>
+                                <div class="link">
+                                    <div class="link-label"><span>Link</span></div>
+                                    <div class="link-input"><input type="url" [(ngModel)]="linkInput"
+                                            (input)="onLinkInputChange()" class="link-input" [readonly]="shouldDisableAuditeeEdits()" />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </ng-template>
             <div class="more-info" *ngIf="isAuditor">
-                <button type="button" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitMoreInfo()">Submit Response</button>
+                <button type="button" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitMoreInfo()">Submit to Auditee</button>
             </div>
                 <div *ngFor="let itemcount of totalFindings; let i = index">
                     <div [id]="'audit-findings-' + i" class="audit-findings" *ngIf="isAuditor">
@@ -129,12 +162,12 @@
         <div class="cancel-save-btns" *ngIf="isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
             <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSaveAuditorDraft()">Save</button>
-            <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitAuditorResponse()">Submit</button>
+            <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitAuditorResponse()">Submit to Auditor</button>
         </div>
             <div class="cancel-save-btns" *ngIf="!isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
             <button class="save" [disabled]="false" (click)="onSaveDraft()">Save</button>
-            <button class="save" [disabled]="false" (click)="onSubmitResponse()">Submit</button>
+            <button class="save" [disabled]="false" (click)="onSubmitResponse()">Submit to Auditor</button>
         </div>
 </mat-dialog-actions>
 </div>

@@ -169,6 +169,22 @@ export class AudirService {
     return this.http.post<any>(`${environment.apiUrl}/api/getAuditQuestions`, payload);
   }
 
+  listAuditQuestionOverrides(payload: any) {
+    return this.http.post<any>(`${environment.apiUrl}/api/listAuditQuestionOverrides`, payload);
+  }
+
+  addAuditQuestion(payload: any) {
+    return this.http.post<any>(`${environment.apiUrl}/api/addAuditQuestion`, payload);
+  }
+
+  updateAuditQuestion(payload: any) {
+    return this.http.post<any>(`${environment.apiUrl}/api/updateAuditQuestion`, payload);
+  }
+
+  deleteAuditQuestion(payload: any) {
+    return this.http.post<any>(`${environment.apiUrl}/api/deleteAuditQuestion`, payload);
+  }
+
   getNCAuditQuestions(payload: any) {
     return this.http.post<any>(`${environment.apiUrl}/api/getNCAuditQuestions`, payload);
   }

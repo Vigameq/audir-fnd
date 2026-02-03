@@ -67,13 +67,9 @@
             <div class="audit-scope-label"><span>Audit scope</span></div>
             <div class="audit-scope-info"><span>{{auditInfo?.audit_scope}}</span></div>
         </div>
-        <div class="progress-percentage">
-            <div class="progress-bar">
-                <div class="progress-fill" [style.width.%]="auditCompletionPercentage || 0">
-                </div>
-            </div>
-            <div class="percentage"><span>{{auditCompletionPercentage}}% complete</span></div>
-        </div>
+    </div>
+    <div class="question-toolbar" *ngIf="isAuditor">
+        <button class="add-question" type="button" (click)="addQuestion()">+ Add Question</button>
     </div>
     <div class="functional-template-question-section">
         <div *ngFor="let question of auditQuestions; let i = index" class="questions-section"
@@ -86,6 +82,14 @@
                 <div class="question-text">
                     <span>{{question.text}}</span>
                 </div>
+            </div>
+            <div class="question-actions" *ngIf="isAuditor">
+                <button type="button" class="icon-btn edit-question-btn" (click)="editQuestion(i, $event)" aria-label="Edit question">
+                    <span class="material-icons">edit</span>
+                </button>
+                <button type="button" class="icon-btn delete-question-btn" (click)="deleteQuestion(i, $event)" aria-label="Delete question">
+                    <span class="material-icons">delete</span>
+                </button>
             </div>
             <span class="saved-badge" *ngIf="!isAuditor && question.responded && !question.submitted">Saved</span>
             <span class="submitted-badge" *ngIf="!isAuditor && question.submitted">Submitted</span>

@@ -194,6 +194,22 @@
         }
     }
 
+
+    .question-toolbar {
+        display: flex;
+        justify-content: flex-end;
+        margin: 8px 0 16px;
+
+        .add-question {
+            padding: 6px 14px;
+            border-radius: 16px;
+            border: 1px solid #101010;
+            background-color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    }
+
     .functional-template-question-section {
         display: flex;
         flex-direction: column;
@@ -263,6 +279,38 @@
             .submitted-badge {
                 background-color: #2E7D32;
                 color: #FFFFFF;
+            }
+
+            .question-actions {
+                display: flex;
+                gap: 8px;
+                position: absolute;
+                right: 16px;
+                bottom: 12px;
+
+                .icon-btn {
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    border: 1px solid #101010;
+                    background-color: #101010;
+                    color: #ffffff;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    padding: 0;
+
+                    .material-icons {
+                        font-size: 16px;
+                        line-height: 1;
+                    }
+                }
+
+                .delete-question-btn {
+                    border-color: #c62828;
+                    background-color: #c62828;
+                }
             }
 
             .status {
