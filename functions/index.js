@@ -168,79 +168,6 @@ app.use(cors({
   maxAge: 86400,
 }));
 
-// ✅ POST /audire/*
-app.post("/audire/*", async (req, res) => {
-  try {
-    const apiUrl = `https://157.245.108.44${req.url}`;
-    console.log("Forwarding POST to:", apiUrl);
-
-    const response = await axios({
-      method: req.method,
-      url: apiUrl,
-      data: req.body,
-      headers: { ...req.headers },
-      httpsAgent,
-      timeout: 10000,
-    });
-
-    res.status(response.status).send(response.data);
-  } catch (error) {
-    console.error("POST API Error:", error.toString());
-    if (error.response) {
-      console.error("Backend response:", error.response.status, error.response.data);
-    }
-    res.status(500).send({ error: "Failed to reach backend API" });
-  }
-});
-
-
-// ✅ Signed URL for evidence files (DO Spaces)
-
-app.get("/audire/api/questionDataFile/:auditId/:fileName", async (req, res) => {
-  try {
-    const { auditId, fileName } = req.params;
-    const overrideKey = req.query.key;
-    const key = overrideKey || `${auditId}/${fileName}`;
-    const signedUrl = await buildSignedUrl(key);
-    if (signedUrl) {
-      try {
-        await axios({ method: "HEAD", url: signedUrl, timeout: 5000 });
-        res.set("Cache-Control", "no-store");
-        return res.redirect(302, signedUrl);
-      } catch (headError) {
-        // fall through to backend proxy
-      }
-    }
-    return proxyEvidenceFromBackend(req, res);
-  } catch (error) {
-    console.error("Signed URL error (questionDataFile):", error.toString());
-    return res.status(500).send({ error: "Failed to generate signed URL" });
-  }
-});
-
-
-app.get("/audire/api/questionNCDataFile/:auditId/:responseType/:fileName", async (req, res) => {
-  try {
-    const { auditId, responseType, fileName } = req.params;
-    const overrideKey = req.query.key;
-    const key = overrideKey || `${auditId}/${responseType}/${fileName}`;
-    const signedUrl = await buildSignedUrl(key);
-    if (signedUrl) {
-      try {
-        await axios({ method: "HEAD", url: signedUrl, timeout: 5000 });
-        res.set("Cache-Control", "no-store");
-        return res.redirect(302, signedUrl);
-      } catch (headError) {
-        // fall through to backend proxy
-      }
-    }
-    return proxyEvidenceFromBackend(req, res);
-  } catch (error) {
-    console.error("Signed URL error (questionNCDataFile):", error.toString());
-    return res.status(500).send({ error: "Failed to generate signed URL" });
-  }
-});
-
 // ✅ Audit list (all) from DB
 app.post("/audire/api/listAllAudits", async (req, res) => {
   try {
@@ -321,6 +248,79 @@ app.post("/audire/api/deleteAuditQuestion", async (req, res) => {
   } catch (error) {
     console.error('deleteAuditQuestion error:', error.toString());
     res.status(500).send({ error: 'Failed to delete audit question' });
+  }
+});
+
+// ✅ POST /audire/*
+app.post("/audire/*", async (req, res) => {
+  try {
+    const apiUrl = `https://157.245.108.44${req.url}`;
+    console.log("Forwarding POST to:", apiUrl);
+
+    const response = await axios({
+      method: req.method,
+      url: apiUrl,
+      data: req.body,
+      headers: { ...req.headers },
+      httpsAgent,
+      timeout: 10000,
+    });
+
+    res.status(response.status).send(response.data);
+  } catch (error) {
+    console.error("POST API Error:", error.toString());
+    if (error.response) {
+      console.error("Backend response:", error.response.status, error.response.data);
+    }
+    res.status(500).send({ error: "Failed to reach backend API" });
+  }
+});
+
+
+// ✅ Signed URL for evidence files (DO Spaces)
+
+app.get("/audire/api/questionDataFile/:auditId/:fileName", async (req, res) => {
+  try {
+    const { auditId, fileName } = req.params;
+    const overrideKey = req.query.key;
+    const key = overrideKey || `${auditId}/${fileName}`;
+    const signedUrl = await buildSignedUrl(key);
+    if (signedUrl) {
+      try {
+        await axios({ method: "HEAD", url: signedUrl, timeout: 5000 });
+        res.set("Cache-Control", "no-store");
+        return res.redirect(302, signedUrl);
+      } catch (headError) {
+        // fall through to backend proxy
+      }
+    }
+    return proxyEvidenceFromBackend(req, res);
+  } catch (error) {
+    console.error("Signed URL error (questionDataFile):", error.toString());
+    return res.status(500).send({ error: "Failed to generate signed URL" });
+  }
+});
+
+
+app.get("/audire/api/questionNCDataFile/:auditId/:responseType/:fileName", async (req, res) => {
+  try {
+    const { auditId, responseType, fileName } = req.params;
+    const overrideKey = req.query.key;
+    const key = overrideKey || `${auditId}/${responseType}/${fileName}`;
+    const signedUrl = await buildSignedUrl(key);
+    if (signedUrl) {
+      try {
+        await axios({ method: "HEAD", url: signedUrl, timeout: 5000 });
+        res.set("Cache-Control", "no-store");
+        return res.redirect(302, signedUrl);
+      } catch (headError) {
+        // fall through to backend proxy
+      }
+    }
+    return proxyEvidenceFromBackend(req, res);
+  } catch (error) {
+    console.error("Signed URL error (questionNCDataFile):", error.toString());
+    return res.status(500).send({ error: "Failed to generate signed URL" });
   }
 });
 
