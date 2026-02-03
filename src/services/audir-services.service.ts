@@ -165,6 +165,10 @@ export class AudirService {
     return this.http.post<any>(`${environment.apiUrl}/api/ListRelativeAuditsByUser`, payload);
   }
 
+  listAllAudits(payload: any) {
+    return this.http.post<any>(`${environment.apiUrl}/api/listAllAudits`, payload);
+  }
+
   getAuditQuestions(payload: any) {
     return this.http.post<any>(`${environment.apiUrl}/api/getAuditQuestions`, payload);
   }

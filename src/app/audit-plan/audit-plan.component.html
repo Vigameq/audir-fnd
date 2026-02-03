@@ -85,7 +85,8 @@
                     <div class="function-template">
                         <label for="function-templates" class="form-label">Functions Template</label>
                         <div class="dropbtn" [matTooltip]="selectedFunctionTemplateOptions"
-                            (click)="functionTemplateToggleDropdown($event)">
+                            [class.disabled]="!auditPlanForm.get('parentAudit')?.value"
+                            (click)="auditPlanForm.get('parentAudit')?.value ? functionTemplateToggleDropdown($event) : null">
                             <span [ngStyle]="{'max-width.px': maxWidth}">{{selectedFunctionTemplateOptions}}</span>
                         </div>
                         <div *ngIf="isFunctionTemplateDropdownOpen" class="dropdown-content" #functionTemplateDropdown>
@@ -93,7 +94,8 @@
                                 (click)="onCheckboxClick($event)">
                                 <input type="checkbox" [value]="functionTemplate.name" class="checkbox-input"
                                     (change)="onFunctionTemplateSelectionChange($event,i)"
-                                    [checked]="functionTemplates[i].checked" />
+                                    [checked]="functionTemplates[i].checked"
+                                    [disabled]="!auditPlanForm.get('parentAudit')?.value" />
                                 <span class="template-value">{{ functionTemplate.name }}</span>
                             </label>
                         </div>

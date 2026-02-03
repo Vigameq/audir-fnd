@@ -59,7 +59,7 @@ export class AuditManageComponent {
     this.audirService.getAuditLists(payload).subscribe((response: any) => {
       if (response) {
         this.CompleteAuditList = response.audit_data;
-        this.auditList = this.CompleteAuditList;
+        this.auditList = this.filterAuditList(this.CompleteAuditList);
       }
     }, (error: any) => {
       console.error('Error for getting audits:', error);
@@ -68,6 +68,65 @@ export class AuditManageComponent {
     this.auditList = this.auditList?.map((obj: any) => {
       obj.isSubAuditsOpened = false;
       return obj;
+    });
+  }
+
+  filterAuditList(list: any[]) {
+    const email = localStorage.getItem('user')?.toString().toLowerCase() || '';
+    const query = (this.searchQuery || '').trim().toLowerCase();
+    const from = this.fromDate;
+    const to = this.toDate;
+
+    const withinDate = (dateVal: any) => {
+      if (!from || !to) {
+        return true;
+      }
+      const d = new Date(dateVal);
+      if (isNaN(d.getTime())) {
+        return true;
+      }
+      const fromDate = new Date(from);
+      const toDate = new Date(to);
+      return d >= fromDate && d <= toDate;
+    };
+
+    return (list || []).filter((audit: any) => {
+      const status = (audit.audit_status || '').toString().toLowerCase();
+      if (!['created', 'inprogress', 'submitted'].includes(status)) {
+        return false;
+      }
+      const createdBy = (audit.email || '').toString().toLowerCase();
+      const auditors = (audit.auditors || '').toString().toLowerCase();
+      const auditees = (audit.auditees || '').toString().toLowerCase();
+      const isMine = createdBy === email || auditors.includes(email) || auditees.includes(email);
+      if (!isMine) {
+        return false;
+      }
+      if (!withinDate(audit.start_date)) {
+        return false;
+      }
+      if (!query) {
+        return true;
+      }
+      const title = (audit.audit_title || '').toString().toLowerCase();
+      return title.includes(query);
+    });
+  }
+
+  getAllAudits() {
+    const email = localStorage.getItem('user')?.toString() || '';
+    const payload = { eMail: email };
+    this.audirService.listAllAudits(payload).subscribe((response: any) => {
+      if (response) {
+        this.CompleteAuditList = response.audit_data;
+        this.auditList = this.filterAuditList(this.CompleteAuditList);
+        this.auditList = this.auditList?.map((obj: any) => {
+          obj.isSubAuditsOpened = false;
+          return obj;
+        });
+      }
+    }, (error: any) => {
+      console.error('Error for getting audits:', error);
     });
   }
 
@@ -188,13 +247,13 @@ export class AuditManageComponent {
         audit.audit_title.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     } else {
-      this.auditList = this.CompleteAuditList;
+      this.auditList = this.filterAuditList(this.CompleteAuditList);
     }
   }
 
   clearSearch() {
     this.searchQuery = '';
-    this.auditList = this.CompleteAuditList;
+    this.auditList = this.filterAuditList(this.CompleteAuditList);
   }
 
   updatePlanWithNewAssignee(sub_audit: any, index: number) {
@@ -212,7 +271,7 @@ export class AuditManageComponent {
       if (response) {
         this.isSvgDisabled = true;
         this.audirService.showSuccess(response.message);
-        this.getAuditLists(this.fromDate, this.toDate);
+        this.getAllAudits();
       } else {
         this.audirService.showError('Failed to update audit plan');
       }
@@ -245,7 +304,7 @@ export class AuditManageComponent {
     this.toDate = this.datePipe.transform(this.toDate, 'yyyy-MM-dd');
     localStorage.setItem('performFromDate', this.fromDate);
     localStorage.setItem('performToDate', this.toDate);
-    this.getAuditLists(this.fromDate, this.toDate);
+    this.getAllAudits();
   }
 
   resetDateFilter(resetValue?: boolean) {
@@ -260,7 +319,7 @@ export class AuditManageComponent {
       localStorage.setItem('performFromDate', this.fromDate);
       localStorage.setItem('performToDate', this.toDate);
     }
-    this.getAuditLists(this.fromDate, this.toDate);
+    this.getAllAudits();
   }
 
   showAuditors(auditorOptions: any) {
