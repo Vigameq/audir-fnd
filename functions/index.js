@@ -13,6 +13,13 @@ const DO_SPACES_REGION = defineString("DO_SPACES_REGION");
 const DO_SPACES_BUCKET = defineString("DO_SPACES_BUCKET");
 const DO_SPACES_ENDPOINT = defineString("DO_SPACES_ENDPOINT");
 
+const DB_USER = defineString("DB_USER");
+const DB_PASSWORD = defineString("DB_PASSWORD");
+const DB_HOST = defineString("DB_HOST");
+const DB_PORT = defineString("DB_PORT");
+const DB_NAME = defineString("DB_NAME");
+const DB_SSLMODE = defineString("DB_SSLMODE");
+
 const app = express();
 const httpsAgent = new https.Agent({ rejectUnauthorized: false }); // Allow self-signed certs if needed
 
@@ -49,6 +56,62 @@ function createSpacesClient() {
     credentials: { accessKeyId, secretAccessKey },
     forcePathStyle: true
   });
+}
+
+function getDbConfig() {
+  const user = DB_USER.value() || process.env.DB_USER;
+  const password = DB_PASSWORD.value() || process.env.DB_PASSWORD;
+  const host = DB_HOST.value() || process.env.DB_HOST;
+  const port = DB_PORT.value() || process.env.DB_PORT;
+  const database = DB_NAME.value() || process.env.DB_NAME;
+  const sslmode = (DB_SSLMODE.value() || process.env.DB_SSLMODE || '').toLowerCase();
+  return { user, password, host, port, database, sslmode };
+}
+
+function getDbPool() {
+  const cfg = getDbConfig();
+  if (!cfg.user || !cfg.password || !cfg.host || !cfg.port || !cfg.database) {
+    return null;
+  }
+  return new Pool({
+    user: cfg.user,
+    password: cfg.password,
+    host: cfg.host,
+    port: Number(cfg.port),
+    database: cfg.database,
+    ssl: cfg.sslmode === 'require' ? { rejectUnauthorized: false } : undefined
+  });
+}
+
+async function queryDb(sql, params = []) {
+  const pool = getDbPool();
+  if (!pool) throw new Error('DB config not set');
+  const client = await pool.connect();
+  try {
+    const result = await client.query(sql, params);
+    return result;
+  } finally {
+    client.release();
+    await pool.end();
+  }
+}
+
+async function ensureAuditQuestionsTable() {
+  const sql = `
+    CREATE TABLE IF NOT EXISTS audir_audit_questions (
+      id SERIAL PRIMARY KEY,
+      audit_id INTEGER NOT NULL,
+      template VARCHAR(255),
+      template_type VARCHAR(255),
+      original_question TEXT,
+      question TEXT NOT NULL,
+      action VARCHAR(20) NOT NULL,
+      created_by VARCHAR(255),
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+  await queryDb(sql);
 }
 
 async function buildSignedUrl(key) {
@@ -175,6 +238,89 @@ app.get("/audire/api/questionNCDataFile/:auditId/:responseType/:fileName", async
   } catch (error) {
     console.error("Signed URL error (questionNCDataFile):", error.toString());
     return res.status(500).send({ error: "Failed to generate signed URL" });
+  }
+});
+
+// ✅ Audit list (all) from DB
+app.post("/audire/api/listAllAudits", async (req, res) => {
+  try {
+    const email = (req.body?.eMail || '').toLowerCase();
+    if (!email) return res.status(400).send({ message: 'Email is required' });
+    const sql = `
+      SELECT id, link_audit, audit_title, functions, template, function_template,
+             start_date, end_date, auditors, auditees, city, country, audit_scope, audit_type, audit_status, email
+      FROM audir_audit
+      WHERE email IN (
+        SELECT email FROM audir_users
+        WHERE organisation = (
+          SELECT organisation FROM audir_users WHERE email = $1 LIMIT 1
+        )
+      );
+    `;
+    const result = await queryDb(sql, [email]);
+    res.status(200).send({ audit_data: result.rows });
+  } catch (error) {
+    console.error('listAllAudits error:', error.toString());
+    res.status(500).send({ error: 'Failed to fetch audits' });
+  }
+});
+
+// ✅ Audit question overrides (add/edit/delete)
+app.post("/audire/api/listAuditQuestionOverrides", async (req, res) => {
+  try {
+    const auditId = req.body?.audit_id;
+    if (!auditId) return res.status(400).send({ message: 'audit_id is required' });
+    await ensureAuditQuestionsTable();
+    const sql = `SELECT id, audit_id, template, template_type, original_question, question, action, created_by, created_at, updated_at
+                 FROM audir_audit_questions WHERE audit_id = $1 ORDER BY id ASC`;
+    const result = await queryDb(sql, [auditId]);
+    res.status(200).send({ overrides: result.rows });
+  } catch (error) {
+    console.error('listAuditQuestionOverrides error:', error.toString());
+    res.status(500).send({ error: 'Failed to fetch overrides' });
+  }
+});
+
+app.post("/audire/api/addAuditQuestion", async (req, res) => {
+  try {
+    const { audit_id, template, template_type, original_question, question, created_by } = req.body || {};
+    if (!audit_id || !question) return res.status(400).send({ message: 'audit_id and question are required' });
+    await ensureAuditQuestionsTable();
+    const sql = `INSERT INTO audir_audit_questions (audit_id, template, template_type, original_question, question, action, created_by)
+                 VALUES ($1, $2, $3, $4, $5, 'add', $6) RETURNING id`;
+    const result = await queryDb(sql, [audit_id, template, template_type, original_question, question, created_by]);
+    res.status(200).send({ message: 'Audit question added', id: result.rows[0]?.id });
+  } catch (error) {
+    console.error('addAuditQuestion error:', error.toString());
+    res.status(500).send({ error: 'Failed to add audit question' });
+  }
+});
+
+app.post("/audire/api/updateAuditQuestion", async (req, res) => {
+  try {
+    const { id, question, updated_by } = req.body || {};
+    if (!id || !question) return res.status(400).send({ message: 'id and question are required' });
+    await ensureAuditQuestionsTable();
+    const sql = `UPDATE audir_audit_questions SET question = $1, action = 'edit', updated_at = NOW() WHERE id = $2`;
+    await queryDb(sql, [question, id]);
+    res.status(200).send({ message: 'Audit question updated', id });
+  } catch (error) {
+    console.error('updateAuditQuestion error:', error.toString());
+    res.status(500).send({ error: 'Failed to update audit question' });
+  }
+});
+
+app.post("/audire/api/deleteAuditQuestion", async (req, res) => {
+  try {
+    const { id } = req.body || {};
+    if (!id) return res.status(400).send({ message: 'id is required' });
+    await ensureAuditQuestionsTable();
+    const sql = `UPDATE audir_audit_questions SET action = 'delete', updated_at = NOW() WHERE id = $1`;
+    await queryDb(sql, [id]);
+    res.status(200).send({ message: 'Audit question deleted' });
+  } catch (error) {
+    console.error('deleteAuditQuestion error:', error.toString());
+    res.status(500).send({ error: 'Failed to delete audit question' });
   }
 });
 
