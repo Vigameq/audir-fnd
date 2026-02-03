@@ -101,7 +101,7 @@ async function ensureAuditQuestionsTable() {
   const sql = `
     CREATE TABLE IF NOT EXISTS audir_audit_questions (
       id SERIAL PRIMARY KEY,
-      audit_id INTEGER NOT NULL,
+      audit_id TEXT NOT NULL,
       template VARCHAR(255),
       template_type VARCHAR(255),
       original_question TEXT,
@@ -113,6 +113,7 @@ async function ensureAuditQuestionsTable() {
     );
   `;
   await queryDb(sql);
+  await queryDb(`ALTER TABLE audir_audit_questions ALTER COLUMN audit_id TYPE TEXT USING audit_id::text`);
 }
 
 async function buildSignedUrl(key) {
