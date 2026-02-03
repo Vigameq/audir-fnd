@@ -171,6 +171,11 @@ export class AuditPerformComponent {
         });
 
         forkJoin(requests).subscribe((responses: any[]) => {
+          const auditorAnsweredCount = responses.filter((response) => {
+            const note = response?.auditor_notes?.[0]?.auditor_notes;
+            return note != null && note.toString().trim() !== '';
+          }).length;
+          subAudit.auditorResponded = auditorAnsweredCount > 0;
           const answeredCount = responses.filter((response) => {
             const value = this.isAuditor
               ? response?.auditor_notes?.[0]?.auditor_notes
@@ -188,6 +193,18 @@ export class AuditPerformComponent {
     }, (error: any) => {
       console.error('Error for getting parent questions:', error);
     });
+  }
+
+
+  canAuditeePerform(subAudit: any): boolean {
+    if (this.isAuditor) {
+      return true;
+    }
+    return !!subAudit?.auditorResponded;
+  }
+
+  auditeePerformLocked() {
+    this.audirService.showError('Waiting for auditor response to start this audit');
   }
 
   setAuditeeValues(auditIndex: any) {

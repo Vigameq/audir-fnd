@@ -151,7 +151,7 @@
 </mat-dialog-content>
     <mat-dialog-actions class="action-btns">
         <div class="addAuditFinding" (click)="addFindings()" *ngIf="isAuditor">
-            <button [class.disabled]="checkFindingsLengthInRange() || isAuditorSubmitted" [disabled]="checkFindingsLengthInRange() || isAuditorSubmitted">
+            <button [class.disabled]="checkFindingsLengthInRange() || isAuditorSubmitted || !hasCompletedCycle()" [disabled]="checkFindingsLengthInRange() || isAuditorSubmitted || !hasCompletedCycle()">
                 <svg width="24" height="24" viewBox="0 0 21 21" fill="" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M3.45895 8.21V5.186H0.578953V3.26H3.45895V0.289999H5.56495V3.26H8.42695V5.186H5.56495V8.21H3.45895Z"
@@ -162,7 +162,7 @@
         <div class="cancel-save-btns" *ngIf="isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
             <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSaveAuditorDraft()">Save</button>
-            <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitAuditorResponse()">Submit to Auditor</button>
+            <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent() || !hasCompletedCycle()" (click)="onSubmitAuditorResponse()">Submit</button>
         </div>
             <div class="cancel-save-btns" *ngIf="!isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>

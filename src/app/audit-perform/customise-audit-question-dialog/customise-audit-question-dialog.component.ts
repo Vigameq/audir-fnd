@@ -379,6 +379,49 @@ export class CustomiseAuditQuestionDialogComponent {
     return hasAuditor && hasAuditee;
   }
 
+
+  hasCompletedCycle() {
+    const history = Array.isArray(this.questionData?.history) ? this.questionData.history : [];
+    const auditeeEntry = this.questionData?.auditee_response?.[0] || {};
+    const auditorEntry = this.questionData?.auditor_notes?.[0] || {};
+
+    const hasAuditor = (auditorEntry.auditor_notes || '').trim() !== '' || (this.auditNoteValue || '').trim() !== '';
+    const hasAuditee = (auditeeEntry.auditee_response || '').trim() !== ''
+      || (auditeeEntry.link || '').trim() !== ''
+      || (auditeeEntry.attach_evidence && auditeeEntry.attach_evidence !== 'None')
+      || (this.auditeeResponseValue || '').trim() !== ''
+      || (this.linkInput || '').trim() !== ''
+      || (this.auditeeResponseEvidenceFileName && this.auditeeResponseEvidenceFileName !== 'No file choosen..');
+
+    if (!hasAuditor || !hasAuditee) {
+      return false;
+    }
+
+    if (history.length) {
+      const types = history.map((item: any) => item.type);
+      const lastAuditorIndex = types.lastIndexOf('auditor_notes');
+      const lastAuditeeIndex = types.lastIndexOf('auditee_response');
+      if (lastAuditorIndex !== -1 && lastAuditeeIndex !== -1) {
+        const latestAuditorNote = history[lastAuditorIndex];
+        const latestAuditeeResponse = history[lastAuditeeIndex];
+        const auditorTime = new Date(latestAuditorNote.updated_at || latestAuditorNote.updatedAt || latestAuditorNote.timestamp || 0).getTime();
+        const auditeeTime = new Date(latestAuditeeResponse.updated_at || latestAuditeeResponse.updatedAt || latestAuditeeResponse.timestamp || 0).getTime();
+        if (auditorTime && auditeeTime) {
+          return auditeeTime > auditorTime;
+        }
+        return lastAuditeeIndex > lastAuditorIndex;
+      }
+    }
+
+    const auditeeTime = new Date(auditeeEntry.updated_at || auditeeEntry.updatedAt || auditeeEntry.timestamp || 0).getTime();
+    const auditorTime = new Date(auditorEntry.updated_at || auditorEntry.updatedAt || auditorEntry.timestamp || 0).getTime();
+    if (auditorTime && auditeeTime) {
+      return auditeeTime > auditorTime;
+    }
+
+    return !this.calculateReviewInProgress();
+  }
+
   hasAuditorDraftContent() {
     const hasNote = (this.auditNoteValue || '').trim() !== '';
     const hasFindings = this.checkIfAuditFindingPresent(this.auditFindingsValue, this.findingCategorySelectedOption, this.clauseInput);
