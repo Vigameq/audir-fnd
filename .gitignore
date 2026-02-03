@@ -43,3 +43,6 @@ Thumbs.db
 
 # Firebase
 firebase-debug.log
+# Env files
+.env
+.env.*
