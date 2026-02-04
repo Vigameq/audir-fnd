@@ -14,3 +14,21 @@ export const authGuard: CanActivateFn = () => {
     return false;
   }
 };
+
+
+export const roleGuard = (allowedRoles: string[]): CanActivateFn => {
+  return () => {
+    const authService = inject(AuthService);
+    const router = inject(Router);
+    const role = authService.getCurrentRole();
+    if (!role) {
+      router.navigate(['/dashboard']);
+      return false;
+    }
+    if (role === 'Admin' || allowedRoles.includes(role)) {
+      return true;
+    }
+    router.navigate(['/dashboard']);
+    return false;
+  };
+};

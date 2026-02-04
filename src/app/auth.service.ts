@@ -15,6 +15,20 @@ export class AuthService {
     return this.http.post(this.apiUrl, credentials);
   }
 
+
+
+  getCurrentRole(): string {
+    const details = localStorage.getItem('userDetails');
+    if (!details) {
+      return '';
+    }
+    try {
+      const parsed = JSON.parse(details);
+      return parsed?.role || '';
+    } catch {
+      return '';
+    }
+  }
   logout(): void {
     localStorage.removeItem('auth_token');
   }

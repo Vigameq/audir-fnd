@@ -23,8 +23,8 @@ export class LoginComponent {
           localStorage.setItem('login_success', 'success');
           localStorage.setItem("userDetails", JSON.stringify(response));
           localStorage.setItem('user', response.eMail);
-          localStorage.setItem('header', 'Audit Plan');
-          this.router.navigate(['/auditPlan']);
+          localStorage.setItem('header', 'Dashboard');
+          this.router.navigate(['/dashboard']);
           //this.audirService.showSuccess('Login Successfull');
         } else {
           this.audirService.showError('Invalid credentials');

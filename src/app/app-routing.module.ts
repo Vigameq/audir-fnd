@@ -8,7 +8,7 @@ import { FindingsManagementComponent } from './findings-management/findings-mana
 import { TemplatesComponent } from './templates/templates.component';
 import { ReportsComponent } from './reports/reports.component';
 import { UserManagementComponent } from './user-management/user-management.component';
-import { authGuard as AuthGuard } from './auth.guard';
+import { authGuard as AuthGuard, roleGuard } from './auth.guard';
 import { SpecificFunctionAuditInfoComponent } from './audit-perform/specific-function-audit-info/specific-function-audit-info.component';
 import { CustomiseAuditQuestionDialogComponent } from './audit-perform/customise-audit-question-dialog/customise-audit-question-dialog.component';
 import { FindingsAuditInfoComponent } from './findings-management/findings-audit-info/findings-audit-info.component';
@@ -54,7 +54,7 @@ const routes: Routes = [
   },
   {
     path: 'userManagement', component: UserManagementComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, roleGuard(['Admin'])]
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }

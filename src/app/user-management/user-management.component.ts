@@ -12,7 +12,7 @@ export class UserManagementComponent {
   users: any[] = [];
   filteredUsers: any[] = [];
   searchQuery = '';
-  roles = ['Manager', 'Auditor', 'Auditee'];
+  roles = ['Admin', 'Lead Auditor', 'Manager', 'Auditor', 'Auditee'];
   currentUserEmail = '';
 
   constructor(private dialog: MatDialog, private audirService: AudirService) {

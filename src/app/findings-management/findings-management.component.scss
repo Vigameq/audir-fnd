@@ -1,381 +1,161 @@
+
+:host {
+  display: block;
+  background: #ffffff;
+  color: #111111;
+  font-family: 'Apple SD Gothic Neo', sans-serif;
+}
+
+:root {
+  --ink: #111111;
+  --muted: #6b7280;
+  --border: #e6e6e6;
+  --surface: #ffffff;
+  --surface-muted: #f6f6f6;
+  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.08);
+  --shadow-card: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
 .findings-management {
-    max-width: 100%;
-    margin: 16px 40px 0 44px;
-    font-family: 'Apple SD Gothic Neo', sans-serif;
-
-    .search-date-filter-section {
-        width: 100%;
-        height: 127px;
-        display: flex;
-        background-color: var(--ink);
-        border-radius: 15px;
-        border: 1px #000000;
-        align-items: center;
-        flex-direction: row;
-        justify-content: space-between;
-        gap: 10px;
-
-        .findings-management-search-bar {
-            position: relative;
-            height: 44px;
-            width: 100%;
-            margin: 20px;
-            font-size: 16px;
-            font-family: 'Apple SD Gothic Neo', sans-serif;
-
-
-            .findings-management-search-input {
-                width: 85%;
-                padding: 10px 30px 10px 20px;
-                font-size: 16px;
-                color: #000000;
-                border: 1px solid #D9D9D9;
-                border-radius: 24px;
-                outline: none;
-            }
-
-            .findings-management-search-input::placeholder {
-                color: var(--muted);
-            }
-
-
-            .findings-management-search-input:focus {
-                border-color: var(--accent);
-            }
-
-            .clear-btn {
-                position: absolute;
-                right: 176px;
-                top: 52%;
-                transform: translateY(-50%);
-                background: transparent;
-                border: none;
-                font-size: 12px;
-                cursor: pointer;
-                color: var(--ink);
-            }
-
-            .clear-btn:hover {
-                color: var(--accent);
-            }
-
-        }
-
-        .date-filter-and-reset {
-            display: flex;
-            flex-direction: row;
-            gap: 10px;
-            padding-right: 20px;
-            align-items: center;
-
-            .from-date,
-            .to-date {
-                margin-top: 20px;
-
-                .custom-date-picker {
-                    width: 190px;
-                }
-            }
-
-            .reset input {
-                cursor: pointer;
-                font-size: 16px;
-                color: #575757;
-                outline: none;
-                border: none;
-                border-radius: 6px;
-                padding: 6px;
-                width: 60px;
-            }
-
-            .reset input:active {
-                color: #000000;
-                background-color: var(--accent);
-                border: 1px var(--accent);
-            }
-        }
-
-    }
-
-    .audit-info-label {
-        margin-top: 30px;
-        font-weight: 700;
-        font-size: 22px;
-        color: #4E4E4E;
-        line-height: 100%;
-    }
-
-    .findings-management-container-section {
-        margin: 10px 0 30px 0;
-        max-width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 30px;
-
-        .findings-management-container-and-navigation {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-
-            .findings-management-container {
-                position: relative;
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                border: 1px solid var(--ink);
-                border-radius: 20px;
-                padding: 20px 40px 26px;
-                gap: 20px;
-                flex: 1;
-
-                .findings-management-details-and-download-report {
-                    display: flex;
-                    width: 100%;
-                    flex-direction: row;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 10px;
-
-                    .findings-management-details {
-                        display: flex;
-                        flex: 1;
-                        flex-direction: column;
-                        gap: 10px;
-
-                        .plan-creation-id {
-                            display: flex;
-
-                            span {
-                                font-size: 20px;
-                                font-weight: 700;
-                                line-height: 100%;
-                                color: var(--muted);
-                            }
-                        }
-
-                        .templates-location-details {
-                            display: flex;
-                            flex-direction: column;
-                            gap: 2px;
-                            font-size: 18px;
-                            font-weight: 400;
-                            line-height: 100%;
-                            color: var(--muted);
-
-                            .templates-details {
-                                padding-bottom: 2px;
-                            }
-                        }
-
-                        .duration-details {
-                            font-size: 16px;
-                            font-weight: 400;
-                            line-height: 100%;
-                            color: var(--muted);
-
-                            .time-details {
-                                padding-top: 2px;
-
-                                .end-time {
-                                    margin-left: 30px;
-                                }
-                            }
-                        }
-                    }
-
-                    .auditees-and-download-reports {
-                        display: flex;
-                        flex-direction: row;
-                        gap: 30px;
-                        flex: 2;
-                        justify-content: flex-end;
-                        align-items: center;
-
-                        .change-auditee-and-confirmation {
-                            display: flex;
-                            flex-direction: row;
-                            gap: 10px;
-                            justify-content: space-between;
-                            align-items: center;
-
-                            .auditees {
-                                position: relative;
-                                margin: 0 10px 22px 10px;
-
-                                .auditee-label {
-                                    padding-left: 2px;
-                                }
-
-                                .dropbtn {
-                                    background-color: #ffffff;
-                                    color: #000000;
-                                    padding: 6px 30px 6px 12px;
-                                    cursor: pointer;
-                                    border-radius: 6px;
-                                    display: flex;
-                                    align-items: center;
-                                    height: 40px;
-                                    width: 240px;
-                                    border: 1px solid #D9D9D9;
-
-                                    span {
-                                        overflow: hidden;
-                                        white-space: nowrap;
-                                        text-overflow: ellipsis;
-                                        max-width: 180px;
-                                    }
-                                }
-
-                                .auditeeDropdown {
-                                    margin-bottom: 10px;
-                                }
-
-                                .dropdown-content {
-                                    display: grid;
-                                    position: absolute;
-                                    background-color: #ffffff;
-                                    min-width: 160px;
-                                    /* box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); */
-                                    padding: 6px;
-                                    z-index: 1100;
-                                    border-radius: 6px;
-                                    border: 1px solid var(--border);
-                                    width: 240px;
-                                    top: 66px;
-                                    max-height: 104px;
-                                    overflow-y: auto;
-                                    appearance: none;
-
-
-                                    .auditee-value {
-                                        margin-left: 15px !important;
-                                    }
-                                }
-
-                                .dropdown-arrow {
-                                    position: absolute;
-                                    top: 70%;
-                                    transform: translateY(-50%);
-                                    pointer-events: none;
-                                    right: 12px;
-                                }
-                            }
-
-                            .svg-icon {
-                                svg:hover {
-                                    cursor: pointer;
-
-                                    path {
-                                        fill: var(--accent);
-                                    }
-                                }
-                            }
-
-                            .disabled {
-                                pointer-events: none;
-                                opacity: 0.5;
-                                cursor: not-allowed;
-                            }
-                        }
-
-                        .download-findings-report {
-                            width: 40px;
-                            height: 40px;
-
-                            svg {
-                                cursor: pointer;
-                            }
-
-                            svg:hover {
-                                path {
-                                    fill: var(--accent);
-                                }
-                            }
-                        }
-
-                    }
-                }
-
-            }
-
-            .navigate-to-questions-svg {
-                cursor: pointer;
-
-                svg:hover {
-                    path {
-                        fill: var(--accent);
-                    }
-                }
-            }
-
-            .vertical-bar,
-            .hyphen {
-                margin: 0 4px;
-            }
-        }
-    }
-
-    .no-audit-data {
-        font-size: 16px;
-        font-weight: 400;
-        line-height: 100%;
-        color: var(--muted);
-        padding-top: 20px;
-    }
-}
-.findings-management .findings-management-container-section .audit-accordion {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 18px;
-    box-shadow: var(--shadow);
+  padding: 18px 22px 30px;
+  background: #ffffff;
 }
 
-.findings-management .findings-management-container-section .parent-header {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    align-items: flex-start;
+.search-date-filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px 18px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--border);
 }
 
-.findings-management .findings-management-container-section .parent-main {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    flex: 1;
+.findings-management-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.findings-management .findings-management-container-section .parent-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+.findings-management-search-input {
+  flex: 1;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+  outline: none;
+  background: #ffffff;
 }
 
-.findings-management .findings-management-container-section .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    color: var(--ink);
-    background: var(--accent-soft);
-    border: 1px solid var(--border);
+.clear-btn {
+  border: none;
+  background: #111111;
+  color: #ffffff;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
-.findings-management .findings-management-container-section .chip.muted {
-    color: var(--muted);
+.date-filter-and-reset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
 }
 
-.findings-management .findings-management-container-section .child-count-chip {
-    border-radius: 999px;
-    border: 1px solid var(--ink);
-    background: var(--ink);
-    color: #ffffff;
-    padding: 8px 14px;
-    font-size: 12px;
-    cursor: pointer;
-    white-space: nowrap;
+.custom-date-picker {
+  width: 220px;
+}
+
+.reset input[type='reset'] {
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: #111111;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.audit-info-label {
+  margin: 18px 0 10px;
+  font-weight: 600;
+  color: #111111;
+  font-size: 18px;
+}
+
+.findings-management-container-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.audit-accordion {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  padding: 16px 18px;
+}
+
+.parent-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.parent-main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plan-creation-id span {
+  font-weight: 600;
+  color: #111111;
+  font-size: 18px;
+}
+
+.parent-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.parent-chips .chip {
+  background: #f3f4f6;
+  color: #111827;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.parent-chips .chip.muted {
+  background: #f9fafb;
+  color: var(--muted);
+}
+
+.vertical-bar {
+  margin: 0 6px;
+  color: #9ca3af;
+}
+
+.child-count-chip {
+  background: #111111;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+}
+
+.no-audit-data {
+  padding: 18px;
+  color: var(--muted);
 }

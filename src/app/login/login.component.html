@@ -1,31 +1,44 @@
-<div class="row">
-    <div class="header">
-        <img src="../assets/images/audir_plus_logo.png" alt="Logo" id="audir-logo" />
-    </div>
-</div>
-<div class="row container login-container">
-    <div class="col-1">
-        <img class=" vetical-bar" src="../assets/images/login_rect.png" alt="Description of the image" />
-    </div>
-    <div class="col-7">
-        <img class=" login-image" src="../assets/images/login_audit_image.png" alt="Description of the image" />
-    </div>
-    <div class="col-4 login-div">
-        <p class="login-text">Log in</p>
-        <div class="welcome-message">
-            <p>Hello! Welcome Back, Please use</p>
-            <p>the credentials provided to login.</p>
-        </div>
-        <input type="text" (keyup.enter)="onSubmit()" placeholder="Email" [(ngModel)]="email" name="email" />
-        <br><br>
-        <input type="password" (keyup.enter)="onSubmit()" placeholder="Password" [(ngModel)]="password"
-            name="password" />
-        <br><br>
-        <button class="rounded-button" (click)="onSubmit()">Let's Start!</button>
-        <br><br>
-        <p style="text-align: center;">
-            <span class="forgot-password">Forgot Password?</span>
-            <span class="remaining-text"> Please contact the administrator</span>
-        </p>
+<div class="login-page">
+    <div class="login-shell">
+        <aside class="brand-panel">
+            <div class="brand-top">
+                <img src="../assets/images/audir_plus_logo.png" alt="Audir Plus" class="brand-logo" />
+                <div class="brand-mark">
+                    <span class="brand-name">AUDIR</span>
+                    <span class="brand-plus">PLUS</span>
+                </div>
+            </div>
+            <div class="brand-copy">
+                <h1>Audit clarity, without the clutter.</h1>
+                <p>Keep every audit thread aligned across auditor and auditee with a single source of truth.</p>
+                <div class="brand-highlights">
+                    <span>Structured responses</span>
+                    <span>Clean timelines</span>
+                    <span>Actionable findings</span>
+                </div>
+            </div>
+            <div class="brand-footer">
+                <div class="brand-strip"></div>
+                <p>Secure by design. Built for audit teams.</p>
+            </div>
+        </aside>
+
+        <section class="login-panel">
+            <div class="login-card">
+                <p class="login-title">Log in</p>
+                <p class="login-subtitle">Use the credentials provided by your administrator.</p>
+                <label class="field-label" for="login-email">Email</label>
+                <input id="login-email" type="text" (keyup.enter)="onSubmit()" placeholder="name@company.com"
+                    [(ngModel)]="email" name="email" />
+                <label class="field-label" for="login-password">Password</label>
+                <input id="login-password" type="password" (keyup.enter)="onSubmit()"
+                    placeholder="Enter your password" [(ngModel)]="password" name="password" />
+                <button class="primary-button" (click)="onSubmit()">Continue</button>
+                <p class="assist-text">
+                    <span class="forgot-password">Forgot password?</span>
+                    <span class="remaining-text"> Contact your administrator to reset it.</span>
+                </p>
+            </div>
+        </section>
     </div>
 </div>
