@@ -54,7 +54,7 @@ const routes: Routes = [
   },
   {
     path: 'userManagement', component: UserManagementComponent,
-    canActivate: [AuthGuard, roleGuard(['Admin'])]
+    canActivate: [AuthGuard, roleGuard(['Admin', 'Manager'])]
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }
