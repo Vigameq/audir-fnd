@@ -31,9 +31,11 @@ export class AuditPerformComponent {
   selectedAuditeesEmail: any;
   isSvgDisabled = true;
   isAuditor = false;
+  currentUserEmail = '';
 
   constructor(private audirService: AudirService, private datePipe: DatePipe) {
     this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
+    this.currentUserEmail = localStorage.getItem('user')?.toString().toLowerCase() || '';
     this.resetDateFilter();
   }
 
@@ -85,6 +87,7 @@ export class AuditPerformComponent {
       this.auditList[index].sub_audits = this.auditList[index].sub_audits.map((obj: any) => {
         obj.lineHeight = 0;
         obj.parentAuditID = this.auditList[index].audit_id;
+        obj.auditInitiated = this.getAuditInitiated(obj.audit_id);
         return obj;
       });
       this.auditList[index].sub_audits.forEach((audit: any) => {
@@ -197,10 +200,33 @@ export class AuditPerformComponent {
 
 
   canAuditeePerform(subAudit: any): boolean {
+    if (this.canInitiateAudit(subAudit)) {
+      return true;
+    }
+    return !!subAudit?.auditInitiated || !!subAudit?.auditorResponded;
+  }
+
+  canInitiateAudit(subAudit: any): boolean {
     if (this.isAuditor) {
       return true;
     }
-    return !!subAudit?.auditorResponded;
+    const auditors = Array.isArray(subAudit?.auditors) ? subAudit.auditors : [];
+    return auditors.some((auditor: any) =>
+      (auditor?.email || '').toString().toLowerCase() === this.currentUserEmail
+    );
+  }
+
+  initiateAudit(subAudit: any) {
+    if (!subAudit?.audit_id || subAudit.auditInitiated) {
+      return;
+    }
+    const confirmed = window.confirm('Initiate this audit? This will enable Perform for the Auditee.');
+    if (!confirmed) {
+      return;
+    }
+    subAudit.auditInitiated = true;
+    localStorage.setItem(this.auditInitiatedKey(subAudit.audit_id), 'true');
+    this.audirService.showSuccess('Audit initiated. Auditee can now perform.');
   }
 
   auditeePerformLocked() {
@@ -419,6 +445,14 @@ export class AuditPerformComponent {
 
   isTemplatePresent() {
     this.audirService.showWarning('Functional templates are not assigned for this Audit.');
+  }
+
+  private auditInitiatedKey(auditId: any): string {
+    return `auditInitiated:${auditId}`;
+  }
+
+  private getAuditInitiated(auditId: any): boolean {
+    return localStorage.getItem(this.auditInitiatedKey(auditId)) === 'true';
   }
 
   @HostListener('document:click', ['$event'])

@@ -24,7 +24,15 @@ export class AuthService {
     }
     try {
       const parsed = JSON.parse(details);
-      return parsed?.role || '';
+      const rawRole = (parsed?.role || '').toString().trim().toLowerCase();
+      const roleMap: Record<string, string> = {
+        'admin': 'Admin',
+        'lead auditor': 'Lead Auditor',
+        'manager': 'Manager',
+        'auditor': 'Auditor',
+        'auditee': 'Auditee'
+      };
+      return roleMap[rawRole] || '';
     } catch {
       return '';
     }
@@ -37,4 +45,3 @@ export class AuthService {
     return localStorage.getItem('login_success');
   }
 }
-

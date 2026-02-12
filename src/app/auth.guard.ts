@@ -21,11 +21,12 @@ export const roleGuard = (allowedRoles: string[]): CanActivateFn => {
     const authService = inject(AuthService);
     const router = inject(Router);
     const role = authService.getCurrentRole();
+    const normalizedAllowed = allowedRoles.map((item) => item.toLowerCase().trim());
     if (!role) {
       router.navigate(['/dashboard']);
       return false;
     }
-    if (role === 'Admin' || allowedRoles.includes(role)) {
+    if (role.toLowerCase() === 'admin' || normalizedAllowed.includes(role.toLowerCase())) {
       return true;
     }
     router.navigate(['/dashboard']);

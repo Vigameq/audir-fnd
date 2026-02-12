@@ -21,6 +21,8 @@ export class SpecificFunctionAuditInfoComponent {
   auditInfo: any;
   auditId: any;
   parentAuditID: any;
+  currentUserEmail = '';
+  auditInitiated = false;
 
   constructor(private dialog: MatDialog,
     private route: ActivatedRoute,
@@ -28,8 +30,10 @@ export class SpecificFunctionAuditInfoComponent {
     private router: Router,
     private location: Location) {
     this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
+    this.currentUserEmail = localStorage.getItem('user')?.toString().toLowerCase() || '';
     this.route.paramMap.subscribe(params => {
       this.auditId = { "audit_id": params.get('id') };
+      this.auditInitiated = this.getAuditInitiated(this.auditId.audit_id);
       this.route.queryParams.subscribe(params => {
         this.parentAuditID = { "audit_id": params['parentAuditID'] };
       });
@@ -563,6 +567,37 @@ export class SpecificFunctionAuditInfoComponent {
       return ((options.map((option: any) => option.name)).join(', '));
     }
     return
+  }
+
+  canInitiateAudit() {
+    if (this.isAuditor) {
+      return true;
+    }
+    const auditors = Array.isArray(this.auditInfo?.auditors) ? this.auditInfo.auditors : [];
+    return auditors.some((auditor: any) =>
+      (auditor?.email || '').toString().toLowerCase() === this.currentUserEmail
+    );
+  }
+
+  initiateAudit() {
+    if (!this.auditId?.audit_id || this.auditInitiated) {
+      return;
+    }
+    const confirmed = window.confirm('Initiate this audit? This will enable Perform for the Auditee.');
+    if (!confirmed) {
+      return;
+    }
+    this.auditInitiated = true;
+    localStorage.setItem(this.auditInitiatedKey(this.auditId.audit_id), 'true');
+    this.audirService.showSuccess('Audit initiated. Auditee can now perform.');
+  }
+
+  private auditInitiatedKey(auditId: any): string {
+    return `auditInitiated:${auditId}`;
+  }
+
+  private getAuditInitiated(auditId: any): boolean {
+    return localStorage.getItem(this.auditInitiatedKey(auditId)) === 'true';
   }
 
   onsubmit() {

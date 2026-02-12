@@ -68,8 +68,15 @@
             <div class="audit-scope-info"><span>{{auditInfo?.audit_scope}}</span></div>
         </div>
     </div>
-    <div class="question-toolbar" *ngIf="isAuditor">
-        <button class="add-question" type="button" (click)="addQuestion()">+ Add Question</button>
+    <div class="question-toolbar" *ngIf="canInitiateAudit() || isAuditor">
+        <button class="initiate-audit" type="button"
+            *ngIf="canInitiateAudit()"
+            [class.disabled]="auditInitiated"
+            [disabled]="auditInitiated"
+            (click)="initiateAudit()">
+            Initiate Audit
+        </button>
+        <button class="add-question" type="button" *ngIf="isAuditor" (click)="addQuestion()">+ Add Question</button>
     </div>
     <div class="functional-template-question-section">
         <div *ngFor="let question of auditQuestions; let i = index" class="questions-section"

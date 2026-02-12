@@ -198,15 +198,26 @@
     .question-toolbar {
         display: flex;
         justify-content: flex-end;
+        gap: 10px;
         margin: 8px 0 16px;
 
+        .initiate-audit,
         .add-question {
             padding: 6px 14px;
             border-radius: 16px;
             border: 1px solid #101010;
             background-color: #ffffff;
+            color: #101010;
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
+        }
+
+        .initiate-audit.disabled {
+            opacity: 0.5;
+            color: #5f6368;
+            border-color: #9aa0a6;
+            cursor: not-allowed;
         }
     }
 
