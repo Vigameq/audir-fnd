@@ -22,7 +22,7 @@ const routes: Routes = [
   },
   {
     path: 'auditPlan', component: AuditPlanComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, roleGuard(['Admin', 'Manager', 'Lead Auditor', 'Auditor'])]
   },
   {
     path: 'auditPerform', component: AuditPerformComponent,
@@ -46,7 +46,7 @@ const routes: Routes = [
   },
   {
     path: 'templates', component: TemplatesComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, roleGuard(['Admin', 'Manager', 'Lead Auditor', 'Auditor'])]
   },
   {
     path: 'reports', component: ReportsComponent,
@@ -54,7 +54,7 @@ const routes: Routes = [
   },
   {
     path: 'userManagement', component: UserManagementComponent,
-    canActivate: [AuthGuard, roleGuard(['Admin', 'Manager'])]
+    canActivate: [AuthGuard, roleGuard(['Admin'])]
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }
