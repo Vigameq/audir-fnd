@@ -93,6 +93,7 @@ export class AuditPerformComponent {
       this.auditList[index].sub_audits.forEach((audit: any) => {
         this.computeSubAuditCompletionPercent(audit);
       });
+      this.loadAuditInitiationFlags(index);
       this.updateLineHeights(index);
       this.setAuditeeValues(index);
     }
@@ -229,9 +230,26 @@ export class AuditPerformComponent {
     if (!confirmed) {
       return;
     }
-    subAudit.auditInitiated = true;
-    localStorage.setItem(this.auditInitiatedKey(subAudit.audit_id), 'true');
-    this.audirService.showSuccess('Audit initiated. Auditee can now perform.');
+    const payload = {
+      audit_id: subAudit.audit_id,
+      template: '__SYSTEM__',
+      template_type: 'system',
+      original_question: '__AUDIT_INITIATED__',
+      question: '__AUDIT_INITIATED__',
+      action: 'initiate',
+      created_by: localStorage.getItem('user')?.toString() || ''
+    };
+    this.audirService.addAuditQuestion(payload).subscribe({
+      next: () => {
+        subAudit.auditInitiated = true;
+        localStorage.setItem(this.auditInitiatedKey(subAudit.audit_id), 'true');
+        this.audirService.showSuccess('Audit initiated. Auditee can now perform.');
+      },
+      error: (error: any) => {
+        console.error('Error initiating audit:', error);
+        this.audirService.showError('Failed to initiate audit');
+      }
+    });
   }
 
   auditeePerformLocked() {
@@ -458,6 +476,26 @@ export class AuditPerformComponent {
 
   private getAuditInitiated(auditId: any): boolean {
     return localStorage.getItem(this.auditInitiatedKey(auditId)) === 'true';
+  }
+
+  private loadAuditInitiationFlags(auditIndex: number) {
+    const subAudits = Array.isArray(this.auditList?.[auditIndex]?.sub_audits) ? this.auditList[auditIndex].sub_audits : [];
+    if (!subAudits.length) {
+      return;
+    }
+    const email = localStorage.getItem('user')?.toString() || '';
+    const requests = subAudits.map((subAudit: any) => {
+      const payload = { audit_id: subAudit.audit_id, email: email };
+      return this.audirService.listAuditQuestionOverrides(payload).pipe(catchError(() => of([])));
+    });
+    forkJoin(requests).subscribe((responses) => {
+      const responseList = responses as any[];
+      responseList.forEach((overrides: any, index: number) => {
+        const list = Array.isArray(overrides) ? overrides : [];
+        const initiatedByApi = list.some((item: any) => (item?.action || '').toString().toLowerCase() === 'initiate');
+        subAudits[index].auditInitiated = initiatedByApi || this.getAuditInitiated(subAudits[index].audit_id);
+      });
+    });
   }
 
   @HostListener('document:click', ['$event'])

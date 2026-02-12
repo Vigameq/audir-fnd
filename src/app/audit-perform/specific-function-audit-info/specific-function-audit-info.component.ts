@@ -34,6 +34,7 @@ export class SpecificFunctionAuditInfoComponent {
     this.route.paramMap.subscribe(params => {
       this.auditId = { "audit_id": params.get('id') };
       this.auditInitiated = this.getAuditInitiated(this.auditId.audit_id);
+      this.loadAuditInitiatedState();
       this.route.queryParams.subscribe(params => {
         this.parentAuditID = { "audit_id": params['parentAuditID'] };
       });
@@ -587,32 +588,23 @@ export class SpecificFunctionAuditInfoComponent {
     if (!confirmed) {
       return;
     }
-    const auditors = Array.isArray(this.auditInfo?.auditors) ? this.auditInfo.auditors : [];
-    const auditees = Array.isArray(this.auditInfo?.auditees) ? this.auditInfo.auditees : [];
     const payload: any = {
       audit_id: this.auditId.audit_id,
-      start_date: this.auditInfo?.start_date,
-      end_date: this.auditInfo?.end_date,
-      auditors: auditors.map((auditor: any) => auditor?.email || auditor).filter((email: any) => !!email),
-      auditees: auditees.map((auditee: any) => auditee?.email || auditee).filter((email: any) => !!email),
-      city: this.auditInfo?.city || '',
-      country: this.auditInfo?.country || '',
-      lead_auditor: this.auditInfo?.lead_auditor || '',
-      link_audit: this.auditInfo?.link_audit || '',
-      template: this.auditInfo?.template || [],
-      function_template: this.auditInfo?.function_template || [],
-      audit_type: this.auditInfo?.audit_type || '',
-      audit_status: 'inprogress'
+      template: '__SYSTEM__',
+      template_type: 'system',
+      original_question: '__AUDIT_INITIATED__',
+      question: '__AUDIT_INITIATED__',
+      action: 'initiate',
+      created_by: localStorage.getItem('user')?.toString() || ''
     };
 
-    this.audirService.updateAuditPlan(payload).subscribe({
+    this.audirService.addAuditQuestion(payload).subscribe({
       next: (response: any) => {
         if (!response) {
           this.audirService.showError('Failed to initiate audit');
           return;
         }
         this.auditInitiated = true;
-        this.auditInfo = { ...this.auditInfo, audit_status: 'inprogress' };
         localStorage.setItem(this.auditInitiatedKey(this.auditId.audit_id), 'true');
         this.audirService.showSuccess('Audit initiated. Auditee can now perform.');
       },
@@ -629,6 +621,26 @@ export class SpecificFunctionAuditInfoComponent {
 
   private getAuditInitiated(auditId: any): boolean {
     return localStorage.getItem(this.auditInitiatedKey(auditId)) === 'true';
+  }
+
+  private loadAuditInitiatedState() {
+    if (!this.auditId?.audit_id) {
+      return;
+    }
+    const payload = {
+      audit_id: this.auditId.audit_id,
+      email: localStorage.getItem('user')?.toString() || ''
+    };
+    this.audirService.listAuditQuestionOverrides(payload).subscribe({
+      next: (overrides: any) => {
+        const list = Array.isArray(overrides) ? overrides : [];
+        const initiatedByApi = list.some((item: any) => (item?.action || '').toString().toLowerCase() === 'initiate');
+        this.auditInitiated = initiatedByApi || this.getAuditInitiated(this.auditId.audit_id);
+      },
+      error: () => {
+        this.auditInitiated = this.getAuditInitiated(this.auditId.audit_id);
+      }
+    });
   }
 
   onsubmit() {
