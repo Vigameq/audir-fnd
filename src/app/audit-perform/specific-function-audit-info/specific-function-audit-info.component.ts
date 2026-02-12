@@ -23,6 +23,7 @@ export class SpecificFunctionAuditInfoComponent {
   parentAuditID: any;
   currentUserEmail = '';
   auditInitiated = false;
+  supportsAuditQuestionOverrides = true;
 
   constructor(private dialog: MatDialog,
     private route: ActivatedRoute,
@@ -33,8 +34,6 @@ export class SpecificFunctionAuditInfoComponent {
     this.currentUserEmail = localStorage.getItem('user')?.toString().toLowerCase() || '';
     this.route.paramMap.subscribe(params => {
       this.auditId = { "audit_id": params.get('id') };
-      this.auditInitiated = this.getAuditInitiated(this.auditId.audit_id);
-      this.loadAuditInitiatedState();
       this.route.queryParams.subscribe(params => {
         this.parentAuditID = { "audit_id": params['parentAuditID'] };
       });
@@ -69,7 +68,12 @@ export class SpecificFunctionAuditInfoComponent {
             addTemplates(childQuestion.questions?.function_template, 'function_template');
           }
           this.buildQuestions(questionTemplates, templateTypeByKey);
-          this.loadQuestionOverrides();
+          if (this.supportsAuditQuestionOverrides) {
+            this.loadQuestionOverrides();
+          } else {
+            this.auditQuestions = [...this.baseAuditQuestions];
+            this.loadQuestionStatuses();
+          }
         }, (error: any) => {
           console.error('Error for getting questions:', error);
         });
@@ -263,6 +267,7 @@ export class SpecificFunctionAuditInfoComponent {
         const auditData = Array.isArray(audit.audit_data) ? audit.audit_data[0] : audit.audit_data;
         if (auditData) {
           this.auditInfo = auditData;
+          this.auditInitiated = this.isInitiatedStatus(auditData.audit_status);
           return;
         }
       }
@@ -590,57 +595,63 @@ export class SpecificFunctionAuditInfoComponent {
     }
     const payload: any = {
       audit_id: this.auditId.audit_id,
-      template: '__SYSTEM__',
-      template_type: 'system',
-      original_question: '__AUDIT_INITIATED__',
-      question: '__AUDIT_INITIATED__',
-      action: 'initiate',
-      created_by: localStorage.getItem('user')?.toString() || ''
+      eMail: localStorage.getItem('user')?.toString() || ''
     };
 
-    this.audirService.addAuditQuestion(payload).subscribe({
+    const auditors = Array.isArray(this.auditInfo?.auditors) ? this.auditInfo.auditors : [];
+    const auditees = Array.isArray(this.auditInfo?.auditees) ? this.auditInfo.auditees : [];
+    const fallbackPayload: any = {
+      audit_id: this.auditId.audit_id,
+      start_date: this.auditInfo?.start_date,
+      end_date: this.auditInfo?.end_date,
+      auditors: auditors.map((auditor: any) => auditor?.email || auditor).filter((email: any) => !!email),
+      auditees: auditees.map((auditee: any) => auditee?.email || auditee).filter((email: any) => !!email),
+      city: this.auditInfo?.city || '',
+      country: this.auditInfo?.country || '',
+      lead_auditor: this.auditInfo?.lead_auditor || '',
+      link_audit: this.auditInfo?.link_audit || '',
+      template: this.auditInfo?.template || [],
+      function_template: this.auditInfo?.function_template || [],
+      audit_type: this.auditInfo?.audit_type || '',
+      audit_status: 'inprogress'
+    };
+
+    this.audirService.initiateAudit(payload).subscribe({
       next: (response: any) => {
         if (!response) {
           this.audirService.showError('Failed to initiate audit');
           return;
         }
         this.auditInitiated = true;
-        localStorage.setItem(this.auditInitiatedKey(this.auditId.audit_id), 'true');
+        this.auditInfo = { ...this.auditInfo, audit_status: 'inprogress' };
         this.audirService.showSuccess('Audit initiated. Auditee can now perform.');
       },
       error: (error: any) => {
-        console.error('Error initiating audit:', error);
-        this.audirService.showError('Failed to initiate audit');
+        // Backward-compatible fallback for deployments that do not yet expose /api/initiateAudit.
+        this.audirService.updateAuditPlan(fallbackPayload).subscribe({
+          next: (fallbackResponse: any) => {
+            if (!fallbackResponse) {
+              this.audirService.showError('Failed to initiate audit');
+              return;
+            }
+            this.auditInitiated = true;
+            this.auditInfo = { ...this.auditInfo, audit_status: 'inprogress' };
+            this.audirService.showSuccess('Audit initiated. Auditee can now perform.');
+          },
+          error: (fallbackError: any) => {
+            console.error('Error initiating audit (primary):', error);
+            console.error('Error initiating audit (fallback):', fallbackError);
+            const backendMessage = fallbackError?.error?.message || error?.error?.message || 'Failed to initiate audit';
+            this.audirService.showError(backendMessage);
+          }
+        });
       }
     });
   }
 
-  private auditInitiatedKey(auditId: any): string {
-    return `auditInitiated:${auditId}`;
-  }
-
-  private getAuditInitiated(auditId: any): boolean {
-    return localStorage.getItem(this.auditInitiatedKey(auditId)) === 'true';
-  }
-
-  private loadAuditInitiatedState() {
-    if (!this.auditId?.audit_id) {
-      return;
-    }
-    const payload = {
-      audit_id: this.auditId.audit_id,
-      email: localStorage.getItem('user')?.toString() || ''
-    };
-    this.audirService.listAuditQuestionOverrides(payload).subscribe({
-      next: (overrides: any) => {
-        const list = Array.isArray(overrides) ? overrides : [];
-        const initiatedByApi = list.some((item: any) => (item?.action || '').toString().toLowerCase() === 'initiate');
-        this.auditInitiated = initiatedByApi || this.getAuditInitiated(this.auditId.audit_id);
-      },
-      error: () => {
-        this.auditInitiated = this.getAuditInitiated(this.auditId.audit_id);
-      }
-    });
+  private isInitiatedStatus(status: any): boolean {
+    const value = (status || '').toString().trim().toLowerCase();
+    return value === 'inprogress' || value === 'submitted' || value === 'completed' || value === 'closed';
   }
 
   onsubmit() {

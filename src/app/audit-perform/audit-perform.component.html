@@ -93,7 +93,7 @@
                         </div>
                         <div class="sub-card-actions">
                             <button class="perform-btn" type="button" [routerLink]="['/auditPerform', sub_audit.audit_id]" *ngIf="sub_audit.function_template.length > 0 && (canInitiateAudit(sub_audit) || canAuditeePerform(sub_audit))" [queryParams]="{parentAuditID: sub_audit.parentAuditID }">Perform</button>
-                            <button class="perform-btn disabled" type="button" *ngIf="sub_audit.function_template.length > 0 && !canInitiateAudit(sub_audit) && !canAuditeePerform(sub_audit)" (click)="auditeePerformLocked()">Perform</button>
+                            <button class="perform-btn disabled" type="button" *ngIf="sub_audit.function_template.length > 0 && !canInitiateAudit(sub_audit) && !canAuditeePerform(sub_audit)" (click)="auditeePerformLocked(sub_audit)">Perform</button>
                             <button class="perform-btn disabled" type="button" *ngIf="sub_audit.function_template.length < 1" (click)="isTemplatePresent()">Perform</button>
                         </div>
                     </div>

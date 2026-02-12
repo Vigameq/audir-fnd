@@ -113,6 +113,10 @@ export class AudirService {
     return this.http.post(`${environment.apiUrl}/api/updateAuditPlan`, updatedAuditDetails);
   }
 
+  initiateAudit(payload: any) {
+    return this.http.post<any>(`${environment.apiUrl}/api/initiateAudit`, payload);
+  }
+
   getAuditCompletionPercentage(audit_id: any) {
     return this.http.post(`${environment.apiUrl}/api/getAuditCompletionPercent`, audit_id);
   }

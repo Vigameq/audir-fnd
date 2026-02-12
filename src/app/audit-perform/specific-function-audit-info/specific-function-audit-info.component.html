@@ -76,7 +76,7 @@
             (click)="initiateAudit()">
             Initiate Audit
         </button>
-        <button class="add-question" type="button" *ngIf="isAuditor" (click)="addQuestion()">+ Add Question</button>
+        <button class="add-question" type="button" *ngIf="isAuditor && supportsAuditQuestionOverrides" (click)="addQuestion()">+ Add Question</button>
     </div>
     <div class="functional-template-question-section">
         <div *ngFor="let question of auditQuestions; let i = index" class="questions-section"
@@ -90,7 +90,7 @@
                     <span>{{question.text}}</span>
                 </div>
             </div>
-            <div class="question-actions" *ngIf="isAuditor">
+            <div class="question-actions" *ngIf="isAuditor && supportsAuditQuestionOverrides">
                 <button type="button" class="icon-btn edit-question-btn" (click)="editQuestion(i, $event)" aria-label="Edit question">
                     <span class="material-icons">edit</span>
                 </button>

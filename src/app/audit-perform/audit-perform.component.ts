@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, HostListener, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Router } from '@angular/router';
 import { catchError, forkJoin, of } from 'rxjs';
 import { AudirService } from 'src/services/audir-services.service';
 
@@ -33,7 +34,7 @@ export class AuditPerformComponent {
   isAuditor = false;
   currentUserEmail = '';
 
-  constructor(private audirService: AudirService, private datePipe: DatePipe) {
+  constructor(private audirService: AudirService, private datePipe: DatePipe, private router: Router) {
     this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
     this.currentUserEmail = localStorage.getItem('user')?.toString().toLowerCase() || '';
     this.resetDateFilter();
@@ -87,13 +88,12 @@ export class AuditPerformComponent {
       this.auditList[index].sub_audits = this.auditList[index].sub_audits.map((obj: any) => {
         obj.lineHeight = 0;
         obj.parentAuditID = this.auditList[index].audit_id;
-        obj.auditInitiated = this.getAuditInitiated(obj.audit_id);
         return obj;
       });
       this.auditList[index].sub_audits.forEach((audit: any) => {
         this.computeSubAuditCompletionPercent(audit);
       });
-      this.loadAuditInitiationFlags(index);
+      this.refreshSubAuditStatuses(index);
       this.updateLineHeights(index);
       this.setAuditeeValues(index);
     }
@@ -179,7 +179,8 @@ export class AuditPerformComponent {
             const note = response?.auditor_notes?.[0]?.auditor_notes;
             return note != null && note.toString().trim() !== '';
           }).length;
-          subAudit.auditorResponded = auditorAnsweredCount > 0;
+          // Treat initiated status as the first auditor response signal.
+          subAudit.auditorResponded = auditorAnsweredCount > 0 || this.isInitiatedStatus(subAudit?.audit_status);
           const answeredCount = responses.filter((response) => {
             const value = this.isAuditor
               ? response?.auditor_notes?.[0]?.auditor_notes
@@ -204,12 +205,35 @@ export class AuditPerformComponent {
     if (this.canInitiateAudit(subAudit)) {
       return true;
     }
-    return this.isInitiatedStatus(subAudit?.audit_status) || !!subAudit?.auditInitiated || !!subAudit?.auditorResponded;
+    return this.isInitiatedStatus(subAudit?.audit_status) || !!subAudit?.auditorResponded;
   }
 
   private isInitiatedStatus(status: any): boolean {
     const value = (status || '').toString().trim().toLowerCase();
-    return value === 'inprogress' || value === 'submitted' || value === 'completed' || value === 'closed';
+    return value === 'inprogress' || value === 'in progress' || value === 'in_progress' || value === 'initiated' || value === 'submitted' || value === 'completed' || value === 'closed';
+  }
+
+  private refreshSubAuditStatuses(auditIndex: number) {
+    const subAudits = Array.isArray(this.auditList?.[auditIndex]?.sub_audits) ? this.auditList[auditIndex].sub_audits : [];
+    if (!subAudits.length) {
+      return;
+    }
+    const requests = subAudits.map((subAudit: any) => {
+      const payload = { audit_id: subAudit.audit_id };
+      return this.audirService.getAuditPlan(payload).pipe(catchError(() => of(null)));
+    });
+    forkJoin(requests).subscribe((responses) => {
+      const responseList = responses as any[];
+      responseList.forEach((response: any, index: number) => {
+        const data = Array.isArray(response?.audit_data) ? response.audit_data[0] : response?.audit_data;
+        const status = data?.audit_status;
+        if (status) {
+          subAudits[index].audit_status = status;
+        }
+      });
+    }, (error: any) => {
+      console.error('Error refreshing sub-audit statuses:', error);
+    });
   }
 
   canInitiateAudit(subAudit: any): boolean {
@@ -222,38 +246,29 @@ export class AuditPerformComponent {
     );
   }
 
-  initiateAudit(subAudit: any) {
-    if (!subAudit?.audit_id || subAudit.auditInitiated) {
+  auditeePerformLocked(subAudit?: any) {
+    if (!subAudit?.audit_id) {
+      this.audirService.showError('Waiting for auditor response to start this audit');
       return;
     }
-    const confirmed = window.confirm('Initiate this audit? This will enable Perform for the Auditee.');
-    if (!confirmed) {
-      return;
-    }
-    const payload = {
-      audit_id: subAudit.audit_id,
-      template: '__SYSTEM__',
-      template_type: 'system',
-      original_question: '__AUDIT_INITIATED__',
-      question: '__AUDIT_INITIATED__',
-      action: 'initiate',
-      created_by: localStorage.getItem('user')?.toString() || ''
-    };
-    this.audirService.addAuditQuestion(payload).subscribe({
-      next: () => {
-        subAudit.auditInitiated = true;
-        localStorage.setItem(this.auditInitiatedKey(subAudit.audit_id), 'true');
-        this.audirService.showSuccess('Audit initiated. Auditee can now perform.');
+
+    const payload = { audit_id: subAudit.audit_id };
+    this.audirService.getAuditPlan(payload).subscribe({
+      next: (response: any) => {
+        const data = Array.isArray(response?.audit_data) ? response.audit_data[0] : response?.audit_data;
+        if (data?.audit_status) {
+          subAudit.audit_status = data.audit_status;
+        }
+        if (this.canAuditeePerform(subAudit)) {
+          this.router.navigate(['/auditPerform', subAudit.audit_id], { queryParams: { parentAuditID: subAudit.parentAuditID } });
+          return;
+        }
+        this.audirService.showError('Waiting for auditor response to start this audit');
       },
-      error: (error: any) => {
-        console.error('Error initiating audit:', error);
-        this.audirService.showError('Failed to initiate audit');
+      error: () => {
+        this.audirService.showError('Waiting for auditor response to start this audit');
       }
     });
-  }
-
-  auditeePerformLocked() {
-    this.audirService.showError('Waiting for auditor response to start this audit');
   }
 
   setAuditeeValues(auditIndex: any) {
@@ -468,34 +483,6 @@ export class AuditPerformComponent {
 
   isTemplatePresent() {
     this.audirService.showWarning('Functional templates are not assigned for this Audit.');
-  }
-
-  private auditInitiatedKey(auditId: any): string {
-    return `auditInitiated:${auditId}`;
-  }
-
-  private getAuditInitiated(auditId: any): boolean {
-    return localStorage.getItem(this.auditInitiatedKey(auditId)) === 'true';
-  }
-
-  private loadAuditInitiationFlags(auditIndex: number) {
-    const subAudits = Array.isArray(this.auditList?.[auditIndex]?.sub_audits) ? this.auditList[auditIndex].sub_audits : [];
-    if (!subAudits.length) {
-      return;
-    }
-    const email = localStorage.getItem('user')?.toString() || '';
-    const requests = subAudits.map((subAudit: any) => {
-      const payload = { audit_id: subAudit.audit_id, email: email };
-      return this.audirService.listAuditQuestionOverrides(payload).pipe(catchError(() => of([])));
-    });
-    forkJoin(requests).subscribe((responses) => {
-      const responseList = responses as any[];
-      responseList.forEach((overrides: any, index: number) => {
-        const list = Array.isArray(overrides) ? overrides : [];
-        const initiatedByApi = list.some((item: any) => (item?.action || '').toString().toLowerCase() === 'initiate');
-        subAudits[index].auditInitiated = initiatedByApi || this.getAuditInitiated(subAudits[index].audit_id);
-      });
-    });
   }
 
   @HostListener('document:click', ['$event'])
