@@ -203,7 +203,12 @@ export class AuditPerformComponent {
     if (this.canInitiateAudit(subAudit)) {
       return true;
     }
-    return !!subAudit?.auditInitiated || !!subAudit?.auditorResponded;
+    return this.isInitiatedStatus(subAudit?.audit_status) || !!subAudit?.auditInitiated || !!subAudit?.auditorResponded;
+  }
+
+  private isInitiatedStatus(status: any): boolean {
+    const value = (status || '').toString().trim().toLowerCase();
+    return value === 'inprogress' || value === 'submitted' || value === 'completed' || value === 'closed';
   }
 
   canInitiateAudit(subAudit: any): boolean {
