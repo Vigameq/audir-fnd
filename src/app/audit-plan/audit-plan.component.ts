@@ -371,6 +371,7 @@ export class AuditPlanComponent {
         audit_scope: this.auditPlanForm.value?.auditScopeValue,
         // audit_type: this.auditPlanForm.value?.auditType,
         audit_type: 'Physical',
+        created_by: this.userEmail,
         eMail: this.userEmail
       }
       if (this.checkRequiredPlanValues(plan)) {
