@@ -95,7 +95,7 @@ export class AuditManageComponent {
       if (!['created', 'inprogress', 'submitted'].includes(status)) {
         return false;
       }
-      const createdBy = (audit.created_by || audit.email || '').toString().toLowerCase();
+      const createdBy = (audit.email || '').toString().toLowerCase();
       const auditors = (audit.auditors || '').toString().toLowerCase();
       const auditees = (audit.auditees || '').toString().toLowerCase();
       const isMine = createdBy === email || auditors.includes(email) || auditees.includes(email);
