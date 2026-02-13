@@ -1,6 +1,6 @@
 {
   "/audire": {
-    "target": "https://157.245.108.44",
+    "target": "https://api-copfjedzsa-uc.a.run.app",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

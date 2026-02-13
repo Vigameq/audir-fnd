@@ -114,20 +114,7 @@ export class AuditManageComponent {
   }
 
   getAllAudits() {
-    const email = localStorage.getItem('user')?.toString() || '';
-    const payload = { eMail: email };
-    this.audirService.listAllAudits(payload).subscribe((response: any) => {
-      if (response) {
-        this.CompleteAuditList = response.audit_data;
-        this.auditList = this.filterAuditList(this.CompleteAuditList);
-        this.auditList = this.auditList?.map((obj: any) => {
-          obj.isSubAuditsOpened = false;
-          return obj;
-        });
-      }
-    }, (error: any) => {
-      console.error('Error for getting audits:', error);
-    });
+    this.getAuditLists(this.fromDate, this.toDate);
   }
 
   openSubAudits(subAudits: any, index: any) {

@@ -110,6 +110,9 @@ export class CustomiseAuditQuestionDialogComponent {
     this.audirService.getQuestionData(payload).subscribe((response: any) => {
       if (response) {
         this.questionData = response;
+        const serverAuditorSubmitted = this.getServerAuditorSubmittedFlag();
+        const localAuditorSubmitted = this.getAuditorSubmittedFlag();
+        this.isAuditorSubmitted = serverAuditorSubmitted || localAuditorSubmitted;
         const auditeeResponse = this.questionData?.auditee_response?.[0] || {};
         const serverAuditeeSubmitted = this.hasAuditeeResponse(auditeeResponse.auditee_response || '')
           || (auditeeResponse.link || '').trim() !== ''
@@ -118,9 +121,6 @@ export class CustomiseAuditQuestionDialogComponent {
         this.isQuestionSubmitted = this.isSubmittedFlag(this.questionData?.is_submitted)
           || serverAuditeeSubmitted
           || localAuditeeSubmitted;
-        if (this.isAuditor) {
-          this.isAuditorSubmitted = this.getAuditorSubmittedFlag();
-        }
         const historyReview = this.calculateReviewInProgress();
         this.isReviewInProgress = historyReview || this.getReviewInProgressFlag();
         this.bindResponses();
@@ -342,7 +342,36 @@ export class CustomiseAuditQuestionDialogComponent {
     if (this.isAuditor) {
       return this.isAuditClosed();
     }
-    return false;
+    return this.isAuditorSubmitted;
+  }
+
+  getServerAuditorSubmittedFlag() {
+    const explicitFlags = [
+      this.questionData?.is_auditor_submitted,
+      this.questionData?.auditor_is_submitted,
+      this.questionData?.auditor_submitted,
+      this.questionData?.isSubmittedByAuditor
+    ];
+    if (explicitFlags.some((value: any) => this.isSubmittedFlag(value))) {
+      return true;
+    }
+
+    const history = Array.isArray(this.questionData?.history) ? this.questionData.history : [];
+    const hasSubmitEvent = history.some((item: any) => {
+      const type = (item?.type || '').toString().toLowerCase();
+      return type === 'auditor_submitted' || type === 'audit_submitted' || type === 'question_submitted';
+    });
+    if (hasSubmitEvent) {
+      return true;
+    }
+
+    const findings = Array.isArray(this.questionData?.audit_findings) ? this.questionData.audit_findings : [];
+    return findings.some((finding: any) => {
+      const findingText = (finding?.audit_finding || '').trim();
+      const category = (finding?.finding_category || '').trim();
+      const clause = (finding?.closure_reference || '').trim();
+      return findingText || category || clause;
+    });
   }
 
   calculateReviewInProgress() {
@@ -745,6 +774,10 @@ export class CustomiseAuditQuestionDialogComponent {
 
   onSubmitAuditorResponse() {
     if (this.isAuditorSubmitted) {
+      return;
+    }
+    if (!this.hasAuditorNote()) {
+      this.audirService.showError('Please enter an auditor note');
       return;
     }
     const confirmed = window.confirm('Submit your response? You will not be able to edit after submitting.');

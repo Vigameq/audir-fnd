@@ -81,12 +81,6 @@
                         </div>
                         <div class="sub-card-progress">
                             <div class="audit-progress-label"><span>Audit Progress</span></div>
-                            <div class="progress-percentage">
-                                <div class="progress-bar">
-                                    <div class="progress-percent" *ngIf="sub_audit?.completion_percent != null" [ngStyle]="{ 'width': sub_audit.completion_percent + '%' }"></div>
-                                </div>
-                                <div class="percentage"><span>{{sub_audit.completion_percent}}%</span></div>
-                            </div>
                             <div class="auditor-details" [matTooltip]="showAuditors(sub_audit.auditors)">
                                 <span>{{showAuditors(sub_audit.auditors)}}</span>
                             </div>

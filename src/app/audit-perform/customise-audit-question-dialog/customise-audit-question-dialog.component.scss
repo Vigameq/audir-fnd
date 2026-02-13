@@ -168,6 +168,10 @@
                     padding-top: 2px;
                 }
 
+                .mandatory {
+                    color: #c62828;
+                }
+
                 .auditor-note-fields-section,
                 .auditee-response-fields-section,
                 .audit-findings-fields-section {
@@ -300,6 +304,19 @@
                         border-color: var(--accent);
                         background-color: var(--accent);
                         color: #2C2C2C;
+                    }
+
+                    .upload.disabled {
+                        background-color: #fff;
+                        color: #cccccc;
+                        border-color: #cccccc;
+                        cursor: not-allowed;
+                    }
+
+                    .upload.disabled:hover {
+                        background-color: #fff;
+                        color: #cccccc;
+                        border-color: #cccccc;
                     }
 
                     p {

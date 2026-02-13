@@ -20,7 +20,7 @@
                         (click)="openResponseHistory()">RESPONSE HISTORY</button></div>
                 <ng-container *ngIf="isAuditor; else auditeeLayout">
                     <div class="auditor-note">
-                        <div class="auditor-note-label"><span>Auditor Note</span></div>
+                        <div class="auditor-note-label"><span>Auditor Note <span class="mandatory">*</span></span></div>
                         <div class="auditor-note-fields-section">
                             <div class="audit-note-textarea"><textarea id="audit-note-textarea" rows="4" name="auditNote"
                                     [(ngModel)]="auditNoteValue" placeholder="Enter Note..."
@@ -38,7 +38,7 @@
                                 <div class="upload-evidence">
                                     <div class="upload-evidence-label"><span>Attach Evidence</span></div>
                                     <div class="upload-evidence-btn">
-                                        <label for="fileUpload" class="upload">
+                                        <label for="fileUpload" class="upload" [class.disabled]="shouldDisableAuditeeEdits()">
                                             Upload
                                             <input type="file" id="fileUpload"
                                                 accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
@@ -69,7 +69,7 @@
                                 <div class="upload-evidence">
                                     <div class="upload-evidence-label"><span>Attach Evidence</span></div>
                                     <div class="upload-evidence-btn">
-                                        <label for="fileUpload" class="upload">
+                                        <label for="fileUpload" class="upload" [class.disabled]="shouldDisableAuditeeEdits()">
                                             Upload
                                             <input type="file" id="fileUpload"
                                                 accept="image/*,application/pdf,.xls,.xlsx,.doc,.docx,.txt,.zip,.rar"
@@ -90,7 +90,7 @@
                     </div>
                 </ng-template>
             <div class="more-info" *ngIf="isAuditor">
-                <button type="button" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSubmitMoreInfo()">Submit to Auditee</button>
+                <button type="button" [disabled]="isAuditClosed() || !hasAuditorNote()" (click)="onSubmitMoreInfo()">Submit to Auditee</button>
             </div>
                 <div *ngFor="let itemcount of totalFindings; let i = index">
                     <div [id]="'audit-findings-' + i" class="audit-findings" *ngIf="isAuditor">
@@ -162,12 +162,12 @@
         <div class="cancel-save-btns" *ngIf="isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
             <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent()" (click)="onSaveAuditorDraft()">Save</button>
-            <button class="save" [disabled]="isAuditClosed() || !hasAuditorDraftContent() || !hasCompletedCycle()" (click)="onSubmitAuditorResponse()">Submit</button>
+            <button class="save" [disabled]="isAuditClosed() || !hasAuditorNote() || !hasCompletedCycle()" (click)="onSubmitAuditorResponse()">Submit</button>
         </div>
             <div class="cancel-save-btns" *ngIf="!isAuditor">
             <button class="cancel" mat-dialog-close>Cancel</button>
-            <button class="save" [disabled]="false" (click)="onSaveDraft()">Save</button>
-            <button class="save" [disabled]="false" (click)="onSubmitResponse()">Submit to Auditor</button>
+            <button class="save" [disabled]="shouldDisableAuditeeEdits()" (click)="onSaveDraft()">Save</button>
+            <button class="save" [disabled]="shouldDisableAuditeeEdits() || !hasAuditeeDraftContent()" (click)="onSubmitResponse()">Submit to Auditor</button>
         </div>
 </mat-dialog-actions>
 </div>

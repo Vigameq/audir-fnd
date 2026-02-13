@@ -324,74 +324,153 @@ export class SpecificFunctionAuditInfoComponent {
     return { template: '', templateType: 'function_template' };
   }
 
+  private getOverrideStorageKey() {
+    return `auditQuestionOverrides:${this.auditId?.audit_id || ''}`;
+  }
+
+  private loadCachedOverrides() {
+    const raw = localStorage.getItem(this.getOverrideStorageKey());
+    if (!raw) {
+      return [];
+    }
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  private cacheOverrides(overrides: any[]) {
+    localStorage.setItem(this.getOverrideStorageKey(), JSON.stringify(overrides || []));
+  }
+
+  private extractOverrides(response: any) {
+    if (Array.isArray(response)) {
+      return response;
+    }
+    if (Array.isArray(response?.overrides)) {
+      return response.overrides;
+    }
+    if (Array.isArray(response?.data)) {
+      return response.data;
+    }
+    if (Array.isArray(response?.audit_data)) {
+      return response.audit_data;
+    }
+    return [];
+  }
+
+  private getOverrideId(override: any) {
+    return override?.id ?? override?._id ?? override?.override_id ?? override?.overrideId;
+  }
+
   loadQuestionOverrides() {
     const payload = {
       audit_id: this.auditId.audit_id,
       email: localStorage.getItem('user')?.toString() || ''
     };
-    this.audirService.listAuditQuestionOverrides(payload).subscribe((overrides: any) => {
-      this.auditQuestionOverrides = Array.isArray(overrides) ? overrides : [];
+    this.audirService.listAuditQuestionOverrides(payload).subscribe((response: any) => {
+      this.auditQuestionOverrides = this.extractOverrides(response);
+      this.cacheOverrides(this.auditQuestionOverrides);
       this.applyQuestionOverrides();
     }, () => {
-      this.auditQuestionOverrides = [];
-      this.auditQuestions = [...this.baseAuditQuestions];
-      this.loadQuestionStatuses();
+      this.auditQuestionOverrides = this.loadCachedOverrides();
+      if (!this.auditQuestionOverrides.length) {
+        this.auditQuestions = [...this.baseAuditQuestions];
+        this.loadQuestionStatuses();
+        return;
+      }
+      this.applyQuestionOverrides();
     });
   }
 
   applyQuestionOverrides() {
-    const baseQuestions = this.baseAuditQuestions.map((question) => ({ ...question })) as any[];
+    const questions = this.baseAuditQuestions.map((question) => ({ ...question })) as any[];
     const overrides = Array.isArray(this.auditQuestionOverrides) ? this.auditQuestionOverrides : [];
-    const removeIndexes = new Set();
-    const addedQuestions: any[] = [];
+    const sortedOverrides = [...overrides].sort((a: any, b: any) => {
+      const aTime = new Date(a?.updated_at || a?.created_at || 0).getTime();
+      const bTime = new Date(b?.updated_at || b?.created_at || 0).getTime();
+      if (aTime && bTime && aTime !== bTime) {
+        return aTime - bTime;
+      }
+      const aId = Number(this.getOverrideId(a));
+      const bId = Number(this.getOverrideId(b));
+      if (Number.isFinite(aId) && Number.isFinite(bId)) {
+        return aId - bId;
+      }
+      return 0;
+    });
 
-    overrides.forEach((override: any) => {
+    sortedOverrides.forEach((override: any) => {
       const action = (override?.action || '').toString().toLowerCase();
       const originalText = (override?.original_question || '').toString();
       const overrideText = (override?.question || '').toString();
+      const overrideId = this.getOverrideId(override);
       const targetText = originalText || overrideText;
+      const findQuestionIndex = (text: string) => {
+        if (!text) {
+          return -1;
+        }
+        return questions.findIndex((question: any) =>
+          question.text === text || question.originalText === text
+        );
+      };
 
       if (action === 'edit') {
-        const index = baseQuestions.findIndex((question: any) => question.text === targetText || question.originalText === targetText);
+        let index = findQuestionIndex(targetText);
+        if (index < 0 && overrideId != null) {
+          index = questions.findIndex((question: any) => question.overrideId === overrideId);
+        }
         if (index >= 0) {
-          baseQuestions[index].originalText = targetText;
-          baseQuestions[index].text = overrideText || baseQuestions[index].text;
-          baseQuestions[index].overrideId = override.id;
-          baseQuestions[index].overrideAction = 'edit';
-          baseQuestions[index].isCustom = true;
+          questions[index].originalText = targetText || questions[index].originalText || questions[index].text;
+          questions[index].text = overrideText || questions[index].text;
+          questions[index].overrideId = overrideId;
+          questions[index].overrideAction = 'edit';
+          questions[index].isCustom = true;
         } else if (overrideText) {
           const defaults = this.getDefaultTemplateInfo();
-          addedQuestions.push({
+          questions.push({
             text: overrideText,
             template: override.template || defaults.template,
             templateType: override.template_type || defaults.templateType,
             responded: false,
             answered: false,
             submitted: false,
-            overrideId: override.id,
+            overrideId: overrideId,
             overrideAction: 'edit',
             originalText: targetText,
             isCustom: true
           });
         }
       } else if (action === 'delete') {
-        const index = baseQuestions.findIndex((question: any) => question.text === targetText || question.originalText === targetText);
+        let index = findQuestionIndex(targetText);
+        if (index < 0 && overrideText) {
+          index = findQuestionIndex(overrideText);
+        }
+        if (index < 0 && overrideId != null) {
+          index = questions.findIndex((question: any) => question.overrideId === overrideId);
+        }
         if (index >= 0) {
-          removeIndexes.add(index);
+          questions.splice(index, 1);
         }
       } else if (action === 'add') {
         if (!overrideText) {
           return;
         }
+        const alreadyExists = questions.some((question: any) => question.text === overrideText);
+        if (alreadyExists) {
+          return;
+        }
         const defaults = this.getDefaultTemplateInfo();
-        addedQuestions.push({
+        questions.push({
           text: overrideText,
           template: override.template || defaults.template,
           templateType: override.template_type || defaults.templateType,
           responded: false,
           answered: false,
           submitted: false,
-          overrideId: override.id,
+          overrideId: overrideId,
           overrideAction: 'add',
           originalText: overrideText,
           isCustom: true
@@ -399,13 +478,12 @@ export class SpecificFunctionAuditInfoComponent {
       }
     });
 
-    const merged = baseQuestions.filter((_, index) => !removeIndexes.has(index));
-    this.auditQuestions = merged.concat(addedQuestions);
+    this.auditQuestions = questions;
     this.loadQuestionStatuses();
   }
 
   addQuestion() {
-    if (!this.isAuditor) {
+    if (!this.isAuditor || this.isQuestionEditingLocked()) {
       return;
     }
     const input = window.prompt('Enter new question');
@@ -423,16 +501,20 @@ export class SpecificFunctionAuditInfoComponent {
       created_by: localStorage.getItem('user')?.toString() || ''
     };
     this.audirService.addAuditQuestion(payload).subscribe((response: any) => {
-      this.auditQuestionOverrides.push({
-        id: response?.id,
-        audit_id: this.auditId.audit_id,
-        template: defaults.template,
-        template_type: defaults.templateType,
-        question: questionText,
-        action: 'add',
-        created_by: payload.created_by
-      });
-      this.applyQuestionOverrides();
+      const overrideId = this.getOverrideId(response);
+      if (overrideId) {
+        this.auditQuestionOverrides.push({
+          id: overrideId,
+          audit_id: this.auditId.audit_id,
+          template: defaults.template,
+          template_type: defaults.templateType,
+          question: questionText,
+          action: 'add',
+          created_by: payload.created_by
+        });
+        this.cacheOverrides(this.auditQuestionOverrides);
+      }
+      this.loadQuestionOverrides();
       this.audirService.showSuccess('Question added');
     }, () => {
       this.audirService.showError('Failed to add question');
@@ -441,7 +523,7 @@ export class SpecificFunctionAuditInfoComponent {
 
   editQuestion(index: number, event: Event) {
     event.stopPropagation();
-    if (!this.isAuditor) {
+    if (!this.isAuditor || this.isQuestionEditingLocked()) {
       return;
     }
     const question = this.auditQuestions[index];
@@ -467,16 +549,7 @@ export class SpecificFunctionAuditInfoComponent {
         created_by: localStorage.getItem('user')?.toString() || ''
       };
       this.audirService.updateAuditQuestion(payload).subscribe(() => {
-        const override = this.auditQuestionOverrides.find((item: any) => item.id === question.overrideId);
-        if (override) {
-          override.question = updatedText;
-          override.original_question = payload.original_question;
-          override.action = payload.action;
-        }
-        question.text = updatedText;
-        question.overrideAction = payload.action;
-        question.originalText = payload.original_question;
-        this.applyQuestionOverrides();
+        this.loadQuestionOverrides();
         this.audirService.showSuccess('Question updated');
       }, () => {
         this.audirService.showError('Failed to update question');
@@ -494,17 +567,21 @@ export class SpecificFunctionAuditInfoComponent {
       created_by: localStorage.getItem('user')?.toString() || ''
     };
     this.audirService.addAuditQuestion(payload).subscribe((response: any) => {
-      this.auditQuestionOverrides.push({
-        id: response?.id,
-        audit_id: this.auditId.audit_id,
-        template: payload.template,
-        template_type: payload.template_type,
-        original_question: payload.original_question,
-        question: updatedText,
-        action: 'edit',
-        created_by: payload.created_by
-      });
-      this.applyQuestionOverrides();
+      const overrideId = this.getOverrideId(response);
+      if (overrideId) {
+        this.auditQuestionOverrides.push({
+          id: overrideId,
+          audit_id: this.auditId.audit_id,
+          template: payload.template,
+          template_type: payload.template_type,
+          original_question: payload.original_question,
+          question: updatedText,
+          action: 'edit',
+          created_by: payload.created_by
+        });
+        this.cacheOverrides(this.auditQuestionOverrides);
+      }
+      this.loadQuestionOverrides();
       this.audirService.showSuccess('Question updated');
     }, () => {
       this.audirService.showError('Failed to update question');
@@ -513,7 +590,7 @@ export class SpecificFunctionAuditInfoComponent {
 
   deleteQuestion(index: number, event: Event) {
     event.stopPropagation();
-    if (!this.isAuditor) {
+    if (!this.isAuditor || this.isQuestionEditingLocked()) {
       return;
     }
     const question = this.auditQuestions[index];
@@ -527,8 +604,9 @@ export class SpecificFunctionAuditInfoComponent {
 
     if (question.overrideAction === 'add' && question.overrideId) {
       this.audirService.deleteAuditQuestion({ id: question.overrideId, audit_id: this.auditId.audit_id }).subscribe(() => {
-        this.auditQuestionOverrides = this.auditQuestionOverrides.filter((item: any) => item.id !== question.overrideId);
-        this.applyQuestionOverrides();
+        this.auditQuestionOverrides = this.auditQuestionOverrides.filter((item: any) => this.getOverrideId(item) !== question.overrideId);
+        this.cacheOverrides(this.auditQuestionOverrides);
+        this.loadQuestionOverrides();
         this.audirService.showSuccess('Question deleted');
       }, () => {
         this.audirService.showError('Failed to delete question');
@@ -547,17 +625,21 @@ export class SpecificFunctionAuditInfoComponent {
       created_by: localStorage.getItem('user')?.toString() || ''
     };
     this.audirService.addAuditQuestion(payload).subscribe((response: any) => {
-      this.auditQuestionOverrides.push({
-        id: response?.id,
-        audit_id: this.auditId.audit_id,
-        template: payload.template,
-        template_type: payload.template_type,
-        original_question: payload.original_question,
-        question: payload.question,
-        action: 'delete',
-        created_by: payload.created_by
-      });
-      this.applyQuestionOverrides();
+      const overrideId = this.getOverrideId(response);
+      if (overrideId) {
+        this.auditQuestionOverrides.push({
+          id: overrideId,
+          audit_id: this.auditId.audit_id,
+          template: payload.template,
+          template_type: payload.template_type,
+          original_question: payload.original_question,
+          question: payload.question,
+          action: 'delete',
+          created_by: payload.created_by
+        });
+        this.cacheOverrides(this.auditQuestionOverrides);
+      }
+      this.loadQuestionOverrides();
       this.audirService.showSuccess('Question deleted');
     }, () => {
       this.audirService.showError('Failed to delete question');
@@ -624,6 +706,7 @@ export class SpecificFunctionAuditInfoComponent {
         }
         this.auditInitiated = true;
         this.auditInfo = { ...this.auditInfo, audit_status: 'inprogress' };
+        this.saveInitialAuditorResponse();
         this.audirService.showSuccess('Audit initiated. Auditee can now perform.');
       },
       error: (error: any) => {
@@ -636,6 +719,7 @@ export class SpecificFunctionAuditInfoComponent {
             }
             this.auditInitiated = true;
             this.auditInfo = { ...this.auditInfo, audit_status: 'inprogress' };
+            this.saveInitialAuditorResponse();
             this.audirService.showSuccess('Audit initiated. Auditee can now perform.');
           },
           error: (fallbackError: any) => {
@@ -649,9 +733,34 @@ export class SpecificFunctionAuditInfoComponent {
     });
   }
 
+  private saveInitialAuditorResponse() {
+    const firstQuestion = this.auditQuestions?.[0];
+    if (!firstQuestion) {
+      return;
+    }
+    const payload: any = {
+      audit_id: this.auditId.audit_id,
+      template: firstQuestion.template,
+      template_type: firstQuestion.templateType,
+      question: firstQuestion.text,
+      auditor_notes: 'Audit initiated',
+      email: localStorage.getItem('user')?.toString() || ''
+    };
+    this.audirService.saveAuditorNotes(payload).subscribe({
+      next: () => {},
+      error: (error: any) => {
+        console.error('Error saving initial auditor response:', error);
+      }
+    });
+  }
+
   private isInitiatedStatus(status: any): boolean {
     const value = (status || '').toString().trim().toLowerCase();
-    return value === 'inprogress' || value === 'submitted' || value === 'completed' || value === 'closed';
+    return value === 'inprogress' || value === 'in progress' || value === 'in_progress' || value === 'initiated' || value === 'submitted' || value === 'completed' || value === 'closed';
+  }
+
+  isQuestionEditingLocked(): boolean {
+    return this.isInitiatedStatus(this.auditInfo?.audit_status);
   }
 
   onsubmit() {

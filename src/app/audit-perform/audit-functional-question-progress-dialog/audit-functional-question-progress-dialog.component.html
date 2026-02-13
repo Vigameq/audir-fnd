@@ -22,7 +22,7 @@
                     <div class="progress-tree">
                         <div *ngFor="let elementStatus of auditResponseHistory; let i = index" class="progress-node">
                             <div class="date-dot-section">
-                                <div class="date">{{ elementStatus.updated_at | date:'dd/MM/yyyy' }}</div>
+                                <div class="date">{{ elementStatus.updated_at | date:'dd/MM/yyyy hh:mm a' }}</div>
                                 <div class="dot" [ngStyle]="{'background-color': elementStatus.color}"></div>
                                 <div class="line" *ngIf="i !== auditResponseHistory.length - 1"
                                     [ngStyle]="{'height.px': auditResponseHistory[i].lineHeight}"> </div>
