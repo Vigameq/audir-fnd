@@ -435,9 +435,16 @@ export class SpecificFunctionAuditInfoComponent {
       if (aTime && bTime && aTime !== bTime) {
         return aTime - bTime;
       }
+      // If only one side has timestamp, treat it as newer so it applies later.
+      if (aTime && !bTime) {
+        return 1;
+      }
+      if (!aTime && bTime) {
+        return -1;
+      }
       const aId = Number(this.getOverrideId(a));
       const bId = Number(this.getOverrideId(b));
-      if (Number.isFinite(aId) && Number.isFinite(bId)) {
+      if (Number.isFinite(aId) && Number.isFinite(bId) && aId !== bId) {
         return aId - bId;
       }
       return 0;
