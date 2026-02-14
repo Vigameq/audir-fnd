@@ -387,7 +387,17 @@ export class SpecificFunctionAuditInfoComponent {
     const map = new Map<string, any>();
     merged.forEach((item: any) => {
       const key = this.getOverrideUniqueKey(item);
-      map.set(key, item);
+      const existing = map.get(key);
+      if (!existing) {
+        map.set(key, item);
+        return;
+      }
+      const existingTime = new Date(existing?.updated_at || existing?.created_at || 0).getTime();
+      const incomingTime = new Date(item?.updated_at || item?.created_at || 0).getTime();
+      // Keep the latest version of the same override key.
+      if (incomingTime >= existingTime) {
+        map.set(key, item);
+      }
     });
     return Array.from(map.values());
   }
