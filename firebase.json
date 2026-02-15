@@ -1,6 +1,9 @@
 {
   "hosting": {
     "public": "dist/audir-fnd",
+    "predeploy": [
+      "npm run build:prod"
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",

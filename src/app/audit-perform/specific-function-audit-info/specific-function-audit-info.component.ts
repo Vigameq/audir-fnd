@@ -349,17 +349,30 @@ export class SpecificFunctionAuditInfoComponent {
   }
 
   private extractOverrides(response: any) {
+    const normalize = (override: any) => ({
+      id: this.getOverrideId(override),
+      audit_id: override?.audit_id || override?.auditId || this.auditId?.audit_id,
+      template: override?.template || '',
+      template_type: override?.template_type || override?.templateType || '',
+      original_question: override?.original_question || override?.originalQuestion || '',
+      question: override?.question || override?.question_text || override?.questionText || '',
+      action: override?.action || override?.operation || '',
+      created_by: override?.created_by || override?.createdBy || '',
+      created_at: override?.created_at || override?.createdAt || '',
+      updated_at: override?.updated_at || override?.updatedAt || ''
+    });
+
     if (Array.isArray(response)) {
-      return response;
+      return response.map(normalize);
     }
     if (Array.isArray(response?.overrides)) {
-      return response.overrides;
+      return response.overrides.map(normalize);
     }
     if (Array.isArray(response?.data)) {
-      return response.data;
+      return response.data.map(normalize);
     }
     if (Array.isArray(response?.audit_data)) {
-      return response.audit_data;
+      return response.audit_data.map(normalize);
     }
     return [];
   }
@@ -421,10 +434,8 @@ export class SpecificFunctionAuditInfoComponent {
 
     forkJoin(requests).subscribe((responses: any[]) => {
       const serverOverrides = responses.flatMap((response: any) => this.extractOverrides(response));
-      const cachedOverrides = this.loadCachedOverrides();
-      this.auditQuestionOverrides = serverOverrides.length
-        ? this.mergeOverrides(cachedOverrides, serverOverrides)
-        : cachedOverrides;
+      // Use server as source of truth so auditor/auditee see the same set.
+      this.auditQuestionOverrides = serverOverrides.length ? this.mergeOverrides([], serverOverrides) : this.loadCachedOverrides();
       this.cacheOverrides(this.auditQuestionOverrides);
       this.applyQuestionOverrides();
     }, () => {
@@ -468,12 +479,14 @@ export class SpecificFunctionAuditInfoComponent {
       const overrideText = (override?.question || '').toString();
       const overrideId = this.getOverrideId(override);
       const targetText = originalText || overrideText;
+      const normalizeText = (value: string) => (value || '').toString().trim().replace(/\s+/g, ' ').toLowerCase();
       const findQuestionIndex = (text: string) => {
         if (!text) {
           return -1;
         }
+        const normalizedText = normalizeText(text);
         return questions.findIndex((question: any) =>
-          question.text === text || question.originalText === text
+          normalizeText(question.text) === normalizedText || normalizeText(question.originalText || '') === normalizedText
         );
       };
 
