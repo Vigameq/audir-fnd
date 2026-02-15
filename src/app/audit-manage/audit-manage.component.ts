@@ -35,6 +35,8 @@ export class AuditManageComponent {
   isSvgDisabled = true;
   functionTemplates: any[] = [];
   isAuditor = false;
+  private readonly manageFromDateKey = 'manageFromDate';
+  private readonly manageToDateKey = 'manageToDate';
 
   constructor(private audirService: AudirService, private datePipe: DatePipe, private dialog: MatDialog) {
     this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
@@ -43,6 +45,10 @@ export class AuditManageComponent {
 
   ngOnInit() {
     this.getPlanItems();
+  }
+
+  private normalizeStatus(status: any): string {
+    return (status || '').toString().trim().toLowerCase().replace(/\s+/g, '_');
   }
 
   getAuditLists(fromDate: string, toDate: string) {
@@ -91,8 +97,8 @@ export class AuditManageComponent {
     };
 
     return (list || []).filter((audit: any) => {
-      const status = (audit.audit_status || '').toString().toLowerCase();
-      if (!['created', 'inprogress', 'submitted'].includes(status)) {
+      const status = this.normalizeStatus(audit.audit_status);
+      if (!['created', 'inprogress', 'in_progress', 'in progress', 'submitted'].includes(status)) {
         return false;
       }
       const createdBy = (audit.email || '').toString().toLowerCase();
@@ -289,22 +295,23 @@ export class AuditManageComponent {
       this.toDate.setDate(this.toDate.getDate() + 1);
     }
     this.toDate = this.datePipe.transform(this.toDate, 'yyyy-MM-dd');
-    localStorage.setItem('performFromDate', this.fromDate);
-    localStorage.setItem('performToDate', this.toDate);
+    localStorage.setItem(this.manageFromDateKey, this.fromDate);
+    localStorage.setItem(this.manageToDateKey, this.toDate);
     this.getAllAudits();
   }
 
   resetDateFilter(resetValue?: boolean) {
-    this.fromDate = localStorage.getItem('performFromDate');
-    this.toDate = localStorage.getItem('performToDate');
+    this.fromDate = localStorage.getItem(this.manageFromDateKey);
+    this.toDate = localStorage.getItem(this.manageToDateKey);
     if (resetValue || this.fromDate === null || this.toDate === null || this.fromDate === undefined || this.toDate === undefined) {
       const now = new Date();
-      this.utcToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-      this.utcTomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
-      this.fromDate = this.utcToday.toISOString().substring(0, 10);
-      this.toDate = this.utcTomorrow.toISOString().substring(0, 10);
-      localStorage.setItem('performFromDate', this.fromDate);
-      localStorage.setItem('performToDate', this.toDate);
+      // Keep a wider default range in Manage so audits are visible on first load.
+      const from = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 90));
+      const to = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 90));
+      this.fromDate = from.toISOString().substring(0, 10);
+      this.toDate = to.toISOString().substring(0, 10);
+      localStorage.setItem(this.manageFromDateKey, this.fromDate);
+      localStorage.setItem(this.manageToDateKey, this.toDate);
     }
     this.getAllAudits();
   }
@@ -378,7 +385,10 @@ export class AuditManageComponent {
     if (!subAudits.length) {
       return audit?.audit_status || '';
     }
-    if (subAudits.some((item: any) => item.audit_status === 'inprogress')) {
+    if (subAudits.some((item: any) => {
+      const status = this.normalizeStatus(item.audit_status);
+      return status === 'inprogress' || status === 'in_progress';
+    })) {
       return 'inprogress';
     }
     if (subAudits.some((item: any) => item.audit_status === 'submitted')) {

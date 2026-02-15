@@ -44,6 +44,29 @@ export class AuditPerformComponent {
     this.getPlanItems();
   }
 
+  private getAuditSortTime(audit: any): number {
+    const candidates = [
+      audit?.created_at,
+      audit?.createdAt,
+      audit?.created_date,
+      audit?.createdDate,
+      audit?.updated_at,
+      audit?.updatedAt,
+      audit?.start_date
+    ];
+    for (const value of candidates) {
+      const ts = new Date(value).getTime();
+      if (Number.isFinite(ts) && ts > 0) {
+        return ts;
+      }
+    }
+    return 0;
+  }
+
+  private sortAuditsLatestFirst(list: any[]): any[] {
+    return [...(list || [])].sort((a: any, b: any) => this.getAuditSortTime(b) - this.getAuditSortTime(a));
+  }
+
   getAuditLists(fromDate: string, toDate: string) {
     const email = localStorage.getItem('user')?.toString() || '';
     const statusFilter = this.isAuditor
@@ -60,14 +83,16 @@ export class AuditPerformComponent {
 
     this.audirService.getAuditLists(payload).subscribe((response: any) => {
       if (response) {
-        this.CompleteAuditList = response.audit_data || [];
-        this.auditList = this.CompleteAuditList.filter((parent: any) => {
+        const responseList = Array.isArray(response.audit_data) ? response.audit_data : [];
+        const filtered = responseList.filter((parent: any) => {
           const subs = Array.isArray(parent.sub_audits) ? parent.sub_audits : [];
           if (subs.length === 0) {
             return true;
           }
           return !subs.every((sub: any) => this.isClosedStatus(sub.audit_status));
         });
+        this.CompleteAuditList = this.sortAuditsLatestFirst(filtered);
+        this.auditList = [...this.CompleteAuditList];
       }
     }, (error: any) => {
       console.error('Error for getting audits:', error);
@@ -354,17 +379,17 @@ export class AuditPerformComponent {
 
   onSearch() {
     if (this.searchQuery !== '') {
-      this.auditList = this.CompleteAuditList.filter((audit: any) =>
+      this.auditList = this.sortAuditsLatestFirst(this.CompleteAuditList.filter((audit: any) =>
         audit.audit_title.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
+      ));
     } else {
-      this.auditList = this.CompleteAuditList;
+      this.auditList = [...this.CompleteAuditList];
     }
   }
 
   clearSearch() {
     this.searchQuery = '';
-    this.auditList = this.CompleteAuditList;
+    this.auditList = [...this.CompleteAuditList];
   }
 
   updatePlanWithNewAssignee(auditPerformItem: any, sub_audit: any, index: number) {
