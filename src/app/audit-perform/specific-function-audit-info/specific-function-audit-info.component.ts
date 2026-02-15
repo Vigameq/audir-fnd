@@ -268,6 +268,9 @@ export class SpecificFunctionAuditInfoComponent {
         if (auditData) {
           this.auditInfo = auditData;
           this.auditInitiated = this.isInitiatedStatus(auditData.audit_status);
+          if (this.supportsAuditQuestionOverrides && this.baseAuditQuestions.length) {
+            this.loadQuestionOverrides();
+          }
           return;
         }
       }
@@ -403,12 +406,21 @@ export class SpecificFunctionAuditInfoComponent {
   }
 
   loadQuestionOverrides() {
-    const payload = {
-      audit_id: this.auditId.audit_id,
-      email: localStorage.getItem('user')?.toString() || ''
-    };
-    this.audirService.listAuditQuestionOverrides(payload).subscribe((response: any) => {
-      const serverOverrides = this.extractOverrides(response);
+    const currentEmail = localStorage.getItem('user')?.toString() || '';
+    const auditorEmails = Array.isArray(this.auditInfo?.auditors)
+      ? this.auditInfo.auditors.map((auditor: any) => (auditor?.email || '').toString()).filter((email: string) => !!email)
+      : [];
+    const emailSet = new Set<string>([currentEmail, ...auditorEmails].filter((email: string) => !!email));
+    const emails = Array.from(emailSet);
+    const requests = (emails.length ? emails : [currentEmail]).map((email: string) =>
+      this.audirService.listAuditQuestionOverrides({
+        audit_id: this.auditId.audit_id,
+        email: email
+      }).pipe(catchError(() => of({ overrides: [] })))
+    );
+
+    forkJoin(requests).subscribe((responses: any[]) => {
+      const serverOverrides = responses.flatMap((response: any) => this.extractOverrides(response));
       const cachedOverrides = this.loadCachedOverrides();
       this.auditQuestionOverrides = serverOverrides.length
         ? this.mergeOverrides(cachedOverrides, serverOverrides)
