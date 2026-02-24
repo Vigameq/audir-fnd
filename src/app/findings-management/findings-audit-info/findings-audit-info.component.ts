@@ -40,10 +40,27 @@ export class FindingsAuditInfoComponent {
   ngOnInit() {
   }
 
+  private normalizeStatus(status: any): string {
+    return (status || '').toString().trim().toLowerCase().replace(/\s+/g, '_');
+  }
+
+  private isQualifiedForFindings(status: any): boolean {
+    const value = this.normalizeStatus(status);
+    return value === 'approved'
+      || value === 'approved_nc'
+      || value === 'nc_inprogress'
+      || value === 'inprogress'
+      || value === 'in_progress'
+      || value === 'completed'
+      || value === 'nc_closed'
+      || value === 'closed';
+  }
+
   getQuestions(auditId: any) {
     this.audirService.getNCAuditQuestions(auditId).subscribe((auditQuestion: any) => {
       if (auditQuestion) {
-        this.allQuestions = auditQuestion.nc_questions;
+        const all = Array.isArray(auditQuestion.nc_questions) ? auditQuestion.nc_questions : [];
+        this.allQuestions = all.filter((item: any) => this.isQualifiedForFindings(item?.audit_finding_status));
         this.disableFlag = this.allQuestions.every(
           (item) => item.audit_finding_status === "inprogress"
         );

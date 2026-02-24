@@ -82,6 +82,13 @@
                 </div>
             </div>
         </div>
+        <div class="questions-section" *ngIf="!allQuestions || allQuestions.length === 0">
+            <div class="question-number-and-text">
+                <div class="question-text">
+                    <span>No lead-auditor approved NC findings available for this audit.</span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="submit-btn">
         <button class="submit" (click)="openSubmitConfirmationDialog()">Submit</button>

@@ -81,6 +81,23 @@
             [disabled]="isQuestionEditingLocked()"
             (click)="addQuestion()">+ Add Question</button>
     </div>
+    <div class="pending-approval-section" *ngIf="pendingApprovalFindings.length > 0">
+        <div class="pending-approval-header">Pending Approval</div>
+        <div class="pending-approval-card" *ngFor="let finding of pendingApprovalFindings">
+            <div class="pending-approval-content">
+                <div class="pending-question">{{finding.questionText}}</div>
+                <div class="pending-finding">{{finding.audit_finding}}</div>
+                <div class="pending-meta">
+                    <span>{{finding.finding_category}}</span>
+                    <span *ngIf="finding.closure_reference">| {{finding.closure_reference}}</span>
+                </div>
+            </div>
+            <div class="pending-actions" *ngIf="isLeadAuditor()">
+                <button type="button" class="approve-btn" (click)="approvePendingFinding(finding)">Approve</button>
+                <button type="button" class="reject-btn" (click)="rejectPendingFinding(finding)">Reject</button>
+            </div>
+        </div>
+    </div>
     <div class="functional-template-question-section">
         <div *ngFor="let question of auditQuestions; let i = index" class="questions-section"
             role="button" tabindex="0" [attr.aria-label]="'Open question ' + (i + 1)"

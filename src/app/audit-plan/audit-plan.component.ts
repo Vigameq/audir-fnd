@@ -350,45 +350,58 @@ export class AuditPlanComponent {
   }
 
   onSubmit() {
-    if (this.auditPlanForm) {
-      if (this.auditPlanForm.value?.parentAudit.title) {
-        this.parentLeadAuditor = this.parent_audits.filter(p => p.title === this.auditPlanForm.value?.parentAudit.title);
-      }
+    if (!this.auditPlanForm) {
+      return;
+    }
 
-      const plan: Audit = {
-        link_audit: this.auditPlanForm.value?.parentAudit ? this.auditPlanForm.value?.parentAudit.title : null,
-        audit_title: this.auditPlanForm.value?.auditTitle,
-        functions: this.auditPlanForm.value?.functions,
-        template: this.selectedTemplate,
-        function_template: this.selectedFunctionTemplate.length > 0 ? this.selectedFunctionTemplate : '',
-        start_date: this.auditPlanForm.value?.startDateTime,
-        end_date: this.auditPlanForm.value?.endDateTime,
-        lead_auditor: this.auditPlanForm?.value?.leadAuditorValue,
-        auditors: this.selectedAuditorsEmail.length === 0 && this.auditPlanForm.value?.parentAudit.title ? this.parentLeadAuditor[0]?.lead_auditor : this.selectedAuditorsEmail,
-        auditees: this.selectedAuditeesEmail,
-        city: this.auditPlanForm.value?.cityName,
-        country: this.auditPlanForm.value?.countryName,
-        audit_scope: this.auditPlanForm.value?.auditScopeValue,
-        // audit_type: this.auditPlanForm.value?.auditType,
-        audit_type: 'Physical',
-        eMail: this.userEmail
-      }
-      if (this.checkRequiredPlanValues(plan)) {
-        this.audirService.createAuditPlan(plan).subscribe(response => {
-          if (response) {
-            this.resetForm();
-            this.openSuccessDialog(plan.audit_title);
-          } else {
-            this.audirService.showError('Failed to create audit plan');
-          }
-        }, (error: any) => {
-          this.audirService.showError(error.error.message);
-          console.error('Error for creation of audit plan:', error);
+    const parentAudit = this.auditPlanForm.value?.parentAudit;
+    const parentAuditTitle = parentAudit?.title || '';
+
+    if (parentAuditTitle) {
+      this.parentLeadAuditor = this.parent_audits.filter(p => p.title === parentAuditTitle);
+    }
+
+    const parentLeadAuditorEmail = this.parentLeadAuditor[0]?.lead_auditor || '';
+    const selectedLeadAuditor = this.auditPlanForm?.value?.leadAuditorValue || '';
+    const leadAuditor = selectedLeadAuditor || parentLeadAuditorEmail;
+    const auditors = this.selectedAuditorsEmail.length > 0
+      ? this.selectedAuditorsEmail
+      : (parentLeadAuditorEmail ? [parentLeadAuditorEmail] : []);
+
+    const plan: Audit = {
+      link_audit: parentAuditTitle || null,
+      audit_title: this.auditPlanForm.value?.auditTitle,
+      functions: this.auditPlanForm.value?.functions,
+      template: this.selectedTemplate,
+      function_template: this.selectedFunctionTemplate.length > 0 ? this.selectedFunctionTemplate : '',
+      start_date: this.auditPlanForm.value?.startDateTime,
+      end_date: this.auditPlanForm.value?.endDateTime,
+      lead_auditor: leadAuditor,
+      auditors,
+      auditees: this.selectedAuditeesEmail,
+      city: this.auditPlanForm.value?.cityName,
+      country: this.auditPlanForm.value?.countryName,
+      audit_scope: this.auditPlanForm.value?.auditScopeValue,
+      // audit_type: this.auditPlanForm.value?.auditType,
+      audit_type: 'Physical',
+      eMail: this.userEmail
+    };
+
+    if (this.checkRequiredPlanValues(plan)) {
+      this.audirService.createAuditPlan(plan).subscribe(response => {
+        if (response) {
+          this.resetForm();
+          this.openSuccessDialog(plan.audit_title);
+        } else {
+          this.audirService.showError('Failed to create audit plan');
         }
-        )
-      } else {
-        if (!this.isClear) this.audirService.showError('Please enter mandatory (*) fields');
-      }
+      }, (error: any) => {
+        const errorMessage = error?.error?.message || error?.message || 'Failed to create audit plan';
+        this.audirService.showError(errorMessage);
+        console.error('Error for creation of audit plan:', error);
+      });
+    } else {
+      if (!this.isClear) this.audirService.showError('Please enter mandatory (*) fields');
     }
   }
 

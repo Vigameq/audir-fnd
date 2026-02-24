@@ -6,6 +6,7 @@ import { AudirService } from 'src/services/audir-services.service';
 import { Location } from "@angular/common";
 import { SubmitConfirmationDialogComponent } from '../submit-confirmation-dialog/submit-confirmation-dialog.component';
 import { catchError, forkJoin, of } from 'rxjs';
+import { ApprovalRemarksDialogComponent } from 'src/app/findings-management/approval-remarks-dialog/approval-remarks-dialog.component';
 @Component({
   selector: 'app-specific-function-audit-info',
   templateUrl: './specific-function-audit-info.component.html',
@@ -24,6 +25,7 @@ export class SpecificFunctionAuditInfoComponent {
   currentUserEmail = '';
   auditInitiated = false;
   supportsAuditQuestionOverrides = true;
+  pendingApprovalFindings: any[] = [];
 
   constructor(private dialog: MatDialog,
     private route: ActivatedRoute,
@@ -142,6 +144,7 @@ export class SpecificFunctionAuditInfoComponent {
         this.auditQuestions[index].responded = answered;
       });
       this.updateCompletionPercentage();
+      this.loadPendingApprovalFindings();
     }, (error: any) => {
       console.error('Error getting question responses:', error);
     });
@@ -173,8 +176,164 @@ export class SpecificFunctionAuditInfoComponent {
       question.answered = answered;
       question.responded = answered;
       this.updateCompletionPercentage();
+      this.loadPendingApprovalFindings();
     }, (error: any) => {
       console.error('Error getting question data:', error);
+    });
+  }
+
+  private normalizeFindingStatus(status: any): string {
+    return (status || '').toString().trim().toLowerCase().replace(/\s+/g, '_');
+  }
+
+  private isNCFindingCategory(category: any): boolean {
+    const value = (category || '').toString().trim().toLowerCase();
+    return value === 'major non-conformance'
+      || value === 'minor non-conformance'
+      || value === 'major_non_conformance'
+      || value === 'minor_non_conformance';
+  }
+
+  private isPendingApprovalStatus(status: any): boolean {
+    const value = this.normalizeFindingStatus(status);
+    return value === '' || value === 'created' || value === 'pending_approval' || value === 'pendingapproval';
+  }
+
+  private isQualifiedNcStatus(status: any): boolean {
+    const value = this.normalizeFindingStatus(status);
+    return value === 'approved'
+      || value === 'approved_nc'
+      || value === 'nc_inprogress'
+      || value === 'inprogress'
+      || value === 'in_progress'
+      || value === 'completed'
+      || value === 'nc_closed'
+      || value === 'closed';
+  }
+
+  private isClosedNcStatus(status: any): boolean {
+    const value = this.normalizeFindingStatus(status);
+    return value === 'completed' || value === 'nc_closed' || value === 'closed';
+  }
+
+  isLeadAuditor(): boolean {
+    if (!this.isAuditor) {
+      return false;
+    }
+    const email = this.currentUserEmail;
+    const lead = this.auditInfo?.lead_auditor;
+    const leadEmail = (typeof lead === 'string' ? lead : lead?.email || '').toString().toLowerCase();
+    if (leadEmail && leadEmail === email) {
+      return true;
+    }
+    const auditors = Array.isArray(this.auditInfo?.auditors) ? this.auditInfo.auditors : [];
+    const hasCurrent = auditors.some((auditor: any) => (auditor?.email || '').toString().toLowerCase() === email);
+    if (!hasCurrent) {
+      return false;
+    }
+    if (!leadEmail) {
+      return true;
+    }
+    const leadName = (typeof lead === 'string' ? lead : lead?.name || '').toString().toLowerCase();
+    return auditors.some((auditor: any) =>
+      (auditor?.email || '').toString().toLowerCase() === email
+      && (auditor?.name || '').toString().toLowerCase() === leadName
+    );
+  }
+
+  loadPendingApprovalFindings() {
+    if (!this.auditQuestions.length) {
+      this.pendingApprovalFindings = [];
+      return;
+    }
+    const email = localStorage.getItem('user')?.toString() || '';
+    const requests = this.auditQuestions.map((question) => {
+      const payload = {
+        audit_id: this.auditId.audit_id,
+        template: question.template,
+        template_type: question.templateType,
+        question: question.text,
+        email: email
+      };
+      return this.audirService.getQuestionData(payload).pipe(catchError(() => of(null)));
+    });
+
+    forkJoin(requests).subscribe((responses: any[]) => {
+      const pending: any[] = [];
+      responses.forEach((response: any, index: number) => {
+        const findings = Array.isArray(response?.audit_findings) ? response.audit_findings : [];
+        findings.forEach((finding: any) => {
+          if (!this.isNCFindingCategory(finding?.finding_category)) {
+            return;
+          }
+          if (!this.isPendingApprovalStatus(finding?.audit_finding_status)) {
+            return;
+          }
+          pending.push({
+            ...finding,
+            questionText: this.auditQuestions[index]?.text,
+            template: this.auditQuestions[index]?.template,
+            templateType: this.auditQuestions[index]?.templateType
+          });
+        });
+      });
+      this.pendingApprovalFindings = pending;
+    }, () => {
+      this.pendingApprovalFindings = [];
+    });
+  }
+
+  approvePendingFinding(finding: any) {
+    if (!this.isLeadAuditor()) {
+      this.audirService.showError('Only lead auditor can approve NC findings');
+      return;
+    }
+    const payload = {
+      audit_id: this.auditId.audit_id,
+      email: localStorage.getItem('user')?.toString() || '',
+      approval_status: 'approved',
+      auditor_remarks: '',
+      audit_finding_id: finding?.audit_finding_id
+    };
+    this.audirService.submitNCQuestion(payload).subscribe(() => {
+      this.audirService.showSuccess('NC approved and moved to Findings Management');
+      this.loadPendingApprovalFindings();
+    }, () => {
+      this.audirService.showError('Failed to approve NC');
+    });
+  }
+
+  rejectPendingFinding(finding: any) {
+    if (!this.isLeadAuditor()) {
+      this.audirService.showError('Only lead auditor can reject NC findings');
+      return;
+    }
+    const dialogRef = this.dialog.open(ApprovalRemarksDialogComponent, {
+      disableClose: true,
+      data: { isQuestionSubmit: false }
+    });
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (!result) {
+        return;
+      }
+      const note = (result.auditor_remarks || '').trim();
+      if (!note) {
+        this.audirService.showError('Rejection note is mandatory');
+        return;
+      }
+      const payload = {
+        audit_id: this.auditId.audit_id,
+        email: localStorage.getItem('user')?.toString() || '',
+        approval_status: 'rejected',
+        auditor_remarks: note,
+        audit_finding_id: finding?.audit_finding_id
+      };
+      this.audirService.submitNCQuestion(payload).subscribe(() => {
+        this.audirService.showSuccess('NC rejected and sent back with note');
+        this.loadPendingApprovalFindings();
+      }, () => {
+        this.audirService.showError('Failed to reject NC');
+      });
     });
   }
 
@@ -891,7 +1050,7 @@ export class SpecificFunctionAuditInfoComponent {
     return this.isInitiatedStatus(this.auditInfo?.audit_status);
   }
 
-  onsubmit() {
+  private submitAuditNow() {
     const payload = {
       audit_id: this.auditId.audit_id,
       email: localStorage.getItem('user')?.toString() || ''
@@ -905,6 +1064,24 @@ export class SpecificFunctionAuditInfoComponent {
     }, (error: any) => {
       this.audirService.showError('Audit submission failed');
       console.error('Error for audit submission:', error);
+    });
+  }
+
+  onsubmit() {
+    if (this.pendingApprovalFindings.length > 0) {
+      this.audirService.showError('Please clear pending NC approvals before closing this audit');
+      return;
+    }
+    this.audirService.getNCAuditQuestions(this.auditId).pipe(catchError(() => of(null))).subscribe((response: any) => {
+      const findings = Array.isArray(response?.nc_questions) ? response.nc_questions : [];
+      const unresolvedApproved = findings.some((item: any) =>
+        this.isQualifiedNcStatus(item?.audit_finding_status) && !this.isClosedNcStatus(item?.audit_finding_status)
+      );
+      if (unresolvedApproved) {
+        this.audirService.showError('Cannot close audit until all approved NC findings are closed');
+        return;
+      }
+      this.submitAuditNow();
     });
   }
 

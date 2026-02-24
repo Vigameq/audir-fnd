@@ -17,14 +17,14 @@ export class ApprovalRemarksDialogComponent {
 
   onApproval(): void {
     this.dialogRef.close({
-      approval_status: '',
+      approval_status: this.data?.isQuestionSubmit ? 'submitted' : 'approved',
       auditor_remarks: this.auditorRemarks
     });
   }
 
   onReject(): void {
     this.dialogRef.close({
-      approval_status: '',
+      approval_status: 'rejected',
       auditor_remarks: this.auditorRemarks
     });
   }
