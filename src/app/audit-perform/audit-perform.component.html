@@ -54,6 +54,9 @@
                         <span class="chip muted">
                             {{auditPerformItem.start_date | date:'hh:mm a':'UTC'}} - {{auditPerformItem.end_date | date:'hh:mm a':'UTC'}}
                         </span>
+                        <span class="chip status status-pending-nc" *ngIf="auditPerformItem.hasPendingNcApproval && isLeadAuditorForAudit(auditPerformItem)">
+                            Pending NC Approval
+                        </span>
                     </div>
                 </div>
                 <button class="child-count-chip" *ngIf="auditPerformItem.sub_audits.length>0" (click)="openSubAudits(auditPerformItem.sub_audits,i)">
@@ -77,6 +80,9 @@
                                 <span class="chip">{{sub_audit.start_date | date:'dd/MM/yyyy':'UTC'}} - {{sub_audit.end_date | date:'dd/MM/yyyy':'UTC'}}</span>
                                 <span class="chip muted">{{sub_audit.start_date | date:'hh:mm a':'UTC'}} - {{sub_audit.end_date | date:'hh:mm a':'UTC'}}</span>
                                 <span class="chip status" *ngIf="sub_audit.audit_status" [ngClass]="{'status-created': (sub_audit.audit_status || '').toLowerCase() === 'created', 'status-inprogress': (sub_audit.audit_status || '').toLowerCase() === 'inprogress'}">{{sub_audit.audit_status | pascalCase}}</span>
+                                <span class="chip status status-pending-nc" *ngIf="sub_audit.hasPendingNcApproval && isLeadAuditorForAudit(sub_audit)">
+                                    Pending NC Approval
+                                </span>
                             </div>
                         </div>
                         <div class="sub-card-progress">

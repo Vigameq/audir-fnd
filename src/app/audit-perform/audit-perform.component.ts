@@ -94,6 +94,7 @@ export class AuditPerformComponent {
         });
         this.CompleteAuditList = this.sortAuditsLatestFirst(filtered);
         this.auditList = [...this.CompleteAuditList];
+        this.loadPendingApprovalFlags();
       }
     }, (error: any) => {
       console.error('Error for getting audits:', error);
@@ -132,6 +133,42 @@ export class AuditPerformComponent {
       return value === 'completed' || value === 'closed';
     }
     return value === 'submitted' || value === 'completed' || value === 'closed';
+  }
+
+  isLeadAuditorForAudit(audit: any): boolean {
+    const lead = audit?.lead_auditor;
+    const leadEmail = (typeof lead === 'string' ? lead : lead?.email || '').toString().trim().toLowerCase();
+    return !!leadEmail && leadEmail === this.currentUserEmail;
+  }
+
+  private normalizeStatus(status: any): string {
+    return (status || '').toString().trim().toLowerCase().replace(/\s+/g, '_');
+  }
+
+  private isNCFindingCategory(category: any): boolean {
+    const value = this.normalizeStatus(category);
+    return value === 'major_non-conformance'
+      || value === 'minor_non-conformance'
+      || value === 'major_non_conformance'
+      || value === 'minor_non_conformance';
+  }
+
+  private isPendingApprovalStatus(status: any): boolean {
+    const value = this.normalizeStatus(status);
+    return value === '' || value === 'created' || value === 'pending_approval' || value === 'pendingapproval';
+  }
+
+  private loadPendingApprovalFlags() {
+    const parentAudits = Array.isArray(this.auditList) ? this.auditList : [];
+    parentAudits.forEach((parent: any) => {
+      parent.hasPendingNcApproval = false;
+      const subAudits = Array.isArray(parent?.sub_audits) ? parent.sub_audits : [];
+      subAudits.forEach((subAudit: any) => {
+        subAudit.hasPendingNcApproval = false;
+        subAudit.parentAuditID = subAudit.parentAuditID || parent.audit_id;
+        this.computeSubAuditPendingApproval(subAudit, parent);
+      });
+    });
   }
 
   buildQuestionList(questionTemplates: any, templateTypeByKey: Record<string, string>) {
@@ -223,6 +260,71 @@ export class AuditPerformComponent {
       });
     }, (error: any) => {
       console.error('Error for getting parent questions:', error);
+    });
+  }
+
+  private computeSubAuditPendingApproval(subAudit: any, parentAudit: any) {
+    const questionTemplates: any = {};
+    const templateTypeByKey: Record<string, string> = {};
+    const addTemplates = (templates: any, templateType: string) => {
+      if (!templates) {
+        return;
+      }
+      Object.keys(templates).forEach((key) => {
+        questionTemplates[key] = templates[key];
+        templateTypeByKey[key] = templateType;
+      });
+    };
+
+    const parentPayload = { audit_id: subAudit.parentAuditID };
+    const childPayload = { audit_id: subAudit.audit_id };
+    this.audirService.getAuditQuestions(parentPayload).subscribe((parentQuestions: any) => {
+      if (parentQuestions) {
+        addTemplates(parentQuestions.questions?.function_template, 'function_template');
+        addTemplates(parentQuestions.questions?.template, 'template');
+      }
+      this.audirService.getAuditQuestions(childPayload).subscribe((childQuestions: any) => {
+        if (childQuestions) {
+          addTemplates(childQuestions.questions?.function_template, 'function_template');
+        }
+
+        const questions = this.buildQuestionList(questionTemplates, templateTypeByKey);
+        if (!questions.length) {
+          subAudit.hasPendingNcApproval = false;
+          parentAudit.hasPendingNcApproval = !!(parentAudit?.sub_audits || []).some((item: any) => !!item?.hasPendingNcApproval);
+          return;
+        }
+
+        const email = localStorage.getItem('user')?.toString() || '';
+        const requests = questions.map((question) => {
+          const payload = {
+            audit_id: subAudit.audit_id,
+            template: question.template,
+            template_type: question.templateType,
+            question: question.text,
+            email: email
+          };
+          return this.audirService.getQuestionData(payload).pipe(catchError(() => of(null)));
+        });
+
+        forkJoin(requests).subscribe((responses: any[]) => {
+          const hasPending = responses.some((response: any) => {
+            const findings = Array.isArray(response?.audit_findings) ? response.audit_findings : [];
+            return findings.some((finding: any) =>
+              this.isNCFindingCategory(finding?.finding_category)
+              && this.isPendingApprovalStatus(finding?.audit_finding_status)
+            );
+          });
+          subAudit.hasPendingNcApproval = hasPending;
+          parentAudit.hasPendingNcApproval = !!(parentAudit?.sub_audits || []).some((item: any) => !!item?.hasPendingNcApproval);
+        });
+      }, () => {
+        subAudit.hasPendingNcApproval = false;
+        parentAudit.hasPendingNcApproval = !!(parentAudit?.sub_audits || []).some((item: any) => !!item?.hasPendingNcApproval);
+      });
+    }, () => {
+      subAudit.hasPendingNcApproval = false;
+      parentAudit.hasPendingNcApproval = !!(parentAudit?.sub_audits || []).some((item: any) => !!item?.hasPendingNcApproval);
     });
   }
 

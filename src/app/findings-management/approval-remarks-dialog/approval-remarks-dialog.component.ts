@@ -10,7 +10,7 @@ export class ApprovalRemarksDialogComponent {
   auditorRemarks: string = '';
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public data : { isQuestionSubmit: boolean},
+    public data : { isQuestionSubmit?: boolean; isRejectOnly?: boolean},
     public dialogRef: MatDialogRef<ApprovalRemarksDialogComponent>
   ) { 
   }
@@ -27,5 +27,9 @@ export class ApprovalRemarksDialogComponent {
       approval_status: 'rejected',
       auditor_remarks: this.auditorRemarks
     });
+  }
+
+  onCancel(): void {
+    this.dialogRef.close();
   }
 }

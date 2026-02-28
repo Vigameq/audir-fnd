@@ -181,13 +181,14 @@ export class FindingsQuestionResponseDialogComponent {
   }
 
   getNCQuestionData() {
+    const auditFindingId = this.normalizeAuditFindingId(this.data.audit_finding_id);
     const payload = {
       audit_id: this.auditQuestionData.audit_id,
       template: this.auditQuestionData.template,
       template_type: this.auditQuestionData.template_type,
       question: this.data.questionText,
       email: this.auditQuestionData.email,
-      audit_finding_id:this.data.audit_finding_id
+      ...(auditFindingId !== null ? { audit_finding_id: auditFindingId } : {})
     };
     this.audirService.getNCQuestionData(payload).subscribe((response: any) => {
       if (response) {
@@ -484,12 +485,13 @@ export class FindingsQuestionResponseDialogComponent {
     
   }
   onSubmit(result: any){
+    const auditFindingId = this.normalizeAuditFindingId(this.questionData?.audit_finding_id);
     const submitResponse = {
       audit_id : this.auditQuestionData.audit_id,
       email : this.auditQuestionData.email,
       approval_status : result.approval_status,
       auditor_remarks : result.auditor_remarks,
-      audit_finding_id : this.questionData?.audit_finding_id
+      ...(auditFindingId !== null ? { audit_finding_id: auditFindingId } : {})
     }
     this.audirService.submitNCQuestion(submitResponse).subscribe((response: any) => {
       if (response) {
@@ -516,7 +518,10 @@ export class FindingsQuestionResponseDialogComponent {
     saveCorrectionsResponsePayload.append('attach_evidence', this.auditQuestionData.nc_correction.attach_evidence);
     saveCorrectionsResponsePayload.append('planned_completion_date', this.auditQuestionData.nc_correction.plannedCompletionDate);
     saveCorrectionsResponsePayload.append('actual_completion_date', this.auditQuestionData.nc_correction.actualCompletionDate);
-    saveCorrectionsResponsePayload.append('audit_finding_id', this.questionData?.audit_finding_id);
+    const auditFindingId = this.normalizeAuditFindingId(this.questionData?.audit_finding_id);
+    if (auditFindingId !== null) {
+      saveCorrectionsResponsePayload.append('audit_finding_id', String(auditFindingId));
+    }
     this.audirService.saveCorrectionsResponse(saveCorrectionsResponsePayload).subscribe((response: any) => {
       if (response) {
         console.log(response.msg);
@@ -537,7 +542,10 @@ export class FindingsQuestionResponseDialogComponent {
     saveRootCausePayload.append('notes', this.auditQuestionData.nc_root_cause.rootCauseNote);
     saveRootCausePayload.append('link', this.auditQuestionData.nc_root_cause.link);
     saveRootCausePayload.append('attach_evidence', this.auditQuestionData.nc_root_cause.attach_evidence);
-    saveRootCausePayload.append('audit_finding_id', this.questionData?.audit_finding_id);
+    const auditFindingId = this.normalizeAuditFindingId(this.questionData?.audit_finding_id);
+    if (auditFindingId !== null) {
+      saveRootCausePayload.append('audit_finding_id', String(auditFindingId));
+    }
     this.audirService.saveRootCauseResponse(saveRootCausePayload as any).subscribe((response: any) => {
       if (response) {
         console.log(response.msg);
@@ -562,7 +570,10 @@ export class FindingsQuestionResponseDialogComponent {
     saveCorrectivePlanResponsePayload.append('planned_completion_date', this.auditQuestionData.nc_corrective_action_plan.planned_completion_date);
     saveCorrectivePlanResponsePayload.append('actual_completion_date', this.auditQuestionData.nc_corrective_action_plan.actual_completion_date);
     saveCorrectivePlanResponsePayload.append('corrective_action_status', this.auditQuestionData.nc_corrective_action_plan.corrective_action_status);
-    saveCorrectivePlanResponsePayload.append('audit_finding_id', this.questionData?.audit_finding_id);
+    const auditFindingId = this.normalizeAuditFindingId(this.questionData?.audit_finding_id);
+    if (auditFindingId !== null) {
+      saveCorrectivePlanResponsePayload.append('audit_finding_id', String(auditFindingId));
+    }
     this.audirService.savesCorrectiveActionPlanResponse(saveCorrectivePlanResponsePayload).subscribe((response: any) => {
       if (response) {
         console.log(response.msg);
@@ -571,6 +582,18 @@ export class FindingsQuestionResponseDialogComponent {
       this.noErrors = false;
       console.error('Error saving corrective action plan response:', error);
     });
+  }
+
+  private normalizeAuditFindingId(value: any): number | null {
+    if (value === null || value === undefined) {
+      return null;
+    }
+    const text = String(value).trim().toLowerCase();
+    if (!text || text === 'none' || text === 'null' || text === 'undefined') {
+      return null;
+    }
+    const parsed = Number(value);
+    return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
   }
 
   uploadCorrectionsEvidence(event: any) {

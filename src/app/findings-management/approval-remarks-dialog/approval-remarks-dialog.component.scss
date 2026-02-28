@@ -59,10 +59,16 @@
             color: #000000;
         }
 
-        .cancel {
+        .reject-btn {
             background-color: #f13505;
             color: #FFFFFF;
             border: 1px solid #f13505;
+        }
+
+        .secondary-btn {
+            background-color: #ffffff;
+            color: #000000;
+            border: 1px solid #000000;
         }
     }
 }

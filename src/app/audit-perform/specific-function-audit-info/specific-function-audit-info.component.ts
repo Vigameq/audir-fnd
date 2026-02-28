@@ -277,7 +277,41 @@ export class SpecificFunctionAuditInfoComponent {
           });
         });
       });
-      this.pendingApprovalFindings = pending;
+      const auditId = this.auditId?.audit_id;
+      if (!auditId || pending.length === 0) {
+        this.pendingApprovalFindings = pending;
+        return;
+      }
+      this.audirService.getNCAuditQuestions({ audit_id: auditId }).subscribe((ncResponse: any) => {
+        const ncQuestions = Array.isArray(ncResponse?.nc_questions) ? ncResponse.nc_questions : [];
+        const idByKey = new Map<string, number>();
+        ncQuestions.forEach((item: any) => {
+          const id = this.normalizeAuditFindingId(item);
+          if (id === null) {
+            return;
+          }
+          const key = this.getFindingMatchKey({
+            questionText: item?.question,
+            audit_finding: item?.audit_finding,
+            finding_category: item?.finding_category,
+            closure_reference: item?.closure_reference
+          });
+          if (key) {
+            idByKey.set(key, id);
+          }
+        });
+        this.pendingApprovalFindings = pending.map((item: any) => {
+          const existingId = this.normalizeAuditFindingId(item);
+          if (existingId !== null) {
+            return { ...item, audit_finding_id: existingId };
+          }
+          const key = this.getFindingMatchKey(item);
+          const resolvedId = key ? idByKey.get(key) : undefined;
+          return resolvedId ? { ...item, audit_finding_id: resolvedId } : item;
+        });
+      }, () => {
+        this.pendingApprovalFindings = pending;
+      });
     }, () => {
       this.pendingApprovalFindings = [];
     });
@@ -288,12 +322,17 @@ export class SpecificFunctionAuditInfoComponent {
       this.audirService.showError('Only lead auditor can approve NC findings');
       return;
     }
+    const auditFindingId = this.normalizeAuditFindingId(finding);
+    if (auditFindingId === null) {
+      this.audirService.showError('Missing NC finding ID. Please refresh and try again.');
+      return;
+    }
     const payload = {
       audit_id: this.auditId.audit_id,
       email: localStorage.getItem('user')?.toString() || '',
       approval_status: 'approved',
       auditor_remarks: '',
-      audit_finding_id: finding?.audit_finding_id
+      audit_finding_id: auditFindingId
     };
     this.audirService.submitNCQuestion(payload).subscribe(() => {
       this.audirService.showSuccess('NC approved and moved to Findings Management');
@@ -310,7 +349,7 @@ export class SpecificFunctionAuditInfoComponent {
     }
     const dialogRef = this.dialog.open(ApprovalRemarksDialogComponent, {
       disableClose: true,
-      data: { isQuestionSubmit: false }
+      data: { isQuestionSubmit: false, isRejectOnly: true }
     });
     dialogRef.afterClosed().subscribe((result: any) => {
       if (!result) {
@@ -321,12 +360,17 @@ export class SpecificFunctionAuditInfoComponent {
         this.audirService.showError('Rejection note is mandatory');
         return;
       }
+      const auditFindingId = this.normalizeAuditFindingId(finding);
+      if (auditFindingId === null) {
+        this.audirService.showError('Missing NC finding ID. Please refresh and try again.');
+        return;
+      }
       const payload = {
         audit_id: this.auditId.audit_id,
         email: localStorage.getItem('user')?.toString() || '',
         approval_status: 'rejected',
         auditor_remarks: note,
-        audit_finding_id: finding?.audit_finding_id
+        audit_finding_id: auditFindingId
       };
       this.audirService.submitNCQuestion(payload).subscribe(() => {
         this.audirService.showSuccess('NC rejected and sent back with note');
@@ -1130,6 +1174,46 @@ export class SpecificFunctionAuditInfoComponent {
   private isInitiatedStatus(status: any): boolean {
     const value = (status || '').toString().trim().toLowerCase();
     return value === 'inprogress' || value === 'in progress' || value === 'in_progress' || value === 'initiated' || value === 'submitted' || value === 'completed' || value === 'closed';
+  }
+
+  private normalizeAuditFindingId(value: any): number | null {
+    if (value && typeof value === 'object') {
+      const candidates = [
+        value.audit_finding_id,
+        value.auditFindingId,
+        value.finding_id,
+        value.findingId,
+        value.id
+      ];
+      for (const candidate of candidates) {
+        const parsed = this.normalizeAuditFindingId(candidate);
+        if (parsed !== null) {
+          return parsed;
+        }
+      }
+      return null;
+    }
+    if (value === null || value === undefined) {
+      return null;
+    }
+    const text = String(value).trim().toLowerCase();
+    if (!text || text === 'none' || text === 'null' || text === 'undefined') {
+      return null;
+    }
+    const parsed = Number(value);
+    return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+  }
+
+  private getFindingMatchKey(item: any): string {
+    const normalize = (value: any) => (value || '').toString().trim().toLowerCase().replace(/\s+/g, ' ');
+    const question = normalize(item?.questionText || item?.question);
+    const finding = normalize(item?.audit_finding);
+    const category = normalize(item?.finding_category);
+    const closure = normalize(item?.closure_reference);
+    if (!question || !finding) {
+      return '';
+    }
+    return `${question}|${finding}|${category}|${closure}`;
   }
 
   isQuestionEditingLocked(): boolean {

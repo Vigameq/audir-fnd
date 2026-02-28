@@ -12,7 +12,10 @@
         </div>
     </mat-dialog-content>
     <mat-dialog-actions align="center" class="mat-dialog-actions-section">
-        <button mat-dialog-close class="cancel" (click)="onReject()"><span>Reject</span></button>
-        <button class="save-changes" (click)="onApproval()"><span>{{data.isQuestionSubmit ? 'Submit' : 'Approve'}}</span></button>
+        <button *ngIf="data?.isRejectOnly" class="secondary-btn" (click)="onCancel()"><span>Cancel</span></button>
+        <button *ngIf="data?.isRejectOnly" class="reject-btn" (click)="onReject()"><span>Reject</span></button>
+
+        <button *ngIf="!data?.isRejectOnly" class="reject-btn" (click)="onReject()"><span>Reject</span></button>
+        <button *ngIf="!data?.isRejectOnly" class="save-changes" (click)="onApproval()"><span>{{data.isQuestionSubmit ? 'Submit' : 'Approve'}}</span></button>
     </mat-dialog-actions>
 </div>
