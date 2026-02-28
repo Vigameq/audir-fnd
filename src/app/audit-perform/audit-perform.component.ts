@@ -34,6 +34,7 @@ export class AuditPerformComponent {
   isAuditor = false;
   currentUserEmail = '';
   private userNameByEmail = new Map<string, string>();
+  private readonly ncApprovalOverrideKey = 'ncApprovalOverrides';
 
   constructor(private audirService: AudirService, private datePipe: DatePipe, private router: Router) {
     this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
@@ -156,6 +157,80 @@ export class AuditPerformComponent {
   private isPendingApprovalStatus(status: any): boolean {
     const value = this.normalizeStatus(status);
     return value === '' || value === 'created' || value === 'pending_approval' || value === 'pendingapproval';
+  }
+
+  private normalizeAuditFindingId(value: any): number | null {
+    if (value && typeof value === 'object') {
+      const candidates = [
+        value.audit_finding_id,
+        value.audit_findings_id,
+        value.auditFindingId,
+        value.finding_id,
+        value.findingId,
+        value.id
+      ];
+      for (const candidate of candidates) {
+        const parsed = this.normalizeAuditFindingId(candidate);
+        if (parsed !== null) {
+          return parsed;
+        }
+      }
+      return null;
+    }
+    if (value === null || value === undefined) {
+      return null;
+    }
+    const text = String(value).trim().toLowerCase();
+    if (!text || text === 'none' || text === 'null' || text === 'undefined') {
+      return null;
+    }
+    const parsed = Number(value);
+    return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+  }
+
+  private getNcApprovalOverrides(): Record<string, string> {
+    const raw = localStorage.getItem(this.ncApprovalOverrideKey);
+    if (!raw) {
+      return {};
+    }
+    try {
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  private getNcOverrideKey(auditId: any, findingId: number): string {
+    return `${(auditId || '').toString()}::${findingId}`;
+  }
+
+  private hasPendingApprovalFinding(response: any, auditId: any): boolean {
+    const findings = Array.isArray(response?.audit_findings) ? response.audit_findings : [];
+    const overrideMap = this.getNcApprovalOverrides();
+    return findings.some((finding: any) => {
+      if (!this.isNCFindingCategory(finding?.finding_category)) {
+        return false;
+      }
+      if (!this.isPendingApprovalStatus(finding?.audit_finding_status)) {
+        return false;
+      }
+      const findingId = this.normalizeAuditFindingId(finding);
+      // Only actionable pending NCs should surface the badge.
+      if (findingId === null) {
+        return false;
+      }
+      const overrideStatus = this.normalizeStatus(overrideMap[this.getNcOverrideKey(auditId, findingId)]);
+      return overrideStatus !== 'approved'
+        && overrideStatus !== 'approved_nc'
+        && overrideStatus !== 'inprogress'
+        && overrideStatus !== 'in_progress'
+        && overrideStatus !== 'nc_inprogress'
+        && overrideStatus !== 'completed'
+        && overrideStatus !== 'closed'
+        && overrideStatus !== 'nc_closed'
+        && overrideStatus !== 'rejected';
+    });
   }
 
   private loadPendingApprovalFlags() {
@@ -308,13 +383,7 @@ export class AuditPerformComponent {
         });
 
         forkJoin(requests).subscribe((responses: any[]) => {
-          const hasPending = responses.some((response: any) => {
-            const findings = Array.isArray(response?.audit_findings) ? response.audit_findings : [];
-            return findings.some((finding: any) =>
-              this.isNCFindingCategory(finding?.finding_category)
-              && this.isPendingApprovalStatus(finding?.audit_finding_status)
-            );
-          });
+          const hasPending = responses.some((response: any) => this.hasPendingApprovalFinding(response, subAudit.audit_id));
           subAudit.hasPendingNcApproval = hasPending;
           parentAudit.hasPendingNcApproval = !!(parentAudit?.sub_audits || []).some((item: any) => !!item?.hasPendingNcApproval);
         });
