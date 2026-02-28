@@ -81,7 +81,7 @@
             [disabled]="isQuestionEditingLocked()"
             (click)="addQuestion()">+ Add Question</button>
     </div>
-    <div class="pending-approval-section" *ngIf="pendingApprovalFindings.length > 0">
+    <div class="pending-approval-section" *ngIf="pendingApprovalFindings.length > 0 && isLeadAuditor()">
         <div class="pending-approval-header">Pending Approval</div>
         <div class="pending-approval-card" *ngFor="let finding of pendingApprovalFindings">
             <div class="pending-approval-content">
