@@ -26,6 +26,7 @@ export class SpecificFunctionAuditInfoComponent {
   auditInitiated = false;
   supportsAuditQuestionOverrides = true;
   pendingApprovalFindings: any[] = [];
+  private readonly ncApprovalOverrideKey = 'ncApprovalOverrides';
 
   constructor(private dialog: MatDialog,
     private route: ActivatedRoute,
@@ -292,15 +293,16 @@ export class SpecificFunctionAuditInfoComponent {
           }
           const key = this.getFindingMatchKey({
             questionText: item?.question,
-            audit_finding: item?.audit_finding,
-            finding_category: item?.finding_category,
-            closure_reference: item?.closure_reference
+            audit_finding: item?.audit_finding || item?.audit_finding_text,
+            finding_category: item?.finding_category || item?.audit_finding_category,
+            closure_reference: item?.closure_reference || item?.audit_finding_clause
           });
           if (key) {
             idByKey.set(key, id);
           }
         });
-        this.pendingApprovalFindings = pending.map((item: any) => {
+        const overrideMap = this.getNcApprovalOverrides();
+        const mappedPending = pending.map((item: any) => {
           const existingId = this.normalizeAuditFindingId(item);
           if (existingId !== null) {
             return { ...item, audit_finding_id: existingId };
@@ -308,6 +310,14 @@ export class SpecificFunctionAuditInfoComponent {
           const key = this.getFindingMatchKey(item);
           const resolvedId = key ? idByKey.get(key) : undefined;
           return resolvedId ? { ...item, audit_finding_id: resolvedId } : item;
+        });
+        this.pendingApprovalFindings = mappedPending.filter((item: any) => {
+          const id = this.normalizeAuditFindingId(item);
+          if (id === null) {
+            return true;
+          }
+          const overrideStatus = overrideMap[this.getNcApprovalOverrideMapKey(auditId, id)];
+          return !this.isQualifiedNcStatus(overrideStatus) && this.normalizeFindingStatus(overrideStatus) !== 'rejected';
         });
       }, () => {
         this.pendingApprovalFindings = pending;
@@ -322,23 +332,33 @@ export class SpecificFunctionAuditInfoComponent {
       this.audirService.showError('Only lead auditor can approve NC findings');
       return;
     }
-    const auditFindingId = this.normalizeAuditFindingId(finding);
-    if (auditFindingId === null) {
-      this.audirService.showError('Missing NC finding ID. Please refresh and try again.');
+    const confirmed = window.confirm('Approve this NC finding?');
+    if (!confirmed) {
       return;
     }
-    const payload = {
-      audit_id: this.auditId.audit_id,
-      email: localStorage.getItem('user')?.toString() || '',
-      approval_status: 'approved',
-      auditor_remarks: '',
-      audit_finding_id: auditFindingId
-    };
-    this.audirService.submitNCQuestion(payload).subscribe(() => {
-      this.audirService.showSuccess('NC approved and moved to Findings Management');
-      this.loadPendingApprovalFindings();
-    }, () => {
-      this.audirService.showError('Failed to approve NC');
+    this.resolveAuditFindingIdForAction(finding, (auditFindingId: number | null) => {
+      if (auditFindingId === null) {
+        this.audirService.showError('Missing NC finding ID. Please refresh and try again.');
+        return;
+      }
+      const payload = {
+        audit_id: this.auditId.audit_id,
+        email: localStorage.getItem('user')?.toString() || '',
+        approval_status: 'approved',
+        auditor_remarks: '',
+        audit_finding_id: auditFindingId
+      };
+      this.audirService.submitNCQuestion(payload).subscribe(() => {
+        this.setNcApprovalOverride(this.auditId.audit_id, auditFindingId, 'approved');
+        this.pendingApprovalFindings = this.pendingApprovalFindings.filter((item: any) => {
+          const id = this.normalizeAuditFindingId(item);
+          return id === null || id !== auditFindingId;
+        });
+        this.audirService.showSuccess('NC approved and moved to Findings Management');
+        this.loadPendingApprovalFindings();
+      }, () => {
+        this.audirService.showError('Failed to approve NC');
+      });
     });
   }
 
@@ -360,23 +380,29 @@ export class SpecificFunctionAuditInfoComponent {
         this.audirService.showError('Rejection note is mandatory');
         return;
       }
-      const auditFindingId = this.normalizeAuditFindingId(finding);
-      if (auditFindingId === null) {
-        this.audirService.showError('Missing NC finding ID. Please refresh and try again.');
-        return;
-      }
-      const payload = {
-        audit_id: this.auditId.audit_id,
-        email: localStorage.getItem('user')?.toString() || '',
-        approval_status: 'rejected',
-        auditor_remarks: note,
-        audit_finding_id: auditFindingId
-      };
-      this.audirService.submitNCQuestion(payload).subscribe(() => {
-        this.audirService.showSuccess('NC rejected and sent back with note');
-        this.loadPendingApprovalFindings();
-      }, () => {
-        this.audirService.showError('Failed to reject NC');
+      this.resolveAuditFindingIdForAction(finding, (auditFindingId: number | null) => {
+        if (auditFindingId === null) {
+          this.audirService.showError('Missing NC finding ID. Please refresh and try again.');
+          return;
+        }
+        const payload = {
+          audit_id: this.auditId.audit_id,
+          email: localStorage.getItem('user')?.toString() || '',
+          approval_status: 'rejected',
+          auditor_remarks: note,
+          audit_finding_id: auditFindingId
+        };
+        this.audirService.submitNCQuestion(payload).subscribe(() => {
+          this.setNcApprovalOverride(this.auditId.audit_id, auditFindingId, 'rejected');
+          this.pendingApprovalFindings = this.pendingApprovalFindings.filter((item: any) => {
+            const id = this.normalizeAuditFindingId(item);
+            return id === null || id !== auditFindingId;
+          });
+          this.audirService.showSuccess('NC rejected and sent back with note');
+          this.loadPendingApprovalFindings();
+        }, () => {
+          this.audirService.showError('Failed to reject NC');
+        });
       });
     });
   }
@@ -1180,9 +1206,13 @@ export class SpecificFunctionAuditInfoComponent {
     if (value && typeof value === 'object') {
       const candidates = [
         value.audit_finding_id,
+        value.audit_findings_id,
+        value.auditfindingid,
         value.auditFindingId,
+        value.auditFindingID,
         value.finding_id,
         value.findingId,
+        value.findingid,
         value.id
       ];
       for (const candidate of candidates) {
@@ -1207,13 +1237,115 @@ export class SpecificFunctionAuditInfoComponent {
   private getFindingMatchKey(item: any): string {
     const normalize = (value: any) => (value || '').toString().trim().toLowerCase().replace(/\s+/g, ' ');
     const question = normalize(item?.questionText || item?.question);
-    const finding = normalize(item?.audit_finding);
-    const category = normalize(item?.finding_category);
-    const closure = normalize(item?.closure_reference);
-    if (!question || !finding) {
+    const finding = normalize(item?.audit_finding || item?.audit_finding_text);
+    const category = normalize(item?.finding_category || item?.audit_finding_category);
+    const closure = normalize(item?.closure_reference || item?.audit_finding_clause);
+    if (!finding) {
       return '';
     }
     return `${question}|${finding}|${category}|${closure}`;
+  }
+
+  private isSameFinding(target: any, candidate: any): boolean {
+    const normalize = (value: any) => (value || '').toString().trim().toLowerCase().replace(/\s+/g, ' ');
+    const targetFinding = normalize(target?.audit_finding || target?.audit_finding_text);
+    const candidateFinding = normalize(candidate?.audit_finding || candidate?.audit_finding_text);
+    if (!targetFinding || targetFinding !== candidateFinding) {
+      return false;
+    }
+    const targetCategory = normalize(target?.finding_category || target?.audit_finding_category);
+    const candidateCategory = normalize(candidate?.finding_category || candidate?.audit_finding_category);
+    if (targetCategory && candidateCategory && targetCategory !== candidateCategory) {
+      return false;
+    }
+    const targetClosure = normalize(target?.closure_reference || target?.audit_finding_clause);
+    const candidateClosure = normalize(candidate?.closure_reference || candidate?.audit_finding_clause);
+    if (targetClosure && candidateClosure && targetClosure !== candidateClosure) {
+      return false;
+    }
+    const targetQuestion = normalize(target?.questionText || target?.question);
+    const candidateQuestion = normalize(candidate?.questionText || candidate?.question);
+    if (targetQuestion && candidateQuestion && targetQuestion !== candidateQuestion) {
+      return false;
+    }
+    return true;
+  }
+
+  private resolveAuditFindingIdForAction(finding: any, callback: (id: number | null) => void): void {
+    const directId = this.normalizeAuditFindingId(finding);
+    if (directId !== null) {
+      callback(directId);
+      return;
+    }
+    const fromPending = (this.pendingApprovalFindings || []).find((item: any) => this.isSameFinding(finding, item));
+    const pendingId = this.normalizeAuditFindingId(fromPending);
+    if (pendingId !== null) {
+      callback(pendingId);
+      return;
+    }
+    const auditId = this.auditId?.audit_id;
+    if (!auditId) {
+      callback(null);
+      return;
+    }
+    this.resolveAuditFindingIdFromNCAuditQuestions(auditId, finding, callback);
+  }
+
+  private resolveAuditFindingIdFromNCAuditQuestions(
+    auditId: any,
+    finding: any,
+    callback: (id: number | null) => void
+  ): void {
+    this.audirService.getNCAuditQuestions({ audit_id: auditId }).subscribe((ncResponse: any) => {
+      const ncQuestions = Array.isArray(ncResponse?.nc_questions) ? ncResponse.nc_questions : [];
+      const targetKey = this.getFindingMatchKey(finding);
+      for (const item of ncQuestions) {
+        if (this.isSameFinding(finding, item)) {
+          const id = this.normalizeAuditFindingId(item);
+          if (id !== null) {
+            callback(id);
+            return;
+          }
+        }
+        const key = this.getFindingMatchKey({
+          questionText: item?.question,
+          audit_finding: item?.audit_finding || item?.audit_finding_text,
+          finding_category: item?.finding_category || item?.audit_finding_category,
+          closure_reference: item?.closure_reference || item?.audit_finding_clause
+        });
+        if (targetKey && key === targetKey) {
+          callback(this.normalizeAuditFindingId(item));
+          return;
+        }
+      }
+      callback(null);
+    }, () => callback(null));
+  }
+
+  private getNcApprovalOverrideMapKey(auditId: any, findingId: number): string {
+    return `${(auditId || '').toString()}::${findingId}`;
+  }
+
+  private getNcApprovalOverrides(): Record<string, string> {
+    const raw = localStorage.getItem(this.ncApprovalOverrideKey);
+    if (!raw) {
+      return {};
+    }
+    try {
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  private setNcApprovalOverride(auditId: any, findingId: number, status: string): void {
+    if (!auditId || !findingId) {
+      return;
+    }
+    const overrides = this.getNcApprovalOverrides();
+    overrides[this.getNcApprovalOverrideMapKey(auditId, findingId)] = status;
+    localStorage.setItem(this.ncApprovalOverrideKey, JSON.stringify(overrides));
   }
 
   isQuestionEditingLocked(): boolean {

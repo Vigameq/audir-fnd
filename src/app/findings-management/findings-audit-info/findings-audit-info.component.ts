@@ -17,6 +17,8 @@ export class FindingsAuditInfoComponent {
   auditId: any;
   disableFlag: boolean | undefined;
   audit_status: string | null | undefined;
+  private readonly ncApprovalOverrideKey = 'ncApprovalOverrides';
+  isAuditor = false;
 
 
   constructor(private dialog: MatDialog,
@@ -24,6 +26,7 @@ export class FindingsAuditInfoComponent {
     private audirService: AudirService,
     private router: Router,
     private location: Location) {
+    this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
     this.route.paramMap.subscribe(params => {
       const auditParam = params.get('id');
       if (!auditParam) {
@@ -44,8 +47,56 @@ export class FindingsAuditInfoComponent {
     return (status || '').toString().trim().toLowerCase().replace(/\s+/g, '_');
   }
 
+  private normalizeAuditFindingId(value: any): number | null {
+    if (value === null || value === undefined) {
+      return null;
+    }
+    const text = String(value).trim().toLowerCase();
+    if (!text || text === 'none' || text === 'null' || text === 'undefined') {
+      return null;
+    }
+    const parsed = Number(value);
+    return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+  }
+
+  private getNcApprovalOverrides(): Record<string, string> {
+    const raw = localStorage.getItem(this.ncApprovalOverrideKey);
+    if (!raw) {
+      return {};
+    }
+    try {
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  private getNcOverrideKey(auditId: any, findingId: number): string {
+    return `${(auditId || '').toString()}::${findingId}`;
+  }
+
+  private applyNcOverrideStatus(item: any): any {
+    const findingId = this.normalizeAuditFindingId(item?.audit_finding_id);
+    if (findingId === null) {
+      return item;
+    }
+    const overrides = this.getNcApprovalOverrides();
+    const override = overrides[this.getNcOverrideKey(item?.audit_id, findingId)];
+    if (!override) {
+      return item;
+    }
+    return {
+      ...item,
+      audit_finding_status: override
+    };
+  }
+
   private isQualifiedForFindings(status: any): boolean {
     const value = this.normalizeStatus(status);
+    if (!this.isAuditor && (value === 'created' || value === 'pending_approval' || value === 'pendingapproval')) {
+      return true;
+    }
     return value === 'approved'
       || value === 'approved_nc'
       || value === 'nc_inprogress'
@@ -60,7 +111,8 @@ export class FindingsAuditInfoComponent {
     this.audirService.getNCAuditQuestions(auditId).subscribe((auditQuestion: any) => {
       if (auditQuestion) {
         const all = Array.isArray(auditQuestion.nc_questions) ? auditQuestion.nc_questions : [];
-        this.allQuestions = all.filter((item: any) => this.isQualifiedForFindings(item?.audit_finding_status));
+        const resolved = all.map((item: any) => this.applyNcOverrideStatus(item));
+        this.allQuestions = resolved.filter((item: any) => this.isQualifiedForFindings(item?.audit_finding_status));
         this.disableFlag = this.allQuestions.every(
           (item) => item.audit_finding_status === "inprogress"
         );
