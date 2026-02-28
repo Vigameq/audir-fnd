@@ -273,6 +273,7 @@ app.post("/audire/*", async (req, res) => {
     console.error("POST API Error:", error.toString());
     if (error.response) {
       console.error("Backend response:", error.response.status, error.response.data);
+      return res.status(error.response.status).send(error.response.data);
     }
     res.status(500).send({ error: "Failed to reach backend API" });
   }
@@ -345,6 +346,7 @@ app.get("/audire/*", async (req, res) => {
     console.error("GET API Error:", error.toString());
     if (error.response) {
       console.error("Backend response:", error.response.status, error.response.data);
+      return res.status(error.response.status).send(error.response.data);
     }
     res.status(500).send({ error: "Failed to reach backend API" });
   }
