@@ -317,10 +317,30 @@ export class AuditManageComponent {
   }
 
   showAuditors(auditorOptions: any) {
-    if (auditorOptions) {
-      return ((auditorOptions.map((auditor: any) => auditor.name)).join(', '));
+    const names = this.extractAuditorNames(auditorOptions);
+    return names.join(', ');
+  }
+
+  private extractAuditorNames(auditorOptions: any): string[] {
+    if (!auditorOptions) {
+      return [];
     }
-    return
+    if (Array.isArray(auditorOptions)) {
+      return auditorOptions
+        .map((auditor: any) => {
+          if (typeof auditor === 'string') return auditor.trim();
+          if (auditor && typeof auditor === 'object') return (auditor.name || auditor.Name || auditor.email || '').toString().trim();
+          return '';
+        })
+        .filter((name: string) => name.length > 0);
+    }
+    if (typeof auditorOptions === 'string') {
+      return auditorOptions
+        .split(',')
+        .map((name: string) => name.trim())
+        .filter((name: string) => name.length > 0);
+    }
+    return [];
   }
 
   auditeesToggleDropdown(event: any, index: any) {

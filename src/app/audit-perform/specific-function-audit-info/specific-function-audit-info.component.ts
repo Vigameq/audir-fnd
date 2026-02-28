@@ -425,7 +425,7 @@ export class SpecificFunctionAuditInfoComponent {
       if (audit) {
         const auditData = Array.isArray(audit.audit_data) ? audit.audit_data[0] : audit.audit_data;
         if (auditData) {
-          this.auditInfo = auditData;
+          this.auditInfo = this.normalizeAuditInfo(auditData);
           this.auditInitiated = this.isInitiatedStatus(auditData.audit_status);
           if (this.supportsAuditQuestionOverrides && this.baseAuditQuestions.length) {
             this.loadQuestionOverrides();
@@ -938,10 +938,129 @@ export class SpecificFunctionAuditInfoComponent {
   }
 
   showAllOptionsByName(options: any) {
-    if (options) {
-      return ((options.map((option: any) => option.name)).join(', '));
+    const names = this.extractDisplayNames(options);
+    return names.join(', ');
+  }
+
+  private extractDisplayNames(options: any): string[] {
+    const people = this.normalizePeopleList(options);
+    return people
+      .map((person: any) => (person?.name || '').toString().trim())
+      .filter((name: string) => name.length > 0);
+  }
+
+  private normalizeAuditInfo(auditData: any): any {
+    const auditors = this.normalizePeopleList(auditData?.auditors);
+    const auditees = this.normalizePeopleList(auditData?.auditees);
+    return {
+      ...auditData,
+      template: this.normalizeTextList(auditData?.template),
+      function_template: this.normalizeTextList(auditData?.function_template),
+      auditors,
+      auditees,
+      lead_auditor: this.normalizeLeadAuditor(auditData?.lead_auditor, auditors)
+    };
+  }
+
+  private normalizeLeadAuditor(value: any, auditors: any[]): any {
+    if (value && typeof value === 'object') {
+      return value;
     }
-    return
+    const text = (value || '').toString().trim();
+    if (!text) {
+      return '';
+    }
+    const lower = text.toLowerCase();
+    const matched = (auditors || []).find((auditor: any) => (auditor?.email || '').toString().toLowerCase() === lower);
+    if (matched) {
+      return matched;
+    }
+    return {
+      email: this.isLikelyEmail(text) ? text : '',
+      name: this.displayNameFromValue(text)
+    };
+  }
+
+  private normalizePeopleList(options: any): any[] {
+    if (!options) {
+      return [];
+    }
+    if (Array.isArray(options)) {
+      const hasObjects = options.some((item: any) => item && typeof item === 'object' && !Array.isArray(item));
+      if (hasObjects) {
+        return options
+          .map((item: any) => {
+            const email = (item?.email || '').toString().trim();
+            const name = (item?.name || item?.Name || this.displayNameFromValue(email)).toString().trim();
+            if (!email && !name) {
+              return null;
+            }
+            return { ...item, email, name };
+          })
+          .filter((item: any) => !!item);
+      }
+    }
+    return this.normalizeTextList(options)
+      .map((value: string) => {
+        const email = this.isLikelyEmail(value) ? value : '';
+        const name = this.displayNameFromValue(value);
+        if (!name && !email) {
+          return null;
+        }
+        return { name, email };
+      })
+      .filter((item: any) => !!item);
+  }
+
+  private normalizeTextList(value: any): string[] {
+    if (Array.isArray(value)) {
+      const stringItems = value
+        .filter((item: any) => typeof item === 'string')
+        .map((item: string) => item);
+      if (stringItems.length === value.length) {
+        const joined = stringItems.join('');
+        const looksLikeCharStream = stringItems.length > 1 && stringItems.every((part: string) => part.length <= 1);
+        if (looksLikeCharStream) {
+          return joined
+            .split(',')
+            .map((item: string) => item.trim())
+            .filter((item: string) => item.length > 0);
+        }
+        return stringItems
+          .map((item: string) => item.trim())
+          .filter((item: string) => item.length > 0);
+      }
+      return value
+        .map((item: any) => (item ?? '').toString().trim())
+        .filter((item: string) => item.length > 0);
+    }
+    const text = (value ?? '').toString();
+    if (!text.trim()) {
+      return [];
+    }
+    return text
+      .split(',')
+      .map((item: string) => item.trim())
+      .filter((item: string) => item.length > 0);
+  }
+
+  private displayNameFromValue(value: any): string {
+    const text = (value || '').toString().trim();
+    if (!text) {
+      return '';
+    }
+    if (this.isLikelyEmail(text)) {
+      const local = text.split('@')[0] || '';
+      return local
+        .replace(/[._-]+/g, ' ')
+        .trim()
+        .replace(/\b\w/g, (ch: string) => ch.toUpperCase());
+    }
+    return text;
+  }
+
+  private isLikelyEmail(value: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
   }
 
   canInitiateAudit() {

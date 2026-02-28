@@ -33,6 +33,7 @@ export class AuditPerformComponent {
   isSvgDisabled = true;
   isAuditor = false;
   currentUserEmail = '';
+  private userNameByEmail = new Map<string, string>();
 
   constructor(private audirService: AudirService, private datePipe: DatePipe, private router: Router) {
     this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
@@ -265,10 +266,8 @@ export class AuditPerformComponent {
     if (this.isAuditor) {
       return true;
     }
-    const auditors = Array.isArray(subAudit?.auditors) ? subAudit.auditors : [];
-    return auditors.some((auditor: any) =>
-      (auditor?.email || '').toString().toLowerCase() === this.currentUserEmail
-    );
+    const auditorEmails = this.extractAuditorEmails(subAudit?.auditors);
+    return auditorEmails.includes(this.currentUserEmail);
   }
 
   auditeePerformLocked(subAudit?: any) {
@@ -314,11 +313,12 @@ export class AuditPerformComponent {
   }
 
   selectedOptionNames(options: any) {
-    if (options)
-      return (options.map((options: any) => options.name));
-    else {
+    if (!Array.isArray(options)) {
       return [];
     }
+    return options
+      .map((option: any) => this.resolveDisplayName(option?.name || option?.email || option))
+      .filter((name: string) => name.length > 0);
   }
 
   selectedOptionValuesChecked(selectedValues: any, subAuditIndex: any) {
@@ -425,7 +425,10 @@ export class AuditPerformComponent {
     const email = localStorage.getItem('user')?.toString() || '';
     this.audirService.getPlanItems(email).subscribe((items: any) => {
       if (items) {
-        this.auditees = items.users.auditees;
+        const users = items.users || {};
+        this.auditees = users.auditees || [];
+        this.registerUsers(users.auditees);
+        this.registerUsers(users.auditors);
       }
     }, (error: any) => {
       console.error('Error for getting plans:', error);
@@ -460,10 +463,85 @@ export class AuditPerformComponent {
   }
 
   showAuditors(auditorOptions: any) {
-    if (auditorOptions) {
-      return ((auditorOptions.map((auditor: any) => auditor.name)).join(', '));
+    const names = this.extractAuditorNames(auditorOptions);
+    return names.join(', ');
+  }
+
+  private extractAuditorNames(auditorOptions: any): string[] {
+    if (!auditorOptions) {
+      return [];
     }
-    return
+    if (Array.isArray(auditorOptions)) {
+      return auditorOptions
+        .map((auditor: any) => {
+          if (typeof auditor === 'string') return this.resolveDisplayName(auditor);
+          if (auditor && typeof auditor === 'object') return this.resolveDisplayName(auditor.name || auditor.Name || auditor.email || '');
+          return '';
+        })
+        .filter((name: string) => name.length > 0);
+    }
+    if (typeof auditorOptions === 'string') {
+      return auditorOptions
+        .split(',')
+        .map((name: string) => this.resolveDisplayName(name))
+        .filter((name: string) => name.length > 0);
+    }
+    return [];
+  }
+
+  private extractAuditorEmails(auditorOptions: any): string[] {
+    if (!auditorOptions) {
+      return [];
+    }
+    if (Array.isArray(auditorOptions)) {
+      return auditorOptions
+        .map((auditor: any) => {
+          if (typeof auditor === 'string') return auditor.trim().toLowerCase();
+          if (auditor && typeof auditor === 'object') return (auditor.email || '').toString().trim().toLowerCase();
+          return '';
+        })
+        .filter((email: string) => email.length > 0);
+    }
+    if (typeof auditorOptions === 'string') {
+      return auditorOptions
+        .split(',')
+        .map((email: string) => email.trim().toLowerCase())
+        .filter((email: string) => email.length > 0);
+    }
+    return [];
+  }
+
+  private registerUsers(users: any) {
+    if (!Array.isArray(users)) {
+      return;
+    }
+    users.forEach((user: any) => {
+      const email = (user?.email || '').toString().trim().toLowerCase();
+      const name = (user?.name || user?.Name || '').toString().trim();
+      if (email && name) {
+        this.userNameByEmail.set(email, name);
+      }
+    });
+  }
+
+  private resolveDisplayName(value: any): string {
+    const text = (value || '').toString().trim();
+    if (!text) {
+      return '';
+    }
+    const lower = text.toLowerCase();
+    if (this.userNameByEmail.has(lower)) {
+      return this.userNameByEmail.get(lower) || '';
+    }
+    if (this.isLikelyEmail(text)) {
+      const local = text.split('@')[0] || '';
+      return local.replace(/[._-]+/g, ' ').trim();
+    }
+    return text;
+  }
+
+  private isLikelyEmail(value: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
   }
 
   auditeesToggleDropdown(event: any, index: any) {

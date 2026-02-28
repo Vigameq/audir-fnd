@@ -361,30 +361,34 @@ export class AuditPlanComponent {
       this.parentLeadAuditor = this.parent_audits.filter(p => p.title === parentAuditTitle);
     }
 
-    const parentLeadAuditorEmail = this.parentLeadAuditor[0]?.lead_auditor || '';
-    const selectedLeadAuditor = this.auditPlanForm?.value?.leadAuditorValue || '';
+    const parentLeadAuditorEmail = this.normalizeStringValue(this.parentLeadAuditor[0]?.lead_auditor);
+    const selectedLeadAuditor = this.normalizeStringValue(this.auditPlanForm?.value?.leadAuditorValue);
     const leadAuditor = selectedLeadAuditor || parentLeadAuditorEmail;
     const auditors = this.selectedAuditorsEmail.length > 0
       ? this.selectedAuditorsEmail
       : (parentLeadAuditorEmail ? [parentLeadAuditorEmail] : []);
+    const normalizedTemplates = this.normalizeStringArray(this.selectedTemplate);
+    const normalizedFunctionTemplates = this.normalizeStringArray(this.selectedFunctionTemplate);
+    const normalizedAuditors = this.normalizeStringArray(auditors);
+    const normalizedAuditees = this.normalizeStringArray(this.selectedAuditeesEmail);
 
-    const plan: Audit = {
+    const plan: any = {
       link_audit: parentAuditTitle || null,
-      audit_title: this.auditPlanForm.value?.auditTitle,
-      functions: this.auditPlanForm.value?.functions,
-      template: this.selectedTemplate,
-      function_template: this.selectedFunctionTemplate.length > 0 ? this.selectedFunctionTemplate : '',
-      start_date: this.auditPlanForm.value?.startDateTime,
-      end_date: this.auditPlanForm.value?.endDateTime,
+      audit_title: this.normalizeStringValue(this.auditPlanForm.value?.auditTitle),
+      functions: this.normalizeStringValue(this.auditPlanForm.value?.functions),
+      template: normalizedTemplates.join(','),
+      function_template: normalizedFunctionTemplates.join(','),
+      start_date: this.normalizeStringValue(this.auditPlanForm.value?.startDateTime),
+      end_date: this.normalizeStringValue(this.auditPlanForm.value?.endDateTime),
       lead_auditor: leadAuditor,
-      auditors,
-      auditees: this.selectedAuditeesEmail,
-      city: this.auditPlanForm.value?.cityName,
-      country: this.auditPlanForm.value?.countryName,
-      audit_scope: this.auditPlanForm.value?.auditScopeValue,
+      auditors: normalizedAuditors.join(','),
+      auditees: normalizedAuditees.join(','),
+      city: this.normalizeStringValue(this.auditPlanForm.value?.cityName),
+      country: this.normalizeStringValue(this.auditPlanForm.value?.countryName),
+      audit_scope: this.normalizeStringValue(this.auditPlanForm.value?.auditScopeValue),
       // audit_type: this.auditPlanForm.value?.auditType,
       audit_type: 'Physical',
-      eMail: this.userEmail
+      eMail: this.normalizeStringValue(this.userEmail)
     };
 
     if (this.checkRequiredPlanValues(plan)) {
@@ -396,7 +400,7 @@ export class AuditPlanComponent {
           this.audirService.showError('Failed to create audit plan');
         }
       }, (error: any) => {
-        const errorMessage = error?.error?.message || error?.message || 'Failed to create audit plan';
+        const errorMessage = error?.error?.message || error?.error?.error || error?.message || 'Failed to create audit plan';
         this.audirService.showError(errorMessage);
         console.error('Error for creation of audit plan:', error);
       });
@@ -428,7 +432,7 @@ export class AuditPlanComponent {
       functionTemplateValue: [],
       startDateTime: '',
       endDateTime: { value: '', disabled: true },
-      leadAuditorValue: [],
+      leadAuditorValue: '',
       auditorValue: [],
       auditeesValue: [],
       cityName: '',
@@ -632,6 +636,57 @@ export class AuditPlanComponent {
 
   getEmail() {
     return localStorage.getItem('user')?.toString() || '';
+  }
+
+  getPrimaryAuditorName(auditors: any): string {
+    const names = this.extractAuditorNames(auditors);
+    return names.length > 0 ? names[0] : '';
+  }
+
+  hasMoreAuditors(auditors: any): boolean {
+    return this.extractAuditorNames(auditors).length > 1;
+  }
+
+  private normalizeStringValue(value: any): string {
+    if (Array.isArray(value)) {
+      return value.length > 0 ? String(value[0] ?? '').trim() : '';
+    }
+    if (value === null || value === undefined) {
+      return '';
+    }
+    return String(value).trim();
+  }
+
+  private normalizeStringArray(values: any): string[] {
+    if (Array.isArray(values)) {
+      return values
+        .map((item: any) => this.normalizeStringValue(item))
+        .filter((item: string) => item.length > 0);
+    }
+    const single = this.normalizeStringValue(values);
+    return single ? [single] : [];
+  }
+
+  private extractAuditorNames(auditorOptions: any): string[] {
+    if (!auditorOptions) {
+      return [];
+    }
+    if (Array.isArray(auditorOptions)) {
+      return auditorOptions
+        .map((auditor: any) => {
+          if (typeof auditor === 'string') return auditor.trim();
+          if (auditor && typeof auditor === 'object') return (auditor.name || auditor.Name || auditor.email || '').toString().trim();
+          return '';
+        })
+        .filter((name: string) => name.length > 0);
+    }
+    if (typeof auditorOptions === 'string') {
+      return auditorOptions
+        .split(',')
+        .map((name: string) => name.trim())
+        .filter((name: string) => name.length > 0);
+    }
+    return [];
   }
 
   ngAfterViewInit() {

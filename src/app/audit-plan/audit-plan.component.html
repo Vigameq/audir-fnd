@@ -243,8 +243,8 @@
                         <div class="title-and-auditor">
                             <div class="title"><span>{{plan.audit_title}}</span></div>
                             <div class="auditor">
-                                <span *ngIf="plan.auditors.length===1">{{plan.auditors[0].name}}</span>
-                                <span *ngIf="plan.auditors.length>1">{{plan.auditors[0].name}} and more</span>
+                                <span *ngIf="getPrimaryAuditorName(plan.auditors) && !hasMoreAuditors(plan.auditors)">{{getPrimaryAuditorName(plan.auditors)}}</span>
+                                <span *ngIf="getPrimaryAuditorName(plan.auditors) && hasMoreAuditors(plan.auditors)">{{getPrimaryAuditorName(plan.auditors)}} and more</span>
                             </div>
                         </div>
                     </div>
