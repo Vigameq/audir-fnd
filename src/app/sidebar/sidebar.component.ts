@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { AudirService } from 'src/services/audir-services.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,34 +12,17 @@ export class SidebarComponent {
   header: string = '';
   navItems: any[] = [];
   @Output() headerName = new EventEmitter<string>();
-  constructor(private audirService: AudirService) {
+  constructor(private audirService: AudirService, private authService: AuthService) {
   }
 
   private getCurrentRole(): string {
-    const details = localStorage.getItem('userDetails');
-    if (!details) {
-      return '';
-    }
-    try {
-      const parsed = JSON.parse(details);
-      const rawRole = (parsed?.role || '').toString().trim().toLowerCase();
-      const roleMap: Record<string, string> = {
-        'admin': 'Admin',
-        'lead auditor': 'Lead Auditor',
-        'manager': 'Manager',
-        'auditor': 'Auditor',
-        'auditee': 'Auditee'
-      };
-      return roleMap[rawRole] || '';
-    } catch {
-      return '';
-    }
+    return this.authService.getCurrentRole();
   }
 
   private getAllowedNavPaths(role: string): string[] | null {
     const roleAccess: Record<string, string[]> = {
       'Lead Auditor': ['dashboard', 'auditPlan', 'auditPerform', 'auditManage', 'findingsManagement', 'templates', 'reports'],
-      'Manager': ['dashboard', 'auditPlan', 'auditPerform', 'auditManage', 'findingsManagement', 'templates', 'reports'],
+      'Manager': ['dashboard', 'auditPlan', 'auditPerform', 'auditManage', 'findingsManagement', 'templates', 'reports', 'userManagement'],
       'Admin': ['dashboard', 'auditPlan', 'auditPerform', 'auditManage', 'findingsManagement', 'templates', 'reports', 'userManagement'],
       'Auditee': ['dashboard', 'auditPerform', 'auditManage', 'findingsManagement', 'reports']
     };
@@ -51,7 +35,13 @@ export class SidebarComponent {
     this.audirService.getData().subscribe((data: any) => {
       const role = this.getCurrentRole();
       const allowed = this.getAllowedNavPaths(role);
-      this.navItems = allowed ? data.navigationItems.filter((item: any) => allowed.includes(item.path)) : data.navigationItems;
+      const items = Array.isArray(data?.navigationItems) ? data.navigationItems : [];
+      if (allowed) {
+        this.navItems = items.filter((item: any) => allowed.includes(item.path));
+        return;
+      }
+      // For unknown roles, keep default navigation but never expose User Management.
+      this.navItems = items.filter((item: any) => item?.path !== 'userManagement');
     });
   }
 

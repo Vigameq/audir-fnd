@@ -24,10 +24,18 @@ export class AuthService {
     }
     try {
       const parsed = JSON.parse(details);
-      const rawRole = (parsed?.role || '').toString().trim().toLowerCase();
+      const rawRole = (
+        parsed?.role
+        || parsed?.userRole
+        || parsed?.user_role
+        || parsed?.role_name
+        || parsed?.roleName
+        || ''
+      ).toString().trim().toLowerCase().replace(/[_\s]+/g, ' ');
       const roleMap: Record<string, string> = {
         'admin': 'Admin',
         'lead auditor': 'Lead Auditor',
+        'leadauditor': 'Lead Auditor',
         'manager': 'Manager',
         'auditor': 'Auditor',
         'auditee': 'Auditee'
