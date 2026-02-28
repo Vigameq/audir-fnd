@@ -1014,23 +1014,6 @@ export class SpecificFunctionAuditInfoComponent {
 
   private normalizeTextList(value: any): string[] {
     if (Array.isArray(value)) {
-      const stringItems = value
-        .filter((item: any) => typeof item === 'string')
-        .map((item: string) => item);
-      if (stringItems.length === value.length) {
-        const joined = stringItems.join('');
-        const looksLikeCharStream = stringItems.length > 1 && stringItems.every((part: string) => part.length <= 1);
-        if (looksLikeCharStream) {
-          const parts = joined
-            .split(',')
-            .map((item: string) => item.trim())
-            .filter((item: string) => item.length > 0);
-          return this.collapseCharacterStream(parts);
-        }
-        return stringItems
-          .map((item: string) => item.trim())
-          .filter((item: string) => item.length > 0);
-      }
       return value
         .map((item: any) => (item ?? '').toString().trim())
         .filter((item: string) => item.length > 0);
@@ -1039,32 +1022,10 @@ export class SpecificFunctionAuditInfoComponent {
     if (!text.trim()) {
       return [];
     }
-    const parts = text
+    return text
       .split(',')
       .map((item: string) => item.trim())
       .filter((item: string) => item.length > 0);
-    return this.collapseCharacterStream(parts);
-  }
-
-  private collapseCharacterStream(parts: string[]): string[] {
-    if (!Array.isArray(parts) || parts.length === 0) {
-      return [];
-    }
-    const looksLikeCharacters = parts.length > 2 && parts.every((item: string) => item.length <= 1);
-    if (!looksLikeCharacters) {
-      return parts;
-    }
-    const collapsed = parts.join('').trim();
-    if (!collapsed) {
-      return [];
-    }
-    const emailCandidates = collapsed
-      .split(';')
-      .flatMap((chunk: string) => chunk.split('|'))
-      .flatMap((chunk: string) => chunk.split('/'))
-      .map((chunk: string) => chunk.trim())
-      .filter((chunk: string) => chunk.length > 0);
-    return emailCandidates.length > 0 ? emailCandidates : [collapsed];
   }
 
   private displayNameFromValue(value: any): string {
