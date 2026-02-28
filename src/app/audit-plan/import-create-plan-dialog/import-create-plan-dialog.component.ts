@@ -24,23 +24,18 @@ export class ImportCreatePlanDialogComponent {
   }
 
   downloadPlanTemplate(): any {
-    this.audirService.downloadPlanTemplate().subscribe(
-      (response: Blob) => {
-        const blobData = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const templateFileURL = URL.createObjectURL(blobData);
-        const templateDownloadLink = document.createElement('a');
-        templateDownloadLink.href = templateFileURL;
-        templateDownloadLink.download = 'Audit_plan.xlsx';
-        templateDownloadLink.click();
-        URL.revokeObjectURL(templateFileURL);
-        this.isDownloaded = true;
-        this.audirService.showSuccess('Audit_plan.xlsx downloaded successfully');
-      }, (error: any) => {
-        this.isDownloaded = false;
-        console.error('Error for downloading plan template file:', error);
-        this.audirService.showError('Download failed');
-      }
-    );
+    try {
+      const templateDownloadLink = document.createElement('a');
+      templateDownloadLink.href = 'assets/templates/Audit_plan.xlsx';
+      templateDownloadLink.download = 'Audit_plan.xlsx';
+      templateDownloadLink.click();
+      this.isDownloaded = true;
+      this.audirService.showSuccess('Audit_plan.xlsx downloaded successfully');
+    } catch (error: any) {
+      this.isDownloaded = false;
+      console.error('Error for downloading plan template file:', error);
+      this.audirService.showError('Download failed');
+    }
   }
 
   uploadTemplate(event: any) {
