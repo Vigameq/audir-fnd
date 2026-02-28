@@ -1021,10 +1021,11 @@ export class SpecificFunctionAuditInfoComponent {
         const joined = stringItems.join('');
         const looksLikeCharStream = stringItems.length > 1 && stringItems.every((part: string) => part.length <= 1);
         if (looksLikeCharStream) {
-          return joined
+          const parts = joined
             .split(',')
             .map((item: string) => item.trim())
             .filter((item: string) => item.length > 0);
+          return this.collapseCharacterStream(parts);
         }
         return stringItems
           .map((item: string) => item.trim())
@@ -1038,10 +1039,32 @@ export class SpecificFunctionAuditInfoComponent {
     if (!text.trim()) {
       return [];
     }
-    return text
+    const parts = text
       .split(',')
       .map((item: string) => item.trim())
       .filter((item: string) => item.length > 0);
+    return this.collapseCharacterStream(parts);
+  }
+
+  private collapseCharacterStream(parts: string[]): string[] {
+    if (!Array.isArray(parts) || parts.length === 0) {
+      return [];
+    }
+    const looksLikeCharacters = parts.length > 2 && parts.every((item: string) => item.length <= 1);
+    if (!looksLikeCharacters) {
+      return parts;
+    }
+    const collapsed = parts.join('').trim();
+    if (!collapsed) {
+      return [];
+    }
+    const emailCandidates = collapsed
+      .split(';')
+      .flatMap((chunk: string) => chunk.split('|'))
+      .flatMap((chunk: string) => chunk.split('/'))
+      .map((chunk: string) => chunk.trim())
+      .filter((chunk: string) => chunk.length > 0);
+    return emailCandidates.length > 0 ? emailCandidates : [collapsed];
   }
 
   private displayNameFromValue(value: any): string {
@@ -1081,13 +1104,12 @@ export class SpecificFunctionAuditInfoComponent {
     if (!confirmed) {
       return;
     }
-    const payload: any = {
-      audit_id: this.auditId.audit_id,
-      eMail: localStorage.getItem('user')?.toString() || ''
-    };
-
     const auditors = Array.isArray(this.auditInfo?.auditors) ? this.auditInfo.auditors : [];
     const auditees = Array.isArray(this.auditInfo?.auditees) ? this.auditInfo.auditees : [];
+    const leadAuditorValue = this.auditInfo?.lead_auditor;
+    const leadAuditorEmail = (typeof leadAuditorValue === 'string'
+      ? leadAuditorValue
+      : (leadAuditorValue?.email || '')).toString().trim();
     const fallbackPayload: any = {
       audit_id: this.auditId.audit_id,
       start_date: this.auditInfo?.start_date,
@@ -1096,7 +1118,7 @@ export class SpecificFunctionAuditInfoComponent {
       auditees: auditees.map((auditee: any) => auditee?.email || auditee).filter((email: any) => !!email),
       city: this.auditInfo?.city || '',
       country: this.auditInfo?.country || '',
-      lead_auditor: this.auditInfo?.lead_auditor || '',
+      lead_auditor: leadAuditorEmail,
       link_audit: this.auditInfo?.link_audit || '',
       template: this.auditInfo?.template || [],
       function_template: this.auditInfo?.function_template || [],
@@ -1104,7 +1126,7 @@ export class SpecificFunctionAuditInfoComponent {
       audit_status: 'inprogress'
     };
 
-    this.audirService.initiateAudit(payload).subscribe({
+    this.audirService.updateAuditPlan(fallbackPayload).subscribe({
       next: (response: any) => {
         if (!response) {
           this.audirService.showError('Failed to initiate audit');
@@ -1116,25 +1138,9 @@ export class SpecificFunctionAuditInfoComponent {
         this.audirService.showSuccess('Audit initiated. Auditee can now perform.');
       },
       error: (error: any) => {
-        // Backward-compatible fallback for deployments that do not yet expose /api/initiateAudit.
-        this.audirService.updateAuditPlan(fallbackPayload).subscribe({
-          next: (fallbackResponse: any) => {
-            if (!fallbackResponse) {
-              this.audirService.showError('Failed to initiate audit');
-              return;
-            }
-            this.auditInitiated = true;
-            this.auditInfo = { ...this.auditInfo, audit_status: 'inprogress' };
-            this.saveInitialAuditorResponse();
-            this.audirService.showSuccess('Audit initiated. Auditee can now perform.');
-          },
-          error: (fallbackError: any) => {
-            console.error('Error initiating audit (primary):', error);
-            console.error('Error initiating audit (fallback):', fallbackError);
-            const backendMessage = fallbackError?.error?.message || error?.error?.message || 'Failed to initiate audit';
-            this.audirService.showError(backendMessage);
-          }
-        });
+        console.error('Error initiating audit via updateAuditPlan:', error);
+        const backendMessage = error?.error?.message || 'Failed to initiate audit';
+        this.audirService.showError(backendMessage);
       }
     });
   }
