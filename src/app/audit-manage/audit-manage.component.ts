@@ -37,6 +37,7 @@ export class AuditManageComponent {
   functionTemplates: any[] = [];
   isAuditor = false;
   isManager = false;
+  isAuditee = false;
   private readonly manageFromDateKey = 'manageFromDate';
   private readonly manageToDateKey = 'manageToDate';
 
@@ -44,6 +45,7 @@ export class AuditManageComponent {
     const role = this.authService.getCurrentRole();
     this.isAuditor = role === 'Auditor';
     this.isManager = role === 'Manager';
+    this.isAuditee = role === 'Auditee';
     this.resetDateFilter();
   }
 
@@ -508,6 +510,39 @@ export class AuditManageComponent {
 
   canEditAuditInManage(subAudit: any): boolean {
     return !!subAudit;
+  }
+
+  canDeleteAuditInManage(audit: any): boolean {
+    return !this.isAuditee && !!audit;
+  }
+
+  onDeleteAudit(audit: any, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    if (!this.canDeleteAuditInManage(audit)) {
+      return;
+    }
+    const auditTitle = (audit?.audit_title || 'this audit').toString();
+    const confirmed = window.confirm(`Delete ${auditTitle}?`);
+    if (!confirmed) {
+      return;
+    }
+    const payload = {
+      audit_id: audit?.audit_id,
+      email: localStorage.getItem('user')?.toString() || ''
+    };
+    this.audirService.deleteAudit(payload).subscribe((response: any) => {
+      if (response) {
+        this.audirService.showSuccess(response.message || 'Audit deleted successfully');
+        this.getAllAudits();
+      } else {
+        this.audirService.showError('Failed to delete audit');
+      }
+    }, (error: any) => {
+      this.audirService.showError('Failed to delete audit');
+      console.error('Error deleting audit:', error);
+    });
   }
 
   onClickOutside(event: MouseEvent) {

@@ -60,6 +60,7 @@
                 </div>
                 <div class="sub-card-actions">
                     <button class="edit-button" type="button" *ngIf="canEditAuditInManage(auditPerformItem)" (click)="openEditPlanDialog(auditPerformItem)">Edit</button>
+                    <button class="delete-button" type="button" *ngIf="canDeleteAuditInManage(auditPerformItem)" (click)="onDeleteAudit(auditPerformItem, $event)">Delete</button>
                 </div>
                 <button class="child-count-chip" *ngIf="auditPerformItem.sub_audits.length>0" (click)="openSubAudits(auditPerformItem.sub_audits,i)">
                     {{auditPerformItem.sub_audits.length}} Child audits
@@ -87,6 +88,7 @@
                         </div>
                         <div class="sub-card-actions">
                             <button class="edit-button" type="button" *ngIf="canEditAuditInManage(sub_audit)" (click)="openEditPlanDialog(sub_audit)">Edit</button>
+                            <button class="delete-button" type="button" *ngIf="canDeleteAuditInManage(sub_audit)" (click)="onDeleteAudit(sub_audit, $event)">Delete</button>
                         </div>
                     </div>
                 </div>
