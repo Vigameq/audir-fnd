@@ -528,11 +528,23 @@ export class AuditManageComponent {
     if (!confirmed) {
       return;
     }
-    const payload = {
+    const payload: any = {
       audit_id: audit?.audit_id,
-      email: localStorage.getItem('user')?.toString() || ''
+      start_date: audit?.start_date,
+      end_date: audit?.end_date,
+      auditors: this.extractUserEmails(audit?.auditors),
+      auditees: this.extractUserEmails(audit?.auditees),
+      city: audit?.city || '',
+      country: audit?.country || '',
+      audit_type: audit?.audit_type || 'Physical',
+      audit_status: 'deleted',
+      lead_auditor: audit?.lead_auditor,
+      link_audit: audit?.link_audit,
+      template: Array.isArray(audit?.template) ? audit.template : [],
+      function_template: Array.isArray(audit?.function_template) ? audit.function_template : [],
+      audit_scope: audit?.audit_scope || ''
     };
-    this.audirService.deleteAudit(payload).subscribe((response: any) => {
+    this.audirService.updateAuditPlan(payload).subscribe((response: any) => {
       if (response) {
         this.audirService.showSuccess(response.message || 'Audit deleted successfully');
         this.getAllAudits();
