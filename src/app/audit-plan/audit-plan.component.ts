@@ -192,8 +192,8 @@ export class AuditPlanComponent {
   }
 
   setMaxMinDateTime() {
-    this.minDateTime = this.datePipe.transform(new Date(), 'yyyy-MM-dd\'T\'HH:mm:ss', 'UTC');
-    this.maxDateTime = '9999-12-31T23:59:59';
+    this.minDateTime = this.datePipe.transform(new Date(), "yyyy-MM-dd'T'HH:mm", 'UTC');
+    this.maxDateTime = '9999-12-31T23:59';
   }
 
   getPlanItems() {
@@ -774,9 +774,9 @@ export class AuditPlanComponent {
       this.calendarMaxDate = parentEnd;
       const now = new Date();
       this.minDateTime = (parentStart > now) ?
-        this.datePipe.transform(parentStart, "yyyy-MM-dd'T'HH:mm:ss", 'UTC') :
-        this.datePipe.transform(now, "yyyy-MM-dd'T'HH:mm:ss", 'UTC');
-      this.maxDateTime = this.datePipe.transform(parentEnd, "yyyy-MM-dd'T'HH:mm:ss", 'UTC');
+        this.datePipe.transform(parentStart, "yyyy-MM-dd'T'HH:mm", 'UTC') :
+        this.datePipe.transform(now, "yyyy-MM-dd'T'HH:mm", 'UTC');
+      this.maxDateTime = this.datePipe.transform(parentEnd, "yyyy-MM-dd'T'HH:mm", 'UTC');
       if (this.selectedDate < parentStart || this.selectedDate > parentEnd) {
         this.selectedDate = parentStart;
       }
@@ -784,8 +784,8 @@ export class AuditPlanComponent {
       this.calendarMinDate = null;
       this.calendarMaxDate = null;
       const now = new Date();
-      this.minDateTime = this.datePipe.transform(now, "yyyy-MM-dd'T'HH:mm:ss", 'UTC');
-      this.maxDateTime = '9999-12-31T23:59:59';
+      this.minDateTime = this.datePipe.transform(now, "yyyy-MM-dd'T'HH:mm", 'UTC');
+      this.maxDateTime = '9999-12-31T23:59';
     }
   }
 
