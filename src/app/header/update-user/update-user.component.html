@@ -36,10 +36,10 @@
                                         formControlName="lastNameValue" name="lastName" required />
                                 </div>
                                 <div class="role-dropdown">
-                                    <div class="role" (click)="onRoleDropdownClick()" #roleDropdown>
+                                    <div class="role read-only" #roleDropdown>
                                         <label for="role">Role<span class="asterisk"
                                                 *ngIf="(form['roleValue'].touched && form['roleValue'].invalid) || ((isAllDetailsAvailable === false) && form['roleValue'].invalid)">*</span></label>
-                                        <select class="role-dropdown-select" id='role'
+                                        <select class="role-dropdown-select" id='role' [disabled]="true"
                                             (change)="onRoleOptionChange($event)">
                                             <option value="" disabled selected>
                                                 {{roleSelectedOption.name}}</option>

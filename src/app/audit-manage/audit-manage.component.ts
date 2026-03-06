@@ -1,9 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { Component, ElementRef, HostListener, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 import { AudirService } from 'src/services/audir-services.service';
 import { EditPlanDialogComponent } from '../audit-plan/edit-plan-dialog/edit-plan-dialog.component';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-audit-manage',
@@ -35,11 +36,14 @@ export class AuditManageComponent {
   isSvgDisabled = true;
   functionTemplates: any[] = [];
   isAuditor = false;
+  isManager = false;
   private readonly manageFromDateKey = 'manageFromDate';
   private readonly manageToDateKey = 'manageToDate';
 
-  constructor(private audirService: AudirService, private datePipe: DatePipe, private dialog: MatDialog) {
-    this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
+  constructor(private audirService: AudirService, private datePipe: DatePipe, private dialog: MatDialog, private authService: AuthService) {
+    const role = this.authService.getCurrentRole();
+    this.isAuditor = role === 'Auditor';
+    this.isManager = role === 'Manager';
     this.resetDateFilter();
   }
 
@@ -59,14 +63,28 @@ export class AuditManageComponent {
         from: fromDate,
         to: toDate
       },
-      status_filter: ["created", "inprogress", "submitted"]
+      status_filter: ["created", "initiated", "inprogress", "in_progress", "submitted", "completed", "closed"]
     };
 
-    this.audirService.getAuditLists(payload).subscribe((response: any) => {
-      if (response) {
-        this.CompleteAuditList = response.audit_data;
-        this.auditList = this.filterAuditList(this.CompleteAuditList);
-      }
+    const relativeAudits$ = this.audirService.getAuditLists(payload).pipe(catchError(() => of({ audit_data: [] })));
+    const managerCreatedAudits$ = this.isManager
+      ? this.audirService.listAllAudits({ eMail: email }).pipe(catchError(() => of({ audit_data: [] })))
+      : of({ audit_data: [] });
+    const managerPlanItems$ = this.isManager
+      ? this.audirService.getPlanItems(email).pipe(catchError(() => of({ parent_audits: [] })))
+      : of({ parent_audits: [] });
+
+    forkJoin([relativeAudits$, managerCreatedAudits$, managerPlanItems$]).subscribe(([relativeResponse, allResponse, planItemsResponse]: any[]) => {
+      const relativeList = this.extractAuditData(relativeResponse);
+      const allList = this.extractAuditData(allResponse);
+      const planItemsList = Array.isArray(planItemsResponse?.parent_audits) ? planItemsResponse.parent_audits : [];
+      const currentEmail = (localStorage.getItem('user') || '').toString().toLowerCase();
+      const managerOwned = allList.filter((audit: any) =>
+        this.getAuditOwnerEmail(audit) === currentEmail
+      );
+      const managerOwnedFromPlanItems = planItemsList.map((audit: any) => this.normalizePlanItemAudit(audit));
+      this.CompleteAuditList = this.mergeAuditsById([...relativeList, ...managerOwned, ...managerOwnedFromPlanItems]);
+      this.auditList = this.filterAuditList(this.CompleteAuditList);
     }, (error: any) => {
       console.error('Error for getting audits:', error);
     });
@@ -78,7 +96,6 @@ export class AuditManageComponent {
   }
 
   filterAuditList(list: any[]) {
-    const email = localStorage.getItem('user')?.toString().toLowerCase() || '';
     const query = (this.searchQuery || '').trim().toLowerCase();
     const from = this.fromDate;
     const to = this.toDate;
@@ -93,21 +110,12 @@ export class AuditManageComponent {
       }
       const fromDate = new Date(from);
       const toDate = new Date(to);
+      fromDate.setHours(0, 0, 0, 0);
+      toDate.setHours(23, 59, 59, 999);
       return d >= fromDate && d <= toDate;
     };
 
     return (list || []).filter((audit: any) => {
-      const status = this.normalizeStatus(audit.audit_status);
-      if (!['created', 'inprogress', 'in_progress', 'in progress', 'submitted'].includes(status)) {
-        return false;
-      }
-      const createdBy = (audit.email || '').toString().toLowerCase();
-      const auditors = (audit.auditors || '').toString().toLowerCase();
-      const auditees = (audit.auditees || '').toString().toLowerCase();
-      const isMine = createdBy === email || auditors.includes(email) || auditees.includes(email);
-      if (!isMine) {
-        return false;
-      }
       if (!withinDate(audit.start_date)) {
         return false;
       }
@@ -341,6 +349,84 @@ export class AuditManageComponent {
         .filter((name: string) => name.length > 0);
     }
     return [];
+  }
+
+  private extractUserEmails(userOptions: any): string[] {
+    if (!userOptions) {
+      return [];
+    }
+    if (Array.isArray(userOptions)) {
+      return userOptions
+        .map((user: any) => {
+          if (typeof user === 'string') {
+            return user.trim().toLowerCase();
+          }
+          if (user && typeof user === 'object') {
+            return (user.email || user.eMail || '').toString().trim().toLowerCase();
+          }
+          return '';
+        })
+        .filter((email: string) => !!email);
+    }
+    if (typeof userOptions === 'string') {
+      return userOptions
+        .split(',')
+        .map((email: string) => email.trim().toLowerCase())
+        .filter((email: string) => !!email);
+    }
+    return [];
+  }
+
+  private mergeAuditsById(audits: any[]): any[] {
+    const byId = new Map<string, any>();
+    (audits || []).forEach((audit: any) => {
+      const key = (audit?.audit_id ?? audit?.id ?? '').toString();
+      if (!key) {
+        return;
+      }
+      if (!byId.has(key)) {
+        byId.set(key, audit);
+      }
+    });
+    return Array.from(byId.values());
+  }
+
+  private extractAuditData(response: any): any[] {
+    if (Array.isArray(response?.audit_data)) {
+      return response.audit_data;
+    }
+    if (Array.isArray(response?.audits)) {
+      return response.audits;
+    }
+    if (Array.isArray(response?.data)) {
+      return response.data;
+    }
+    return [];
+  }
+
+  private getAuditOwnerEmail(audit: any): string {
+    return (
+      audit?.email
+      || audit?.eMail
+      || audit?.created_by
+      || audit?.createdBy
+      || ''
+    ).toString().trim().toLowerCase();
+  }
+
+  private normalizePlanItemAudit(audit: any): any {
+    return {
+      ...audit,
+      audit_id: audit?.audit_id ?? audit?.id,
+      audit_title: audit?.audit_title || audit?.title || '',
+      template: Array.isArray(audit?.template) ? audit.template : [],
+      function_template: Array.isArray(audit?.function_template) ? audit.function_template : [],
+      auditors: Array.isArray(audit?.auditors) ? audit.auditors : [],
+      auditees: Array.isArray(audit?.auditees) ? audit.auditees : [],
+      sub_audits: Array.isArray(audit?.sub_audits) ? audit.sub_audits : [],
+      audit_status: audit?.audit_status || 'created',
+      email: audit?.email || audit?.eMail || audit?.created_by || audit?.createdBy || ''
+    };
   }
 
   auditeesToggleDropdown(event: any, index: any) {

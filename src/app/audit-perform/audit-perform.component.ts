@@ -216,9 +216,10 @@ export class AuditPerformComponent {
         return false;
       }
       const findingId = this.normalizeAuditFindingId(finding);
-      // Only actionable pending NCs should surface the badge.
+      // Some payloads do not return finding ID on question data.
+      // In that case, still surface pending label based on status/category.
       if (findingId === null) {
-        return false;
+        return true;
       }
       const overrideStatus = this.normalizeStatus(overrideMap[this.getNcOverrideKey(auditId, findingId)]);
       return overrideStatus !== 'approved'
@@ -317,8 +318,12 @@ export class AuditPerformComponent {
             const note = response?.auditor_notes?.[0]?.auditor_notes;
             return note != null && note.toString().trim() !== '';
           }).length;
+          const auditeeAnsweredCount = responses.filter((response) =>
+            this.hasAuditeeServerResponse(response)
+          ).length;
           // Treat initiated status as the first auditor response signal.
           subAudit.auditorResponded = auditorAnsweredCount > 0 || this.isInitiatedStatus(subAudit?.audit_status);
+          subAudit.auditeeResponded = auditeeAnsweredCount > 0;
           const answeredCount = responses.filter((response) => {
             const value = this.isAuditor
               ? response?.auditor_notes?.[0]?.auditor_notes
@@ -395,6 +400,18 @@ export class AuditPerformComponent {
       subAudit.hasPendingNcApproval = false;
       parentAudit.hasPendingNcApproval = !!(parentAudit?.sub_audits || []).some((item: any) => !!item?.hasPendingNcApproval);
     });
+  }
+
+  private hasAuditeeServerResponse(response: any): boolean {
+    const auditee = response?.auditee_response?.[0] || {};
+    const hasDirect = (auditee.auditee_response || '').toString().trim() !== ''
+      || (auditee.link || '').toString().trim() !== ''
+      || (auditee.attach_evidence && auditee.attach_evidence !== 'None');
+    if (hasDirect) {
+      return true;
+    }
+    const history = Array.isArray(response?.history) ? response.history : [];
+    return history.some((item: any) => (item?.type || '').toString().toLowerCase() === 'auditee_response');
   }
 
 

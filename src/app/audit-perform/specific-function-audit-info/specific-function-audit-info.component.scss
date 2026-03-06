@@ -348,6 +348,7 @@
                 }
             }
 
+            .auditee-answered-badge,
             .saved-badge,
             .submitted-badge {
                 position: absolute;
@@ -358,6 +359,11 @@
                 letter-spacing: 0.2px;
                 padding: 4px 8px;
                 border-radius: 12px;
+            }
+
+            .auditee-answered-badge {
+                background-color: #2e7d32;
+                color: #FFFFFF;
             }
 
             .saved-badge {

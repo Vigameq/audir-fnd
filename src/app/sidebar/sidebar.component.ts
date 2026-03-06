@@ -23,7 +23,7 @@ export class SidebarComponent {
     const roleAccess: Record<string, string[]> = {
       'Lead Auditor': ['dashboard', 'auditPlan', 'auditPerform', 'auditManage', 'findingsManagement', 'templates', 'reports'],
       'Manager': ['dashboard', 'auditPlan', 'auditPerform', 'auditManage', 'findingsManagement', 'templates', 'reports', 'userManagement'],
-      'Admin': ['dashboard', 'auditPlan', 'auditPerform', 'auditManage', 'findingsManagement', 'templates', 'reports', 'userManagement'],
+      'Admin': ['dashboard', 'userManagement'],
       'Auditee': ['dashboard', 'auditPerform', 'auditManage', 'findingsManagement', 'reports']
     };
     if (!role) {

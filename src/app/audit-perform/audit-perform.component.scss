@@ -582,9 +582,17 @@
 }
 
 .audit-perform .chip.status.status-pending-nc {
-  background: #c62828;
-  color: #ffffff;
-  border-color: #c62828;
+  background: #f39c12 !important;
+  background-color: #f39c12 !important;
+  color: #ffffff !important;
+  border-color: #f39c12 !important;
+}
+
+.audit-perform .chip.status.status-answered {
+  background: #2e7d32 !important;
+  background-color: #2e7d32 !important;
+  color: #ffffff !important;
+  border-color: #2e7d32 !important;
 }
 
 .audit-perform .perform-btn {

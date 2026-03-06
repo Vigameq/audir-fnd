@@ -26,7 +26,7 @@ export const roleGuard = (allowedRoles: string[]): CanActivateFn => {
       router.navigate(['/dashboard']);
       return false;
     }
-    if (role.toLowerCase() === 'admin' || normalizedAllowed.includes(role.toLowerCase())) {
+    if (normalizedAllowed.includes(role.toLowerCase())) {
       return true;
     }
     router.navigate(['/dashboard']);

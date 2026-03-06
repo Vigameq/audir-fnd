@@ -94,9 +94,6 @@ export class FindingsAuditInfoComponent {
 
   private isQualifiedForFindings(status: any): boolean {
     const value = this.normalizeStatus(status);
-    if (!this.isAuditor && (value === 'created' || value === 'pending_approval' || value === 'pendingapproval')) {
-      return true;
-    }
     return value === 'approved'
       || value === 'approved_nc'
       || value === 'nc_inprogress'

@@ -18,39 +18,39 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
     path: 'dashboard', component: DashboardComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, roleGuard(['Admin', 'Manager', 'Lead Auditor', 'Auditor', 'Auditee'])]
   },
   {
     path: 'auditPlan', component: AuditPlanComponent,
-    canActivate: [AuthGuard, roleGuard(['Admin', 'Manager', 'Lead Auditor', 'Auditor'])]
+    canActivate: [AuthGuard, roleGuard(['Manager', 'Lead Auditor', 'Auditor'])]
   },
   {
     path: 'auditPerform', component: AuditPerformComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, roleGuard(['Manager', 'Lead Auditor', 'Auditor', 'Auditee'])]
   },
   {
     path: 'auditPerform/:id', component: SpecificFunctionAuditInfoComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, roleGuard(['Manager', 'Lead Auditor', 'Auditor', 'Auditee'])]
   },
   {
     path: 'auditManage', component: AuditManageComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, roleGuard(['Manager', 'Lead Auditor', 'Auditor', 'Auditee'])]
   },
   {
     path: 'findingsManagement', component: FindingsManagementComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, roleGuard(['Manager', 'Lead Auditor', 'Auditor', 'Auditee'])]
   },
   {
     path: 'findingsManagement/:id', component: FindingsAuditInfoComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, roleGuard(['Manager', 'Lead Auditor', 'Auditor', 'Auditee'])]
   },
   {
     path: 'templates', component: TemplatesComponent,
-    canActivate: [AuthGuard, roleGuard(['Admin', 'Manager', 'Lead Auditor', 'Auditor'])]
+    canActivate: [AuthGuard, roleGuard(['Manager', 'Lead Auditor', 'Auditor'])]
   },
   {
     path: 'reports', component: ReportsComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, roleGuard(['Manager', 'Lead Auditor', 'Auditor', 'Auditee'])]
   },
   {
     path: 'userManagement', component: UserManagementComponent,

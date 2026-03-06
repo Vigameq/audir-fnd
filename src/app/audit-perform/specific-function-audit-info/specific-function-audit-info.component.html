@@ -83,7 +83,12 @@
     </div>
     <div class="pending-approval-section" *ngIf="pendingApprovalFindings.length > 0 && isLeadAuditor()">
         <div class="pending-approval-header">Pending Approval</div>
-        <div class="pending-approval-card" *ngFor="let finding of pendingApprovalFindings">
+        <div class="pending-approval-card" *ngFor="let finding of pendingApprovalFindings"
+            role="button" tabindex="0"
+            [attr.aria-label]="'Open pending approval for ' + (finding.questionText || 'question')"
+            (click)="openPendingApprovalHistory(finding)"
+            (keydown.enter)="openPendingApprovalHistory(finding)"
+            (keydown.space)="openPendingApprovalHistory(finding)">
             <div class="pending-approval-content">
                 <div class="pending-question">{{finding.questionText}}</div>
                 <div class="pending-finding">{{finding.audit_finding}}</div>
@@ -93,8 +98,8 @@
                 </div>
             </div>
             <div class="pending-actions" *ngIf="isLeadAuditor()">
-                <button type="button" class="approve-btn" (click)="approvePendingFinding(finding)">Approve</button>
-                <button type="button" class="reject-btn" (click)="rejectPendingFinding(finding)">Reject</button>
+                <button type="button" class="approve-btn" (click)="approvePendingFinding(finding); $event.stopPropagation()">Approve</button>
+                <button type="button" class="reject-btn" (click)="rejectPendingFinding(finding); $event.stopPropagation()">Reject</button>
             </div>
         </div>
     </div>
@@ -110,7 +115,7 @@
                     <span>{{question.text}}</span>
                 </div>
             </div>
-            <div class="question-actions" *ngIf="isAuditor && supportsAuditQuestionOverrides">
+            <div class="question-actions" *ngIf="isAuditor && supportsAuditQuestionOverrides && !isQuestionEditingLocked()">
                 <button type="button" class="icon-btn edit-question-btn"
                     [class.disabled]="isQuestionEditingLocked()"
                     [disabled]="isQuestionEditingLocked()"
@@ -124,6 +129,7 @@
                     <span class="material-icons">delete</span>
                 </button>
             </div>
+            <span class="auditee-answered-badge" *ngIf="isAuditor && question.auditeeAnswered">Answered by Auditee</span>
             <span class="saved-badge" *ngIf="!isAuditor && question.responded && !question.submitted">Saved</span>
             <span class="submitted-badge" *ngIf="!isAuditor && question.submitted">Submitted</span>
             <!-- <div class="status" (click)="customizeQuestion(i)"><span>{{question.status}}</span></div> -->

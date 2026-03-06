@@ -57,6 +57,8 @@ export class CustomiseAuditQuestionDialogComponent {
   clauseInput: any = [''];
   isFindingCategoryDropdownOpen: boolean = false;
   auditInfo!: any;
+  private hasAutoOpenedHistory = false;
+  isPendingApprovalHistoryMode = false;
   findingCategoryOptions = [{
     name: 'Noteworthy Effort'
   },
@@ -84,6 +86,7 @@ export class CustomiseAuditQuestionDialogComponent {
     this.auditQuestionData.questionNumber = 'Question' + this.data.index;
     this.auditQuestionData.question = this.data.questionText;
     this.auditInfo = this.data.auditInfo;
+    this.isPendingApprovalHistoryMode = !!this.data?.openResponseHistoryOnLoad;
     this.setQuestionData();
   }
 
@@ -124,6 +127,10 @@ export class CustomiseAuditQuestionDialogComponent {
         const historyReview = this.calculateReviewInProgress();
         this.isReviewInProgress = historyReview || this.getReviewInProgressFlag();
         this.bindResponses();
+        if (this.data?.openResponseHistoryOnLoad && !this.hasAutoOpenedHistory) {
+          this.hasAutoOpenedHistory = true;
+          setTimeout(() => this.openResponseHistory(), 0);
+        }
       }
     }, (error: any) => {
       this.noErrors = false;
@@ -328,10 +335,6 @@ export class CustomiseAuditQuestionDialogComponent {
 
   clearReviewInProgressFlag() {
     localStorage.removeItem(this.getReviewInProgressKey());
-  }
-
-  hasAuditorNote() {
-    return (this.auditNoteValue || '').trim() !== '';
   }
 
   isAuditClosed() {
@@ -776,10 +779,6 @@ export class CustomiseAuditQuestionDialogComponent {
     if (this.isAuditorSubmitted) {
       return;
     }
-    if (!this.hasAuditorNote()) {
-      this.audirService.showError('Please enter an auditor note');
-      return;
-    }
     const confirmed = window.confirm('Submit your response? You will not be able to edit after submitting.');
     if (!confirmed) {
       return;
@@ -844,10 +843,6 @@ export class CustomiseAuditQuestionDialogComponent {
   onSubmitMoreInfo() {
     const confirmed = window.confirm('Requesting for more information from auditee will be submitted');
     if (!confirmed) {
-      return;
-    }
-    if (!this.hasAuditorNote()) {
-      this.audirService.showError('Please enter an auditor note');
       return;
     }
     const payload: any = {

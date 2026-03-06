@@ -14,8 +14,8 @@ import { ApprovalRemarksDialogComponent } from 'src/app/findings-management/appr
 })
 export class SpecificFunctionAuditInfoComponent {
 
-  auditQuestions: { text: string; template: string; templateType: string; responded: boolean; answered: boolean; submitted: boolean; overrideId?: number; overrideAction?: string; originalText?: string; isCustom?: boolean }[] = [];
-  baseAuditQuestions: { text: string; template: string; templateType: string; responded: boolean; answered: boolean; submitted: boolean }[] = [];
+  auditQuestions: { text: string; template: string; templateType: string; responded: boolean; answered: boolean; submitted: boolean; auditeeAnswered: boolean; overrideId?: number; overrideAction?: string; originalText?: string; isCustom?: boolean }[] = [];
+  baseAuditQuestions: { text: string; template: string; templateType: string; responded: boolean; answered: boolean; submitted: boolean; auditeeAnswered: boolean }[] = [];
   auditQuestionOverrides: any[] = [];
   isAuditor = false;
   auditCompletionPercentage!: any;
@@ -102,7 +102,8 @@ export class SpecificFunctionAuditInfoComponent {
             templateType: templateType,
             responded: false,
             answered: false,
-            submitted: false
+            submitted: false,
+            auditeeAnswered: false
           });
         });
       }
@@ -136,6 +137,7 @@ export class SpecificFunctionAuditInfoComponent {
           submitted = this.getAuditeeSubmittedFlag(this.auditQuestions[index]);
         }
         let answered = this.hasResponseForRole(response);
+        const auditeeAnswered = this.hasAuditeeServerResponse(response);
         if (!answered && !this.isAuditor) {
           const draft = this.getAuditeeDraft(this.auditQuestions[index]);
           answered = (draft?.auditee_response || '').trim() !== '' || (draft?.link || '').trim() !== '';
@@ -143,6 +145,7 @@ export class SpecificFunctionAuditInfoComponent {
         this.auditQuestions[index].submitted = submitted;
         this.auditQuestions[index].answered = answered;
         this.auditQuestions[index].responded = answered;
+        this.auditQuestions[index].auditeeAnswered = auditeeAnswered;
       });
       this.updateCompletionPercentage();
       this.loadPendingApprovalFindings();
@@ -169,6 +172,7 @@ export class SpecificFunctionAuditInfoComponent {
         submitted = this.getAuditeeSubmittedFlag(question);
       }
       let answered = this.hasResponseForRole(response);
+      const auditeeAnswered = this.hasAuditeeServerResponse(response);
       if (!answered && !this.isAuditor) {
         const draft = this.getAuditeeDraft(question);
         answered = (draft?.auditee_response || '').trim() !== '' || (draft?.link || '').trim() !== '';
@@ -176,6 +180,7 @@ export class SpecificFunctionAuditInfoComponent {
       question.submitted = submitted;
       question.answered = answered;
       question.responded = answered;
+      question.auditeeAnswered = auditeeAnswered;
       this.updateCompletionPercentage();
       this.loadPendingApprovalFindings();
     }, (error: any) => {
@@ -511,7 +516,7 @@ export class SpecificFunctionAuditInfoComponent {
     });
   }
 
-  questionInfo(index: number) {
+  questionInfo(index: number, openResponseHistoryOnLoad = false) {
     const question = this.auditQuestions[index];
     if (!question) {
       return;
@@ -527,7 +532,8 @@ export class SpecificFunctionAuditInfoComponent {
         questionText: question.text,
         template: question.template,
         templateType: question.templateType,
-        auditInfo: auditInfo
+        auditInfo: auditInfo,
+        openResponseHistoryOnLoad
       }
     });
 
@@ -537,6 +543,23 @@ export class SpecificFunctionAuditInfoComponent {
       }
       console.log(`Dialog result: ${result}`);
     });
+  }
+
+  openPendingApprovalHistory(finding: any) {
+    const normalize = (value: any) => (value || '').toString().trim().toLowerCase().replace(/\s+/g, ' ');
+    const findingQuestion = normalize(finding?.questionText || finding?.question);
+    if (!findingQuestion) {
+      this.audirService.showError('Unable to open pending approval item');
+      return;
+    }
+    const questionIndex = this.auditQuestions.findIndex((question: any) =>
+      normalize(question?.text) === findingQuestion
+    );
+    if (questionIndex < 0) {
+      this.audirService.showError('Question not found for this pending approval item');
+      return;
+    }
+    this.questionInfo(questionIndex, true);
   }
 
 
@@ -741,6 +764,7 @@ export class SpecificFunctionAuditInfoComponent {
             responded: false,
             answered: false,
             submitted: false,
+            auditeeAnswered: false,
             overrideId: overrideId,
             overrideAction: 'edit',
             originalText: targetText,
@@ -774,6 +798,7 @@ export class SpecificFunctionAuditInfoComponent {
           responded: false,
           answered: false,
           submitted: false,
+          auditeeAnswered: false,
           overrideId: overrideId,
           overrideAction: 'add',
           originalText: overrideText,
