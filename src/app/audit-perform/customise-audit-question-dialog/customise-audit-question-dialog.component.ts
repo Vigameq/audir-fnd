@@ -81,7 +81,9 @@ export class CustomiseAuditQuestionDialogComponent {
   constructor(private dialog: MatDialog, private renderer: Renderer2, private audirService: AudirService,
     public dialogRef: MatDialogRef<CustomiseAuditQuestionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any)).role === 'Auditor');
+    const role = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role);
+    const normalizedRole = (role || '').toString().trim().toLowerCase().replace(/[\s_-]+/g, '');
+    this.isAuditor = normalizedRole === 'auditor' || normalizedRole === 'leadauditor';
     this.isAuditor === true ? (this.totalFindings = new Array(this.findingsCount)) : (this.totalFindings = new Array(0));
     this.auditQuestionData.questionNumber = 'Question' + this.data.index;
     this.auditQuestionData.question = this.data.questionText;

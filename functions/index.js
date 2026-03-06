@@ -253,6 +253,43 @@ app.post("/audire/api/deleteAuditQuestion", async (req, res) => {
   }
 });
 
+app.post("/audire/api/deleteAudit", async (req, res) => {
+  try {
+    const auditId = (req.body?.audit_id ?? req.body?.id ?? '').toString().trim();
+    if (!auditId) {
+      return res.status(400).send({ message: 'audit_id is required' });
+    }
+
+    const childCheckSql = `
+      SELECT COUNT(*)::int AS child_count
+      FROM audir_audit
+      WHERE link_audit::text = $1::text
+        AND COALESCE(audit_status, '') <> 'deleted'
+    `;
+    const childCheck = await queryDb(childCheckSql, [auditId]);
+    const childCount = childCheck.rows?.[0]?.child_count || 0;
+    if (childCount > 0) {
+      return res.status(409).send({ message: 'Cannot delete parent audit while child audits are attached' });
+    }
+
+    const deleteSql = `
+      UPDATE audir_audit
+      SET audit_status = 'deleted'
+      WHERE id::text = $1::text
+      RETURNING id, audit_title
+    `;
+    const deleted = await queryDb(deleteSql, [auditId]);
+    if (!deleted.rowCount) {
+      return res.status(404).send({ message: 'Audit not found' });
+    }
+
+    return res.status(200).send({ message: 'Audit deleted successfully', audit_id: deleted.rows[0].id });
+  } catch (error) {
+    console.error('deleteAudit error:', error.toString());
+    return res.status(500).send({ error: 'Failed to delete audit' });
+  }
+});
+
 // ✅ POST /audire/*
 app.post("/audire/*", async (req, res) => {
   try {

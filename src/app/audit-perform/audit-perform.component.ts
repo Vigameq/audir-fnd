@@ -37,9 +37,15 @@ export class AuditPerformComponent {
   private readonly ncApprovalOverrideKey = 'ncApprovalOverrides';
 
   constructor(private audirService: AudirService, private datePipe: DatePipe, private router: Router) {
-    this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
+    const role = (JSON.parse(localStorage.getItem('userDetails') as any))?.role;
+    this.isAuditor = this.isAuditorLikeRole(role);
     this.currentUserEmail = localStorage.getItem('user')?.toString().toLowerCase() || '';
     this.resetDateFilter();
+  }
+
+  private isAuditorLikeRole(role: any): boolean {
+    const normalized = (role || '').toString().trim().toLowerCase().replace(/[\s_-]+/g, '');
+    return normalized === 'auditor' || normalized === 'leadauditor';
   }
 
   ngOnInit() {

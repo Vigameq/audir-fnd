@@ -33,7 +33,8 @@ export class SpecificFunctionAuditInfoComponent {
     private audirService: AudirService,
     private router: Router,
     private location: Location) {
-    this.isAuditor = ((JSON.parse(localStorage.getItem('userDetails') as any))?.role === 'Auditor');
+    const role = (JSON.parse(localStorage.getItem('userDetails') as any))?.role;
+    this.isAuditor = this.isAuditorLikeRole(role);
     this.currentUserEmail = localStorage.getItem('user')?.toString().toLowerCase() || '';
     this.route.paramMap.subscribe(params => {
       this.auditId = { "audit_id": params.get('id') };
@@ -43,6 +44,11 @@ export class SpecificFunctionAuditInfoComponent {
       this.getPlanAudit(this.auditId);
       this.getQuestions(this.auditId, this.parentAuditID);
     });
+  }
+
+  private isAuditorLikeRole(role: any): boolean {
+    const normalized = (role || '').toString().trim().toLowerCase().replace(/[\s_-]+/g, '');
+    return normalized === 'auditor' || normalized === 'leadauditor';
   }
 
   ngOnInit() {
