@@ -506,6 +506,10 @@ export class AuditManageComponent {
     return audit?.audit_status || '';
   }
 
+  canEditAuditInManage(subAudit: any): boolean {
+    return !!subAudit;
+  }
+
   onClickOutside(event: MouseEvent) {
     this.isAuditeesDropdownOpened = this.isAuditeesDropdownOpened?.map(() => false);
     this.isAuditeesOptionsOpen = this.isAuditeesOptionsOpen?.map(() => false);

@@ -58,6 +58,9 @@
                         <span class="chip status">{{getParentAuditStatus(auditPerformItem) | pascalCase}}</span>
                     </div>
                 </div>
+                <div class="sub-card-actions">
+                    <button class="edit-button" type="button" *ngIf="canEditAuditInManage(auditPerformItem)" (click)="openEditPlanDialog(auditPerformItem)">Edit</button>
+                </div>
                 <button class="child-count-chip" *ngIf="auditPerformItem.sub_audits.length>0" (click)="openSubAudits(auditPerformItem.sub_audits,i)">
                     {{auditPerformItem.sub_audits.length}} Child audits
                 </button>
@@ -83,7 +86,7 @@
                             </div>
                         </div>
                         <div class="sub-card-actions">
-                            <button class="edit-button" type="button" *ngIf="sub_audit.audit_status==='created' && isAuditor" (click)="openEditPlanDialog(sub_audit)">Edit</button>
+                            <button class="edit-button" type="button" *ngIf="canEditAuditInManage(sub_audit)" (click)="openEditPlanDialog(sub_audit)">Edit</button>
                         </div>
                     </div>
                 </div>
