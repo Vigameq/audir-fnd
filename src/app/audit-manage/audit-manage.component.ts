@@ -523,6 +523,11 @@ export class AuditManageComponent {
     if (!this.canDeleteAuditInManage(audit)) {
       return;
     }
+    const hasChildren = Array.isArray(audit?.sub_audits) && audit.sub_audits.length > 0;
+    if (hasChildren) {
+      this.audirService.showError('Cannot delete parent audit while child audits are attached');
+      return;
+    }
     const auditTitle = (audit?.audit_title || 'this audit').toString();
     const confirmed = window.confirm(`Delete ${auditTitle}?`);
     if (!confirmed) {
